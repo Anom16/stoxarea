@@ -1,0 +1,58 @@
+[
+  {
+    "ticker": "MEGA.JK",
+    "passed": false,
+    "avg_volume": 6698.0,
+    "trading_days": 238,
+    "last_price": 2050.0,
+    "reject_reason": "volume_rendah(6698_lot)"
+  },
+  {
+    "ticker": "DLTA.JK",
+    "passed": false,
+    "avg_volume": 611.0,
+    "trading_days": 238,
+    "last_price": 2000.0,
+    "reject_reason": "volume_rendah(611_lot)"
+  },
+  {
+    "ticker": "WIKA.JK",
+    "passed": false,
+    "avg_volume": 0.0,
+    "trading_days": 239,
+    "last_price": 204.0,
+    "reject_reason": "volume_rendah(0_lot)"
+  },
+  {
+    "ticker": "WSKT.JK",
+    "passed": false,
+    "avg_volume": 0.0,
+    "trading_days": 239,
+    "last_price": 202.0,
+    "reject_reason": "volume_rendah(0_lot)"
+  },
+  {
+    "ticker": "GOTO.JK",
+    "passed": false,
+    "avg_volume": 44885310.0,
+    "trading_days": 238,
+    "last_price": 50.0,
+    "reject_reason": "harga_gocap(Rp50)"
+  },
+  {
+    "ticker": "DNET.JK",
+    "passed": false,
+    "avg_volume": 86.0,
+    "trading_days": 238,
+    "last_price": 9450.0,
+    "reject_reason": "volume_rendah(86_lot)"
+  },
+  {
+    "ticker": "PALM.JK",
+    "passed": false,
+    "avg_volume": 8855.0,
+    "trading_days": 238,
+    "last_price": 368.0,
+    "reject_reason": "volume_rendah(8855_lot)"
+  }
+]
