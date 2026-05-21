@@ -6,11 +6,10 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard Anda', icon: '⊞' },
   { href: '/market',    label: 'Jelajah Pasar',  icon: '◎' },
   { href: '/virtual-trading', label: 'Virtual Trading', icon: '◈' },
-  { href: '/profile',   label: 'Profil Risiko',  icon: '◉' },
 ]
 
 const bottomNav = [
-  { href: '/profile', label: 'Pengaturan', icon: '⚙' },
+  { href: '/settings', label: 'Profil & Pengaturan', icon: '⚙' },
   { href: '/auth/login', label: 'Keluar', icon: '→' },
 ]
 
@@ -20,7 +19,7 @@ export default function Sidebar() {
     <aside className="sidebar">
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="logo-mark">S</div>
+        <img src="/icons/icon-192x192.png" alt="StoxArea Logo" style={{ width: 36, height: 36, objectFit: 'contain' }} />
         <span className="logo-text">Stox<span>Area</span></span>
       </div>
 
@@ -34,9 +33,16 @@ export default function Sidebar() {
             className={`nav-item ${pathname.startsWith(item.href) ? 'active' : ''}`}
           >
             <span style={{ fontSize: 16, width: 18, textAlign: 'center' }}>{item.icon}</span>
-            {item.label}
+            <span className="nav-label">{item.label}</span>
           </Link>
         ))}
+        <Link
+          href="/settings"
+          className={`nav-item mobile-only ${pathname.startsWith('/settings') ? 'active' : ''}`}
+        >
+          <span style={{ fontSize: 16, width: 18, textAlign: 'center' }}>⚙</span>
+          <span className="nav-label">Pengaturan</span>
+        </Link>
       </nav>
 
       {/* Footer Nav */}

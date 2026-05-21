@@ -15,6 +15,8 @@ interface StockRow {
   sparkline?: number[]
   current_price?: number
   name?: string
+  cluster?: string
+  is_qualified?: boolean
 }
 
 interface SectorRow {
@@ -22,14 +24,20 @@ interface SectorRow {
   total_stocks: number
 }
 
-export default function MarketExplorer() {
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
+
+function MarketExplorerContent() {
+  const searchParams = useSearchParams()
+  const initialSector = searchParams.get('sector') || ''
+  
   const [stocks, setStocks] = useState<StockRow[]>([])
   const [sectors, setSectors] = useState<SectorRow[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [selectedSector, setSelectedSector] = useState<string>('')
+  const [selectedSector, setSelectedSector] = useState<string>(initialSector)
   const [sortConfig, setSortConfig] = useState<{ key: keyof StockRow; direction: 'asc' | 'desc' }>({ key: 'ai_score_percent', direction: 'desc' })
-  const [visibleCount, setVisibleCount] = useState(15)
+  const [visibleCount, setVisibleCount] = useState(30)
 
   const requestSort = (key: keyof StockRow) => {
     let direction: 'asc' | 'desc' = 'asc'
@@ -140,6 +148,20 @@ export default function MarketExplorer() {
                         <td>
                           <Link href={`/market/${s.ticker}`} style={{ textDecoration: 'none' }}>
                             <div className="fw-700 text-primary" style={{ fontSize: 16 }}>{s.ticker.replace('.JK', '')}</div>
+                            {s.cluster && (
+                              <div className="fs-10 px-6 py-2 rounded mt-4" style={{ 
+                                display: 'inline-block',
+                                background: s.cluster.includes('Sultan') ? 'rgba(16, 185, 129, 0.1)' : 
+                                            s.cluster.includes('Value') ? 'rgba(59, 130, 246, 0.1)' : 
+                                            'rgba(245, 158, 11, 0.1)',
+                                color: s.cluster.includes('Sultan') ? '#10b981' : 
+                                       s.cluster.includes('Value') ? '#3b82f6' : 
+                                       '#f59e0b',
+                                border: `1px solid currentColor`
+                              }}>
+                                {s.cluster}
+                              </div>
+                            )}
                           </Link>
                         </td>
                         <td className="text-secondary fs-13">{s.sector}</td>
@@ -197,10 +219,10 @@ export default function MarketExplorer() {
               <div className="flex-center mt-24">
                 <button 
                   className="btn-outline" 
-                  onClick={() => setVisibleCount(prev => prev + 15)}
+                  onClick={() => setVisibleCount(prev => prev + 30)}
                   style={{ width: '100%', padding: '12px', borderStyle: 'dashed' }}
                 >
-                  Lihat 15 Saham Lagi... ({sortedAndFilteredStocks.length - visibleCount} sisa)
+                  Lihat 30 Saham Lagi... ({sortedAndFilteredStocks.length - visibleCount} sisa)
                 </button>
               </div>
             )}
@@ -215,7 +237,7 @@ export default function MarketExplorer() {
               style={{ border: selectedSector === '' ? '1px solid var(--accent)' : '1px solid var(--border)' }}
             >
               <div className="sector-name">Semua Sektor</div>
-              <div className="sector-count">61 Saham</div>
+              <div className="sector-count">{stocks.length} Saham</div>
             </div>
             {sectors.filter(s => s.total_stocks > 0).map(s => (
               <div 
@@ -232,5 +254,13 @@ export default function MarketExplorer() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function MarketExplorer() {
+  return (
+    <Suspense fallback={<div className="flex-center" style={{ height: '100vh' }}>Loading Scanner...</div>}>
+      <MarketExplorerContent />
+    </Suspense>
   )
 }

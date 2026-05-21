@@ -1,58 +1,234 @@
 [
   {
-    "ticker": "MEGA.JK",
+    "ticker": "GOTO.JK",
     "passed": false,
-    "avg_volume": 6698.0,
-    "trading_days": 238,
-    "last_price": 2050.0,
-    "reject_reason": "volume_rendah(6698_lot)"
-  },
-  {
-    "ticker": "DLTA.JK",
-    "passed": false,
-    "avg_volume": 611.0,
-    "trading_days": 238,
-    "last_price": 2000.0,
-    "reject_reason": "volume_rendah(611_lot)"
-  },
-  {
-    "ticker": "WIKA.JK",
-    "passed": false,
-    "avg_volume": 0.0,
-    "trading_days": 239,
-    "last_price": 204.0,
-    "reject_reason": "volume_rendah(0_lot)"
+    "avg_volume": 44885310.0,
+    "trading_days": 237,
+    "last_price": 50.0,
+    "reject_reason": "harga_gocap(Rp50)"
   },
   {
     "ticker": "WSKT.JK",
     "passed": false,
     "avg_volume": 0.0,
-    "trading_days": 239,
+    "trading_days": 238,
     "last_price": 202.0,
     "reject_reason": "volume_rendah(0_lot)"
   },
   {
-    "ticker": "GOTO.JK",
+    "ticker": "WIKA.JK",
     "passed": false,
-    "avg_volume": 44885310.0,
+    "avg_volume": 0.0,
     "trading_days": 238,
-    "last_price": 50.0,
-    "reject_reason": "harga_gocap(Rp50)"
+    "last_price": 204.0,
+    "reject_reason": "volume_rendah(0_lot)"
+  },
+  {
+    "ticker": "SILO.JK",
+    "passed": false,
+    "avg_volume": 5644.0,
+    "trading_days": 237,
+    "last_price": 2390.0,
+    "reject_reason": "volume_rendah(5644_lot)"
+  },
+  {
+    "ticker": "BTPN.JK",
+    "passed": false,
+    "avg_volume": 1435.0,
+    "trading_days": 237,
+    "last_price": 2100.0,
+    "reject_reason": "volume_rendah(1435_lot)"
+  },
+  {
+    "ticker": "BBHI.JK",
+    "passed": false,
+    "avg_volume": 4272.0,
+    "trading_days": 237,
+    "last_price": 1140.0,
+    "reject_reason": "volume_rendah(4272_lot)"
+  },
+  {
+    "ticker": "BCIC.JK",
+    "passed": false,
+    "avg_volume": 4973.0,
+    "trading_days": 237,
+    "last_price": 127.0,
+    "reject_reason": "volume_rendah(4973_lot)"
   },
   {
     "ticker": "DNET.JK",
     "passed": false,
     "avg_volume": 86.0,
-    "trading_days": 238,
+    "trading_days": 237,
     "last_price": 9450.0,
     "reject_reason": "volume_rendah(86_lot)"
   },
   {
-    "ticker": "PALM.JK",
+    "ticker": "MLPT.JK",
     "passed": false,
-    "avg_volume": 8855.0,
+    "avg_volume": 910.0,
+    "trading_days": 237,
+    "last_price": 21125.0,
+    "reject_reason": "volume_rendah(910_lot)"
+  },
+  {
+    "ticker": "EDGE.JK",
+    "passed": false,
+    "avg_volume": 0.0,
     "trading_days": 238,
-    "last_price": 368.0,
-    "reject_reason": "volume_rendah(8855_lot)"
+    "last_price": 4790.0,
+    "reject_reason": "volume_rendah(0_lot)"
+  },
+  {
+    "ticker": "MCAS.JK",
+    "passed": false,
+    "avg_volume": 5278.0,
+    "trading_days": 237,
+    "last_price": 332.0,
+    "reject_reason": "volume_rendah(5278_lot)"
+  },
+  {
+    "ticker": "KREN.JK",
+    "passed": false,
+    "avg_volume": 273376.0,
+    "trading_days": 237,
+    "last_price": 16.0,
+    "reject_reason": "harga_gocap(Rp16)"
+  },
+  {
+    "ticker": "CASS.JK",
+    "passed": false,
+    "avg_volume": 5409.0,
+    "trading_days": 237,
+    "last_price": 1875.0,
+    "reject_reason": "volume_rendah(5409_lot)"
+  },
+  {
+    "ticker": "PSSI.JK",
+    "passed": false,
+    "avg_volume": 2018.0,
+    "trading_days": 237,
+    "last_price": 344.0,
+    "reject_reason": "volume_rendah(2018_lot)"
+  },
+  {
+    "ticker": "MBAP.JK",
+    "passed": false,
+    "avg_volume": 1374.0,
+    "trading_days": 237,
+    "last_price": 1620.0,
+    "reject_reason": "volume_rendah(1374_lot)"
+  },
+  {
+    "ticker": "GEMS.JK",
+    "passed": false,
+    "avg_volume": 1439.0,
+    "trading_days": 237,
+    "last_price": 7800.0,
+    "reject_reason": "volume_rendah(1439_lot)"
+  },
+  {
+    "ticker": "BYAN.JK",
+    "passed": false,
+    "avg_volume": 831.0,
+    "trading_days": 237,
+    "last_price": 11200.0,
+    "reject_reason": "volume_rendah(831_lot)"
+  },
+  {
+    "ticker": "NELY.JK",
+    "passed": false,
+    "avg_volume": 6817.0,
+    "trading_days": 237,
+    "last_price": 304.0,
+    "reject_reason": "volume_rendah(6817_lot)"
+  },
+  {
+    "ticker": "ANJT.JK",
+    "passed": false,
+    "avg_volume": 2155.0,
+    "trading_days": 237,
+    "last_price": 1790.0,
+    "reject_reason": "volume_rendah(2155_lot)"
+  },
+  {
+    "ticker": "SGRO.JK",
+    "passed": false,
+    "avg_volume": 1403.0,
+    "trading_days": 237,
+    "last_price": 4140.0,
+    "reject_reason": "volume_rendah(1403_lot)"
+  },
+  {
+    "ticker": "GOOD.JK",
+    "passed": false,
+    "avg_volume": 1732.0,
+    "trading_days": 237,
+    "last_price": 344.0,
+    "reject_reason": "volume_rendah(1732_lot)"
+  },
+  {
+    "ticker": "CAMP.JK",
+    "passed": false,
+    "avg_volume": 3011.0,
+    "trading_days": 237,
+    "last_price": 198.0,
+    "reject_reason": "volume_rendah(3011_lot)"
+  },
+  {
+    "ticker": "DUTI.JK",
+    "passed": false,
+    "avg_volume": 28.0,
+    "trading_days": 237,
+    "last_price": 4100.0,
+    "reject_reason": "volume_rendah(28_lot)"
+  },
+  {
+    "ticker": "MTLA.JK",
+    "passed": false,
+    "avg_volume": 848.0,
+    "trading_days": 237,
+    "last_price": 505.0,
+    "reject_reason": "volume_rendah(848_lot)"
+  },
+  {
+    "ticker": "JRPT.JK",
+    "passed": false,
+    "avg_volume": 2961.0,
+    "trading_days": 237,
+    "last_price": 1085.0,
+    "reject_reason": "volume_rendah(2961_lot)"
+  },
+  {
+    "ticker": "OMRE.JK",
+    "passed": false,
+    "avg_volume": 73.0,
+    "trading_days": 237,
+    "last_price": 855.0,
+    "reject_reason": "volume_rendah(73_lot)"
+  },
+  {
+    "ticker": "IMAS.JK",
+    "passed": false,
+    "avg_volume": 9488.0,
+    "trading_days": 237,
+    "last_price": 1055.0,
+    "reject_reason": "volume_rendah(9488_lot)"
+  },
+  {
+    "ticker": "BRAM.JK",
+    "passed": false,
+    "avg_volume": 14.0,
+    "trading_days": 237,
+    "last_price": 4670.0,
+    "reject_reason": "volume_rendah(14_lot)"
+  },
+  {
+    "ticker": "GDYR.JK",
+    "passed": false,
+    "avg_volume": 3001.0,
+    "trading_days": 237,
+    "last_price": 1095.0,
+    "reject_reason": "volume_rendah(3001_lot)"
   }
 ]

@@ -14,6 +14,7 @@ import xgboost as xgb
 import shap
 import json
 import logging
+import joblib
 from pathlib import Path
 
 # ── Setup logging ──────────────────────────────────────────────────────────────
@@ -28,7 +29,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 INPUT_PATH  = Path("data/processed/features_targets.csv")
-MODEL_PATH  = Path("models/xgb_model.json")
+MODEL_PATH  = Path("models/xgb_model.pkl")
 OUTPUT_PATH = Path("data/processed/ai_scores.json")
 
 FEATURES = [
@@ -78,9 +79,8 @@ def run():
     tickers = inference_df["ticker"].values
     X_infer = inference_df[FEATURES]
     
-    logger.info("Memuat model XGBoost...")
-    model = xgb.XGBClassifier()
-    model.load_model(MODEL_PATH)
+    logger.info("Memuat model XGBoost (Calibrated)...")
+    model = joblib.load(MODEL_PATH)
     
     # 1. Inferensi (AI Score = Probabilitas kelas 1)
     logger.info("Memproses AI Score...")
@@ -88,7 +88,15 @@ def run():
     
     # 2. SHAP Explainability
     logger.info("Menghitung SHAP Values untuk transparansi AI...")
-    explainer = shap.TreeExplainer(model)
+    
+    # Untuk CalibratedClassifierCV, kita ambil salah satu estimator dasar untuk SHAP
+    # karena TreeExplainer butuh objek booster asli.
+    if hasattr(model, "calibrated_classifiers_"):
+        base_model_for_shap = model.calibrated_classifiers_[0].estimator
+    else:
+        base_model_for_shap = model
+
+    explainer = shap.TreeExplainer(base_model_for_shap)
     shap_values = explainer.shap_values(X_infer)
     
     # XGBoost classifier kadang mereturn list untuk binary (tergantung versi), kadang array.

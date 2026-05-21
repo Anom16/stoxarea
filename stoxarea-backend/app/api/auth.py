@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+import logging
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.core.database import get_db
@@ -8,16 +9,23 @@ from app.schemas.user import UserCreate, UserResponse, QuestionnaireInput
 from app.services.spk1_profiling import calculate_risk_profile
 from app.core.questions import QUESTIONNAIRE_DATA
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["Auth & Profiling"])
 
 @router.post("/register", response_model=UserResponse)
 def register(user_in: UserCreate, db: Session = Depends(get_db)):
+    logger.info(f"Mencoba mendaftarkan user baru: {user_in.email}")
     user = db.query(User).filter(User.email == user_in.email).first()
     if user:
+        logger.warning(f"Registrasi GAGAL: Email {user_in.email} sudah ada di database!")
         raise HTTPException(status_code=400, detail="Email already registered")
     
     hashed_password = get_password_hash(user_in.password)
-    new_user = User(email=user_in.email, password_hash=hashed_password)
+    new_user = User(
+        email=user_in.email, 
+        password_hash=hashed_password,
+        full_name=user_in.full_name
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -55,4 +63,19 @@ def submit_profiling(answers: QuestionnaireInput, email: str = Depends(get_curre
     db.commit()
     db.refresh(user)
     
+    return user
+
+@router.put("/profile", response_model=UserResponse)
+def update_profile(
+    risk_profile: str = Body(..., embed=True), 
+    email: str = Depends(get_current_user_email), 
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    user.risk_profile = risk_profile
+    db.commit()
+    db.refresh(user)
     return user

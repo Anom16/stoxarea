@@ -16,7 +16,8 @@ def calculate_saw_recommendations(db: Session, profile: RiskProfileEnum, target_
     weights = get_profile_weights(profile)
 
     # 2. Ambil data saham dari DB (Fundamental)
-    query = db.query(Stock)
+    # Ambil hanya saham yang lolos filter (is_qualified)
+    query = db.query(Stock).filter(Stock.is_qualified == True)
     if target_sector:
         # Fitur filter sektoral
         query = query.filter(Stock.sector.ilike(f"%{target_sector}%"))
@@ -29,16 +30,16 @@ def calculate_saw_recommendations(db: Session, profile: RiskProfileEnum, target_
     valid_stocks = []
     for s in stocks:
         ai_data = ai_store.get_score(s.ticker)
-        # Pastikan data fundamental tidak None agar hitungan SAW tidak error
-        if ai_data and s.roe is not None and s.der is not None and s.per is not None:
+        # Jika ada AI Score, kita tampilkan. Fundamental boleh kosong (default 0)
+        if ai_data:
             valid_stocks.append({
                 "ticker": s.ticker,
                 "sector": s.sector or "Unknown",
                 "ai_score": ai_data.get("ai_score", 0.0),
                 "insights": ai_data.get("insights", []),
-                "roe": s.roe,
-                "der": s.der,
-                "per": s.per
+                "roe": s.roe if s.roe is not None else 0.0,
+                "der": s.der if s.der is not None else 0.0,
+                "per": s.per if s.per is not None else 0.0
             })
 
     if not valid_stocks:

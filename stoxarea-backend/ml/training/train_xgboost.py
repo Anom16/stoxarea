@@ -11,8 +11,10 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 import logging
+import joblib
 from pathlib import Path
 from sklearn.model_selection import TimeSeriesSplit
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.metrics import classification_report, accuracy_score, precision_score
 
 # ── Setup logging ──────────────────────────────────────────────────────────────
@@ -28,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 INPUT_PATH  = Path("data/processed/features_targets.csv")
 MODEL_DIR   = Path("models")
-MODEL_PATH  = MODEL_DIR / "xgb_model.json"
+MODEL_PATH  = MODEL_DIR / "xgb_model.pkl"
 
 FEATURES = [
     "log_ret_1d", "log_ret_5d", "ma_20_dist", "ma_50_dist", 
@@ -99,8 +101,8 @@ def run():
     logger.info("================================")
     
     # ── Final Training di Seluruh Data ──
-    logger.info("Melatih model final menggunakan SELURUH data training...")
-    final_model = xgb.XGBClassifier(
+    logger.info("Melatih model final menggunakan SELURUH data training (dengan Kalibrasi Isotonik)...")
+    base_model = xgb.XGBClassifier(
         n_estimators=150,
         max_depth=4,
         learning_rate=0.05,
@@ -109,6 +111,9 @@ def run():
         random_state=42,
         n_jobs=-1
     )
+    
+    # Wrap dengan Kalibrasi Isotonik
+    final_model = CalibratedClassifierCV(base_model, method='isotonic', cv=5)
     final_model.fit(X, y)
     
     # Evaluasi di training set (sekadar referensi)
@@ -116,19 +121,21 @@ def run():
     logger.info("\nLaporan Performa di Training Data:")
     logger.info("\n" + classification_report(y, final_preds))
     
-    # Feature Importance
-    importance = final_model.feature_importances_
+    # Feature Importance (Diambil dari estimator pertama di dalam CalibratedClassifierCV)
+    # Catatan: CalibratedClassifierCV dengan cv=5 melatih 5 model. Kita ambil yang pertama sebagai perwakilan.
+    first_estimator = final_model.calibrated_classifiers_[0].estimator
+    importance = first_estimator.feature_importances_
     feat_imp = pd.DataFrame({"Feature": FEATURES, "Importance": importance})
     feat_imp = feat_imp.sort_values(by="Importance", ascending=False)
     
-    logger.info("\nTop 5 Fitur Paling Berpengaruh:")
+    logger.info("\nTop 5 Fitur Paling Berpengaruh (Estimator #1):")
     for idx, row in feat_imp.head(5).iterrows():
         logger.info(f"  {row['Feature']:<16}: {row['Importance']:.4f}")
     
     # ── Simpan Model ──
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
-    final_model.save_model(MODEL_PATH)
-    logger.info(f"\n✅ Model XGBoost berhasil disimpan di {MODEL_PATH}")
+    joblib.dump(final_model, MODEL_PATH)
+    logger.info(f"\n✅ Model XGBoost (Calibrated) berhasil disimpan di {MODEL_PATH}")
 
 if __name__ == "__main__":
     run()

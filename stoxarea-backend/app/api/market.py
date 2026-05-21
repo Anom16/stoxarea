@@ -7,7 +7,8 @@ from app.services.market_data import (
     get_technical_data, 
     get_fundamental_data, 
     get_sector_summary, 
-    get_historical_financials
+    get_historical_financials,
+    get_live_price
 )
 
 router = APIRouter(prefix="/market", tags=["Market Intelligence (SPK Lapis 2)"])
@@ -46,6 +47,15 @@ def get_ticker_score(ticker: str):
     if not data:
         return {"message": f"Data AI tidak ditemukan untuk ticker {ticker.upper()}"}
     return data
+
+@router.get("/live-price/{ticker}")
+def get_live_price_api(ticker: str):
+    """
+    [NEW] Mengambil harga saham secara REAL-TIME tanpa cache.
+    Digunakan khusus untuk Virtual Trading.
+    """
+    price = get_live_price(ticker)
+    return {"ticker": ticker.upper(), "price": price}
 
 
 @router.get("/technical/{ticker}")

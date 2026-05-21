@@ -216,15 +216,17 @@ def run_filter(tickers: list[str]) -> tuple[list[str], list[dict]]:
     logger.info(f"  Hari trading setahun      ≥ {MIN_TRADING_DAYS} hari")
     logger.info(f"  Harga penutupan terakhir  > Rp {MIN_PRICE_IDR}\n")
 
-    for i, ticker in enumerate(tickers):
+    for i, item in enumerate(tickers):
+        # Handle jika item adalah dict (format baru) atau string (format lama)
+        ticker = item["ticker"] if isinstance(item, dict) else item
+        
         logger.info(f"[{i+1}/{total}] Evaluasi {ticker}")
-
         result = evaluate_ticker(ticker)
 
         if result["passed"]:
             filtered.append(ticker)
             logger.info(
-                f"  ✅ LOLOS — "
+                f"  [PASS] "
                 f"Vol: {result['avg_volume']:,.0f} lot | "
                 f"Hari: {result['trading_days']} | "
                 f"Harga: Rp{result['last_price']:,.0f}"
@@ -232,7 +234,7 @@ def run_filter(tickers: list[str]) -> tuple[list[str], list[dict]]:
         else:
             rejected.append(result)
             logger.warning(
-                f"  ❌ DITOLAK — {result['reject_reason']}"
+                f"  [REJECT] {result['reject_reason']}"
             )
 
         time.sleep(REQUEST_DELAY)

@@ -1,7 +1,10 @@
 import yfinance as yf
 import pandas as pd
 import time
+import threading
 from typing import Optional
+
+_YF_LOCK = threading.Lock()
 
 # Cache sederhana untuk optimasi kecepatan load
 # Format: { "TICKER_KEY": (timestamp, data) }
@@ -24,7 +27,8 @@ def get_technical_data(ticker: str, period: str = "3mo", interval: str = "1d") -
             return data
 
     try:
-        df = yf.download(ticker, period=period, interval=interval, progress=False, auto_adjust=True)
+        with _YF_LOCK:
+            df = yf.download(ticker, period=period, interval=interval, progress=False, auto_adjust=True)
         if df.empty:
             return {"error": f"Data tidak tersedia untuk {ticker}"}
 
@@ -103,8 +107,9 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
             return data
 
     try:
-        t = yf.Ticker(ticker)
-        info = t.info
+        with _YF_LOCK:
+            t = yf.Ticker(ticker)
+            info = t.info
 
         def safe(key, default=None, digits=2):
             val = info.get(key)
@@ -161,6 +166,45 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
     except Exception as e:
         return {"error": str(e)}
 
+def get_live_price(ticker: str) -> float:
+    """
+    [NEW] Mengambil harga saham secara REAL-TIME tanpa cache lama.
+    Menggunakan daily data 5 hari agar aman dari kekosongan data menit sebelum pasar buka.
+    """
+    try:
+        t = ticker.upper()
+        if not t.endswith(".JK"):
+            t += ".JK"
+            
+        with _YF_LOCK:
+            df = yf.download(t, period="5d", interval="1d", progress=False, auto_adjust=True)
+        if not df.empty:
+            close_col = df["Close"]
+            if isinstance(close_col, pd.DataFrame):
+                matched_cols = [c for c in close_col.columns if c.upper() == t]
+                if matched_cols:
+                    val = close_col[matched_cols[0]].dropna().iloc[-1]
+                else:
+                    val = close_col.dropna().iloc[-1].iloc[0]
+            else:
+                val = close_col.dropna().iloc[-1]
+            return round(float(val), 2)
+        
+        # Fallback ke .info HANYA jika download benar-benar gagal total
+        with _YF_LOCK:
+            info = yf.Ticker(t).info
+        # Pastikan info yang didapat memang milik ticker kita (hindari bug cache yfinance)
+        if info and info.get("symbol", "").upper() == t:
+            price = info.get("currentPrice") or info.get("regularMarketPrice")
+            if price:
+                return round(float(price), 2)
+                
+        return 0.0
+    except Exception as e:
+        print(f"Error live price {ticker}: {e}")
+        return 0.0
+
+
 def get_historical_financials(ticker: str, db=None) -> dict:
     """
     [PERSISTENCE] Mengambil data historis dari Database.
@@ -189,16 +233,17 @@ def get_historical_financials(ticker: str, db=None) -> dict:
 
     # 2. Jika tidak ada di DB, ambil dari YFinance
     try:
-        t = yf.Ticker(ticker)
+        with _YF_LOCK:
+            t = yf.Ticker(ticker)
+            fin_raw = t.financials.T
+            bs_raw = t.balance_sheet.T
+            divs = t.dividends.tail(10)
         
         def safe_val(row, key, default=0):
             try:
                 val = row.get(key)
                 return float(val) if val is not None and not pd.isna(val) else default
             except: return default
-
-        fin_raw = t.financials.T
-        bs_raw = t.balance_sheet.T
         
         res_fin = []
         res_bs = []
@@ -240,7 +285,6 @@ def get_historical_financials(ticker: str, db=None) -> dict:
         if db: db.commit()
 
         # Dividends tetap live karena datanya kecil/ringan
-        divs = t.dividends.tail(10)
         history_div = [{"date": d.strftime('%Y-%m-%d'), "amount": float(v)} for d, v in divs.items()]
 
         return {
@@ -298,7 +342,7 @@ def get_sector_summary(db) -> list:
             "avg_ai_score": avg_ai,
             "avg_ai_score_percent": f"{avg_ai * 100:.1f}%",
             "top_movers": [{"ticker": t, "ai_score_percent": f"{s*100:.1f}%"} for t, s in top_movers],
-            "sentiment": "Bullish" if avg_ai >= 0.55 else ("Netral" if avg_ai >= 0.45 else "Bearish"),
+            "sentiment": "Bullish" if avg_ai >= 0.40 else ("Netral" if avg_ai >= 0.30 else "Bearish"),
         })
 
 # Urutkan berdasarkan avg_ai_score (sektor paling bullish di atas)

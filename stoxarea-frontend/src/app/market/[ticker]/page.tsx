@@ -6,7 +6,6 @@ import api from '@/lib/api'
 import Sidebar from '@/components/ui/Sidebar'
 import Topbar from '@/components/ui/Topbar'
 import TechnicalChart from '@/components/charts/TechnicalChart'
-import { usePortfolioStore } from '@/store/portfolioStore'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 
 // --- Skeleton Component ---
@@ -31,30 +30,42 @@ export default function StockDetailPage() {
   const tickerStr = typeof ticker === 'string' ? ticker.toUpperCase() : ''
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [tradeAmount, setTradeAmount] = useState(100)
-  
   const [activeTab, setActiveTab] = useState<'ai' | 'financials' | 'dividends'>('ai')
   const [historyData, setHistoryData] = useState<any>(null)
   const [loadingHist, setLoadingHist] = useState(false)
   
-  const { buyStock, sellStock, cash, holdings } = usePortfolioStore()
-  const holding = holdings.find(h => h.ticker === (tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'))
+  // States for Trading
+  const [lots, setLots] = useState(1)
+  const [customPrice, setCustomPrice] = useState(0)
+  const [dbCash, setDbCash] = useState(0)
+  const [dbHoldingShares, setDbHoldingShares] = useState(0)
 
   useEffect(() => {
     const fetchMainData = async () => {
       setLoading(true)
       try {
         const fullTicker = tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'
-        const [fundRes, techRes, aiRes] = await Promise.all([
+        const [fundRes, techRes, aiRes, userRes, portRes] = await Promise.all([
           api.get(`/market/fundamental/${fullTicker}`),
           api.get(`/market/technical/${fullTicker}?period=1y`),
-          api.get(`/market/ai-score/${fullTicker}`)
+          api.get(`/market/ai-score/${fullTicker}`),
+          api.get('/auth/me'),
+          api.get('/portfolio/')
         ])
         setData({
           fundamental: fundRes.data,
           technical: techRes.data,
           ai: aiRes.data
         })
+        setCustomPrice(fundRes.data.price?.current || 0)
+        setDbCash(userRes.data.virtual_balance || 0)
+        
+        const currentHolding = portRes.data.find(
+          (h: any) => h.ticker.toUpperCase() === fullTicker.toUpperCase()
+        )
+        if (currentHolding) {
+          setDbHoldingShares(currentHolding.qty)
+        }
       } catch (err) {
         console.error(err)
       } finally {
@@ -110,16 +121,37 @@ export default function StockDetailPage() {
     return val.toLocaleString()
   }
 
-  const handleBuy = () => {
+  const handleBuy = async () => {
     const fullTicker = tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'
-    buyStock(fullTicker, tradeAmount, currentPrice)
-    alert(`Berhasil membeli ${tradeAmount} lembar ${tickerStr}`)
+    const shares = lots * 100
+    try {
+      await api.post('/portfolio/buy', {
+        ticker: fullTicker,
+        qty: shares,
+        price: customPrice
+      })
+      alert(`Berhasil membeli ${lots} Lot (${shares} lembar) ${tickerStr} @ Rp ${customPrice.toLocaleString()}`)
+      // Refresh local state jika perlu atau redirect
+      window.location.reload()
+    } catch (err: any) {
+      alert(err.response?.data?.detail || "Gagal melakukan pembelian")
+    }
   }
 
-  const handleSell = () => {
+  const handleSell = async () => {
     const fullTicker = tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'
-    sellStock(fullTicker, tradeAmount, currentPrice)
-    alert(`Berhasil menjual ${tradeAmount} lembar ${tickerStr}`)
+    const shares = lots * 100
+    try {
+      await api.post('/portfolio/sell', {
+        ticker: fullTicker,
+        qty: shares,
+        price: customPrice
+      })
+      alert(`Berhasil menjual ${lots} Lot (${shares} lembar) ${tickerStr} @ Rp ${customPrice.toLocaleString()}`)
+      window.location.reload()
+    } catch (err: any) {
+      alert(err.response?.data?.detail || "Gagal melakukan penjualan")
+    }
   }
 
   return (
@@ -134,6 +166,24 @@ export default function StockDetailPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <h1 style={{ fontSize: 32, fontWeight: 800 }}>{f.ticker.replace('.JK', '')}</h1>
                 <span className="pick-sector">{f.sector}</span>
+                {f.cluster && (
+                  <span style={{ 
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: '4px 10px',
+                    borderRadius: 20,
+                    background: f.cluster.includes('Sultan') ? 'rgba(16, 185, 129, 0.1)' : 
+                                f.cluster.includes('Value') ? 'rgba(59, 130, 246, 0.1)' : 
+                                'rgba(245, 158, 11, 0.1)',
+                    color: f.cluster.includes('Sultan') ? '#10b981' : 
+                           f.cluster.includes('Value') ? '#3b82f6' : 
+                           '#f59e0b',
+                    border: `1px solid currentColor`,
+                    textTransform: 'uppercase'
+                  }}>
+                    {f.cluster}
+                  </span>
+                )}
               </div>
               <p className="text-secondary fs-14">{f.name} — {f.industry}</p>
             </div>
@@ -373,12 +423,12 @@ export default function StockDetailPage() {
 
                 <div style={{ height: 180, width: '100%', marginBottom: 16 }}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={ai.insights.map((i: any) => ({ name: FEATURE_LABELS[i.feature] || i.feature, value: i.contribution }))} layout="vertical">
+                    <BarChart data={(ai?.insights || []).map((i: any) => ({ name: FEATURE_LABELS[i.feature] || i.feature, value: i.contribution }))} layout="vertical">
                       <XAxis type="number" hide />
                       <YAxis dataKey="name" type="category" width={90} tick={{ fontSize: 10, fill: '#94a3b8' }} />
                       <Tooltip />
                       <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                        {ai.insights.map((entry: any, index: number) => (
+                        {(ai?.insights || []).map((entry: any, index: number) => (
                           <Cell key={`cell-${index}`} fill={entry.contribution > 0 ? '#10b981' : '#ef4444'} />
                         ))}
                       </Bar>
@@ -387,7 +437,7 @@ export default function StockDetailPage() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {ai.insights.map((ins: any, i: number) => {
+                  {(ai?.insights || []).map((ins: any, i: number) => {
                     // Cari data asli dari technical indicators jika tersedia
                     let rawValue = '—';
                     const indicators = data?.technical?.indicators;
@@ -421,31 +471,64 @@ export default function StockDetailPage() {
               </div>
 
               {/* Trading Module */}
-              <div className="card" style={{ border: '1px solid var(--accent-glow)' }}>
-                <h3 className="section-title mb-16" style={{ fontSize: 16 }}>🚀 Modul Trading Virtual</h3>
-                <div className="flex-between mb-16">
-                  <span className="text-secondary fs-13">Saldo Kas:</span>
-                  <span className="fw-700 text-accent">Rp {cash.toLocaleString()}</span>
+              <div className="card" style={{ border: '1px solid var(--accent-glow)', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: 0, right: 0, padding: '4px 12px', background: 'var(--accent)', color: 'black', fontSize: 10, fontWeight: 800, borderRadius: '0 0 0 8px' }}>
+                  VIRTUAL TRADING
                 </div>
-                <div className="flex-between mb-16">
+                <h3 className="section-title mb-16" style={{ fontSize: 16 }}>🚀 Order Book</h3>
+                
+                <div className="flex-between mb-12">
+                  <span className="text-secondary fs-13">Saldo Kas:</span>
+                  <span className="fw-700 text-accent">Rp {dbCash.toLocaleString()}</span>
+                </div>
+                <div className="flex-between mb-24">
                   <span className="text-secondary fs-13">Kepemilikan:</span>
-                  <span className="fw-700">{holding ? `${holding.shares} Lembar` : '0 Lembar'}</span>
+                  <span className="fw-700">
+                    {dbHoldingShares > 0 ? `${(dbHoldingShares / 100).toFixed(0)} Lot (${dbHoldingShares} lbr)` : '0 Lot'}
+                  </span>
                 </div>
 
-                <div className="mb-16">
-                  <label className="fs-12 text-muted mb-8 d-block">Jumlah Lembar (Shares)</label>
-                  <input 
-                    type="number"
-                    value={tradeAmount}
-                    onChange={(e) => setTradeAmount(parseInt(e.target.value))}
-                    className="search-box"
-                    style={{ width: '100%', background: 'var(--bg-primary)', padding: '10px 14px' }}
-                  />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+                  <div>
+                    <div className="flex-between mb-6">
+                      <label className="fs-11 text-muted uppercase fw-700">Harga (IDR)</label>
+                      <button 
+                        onClick={() => setCustomPrice(currentPrice)}
+                        style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 10, cursor: 'pointer', padding: 0 }}
+                      >
+                        Gunakan Harga Pasar 🔄
+                      </button>
+                    </div>
+                    <input 
+                      type="number"
+                      value={customPrice}
+                      onChange={(e) => setCustomPrice(parseInt(e.target.value))}
+                      className="search-box"
+                      style={{ width: '100%', background: 'var(--bg-primary)', padding: '10px' }}
+                    />
+                  </div>
+                  <div>
+                    <label className="fs-11 text-muted mb-6 d-block uppercase fw-700">Jumlah Lot</label>
+                    <input 
+                      type="number"
+                      value={lots}
+                      onChange={(e) => setLots(parseInt(e.target.value))}
+                      className="search-box"
+                      style={{ width: '100%', background: 'var(--bg-primary)', padding: '10px' }}
+                    />
+                  </div>
+                </div>
+
+                <div className="card mb-24" style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', border: '1px dashed var(--border)' }}>
+                  <div className="flex-between">
+                    <span className="fs-12 text-muted">Estimasi Total:</span>
+                    <span className="fs-16 fw-800 text-accent">Rp {(customPrice * lots * 100).toLocaleString()}</span>
+                  </div>
                 </div>
 
                 <div className="flex-between gap-12">
-                  <button className="btn-primary" onClick={handleBuy} style={{ flex: 1, padding: 12 }}>BELI</button>
-                  <button className="btn-outline" onClick={handleSell} style={{ flex: 1, padding: 12, borderColor: 'var(--red)', color: 'var(--red)' }}>JUAL</button>
+                  <button className="btn-primary" onClick={handleBuy} style={{ flex: 1, padding: '14px', borderRadius: 8, fontSize: 14, fontWeight: 700 }}>BELI</button>
+                  <button className="btn-outline" onClick={handleSell} style={{ flex: 1, padding: '14px', borderRadius: 8, fontSize: 14, fontWeight: 700, borderColor: 'var(--red)', color: 'var(--red)' }}>JUAL</button>
                 </div>
               </div>
 

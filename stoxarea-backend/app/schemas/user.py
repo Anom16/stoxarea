@@ -8,13 +8,16 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    full_name: Optional[str] = None
 
 class UserLogin(UserBase):
     password: str
 
 class UserResponse(UserBase):
     id: int
+    full_name: Optional[str] = None
     risk_profile: Optional[RiskProfileEnum] = None
+    virtual_balance: float
     created_at: datetime
 
     class Config:

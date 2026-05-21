@@ -99,18 +99,28 @@ export default function DashboardPage() {
       <div className="stats-row">
         <div className="stat-card">
           <div className="stat-label">Total Saham Dipantau</div>
-          <div className="stat-value text-accent">{recs.length > 0 ? '61' : '—'}</div>
+          <div className="stat-value text-accent">{sectors.length > 0 ? sectors.reduce((acc, s) => acc + s.total_stocks, 0).toString() : '—'}</div>
           <div className="stat-sub">Emiten IDX aktif dianalisis</div>
         </div>
         <div className="stat-card">
           <div className="stat-label">Match Score Tertinggi</div>
           <div className="stat-value text-accent">{recs[0]?.match_score_percent || '—'}</div>
-          <div className="stat-sub">{recs[0]?.ticker || '—'} untuk profil {profile}</div>
+          <div className="stat-sub">
+            {recs[0]?.ticker ? (
+              <Link href={`/market/${recs[0].ticker}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>
+                {recs[0].ticker.replace('.JK', '')}
+              </Link>
+            ) : '—'} untuk profil {profile}
+          </div>
         </div>
         <div className="stat-card">
           <div className="stat-label">Sektor Paling Bullish</div>
           <div className="stat-value" style={{ fontSize: 16, fontWeight: 700 }}>
-            {sectors[0]?.sector || '—'}
+            {sectors[0]?.sector ? (
+              <Link href={`/market?sector=${encodeURIComponent(sectors[0].sector)}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                <span className="hover-opacity">{sectors[0].sector}</span>
+              </Link>
+            ) : '—'}
           </div>
           <div className="stat-sub stat-up">{sectors[0]?.avg_ai_score_percent || '—'} AI Score rata-rata</div>
         </div>
@@ -139,7 +149,9 @@ export default function DashboardPage() {
         <div className="top-picks-grid">
           {recs.slice(0, 5).map((r) => (
             <div key={r.ticker} className="pick-card">
-              <div className="pick-ticker">{r.ticker.replace('.JK', '')}</div>
+              <Link href={`/market/${r.ticker}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="pick-ticker hover-opacity">{r.ticker.replace('.JK', '')}</div>
+              </Link>
               <div className="pick-name">Sektor: <span className="pick-sector">{r.sector}</span></div>
 
               <div className="match-badge">
@@ -188,11 +200,8 @@ export default function DashboardPage() {
               </div>
 
               <div className="pick-actions">
-                <Link href={`/market/${r.ticker}`} className="btn-outline" style={{ textDecoration: 'none', textAlign: 'center' }}>
+                <Link href={`/market/${r.ticker}`} className="btn-outline" style={{ textDecoration: 'none', textAlign: 'center', width: '100%' }}>
                   Detail Analisis
-                </Link>
-                <Link href={`/virtual-trading?ticker=${r.ticker}`} className="btn-primary" style={{ textDecoration: 'none', textAlign: 'center' }}>
-                  Beli (Virtual)
                 </Link>
               </div>
             </div>
@@ -259,7 +268,11 @@ export default function DashboardPage() {
             <tbody>
               {sectors.filter(s => s.total_stocks > 0).map((s) => (
                 <tr key={s.sector}>
-                  <td style={{ fontWeight: 600, fontSize: 13 }}>{s.sector}</td>
+                  <td style={{ fontWeight: 600, fontSize: 13 }}>
+                    <Link href={`/market?sector=${encodeURIComponent(s.sector)}`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover-opacity">
+                      {s.sector}
+                    </Link>
+                  </td>
                   <td style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{s.total_stocks}</td>
                   <td>
                     <div className="ai-bar-wrap">
@@ -289,7 +302,9 @@ export default function DashboardPage() {
           <div key={s.sector} className="sector-card">
             <div className="sector-card-top">
               <div>
-                <div className="sector-name">{s.sector}</div>
+                <Link href={`/market?sector=${encodeURIComponent(s.sector)}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                  <div className="sector-name hover-opacity">{s.sector}</div>
+                </Link>
                 <div className="sector-count">{s.total_stocks} saham dipantau</div>
               </div>
               <span className={`sentiment-badge ${(s.sentiment || '').toLowerCase()}`} style={{ fontSize: 11 }}>

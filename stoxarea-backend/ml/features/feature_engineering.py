@@ -3,7 +3,7 @@ ml/pipeline/features.py
 -----------------------
 Tugas:
   1. Membaca data OHLCV historis dari data/raw/ohlcv/.
-  2. Melakukan Feature Engineering (Teknikal & Momentum).
+  2. Melakukan Feature Engineering (Teknikal).
   3. Menghasilkan label klasifikasi (Target 5 Hari > 5%).
   4. Menggabungkan seluruh data emiten ke dalam satu dataset training.
 

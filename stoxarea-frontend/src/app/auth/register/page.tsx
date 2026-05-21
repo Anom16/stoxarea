@@ -4,35 +4,27 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import api from '@/lib/api'
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError]       = useState('')
-  const [loading, setLoading]   = useState(false)
+  const [fullName, setFullName] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true); setError('')
     try {
-      // OAuth2PasswordRequestForm menggunakan form-data bukan JSON
-      const params = new URLSearchParams()
-      params.append('username', email)
-      params.append('password', password)
-      const res = await api.post('/auth/login', params, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      await api.post('/auth/register', { 
+        email, 
+        password,
+        full_name: fullName 
       })
-      localStorage.setItem('access_token', res.data.access_token)
-      
-      // Smart Redirect: Cek apakah butuh onboarding
-      const userRes = await api.get('/auth/me')
-      if (!userRes.data.risk_profile) {
-        router.push('/onboarding')
-      } else {
-        router.push('/dashboard')
-      }
+      alert("Pendaftaran Berhasil! Silakan masuk ke akun Anda.")
+      router.push('/auth/login')
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login gagal. Periksa email dan password Anda.')
+      setError(err.response?.data?.detail || 'Pendaftaran gagal. Email mungkin sudah terdaftar.')
     } finally {
       setLoading(false)
     }
@@ -63,14 +55,15 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* Form Card */}
         <div style={{
           background: '#1e293b', padding: 32, borderRadius: 16,
           border: '1px solid #334155', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'
         }}>
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: 'white', marginBottom: 8 }}>Masuk ke Akun Anda</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: 'white', marginBottom: 8 }}>Daftar Akun Baru</h2>
           <p style={{ color: '#94a3b8', fontSize: 14, marginBottom: 24 }}>
-            Belum punya akun?{' '}
-            <Link href="/auth/register" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 600 }}>Daftar di sini</Link>
+            Sudah punya akun? {' '}
+            <Link href="/auth/login" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 600 }}>Masuk di sini</Link>
           </p>
 
           {error && (
@@ -79,13 +72,28 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div>
+              <label style={{ color: 'white', fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Nama Lengkap</label>
+              <input 
+                placeholder="Nama Anda"
+                value={fullName}
+                onChange={e => setFullName(e.target.value)}
+                required
+                style={{
+                  width: '100%', background: '#0f172a', border: '1px solid #334155',
+                  borderRadius: 8, padding: '12px 16px', color: 'white',
+                  fontSize: 14, outline: 'none', boxSizing: 'border-box'
+                }}
+              />
+            </div>
             <div>
               <label style={{ color: 'white', fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Email</label>
-              <input
-                type="email" id="login-email" value={email}
+              <input 
+                type="email"
+                placeholder="nama@email.com"
+                value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="admin@gmail.com"
                 required
                 style={{
                   width: '100%', background: '#0f172a', border: '1px solid #334155',
@@ -96,10 +104,11 @@ export default function LoginPage() {
             </div>
             <div>
               <label style={{ color: 'white', fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Password</label>
-              <input
-                type="password" id="login-password" value={password}
-                onChange={e => setPassword(e.target.value)}
+              <input 
+                type="password"
                 placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 required
                 style={{
                   width: '100%', background: '#0f172a', border: '1px solid #334155',
@@ -108,7 +117,8 @@ export default function LoginPage() {
                 }}
               />
             </div>
-            <button
+
+            <button 
               type="submit"
               disabled={loading}
               style={{
@@ -119,7 +129,7 @@ export default function LoginPage() {
               onMouseOver={(e) => (e.currentTarget.style.background = '#059669')}
               onMouseOut={(e) => (e.currentTarget.style.background = '#10b981')}
             >
-              {loading ? 'Memproses...' : 'Masuk'}
+              {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
             </button>
           </form>
         </div>

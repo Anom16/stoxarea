@@ -58,7 +58,10 @@ def load_ticker_list(filepath: str = "data/tickers_bei.json") -> list[str]:
         raise FileNotFoundError(f"File ticker tidak ditemukan: {filepath}")
 
     with open(path, "r") as f:
-        tickers = json.load(f)
+        data = json.load(f)
+    
+    # Ekstrak hanya ticker string jika formatnya adalah list of dicts
+    tickers = [item["ticker"] if isinstance(item, dict) else item for item in data]
 
     logger.info(f"Total ticker dimuat: {len(tickers)}")
     return tickers
