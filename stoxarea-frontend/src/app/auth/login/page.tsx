@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import ToastContainer from '@/components/ui/Toast'
+import { useToast } from '@/hooks/useToast'
 import api from '@/lib/api'
 
 export default function LoginPage() {
@@ -10,12 +12,12 @@ export default function LoginPage() {
   const [error, setError]       = useState('')
   const [loading, setLoading]   = useState(false)
   const router = useRouter()
+  const { toasts, removeToast, toast } = useToast()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true); setError('')
     try {
-      // OAuth2PasswordRequestForm menggunakan form-data bukan JSON
       const params = new URLSearchParams()
       params.append('username', email)
       params.append('password', password)
@@ -24,15 +26,23 @@ export default function LoginPage() {
       })
       localStorage.setItem('access_token', res.data.access_token)
       
-      // Smart Redirect: Cek apakah butuh onboarding
       const userRes = await api.get('/auth/me')
-      if (!userRes.data.risk_profile) {
-        router.push('/onboarding')
-      } else {
-        router.push('/dashboard')
-      }
+      const name = userRes.data.full_name || userRes.data.email?.split('@')[0] || 'Pengguna'
+      toast.success(
+        `Selamat Datang, ${name}! 👋`,
+        'Login berhasil. Mengalihkan ke dashboard...',
+      )
+      setTimeout(() => {
+        if (!userRes.data.risk_profile) {
+          router.push('/onboarding')
+        } else {
+          router.push('/dashboard')
+        }
+      }, 1200)
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login gagal. Periksa email dan password Anda.')
+      const msg = err.response?.data?.detail || 'Login gagal. Periksa email dan password Anda.'
+      setError(msg)
+      toast.error('Login Gagal', msg)
     } finally {
       setLoading(false)
     }
@@ -44,6 +54,7 @@ export default function LoginPage() {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontFamily: 'Inter, sans-serif'
     }}>
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
       <div style={{ width: '100%', maxWidth: 400, padding: 24 }}>
         
         {/* Logo Section */}

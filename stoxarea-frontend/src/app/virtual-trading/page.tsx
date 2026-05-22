@@ -1,7 +1,10 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Sidebar from '@/components/ui/Sidebar'
 import Topbar from '@/components/ui/Topbar'
+import ToastContainer from '@/components/ui/Toast'
+import DisclaimerFooter from '@/components/ui/DisclaimerFooter'
+import { useToast } from '@/hooks/useToast'
 import api from '@/lib/api'
 
 interface PortfolioItem {
@@ -11,242 +14,496 @@ interface PortfolioItem {
   current_price?: number
 }
 
+interface Transaction {
+  id: number
+  ticker: string
+  type: 'BUY' | 'SELL'
+  qty: number
+  price: number
+  fee: number
+  net_value: number
+  timestamp: string
+}
+
 export default function VirtualTradingPage() {
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([])
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [balance, setBalance] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [order, setOrder] = useState({ ticker: '', qty: 1, type: 'buy' })
   const [processing, setProcessing] = useState(false)
+  const [activeTab, setActiveTab] = useState<'portfolio' | 'history'>('portfolio')
+  const { toasts, removeToast, toast } = useToast()
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true)
     try {
-      const [portRes, userRes] = await Promise.all([
+      const [portRes, userRes, txRes] = await Promise.all([
         api.get('/portfolio/'),
-        api.get('/auth/me')
+        api.get('/auth/me'),
+        api.get('/portfolio/transactions').catch(() => ({ data: [] }))
       ])
-      
-      const portData = portRes.data
       setBalance(userRes.data.virtual_balance || 0)
+      setTransactions(txRes.data || [])
 
-      // Fetch current prices for each ticker in portfolio
-      const enhancedPortfolio = await Promise.all(portData.map(async (item: any) => {
+      const enhanced = await Promise.all(portRes.data.map(async (item: PortfolioItem) => {
         try {
-          const priceRes = await api.get(`/market/live-price/${item.ticker}`)
-          return { ...item, current_price: priceRes.data.price || item.avg_price }
+          const r = await api.get(`/market/live-price/${item.ticker}`)
+          return { ...item, current_price: r.data.price || item.avg_price }
         } catch {
           return { ...item, current_price: item.avg_price }
         }
       }))
-      
-      setPortfolio(enhancedPortfolio)
-    } catch (err) {
-      console.error("Gagal mengambil data portfolio:", err)
+      setPortfolio(enhanced)
+    } catch {
+      toast.error('Gagal Memuat Data', 'Tidak dapat mengambil data portofolio', 'Coba refresh halaman')
     } finally {
       setLoading(false)
     }
-  }
-
-  useEffect(() => {
-    fetchData()
   }, [])
 
-  const handleTrade = async () => {
-    if (!order.ticker || order.qty <= 0) return alert("Masukkan ticker dan jumlah lot!")
-    
+  useEffect(() => { fetchData() }, [fetchData])
+
+  const handleQuickTrade = async (ticker: string, type: 'buy' | 'sell', currentPrice: number) => {
+    const input = prompt(`Berapa LOT ${ticker.replace('.JK', '')} yang ingin di-${type === 'buy' ? 'BELI' : 'JUAL'}?`, '1')
+    if (!input) return
+    const lot = parseInt(input)
+    if (isNaN(lot) || lot <= 0) {
+      toast.error('Input Tidak Valid', 'Jumlah lot harus berupa angka lebih dari 0')
+      return
+    }
     setProcessing(true)
     try {
-      // Dapatkan harga live dulu sebelum transaksi
-      const priceRes = await api.get(`/market/live-price/${order.ticker.toUpperCase()}`)
-      const livePrice = priceRes.data.price
+      // Backend sekarang mengambil harga sendiri — hanya kirim ticker dan qty (dalam LOT)
+      const res = await api.post(`/portfolio/${type}`, { ticker, qty: lot })
+      const data = res.data
+      const tickerClean = ticker.replace('.JK', '')
 
-      if (!livePrice) throw new Error("Harga saham tidak ditemukan")
-
-      const endpoint = order.type === 'buy' ? '/portfolio/buy' : '/portfolio/sell'
-      await api.post(endpoint, {
-        ticker: order.ticker.toUpperCase() + '.JK',
-        qty: order.qty * 100, // Convert Lot to Lembar
-        price: livePrice
-      })
-      
-      alert(`Berhasil ${order.type === 'buy' ? 'Membeli' : 'Menjual'} ${order.qty} Lot ${order.ticker}`)
-      setOrder({ ...order, ticker: '' })
+      if (type === 'buy') {
+        toast.success(
+          `Pembelian Berhasil 📈`,
+          `${lot} Lot ${tickerClean} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
+          `Dibayar: Rp ${data.net_value?.toLocaleString('id-ID')} (fee Rp ${data.fee_amount?.toLocaleString('id-ID')})`
+        )
+      } else {
+        toast.success(
+          `Penjualan Berhasil 📉`,
+          `${lot} Lot ${tickerClean} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
+          `Diterima: Rp ${data.net_value?.toLocaleString('id-ID')} (setelah fee Rp ${data.fee_amount?.toLocaleString('id-ID')})`
+        )
+      }
       fetchData()
     } catch (err: any) {
-      alert(err.response?.data?.detail || "Transaksi Gagal")
-    } finally {
-      setProcessing(false)
-    }
+      toast.error('Transaksi Gagal', err.response?.data?.detail || 'Terjadi kesalahan saat memproses order')
+    } finally { setProcessing(false) }
   }
 
-  const totalEquity = portfolio.reduce((acc, item) => acc + (item.qty * (item.current_price || 0)), 0)
-  const totalValue = balance + totalEquity
-  const totalPL = portfolio.reduce((acc, item) => acc + (item.qty * ((item.current_price || 0) - item.avg_price)), 0);
+  // Kalkulasi summary
+  const totalEquity = portfolio.reduce((a, i) => a + i.qty * (i.current_price || 0), 0)
+  const totalCost   = portfolio.reduce((a, i) => a + i.qty * i.avg_price, 0)
+  const totalPL     = totalEquity - totalCost
+  const totalPLPct  = totalCost > 0 ? (totalPL / totalCost) * 100 : 0
+  const totalValue  = balance + totalEquity
 
   return (
     <div className="app-shell">
       <Sidebar />
       <main className="main-content">
         <Topbar />
-        
         <div className="page-body">
-          {/* 1. Summary Cards */}
-          <div className="stats-grid mb-24">
-            <div className="card">
-              <div className="stat-label">Total Nilai Akun</div>
-              <div className="stat-value text-blue">Rp {totalValue.toLocaleString()}</div>
-              <div className="fs-12 text-muted mt-4">Cash + Nilai Saham</div>
+
+          {/* ── HEADER ── */}
+          <div className="flex-between mb-16">
+            <div>
+              <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5 }}>Virtual Trading Simulator</h1>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
+                Simulasi investasi tanpa risiko modal nyata · Harga real-time dari Yahoo Finance
+              </p>
             </div>
-            <div className="card">
-              <div className="stat-label">Sisa Saldo Tunai</div>
-              <div className="stat-value">Rp {balance.toLocaleString()}</div>
-              <div className="fs-12 text-muted mt-4">Siap untuk investasi</div>
-            </div>
-            <div className="card">
-              <div className="stat-label">Total Profit/Loss</div>
-              <div className={`stat-value ${totalPL >= 0 ? 'text-green' : 'text-red'}`}>
-                {totalPL >= 0 ? '+' : ''}Rp {totalPL.toLocaleString()}
+            <button onClick={fetchData} className="btn-outline" style={{ flex: 'none', padding: '8px 16px', fontSize: 13 }}>
+              🔄 Refresh
+            </button>
+          </div>
+
+          {/* ── Disclaimer Virtual Trading ── */}
+          <div style={{
+            marginBottom: 24, padding: '10px 14px',
+            background: 'rgba(59,130,246,0.06)',
+            border: '1px solid rgba(59,130,246,0.2)',
+            borderRadius: 10, fontSize: 11, color: '#93c5fd', lineHeight: 1.6,
+            display: 'flex', alignItems: 'flex-start', gap: 8,
+          }}>
+            <span style={{ flexShrink: 0 }}>ℹ️</span>
+            <span>
+              <strong>Simulator Edukasi.</strong> Seluruh transaksi di halaman ini menggunakan <strong>saldo virtual</strong> dan tidak melibatkan dana nyata. Fitur ini dirancang untuk tujuan edukasi dan latihan analisis portofolio. Hasil simulasi tidak mencerminkan hasil investasi nyata. Fee broker yang diterapkan (Beli 0.15% · Jual 0.25%) adalah estimasi berdasarkan rata-rata broker online BEI.
+            </span>
+          </div>
+
+          {/* ── SUMMARY CARDS ── */}
+          <div className="vt-summary-grid mb-24">
+            <div className="vt-stat-card">
+              <div className="vt-stat-icon" style={{ background: 'rgba(59,130,246,0.15)', color: 'var(--blue)' }}>💼</div>
+              <div>
+                <div className="vt-stat-label">Total Nilai Akun</div>
+                <div className="vt-stat-value" style={{ color: 'var(--blue)' }}>
+                  Rp {totalValue.toLocaleString('id-ID')}
+                </div>
+                <div className="vt-stat-sub">Kas + Nilai Saham</div>
               </div>
-              <div className="fs-12 text-muted mt-4">Berdasarkan harga pasar saat ini</div>
+            </div>
+            <div className="vt-stat-card">
+              <div className="vt-stat-icon" style={{ background: 'rgba(16,185,129,0.15)', color: 'var(--accent)' }}>💵</div>
+              <div>
+                <div className="vt-stat-label">Saldo Kas</div>
+                <div className="vt-stat-value" style={{ color: 'var(--accent)' }}>
+                  Rp {balance.toLocaleString('id-ID')}
+                </div>
+                <div className="vt-stat-sub">Siap diinvestasikan</div>
+              </div>
+            </div>
+            <div className="vt-stat-card">
+              <div className="vt-stat-icon" style={{ background: 'rgba(245,158,11,0.15)', color: 'var(--yellow)' }}>📊</div>
+              <div>
+                <div className="vt-stat-label">Nilai Portofolio</div>
+                <div className="vt-stat-value" style={{ color: 'var(--yellow)' }}>
+                  Rp {totalEquity.toLocaleString('id-ID')}
+                </div>
+                <div className="vt-stat-sub">{portfolio.length} emiten aktif</div>
+              </div>
+            </div>
+            <div className="vt-stat-card">
+              <div className="vt-stat-icon" style={{
+                background: totalPL >= 0 ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
+                color: totalPL >= 0 ? 'var(--accent)' : 'var(--red)'
+              }}>
+                {totalPL >= 0 ? '📈' : '📉'}
+              </div>
+              <div>
+                <div className="vt-stat-label">Total Profit / Loss</div>
+                <div className="vt-stat-value" style={{ color: totalPL >= 0 ? 'var(--accent)' : 'var(--red)' }}>
+                  {totalPL >= 0 ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')}
+                </div>
+                <div className="vt-stat-sub" style={{ color: totalPL >= 0 ? 'var(--accent)' : 'var(--red)' }}>
+                  {totalPLPct >= 0 ? '+' : ''}{totalPLPct.toFixed(2)}% dari modal
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="grid-full">
-            {/* 2. List Portfolio */}
-            <div className="card">
-              <h3 className="section-title mb-16">Daftar Aset Anda</h3>
-              {loading ? (
-                <div className="skeleton" style={{ height: 200 }} />
-              ) : portfolio.length === 0 ? (
-                <div className="flex-center text-muted" style={{ height: 200, flexDirection: 'column', gap: 12 }}>
-                  <span style={{ fontSize: 40 }}>📁</span>
-                  <span>Anda belum memiliki saham dalam portofolio.</span>
-                  <a href="/market" className="btn-primary" style={{ padding: '8px 20px', fontSize: 12 }}>Buka Market Explorer</a>
+          {/* ── MAIN LAYOUT: PORTFOLIO ── */}
+          <div className="vt-main-grid">
+
+            {/* ── PORTFOLIO + HISTORY (full width) ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+              {/* Tab Switch */}
+              <div className="vt-tabs">
+                <button className={`vt-tab ${activeTab === 'portfolio' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('portfolio')}>
+                  📁 Portofolio ({portfolio.length})
+                </button>
+                <button className={`vt-tab ${activeTab === 'history' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('history')}>
+                  🕐 Riwayat Transaksi
+                </button>
+              </div>
+
+              {/* PORTFOLIO TABLE */}
+              {activeTab === 'portfolio' && (
+                <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                  {loading ? (
+                    <div style={{ padding: 24 }}>
+                      {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: 56, marginBottom: 8 }} />)}
+                    </div>
+                  ) : portfolio.length === 0 ? (
+                    <div className="empty-state">
+                      <div className="empty-icon">📁</div>
+                      <div className="empty-text">Portofolio masih kosong</div>
+                      <a href="/market" className="btn-primary" style={{ flex: 'none', padding: '8px 20px', fontSize: 13, marginTop: 8 }}>
+                        Jelajahi Market →
+                      </a>
+                    </div>
+                  ) : (
+                    <div style={{ overflowX: 'auto' }}>
+                      <table className="ranking-table">
+                        <thead>
+                          <tr>
+                            <th>Emiten</th>
+                            <th style={{ textAlign: 'right' }}>Kepemilikan</th>
+                            <th style={{ textAlign: 'right' }}>Avg. Beli</th>
+                            <th style={{ textAlign: 'right' }}>Harga Kini</th>
+                            <th style={{ textAlign: 'right' }}>Nilai Pasar</th>
+                            <th style={{ textAlign: 'right' }}>Gain / Loss</th>
+                            <th style={{ textAlign: 'center' }}>Aksi</th>
+                          </tr> 
+                        </thead>
+                        <tbody>
+                          {portfolio.map((s) => {
+                            const cp = s.current_price || s.avg_price
+                            const pl = cp - s.avg_price
+                            const plPct = (pl / s.avg_price) * 100
+                            const marketVal = s.qty * cp
+                            const isProfit = pl >= 0
+                            return (
+                              <tr key={s.ticker}>
+                                <td>
+                                  <div style={{ fontWeight: 700, fontSize: 15 }}>{s.ticker.replace('.JK', '')}</div>
+                                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty / 100} Lot · {s.qty.toLocaleString()} lembar</div>
+                                </td>
+                                <td style={{ textAlign: 'right' }}>
+                                  <div style={{ fontWeight: 600 }}>{s.qty / 100} Lot</div>
+                                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty.toLocaleString()} lbr</div>
+                                </td>
+                                <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>
+                                  Rp {s.avg_price.toLocaleString('id-ID')}
+                                </td>
+                                <td style={{ textAlign: 'right', color: 'var(--accent)', fontWeight: 600 }}>
+                                  Rp {cp.toLocaleString('id-ID')}
+                                </td>
+                                <td style={{ textAlign: 'right', fontWeight: 700 }}>
+                                  Rp {marketVal.toLocaleString('id-ID')}
+                                </td>
+                                <td style={{ textAlign: 'right' }}>
+                                  <div style={{ fontWeight: 700, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                                    {isProfit ? '+' : ''}{plPct.toFixed(2)}%
+                                  </div>
+                                  <div style={{ fontSize: 11, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                                    {isProfit ? '+' : ''}Rp {(pl * s.qty).toLocaleString('id-ID')}
+                                  </div>
+                                </td>
+                                <td style={{ textAlign: 'center' }}>
+                                  <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+                                    <button className="btn-action buy" disabled={processing}
+                                      onClick={() => handleQuickTrade(s.ticker, 'buy', s.current_price || s.avg_price)}>+ Beli</button>
+                                    <button className="btn-action sell" disabled={processing}
+                                      onClick={() => handleQuickTrade(s.ticker, 'sell', s.current_price || s.avg_price)}>− Jual</button>
+                                  </div>
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div style={{ overflowX: 'auto' }}>
-                  <table className="ranking-table">
-                    <thead>
-                      <tr>
-                        <th>Ticker</th>
-                        <th>Kepemilikan (Lot)</th>
-                        <th>Avg Price</th>
-                        <th>Current Price</th>
-                        <th>Value</th>
-                        <th>Gain/Loss</th>
-                        <th style={{ textAlign: 'right' }}>Aksi Cepat</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {portfolio.map((s) => {
-                        const pl = (s.current_price || 0) - s.avg_price
-                        const plPercent = (pl / s.avg_price) * 100
-                        const itemValue = s.qty * (s.current_price || 0)
-                        
-                        const handleQuickAction = async (type: 'buy' | 'sell') => {
-                          const lotInput = prompt(`Berapa LOT ${s.ticker.replace('.JK','')} yang ingin Anda ${type === 'buy' ? 'BELI' : 'JUAL'}?`, "1")
-                          if (!lotInput) return
-                          const lotCount = parseInt(lotInput)
-                          if (isNaN(lotCount) || lotCount <= 0) return alert("Jumlah lot tidak valid")
+              )}
 
-                          try {
-                            setProcessing(true)
-                            await api.post(`/portfolio/${type}`, {
-                              ticker: s.ticker,
-                              qty: lotCount * 100,
-                              price: s.current_price
-                            })
-                            alert(`Transaksi ${type.toUpperCase()} ${lotCount} Lot ${s.ticker} BERHASIL!`)
-                            fetchData()
-                          } catch (err: any) {
-                            alert(err.response?.data?.detail || "Transaksi Gagal")
-                          } finally {
-                            setProcessing(false)
-                          }
-                        }
-
-                        return (
-                          <tr key={s.ticker}>
-                            <td className="fw-700">
-                              <div className="text-accent">{s.ticker.replace('.JK','')}</div>
-                              <div className="fs-10 text-muted">Saham Aktif</div>
-                            </td>
-                            <td>{s.qty / 100} Lot</td>
-                            <td>Rp {s.avg_price.toLocaleString()}</td>
-                            <td className="text-accent">Rp {s.current_price?.toLocaleString()}</td>
-                            <td className="fw-700">Rp {itemValue.toLocaleString()}</td>
-                            <td className={pl >= 0 ? 'text-green' : 'text-red'}>
-                              <div className="fw-700">{pl >= 0 ? '+' : ''}{plPercent.toFixed(2)}%</div>
-                              <div className="fs-10">Rp {(pl * s.qty).toLocaleString()}</div>
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              <div className="flex-gap-8" style={{ justifyContent: 'flex-end' }}>
-                                <button 
-                                  className="btn-action buy" 
-                                  onClick={() => handleQuickAction('buy')}
-                                  disabled={processing}
-                                >
-                                  + BELI
-                                </button>
-                                <button 
-                                  className="btn-action sell" 
-                                  onClick={() => handleQuickAction('sell')}
-                                  disabled={processing}
-                                >
-                                  - JUAL
-                                </button>
-                              </div>
-                            </td>
+              {/* HISTORY TABLE */}
+              {activeTab === 'history' && (
+                <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                  {transactions.length === 0 ? (
+                    <div className="empty-state">
+                      <div className="empty-icon">🕐</div>
+                      <div className="empty-text">Belum ada riwayat transaksi</div>
+                    </div>
+                  ) : (
+                    <div style={{ overflowX: 'auto' }}>
+                      <table className="ranking-table">
+                        <thead>
+                          <tr>
+                            <th>Waktu</th>
+                            <th>Emiten</th>
+                            <th style={{ textAlign: 'center' }}>Tipe</th>
+                            <th style={{ textAlign: 'right' }}>Lot</th>
+                            <th style={{ textAlign: 'right' }}>Harga/Lbr</th>
+                            <th style={{ textAlign: 'right' }}>Fee</th>
+                            <th style={{ textAlign: 'right' }}>Net Nilai</th>
                           </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
+                        </thead>
+                        <tbody>
+                          {transactions.slice(0, 30).map((tx) => (
+                            <tr key={tx.id}>
+                              <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                                {new Date(tx.timestamp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: '2-digit' })}
+                                <div style={{ fontSize: 11 }}>{new Date(tx.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</div>
+                              </td>
+                              <td style={{ fontWeight: 700 }}>{tx.ticker.replace('.JK', '')}</td>
+                              <td style={{ textAlign: 'center' }}>
+                                <span className={`vt-tx-badge ${tx.type.toLowerCase()}`}>
+                                  {tx.type === 'BUY' ? '📈 BELI' : '📉 JUAL'}
+                                </span>
+                              </td>
+                              <td style={{ textAlign: 'right' }}>{tx.qty / 100} Lot</td>
+                              <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>
+                                Rp {tx.price.toLocaleString('id-ID')}
+                              </td>
+                              {/* Fee — merah untuk beli, oranye untuk jual */}
+                              <td style={{ textAlign: 'right', fontSize: 12, color: '#f59e0b' }}>
+                                −Rp {(tx.fee || 0).toLocaleString('id-ID')}
+                              </td>
+                              {/* Net value — merah (keluar) untuk beli, hijau (masuk) untuk jual */}
+                              <td style={{ textAlign: 'right', fontWeight: 700,
+                                color: tx.type === 'BUY' ? 'var(--red)' : 'var(--accent)' }}>
+                                {tx.type === 'BUY' ? '−' : '+'}Rp {(tx.net_value || tx.qty * tx.price).toLocaleString('id-ID')}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Keterangan fee */}
+                      <div style={{ padding: '10px 16px', borderTop: '1px solid var(--border)', fontSize: 11, color: 'var(--text-muted)' }}>
+                        💡 Fee Beli: 0.15% · Fee Jual: 0.25% (termasuk PPN & PPh Final) — sesuai standar broker BEI
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           </div>
+          <DisclaimerFooter />
         </div>
       </main>
 
+      {/* ── TOAST NOTIFICATION ── */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
       <style jsx>{`
-        .stats-grid {
+        /* Summary Grid */
+        .vt-summary-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+        }
+        .vt-stat-card {
+          background: var(--bg-card);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          padding: 18px;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          transition: border-color 0.2s, transform 0.2s;
+        }
+        .vt-stat-card:hover { border-color: var(--border-bright); transform: translateY(-1px); }
+        .vt-stat-icon {
+          width: 44px; height: 44px; border-radius: 10px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 20px; flex-shrink: 0;
+        }
+        .vt-stat-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+        .vt-stat-value { font-size: 18px; font-weight: 800; line-height: 1.2; }
+        .vt-stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+        /* Main Grid */
+        .vt-main-grid {
+          display: grid;
+          grid-template-columns: 1fr;
           gap: 20px;
+          align-items: start;
         }
-        .grid-full {
-          width: 100%;
+
+        /* Order Form */
+        .vt-order-toggle {
+          display: grid; grid-template-columns: 1fr 1fr;
+          background: var(--bg-primary); border-radius: 10px; padding: 4px;
+          border: 1px solid var(--border);
         }
-        .btn-action {
-          padding: 6px 12px;
-          border-radius: 6px;
-          font-size: 11px;
-          font-weight: 700;
-          cursor: pointer;
-          border: 1px solid transparent;
+        .vt-toggle-btn {
+          padding: 10px; border-radius: 8px; border: none;
+          font-size: 13px; font-weight: 700; cursor: pointer;
+          background: transparent; color: var(--text-secondary);
           transition: all 0.2s;
         }
-        .btn-action.buy {
-          background: rgba(16, 185, 129, 0.1);
-          color: #10b981;
-          border-color: rgba(16, 185, 129, 0.2);
+        .vt-toggle-btn.active-buy { background: rgba(16,185,129,0.15); color: var(--accent); }
+        .vt-toggle-btn.active-sell { background: rgba(239,68,68,0.15); color: var(--red); }
+
+        .vt-field { display: flex; flex-direction: column; gap: 6px; }
+        .vt-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .vt-input-wrap { position: relative; }
+        .vt-input {
+          width: 100%; padding: 10px 14px; border-radius: 8px;
+          background: var(--bg-primary); border: 1px solid var(--border);
+          color: var(--text-primary); font-size: 14px; font-weight: 600;
+          outline: none; transition: border-color 0.2s;
         }
-        .btn-action.buy:hover {
-          background: #10b981;
-          color: white;
+        .vt-input:focus { border-color: var(--accent); }
+        .vt-input-badge {
+          position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+          font-size: 14px;
         }
-        .btn-action.sell {
-          background: rgba(239, 68, 68, 0.1);
-          color: #ef4444;
-          border-color: rgba(239, 68, 68, 0.2);
+
+        .vt-price-box {
+          background: var(--bg-primary); border: 1px solid var(--border);
+          border-radius: 10px; padding: 14px;
         }
-        .btn-action.sell:hover {
-          background: #ef4444;
-          color: white;
+        .vt-price-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .vt-price-value { min-height: 28px; display: flex; align-items: center; }
+
+        .vt-lot-control { display: flex; gap: 8px; align-items: center; }
+        .vt-lot-btn {
+          width: 36px; height: 36px; border-radius: 8px;
+          background: var(--bg-hover); border: 1px solid var(--border);
+          color: var(--text-primary); font-size: 18px; font-weight: 700;
+          cursor: pointer; display: flex; align-items: center; justify-content: center;
+          transition: all 0.15s; flex-shrink: 0;
         }
-        .text-green { color: #10b981; }
-        .text-red { color: #ef4444; }
+        .vt-lot-btn:hover { background: var(--border-bright); }
+
+        .vt-order-summary {
+          background: var(--bg-primary); border: 1px solid var(--border);
+          border-radius: 10px; padding: 14px;
+        }
+        .vt-summary-row {
+          display: flex; justify-content: space-between;
+          font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;
+        }
+        .vt-summary-row:last-child { margin-bottom: 0; }
+        .vt-summary-divider { border-top: 1px solid var(--border); margin: 8px 0; }
+        .vt-summary-total { font-weight: 700; font-size: 14px; color: var(--text-primary); }
+
+        .vt-order-btn {
+          width: 100%; padding: 14px; border-radius: 10px; border: none;
+          font-size: 14px; font-weight: 800; cursor: pointer;
+          transition: all 0.2s; letter-spacing: 0.3px;
+        }
+        .vt-order-btn.buy { background: var(--accent); color: #fff; }
+        .vt-order-btn.buy:hover:not(:disabled) { background: var(--accent-dim); transform: scale(1.01); }
+        .vt-order-btn.sell { background: var(--red); color: #fff; }
+        .vt-order-btn.sell:hover:not(:disabled) { background: #dc2626; transform: scale(1.01); }
+        .vt-order-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Tabs */
+        .vt-tabs {
+          display: flex; gap: 4px;
+          background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: 10px; padding: 4px;
+        }
+        .vt-tab {
+          flex: 1; padding: 9px 16px; border-radius: 8px; border: none;
+          font-size: 13px; font-weight: 600; cursor: pointer;
+          background: transparent; color: var(--text-secondary);
+          transition: all 0.2s;
+        }
+        .vt-tab.active { background: var(--bg-hover); color: var(--text-primary); }
+
+        /* Transaction badge */
+        .vt-tx-badge {
+          display: inline-block; padding: 3px 10px; border-radius: 6px;
+          font-size: 11px; font-weight: 700;
+        }
+        .vt-tx-badge.buy { background: rgba(16,185,129,0.1); color: var(--accent); }
+        .vt-tx-badge.sell { background: rgba(239,68,68,0.1); color: var(--red); }
+
+        /* Action buttons */
+        .btn-action {
+          padding: 5px 10px; border-radius: 6px; font-size: 11px;
+          font-weight: 700; cursor: pointer; border: 1px solid transparent;
+          transition: all 0.2s;
+        }
+        .btn-action.buy { background: rgba(16,185,129,0.1); color: var(--accent); border-color: rgba(16,185,129,0.2); }
+        .btn-action.buy:hover:not(:disabled) { background: var(--accent); color: #fff; }
+        .btn-action.sell { background: rgba(239,68,68,0.1); color: var(--red); border-color: rgba(239,68,68,0.2); }
+        .btn-action.sell:hover:not(:disabled) { background: var(--red); color: #fff; }
+        .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+          .vt-summary-grid { grid-template-columns: repeat(2, 1fr); }
+          .vt-main-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+          .vt-summary-grid { grid-template-columns: 1fr 1fr; }
+        }
       `}</style>
     </div>
   )

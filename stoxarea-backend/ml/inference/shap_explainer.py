@@ -16,6 +16,7 @@ import json
 import logging
 import joblib
 from pathlib import Path
+from app.core.config import settings
 
 # ── Setup logging ──────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -29,8 +30,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 INPUT_PATH  = Path("data/processed/features_targets.csv")
-MODEL_PATH  = Path("models/xgb_model.pkl")
-OUTPUT_PATH = Path("data/processed/ai_scores.json")
+MODEL_PATH  = Path(settings.MODEL_PATH)   # ← pakai config, bukan hardcode
+OUTPUT_PATH = Path(settings.AI_SCORES_PATH)
 
 FEATURES = [
     "log_ret_1d", "log_ret_5d", "ma_20_dist", "ma_50_dist", 

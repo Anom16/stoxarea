@@ -21,7 +21,11 @@ export default function Topbar({ username: initialUsername, riskProfile: initial
     if (token) {
       api.get('/auth/me', { headers: { Authorization: `Bearer ${token}` } })
         .then(r => {
-          if (!initialUsername) setUsername(r.data.email?.split('@')[0] || 'Pengguna')
+          if (!initialUsername) {
+            // Prioritas: full_name → bagian depan email → fallback 'Pengguna'
+            const name = r.data.full_name?.trim() || r.data.email?.split('@')[0] || 'Pengguna'
+            setUsername(name)
+          }
           if (!initialRiskProfile) setRiskProfile(r.data.risk_profile || '—')
         })
         .catch(() => {})

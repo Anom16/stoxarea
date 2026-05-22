@@ -17,6 +17,9 @@ class Transaction(Base):
     type = Column(Enum(TransactionTypeEnum), nullable=False)
     price = Column(Float, nullable=False)
     qty = Column(Integer, nullable=False)
+    # FIX #2: Tambah kolom fee dan net_value untuk transparansi biaya transaksi
+    fee = Column(Float, nullable=False, default=0.0)       # total biaya broker + pajak
+    net_value = Column(Float, nullable=False, default=0.0) # nilai bersih setelah fee
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relasi

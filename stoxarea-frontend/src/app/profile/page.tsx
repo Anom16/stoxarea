@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '@/components/ui/Sidebar'
 import Topbar from '@/components/ui/Topbar'
+import ToastContainer from '@/components/ui/Toast'
+import { useToast } from '@/hooks/useToast'
 import api from '@/lib/api'
 
 export default function ProfilePage() {
@@ -9,6 +11,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [newProfile, setNewProfile] = useState('')
+  const { toasts, removeToast, toast } = useToast()
 
   useEffect(() => {
     fetchUser()
@@ -30,10 +33,14 @@ export default function ProfilePage() {
     setSaving(true)
     try {
       await api.put('/auth/profile', { risk_profile: newProfile })
-      alert("Profil risiko berhasil diperbarui!")
+      toast.success(
+        'Profil Risiko Diperbarui ✅',
+        `Profil Anda sekarang: ${newProfile}`,
+        'Rekomendasi AI akan disesuaikan'
+      )
       fetchUser()
     } catch (err) {
-      alert("Gagal memperbarui profil.")
+      toast.error('Gagal Memperbarui', 'Terjadi kesalahan saat menyimpan profil risiko')
     } finally {
       setSaving(false)
     }
@@ -65,6 +72,7 @@ export default function ProfilePage() {
       <Sidebar />
       <main className="main-content">
         <Topbar title="Pengaturan Profil" />
+        <ToastContainer toasts={toasts} onRemove={removeToast} />
         
         <div className="page-body">
           <div className="grid-2">

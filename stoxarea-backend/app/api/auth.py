@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import get_password_hash, verify_password, create_access_token, get_current_user_email
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse, QuestionnaireInput
+from app.schemas.user import UserCreate, UserResponse, QuestionnaireInput, UpdateProfileRequest, UpdatePasswordRequest
 from app.services.spk1_profiling import calculate_risk_profile
 from app.core.questions import QUESTIONNAIRE_DATA
 
@@ -79,3 +79,52 @@ def update_profile(
     db.commit()
     db.refresh(user)
     return user
+
+
+@router.put("/update-name", response_model=UserResponse)
+def update_name(
+    body: UpdateProfileRequest,
+    email: str = Depends(get_current_user_email),
+    db: Session = Depends(get_db)
+):
+    """Update nama lengkap user."""
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.full_name = body.full_name
+    db.commit()
+    db.refresh(user)
+    logger.info(f"Nama user {email} diperbarui menjadi: {body.full_name}")
+    return user
+
+
+@router.put("/update-password")
+def update_password(
+    body: UpdatePasswordRequest,
+    email: str = Depends(get_current_user_email),
+    db: Session = Depends(get_db)
+):
+    """Update password user setelah verifikasi password lama."""
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Verifikasi password lama
+    if not verify_password(body.current_password, user.password_hash):
+        raise HTTPException(
+            status_code=400,
+            detail="Kata sandi saat ini tidak sesuai."
+        )
+
+    # Pastikan password baru berbeda dari yang lama
+    if verify_password(body.new_password, user.password_hash):
+        raise HTTPException(
+            status_code=400,
+            detail="Kata sandi baru tidak boleh sama dengan kata sandi lama."
+        )
+
+    user.password_hash = get_password_hash(body.new_password)
+    db.commit()
+    logger.info(f"Password user {email} berhasil diperbarui.")
+    return {"message": "Kata sandi berhasil diperbarui."}

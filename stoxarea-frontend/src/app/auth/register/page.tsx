@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import ToastContainer from '@/components/ui/Toast'
+import { useToast } from '@/hooks/useToast'
 import api from '@/lib/api'
 
 export default function RegisterPage() {
@@ -11,6 +13,7 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { toasts, removeToast, toast } = useToast()
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,10 +24,16 @@ export default function RegisterPage() {
         password,
         full_name: fullName 
       })
-      alert("Pendaftaran Berhasil! Silakan masuk ke akun Anda.")
-      router.push('/auth/login')
+      toast.success(
+        'Pendaftaran Berhasil! 🎉',
+        `Akun untuk ${fullName} telah dibuat.`,
+        'Mengalihkan ke halaman login...'
+      )
+      setTimeout(() => router.push('/auth/login'), 1800)
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Pendaftaran gagal. Email mungkin sudah terdaftar.')
+      const msg = err.response?.data?.detail || 'Pendaftaran gagal. Email mungkin sudah terdaftar.'
+      setError(msg)
+      toast.error('Pendaftaran Gagal', msg)
     } finally {
       setLoading(false)
     }
@@ -36,6 +45,7 @@ export default function RegisterPage() {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontFamily: 'Inter, sans-serif'
     }}>
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
       <div style={{ width: '100%', maxWidth: 400, padding: 24 }}>
         
         {/* Logo Section */}

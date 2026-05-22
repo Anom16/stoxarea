@@ -125,13 +125,27 @@ def fetch_fundamental(ticker: str) -> dict | None:
         stock = yf.Ticker(ticker)
         info  = stock.info
 
-        roe = info.get("returnOnEquity", None)   # desimal, misal 0.18 = 18%
+        roe = info.get("returnOnEquity", None)   # yfinance: desimal (0.18 = 18%) ATAU sudah persen
         der = info.get("debtToEquity",   None)   # rasio kelipatan
         per = info.get("trailingPE",     None)   # rasio kelipatan
 
-        # Konversi ROE ke persentase agar konsisten
+        # FIX #7: Konversi ROE ke persentase dengan deteksi format otomatis.
+        #
+        # BUG LAMA: selalu kali 100, padahal yfinance kadang sudah mengembalikan
+        # nilai dalam persen untuk saham BEI tertentu (misal: 18.5 bukan 0.185).
+        # Akibatnya ROE bisa tercatat 1850% padahal aslinya 18.5%.
+        #
+        # FIX: Jika nilai absolut ROE < 5, asumsikan format desimal → kali 100.
+        # Jika nilai absolut ROE >= 5, asumsikan sudah dalam persen → pakai langsung.
+        # Threshold 5 dipilih karena ROE desimal yang valid (misal 0.185) selalu < 1,
+        # sedangkan ROE persen yang valid (misal 18.5%) selalu > 5.
+        # Edge case ROE 1%-4% (desimal 0.01-0.04) tetap aman karena < 5 → dikali 100
+        # menghasilkan 1%-4% yang benar.
         if roe is not None:
-            roe = roe * 100
+            if abs(roe) < 5.0:
+                # Format desimal dari yfinance (0.185 → 18.5%)
+                roe = roe * 100
+            # else: sudah dalam format persen, pakai langsung
 
         result = {
             "ticker" : ticker,
@@ -276,8 +290,65 @@ def run_dynamic_update(ticker_list: list[str]) -> None:
 
 
 # ── Entry point ────────────────────────────────────────────────────────────────
-if __name__ == "__main__":
-    tickers = load_ticker_list()
+def run():
+    """Entry point yang dipanggil oleh scheduler harian."""
+    try:
+        tickers = load_ticker_list()
+    except FileNotFoundError as e:
+        logger.error(str(e))
+        return
 
-    # Ganti ke run_dynamic_update() untuk update harian ringan
-    run_bulk_ingestion(tickers)
+    # Import guard di sini untuk menghindari circular import
+    from app.services.corporate_action_guard import check_and_flag, is_flagged
+
+    failed = []
+    skipped_flagged = []
+
+    for i, ticker in enumerate(tickers):
+        logger.info(f"[{i+1}/{len(tickers)}] Update {ticker}")
+
+        # FIX #3: Cek apakah ticker sedang dalam status corporate action flag
+        if is_flagged(ticker):
+            logger.warning(f"[{ticker}] SKIP — sedang dalam status corporate action review.")
+            skipped_flagged.append(ticker)
+            continue
+
+        # Ambil data OHLCV terbaru (2 hari untuk bisa bandingkan harga)
+        try:
+            import yfinance as yf
+            df = yf.download(ticker, period="5d", interval="1d", progress=False, auto_adjust=True)
+            if df.empty or len(df) < 2:
+                failed.append(ticker)
+                continue
+
+            # Flatten MultiIndex jika ada
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.droplevel(1)
+
+            closes = df["Close"].dropna().tolist()
+            if len(closes) >= 2:
+                prev_close = float(closes[-2])
+                curr_close = float(closes[-1])
+
+                # FIX #3: Deteksi pergerakan ekstrem sebelum simpan data
+                if check_and_flag(ticker, prev_close, curr_close):
+                    logger.warning(f"[{ticker}] Data TIDAK disimpan — menunggu validasi admin.")
+                    skipped_flagged.append(ticker)
+                    continue
+
+            # Simpan OHLCV ke file CSV
+            ohlcv_path = OUTPUT_DIR / "ohlcv" / f"{ticker}.csv"
+            df_reset = df.reset_index()
+            df_reset["ticker"] = ticker
+            df_reset.to_csv(ohlcv_path, index=False)
+            logger.info(f"[{ticker}] OHLCV diperbarui: {len(df_reset)} baris")
+
+        except Exception as e:
+            logger.error(f"[{ticker}] Gagal update: {e}")
+            failed.append(ticker)
+
+        time.sleep(REQUEST_DELAY)
+
+    logger.info(f"Update selesai. Gagal: {len(failed)}, Dilewati (flagged): {len(skipped_flagged)}")
+    if skipped_flagged:
+        logger.warning(f"Ticker menunggu validasi admin: {skipped_flagged}")

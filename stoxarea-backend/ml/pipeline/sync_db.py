@@ -50,10 +50,27 @@ def sync_stocks():
             # Gunakan Sektor Bahasa Indonesia jika tersedia, jika tidak gunakan fallback
             sector_name = id_sectors.get(ticker, item.get("sector", "Lainnya"))
             
-            # Ambil data fundamental jika ada
+            # FIX #3: Perbaikan mismatch format ticker antara fundamental.csv dan sync_db.
+            #
+            # BUG LAMA: sync_db mencari "BBCA" di fund_df, tapi ingestor menyimpan
+            # fundamental dengan ticker "BBCA.JK" (format yfinance).
+            # Akibatnya: match selalu kosong → semua saham tersimpan dengan ROE/DER/PER = None.
+            #
+            # FIX: Coba kedua format (dengan dan tanpa .JK) agar match selalu ditemukan
+            # terlepas dari format yang dipakai saat ingestor menyimpan data.
             roe, der, per = None, None, None
             if not fund_df.empty:
-                match = fund_df[fund_df['ticker'].str.contains(ticker.split('.')[0])]
+                ticker_bare = ticker.split('.')[0]          # "BBCA.JK" → "BBCA"
+                ticker_full = ticker_bare + ".JK"           # "BBCA"    → "BBCA.JK"
+
+                # Coba exact match dengan format lengkap dulu, fallback ke bare code
+                match = fund_df[fund_df['ticker'] == ticker_full]
+                if match.empty:
+                    match = fund_df[fund_df['ticker'] == ticker_bare]
+                # Fallback terakhir: case-insensitive partial match untuk antisipasi variasi format
+                if match.empty:
+                    match = fund_df[fund_df['ticker'].str.upper() == ticker_full.upper()]
+
                 if not match.empty:
                     roe = float(match.iloc[0]['roe']) if pd.notnull(match.iloc[0]['roe']) else None
                     der = float(match.iloc[0]['der']) if pd.notnull(match.iloc[0]['der']) else None
@@ -66,11 +83,44 @@ def sync_stocks():
                 db.add(stock)
             
             stock.name = item["name"]
-            stock.sector = sector_name # SEKARANG PAKAI BAHASA INDONESIA
-            stock.is_qualified = (ticker in qualified_tickers) # STATUS LOLOS SENSOR
+            stock.sector = sector_name
             stock.roe = roe
             stock.der = der
             stock.per = per
+
+            # FIX #1 — Filter saham dengan fundamental berbahaya untuk SAW.
+            #
+            # Masalah: rumus normalisasi SAW untuk kriteria Cost (PER, DER) adalah
+            #   n = min_value / x
+            # Jika x negatif, hasil normalisasi menjadi negatif dan merusak seluruh
+            # matriks ranking. Contoh: PER = -5 → n = 5 / -5 = -1.0 (tidak valid).
+            #
+            # Aturan gugur otomatis (is_qualified = False):
+            #   1. PER <= 0  → perusahaan sedang RUGI (EPS negatif). Tidak layak masuk SAW.
+            #   2. DER < 0   → ekuitas negatif (utang > aset total). Kondisi teknis bangkrut.
+            #   3. ROE < -50 → kerugian ekstrem, bukan sekadar rugi sementara.
+            #
+            # Saham yang lolos filter volume/harga (tickers_filtered.json) tapi punya
+            # fundamental berbahaya ini tetap digugurkan di tahap ini.
+            fundamental_disqualified = False
+            disqualify_reason = None
+
+            if per is not None and per <= 0:
+                fundamental_disqualified = True
+                disqualify_reason = f"PER negatif ({per:.2f}) — perusahaan sedang rugi"
+            elif der is not None and der < 0:
+                fundamental_disqualified = True
+                disqualify_reason = f"DER negatif ({der:.2f}) — ekuitas negatif"
+            elif roe is not None and roe < -50:
+                fundamental_disqualified = True
+                disqualify_reason = f"ROE sangat negatif ({roe:.2f}%) — kerugian ekstrem"
+
+            if fundamental_disqualified:
+                stock.is_qualified = False
+                print(f"  [GUGUR FUNDAMENTAL] {ticker}: {disqualify_reason}")
+            else:
+                # Hanya set qualified jika lolos filter volume/harga DAN fundamental sehat
+                stock.is_qualified = (ticker in qualified_tickers)
         
         db.commit()
         print("Sinkronisasi BERHASIL! Seluruh Sektor kini telah diterjemahkan ke Bahasa Indonesia.")

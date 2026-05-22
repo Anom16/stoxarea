@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     
     # Konfigurasi ML Pipeline Paths
     AI_SCORES_PATH: str = "data/processed/ai_scores.json"
+    CAPPING_BOUNDS_PATH: str = "data/processed/capping_bounds.json"
+    MODEL_PATH: str = "ml/models_saved/xgb_model.pkl"
 
     class Config:
         env_file = ".env"

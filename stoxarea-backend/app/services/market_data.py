@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import time
 import threading
+from datetime import datetime, timezone
 from typing import Optional
 
 _YF_LOCK = threading.Lock()
@@ -64,11 +65,21 @@ def get_technical_data(ticker: str, period: str = "3mo", interval: str = "1d") -
         df = df.dropna()
         dates = df.index.strftime("%Y-%m-%d").tolist()
 
+        # Tanggal candle terakhir = data terbaru dari Yahoo Finance
+        last_candle_date = dates[-1] if dates else None
+        # Waktu fetch aktual (kapan server mengambil data ini dari Yahoo)
+        fetched_at = datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
         res = {
             "ticker": ticker,
             "period": period,
             "interval": interval,
             "dates": dates,
+            "last_updated": {
+                "last_candle_date": last_candle_date,   # tanggal data harga terakhir
+                "fetched_at": fetched_at,               # kapan server fetch dari Yahoo
+                "cache_ttl_seconds": CACHE_TTL_TECH,    # berapa lama data ini di-cache
+            },
             "candles": {
                 "open":  [round(float(x), 2) for x in df["Open"].tolist()],
                 "high":  [round(float(x), 2) for x in df["High"].tolist()],
@@ -126,11 +137,34 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
             if stock:
                 db_roe, db_der, db_per = stock.roe, stock.der, stock.per
 
+        # Waktu update harga terakhir dari Yahoo Finance
+        # regularMarketTime = Unix timestamp kapan harga terakhir diupdate di Yahoo
+        market_time_unix = info.get("regularMarketTime")
+        if market_time_unix:
+            try:
+                market_dt = datetime.fromtimestamp(int(market_time_unix), tz=timezone.utc)
+                market_time_str = market_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+                market_date_str = market_dt.strftime("%d %b %Y, %H:%M WIB")
+            except Exception:
+                market_time_str = None
+                market_date_str = None
+        else:
+            market_time_str = None
+            market_date_str = None
+
+        fetched_at = datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
         res = {
             "ticker": ticker,
             "name": info.get("longName") or info.get("shortName"),
             "sector": info.get("sector"),
             "industry": info.get("industry"),
+            "last_updated": {
+                "market_time": market_time_str,       # kapan Yahoo update harga terakhir
+                "market_time_display": market_date_str,
+                "fetched_at": fetched_at,             # kapan server fetch dari Yahoo
+                "cache_ttl_seconds": CACHE_TTL_FUND,  # berapa lama data ini di-cache
+            },
             "price": {
                 "current":         safe("currentPrice") or safe("regularMarketPrice"),
                 "open":            safe("open") or safe("regularMarketOpen"),
@@ -216,7 +250,13 @@ def get_historical_financials(ticker: str, db=None) -> dict:
     if db:
         local_data = db.query(FinancialHistory).filter_by(ticker=ticker).order_by(FinancialHistory.year.desc()).all()
         if local_data:
+            latest_year = local_data[0].year if local_data else None
             return {
+                "last_updated": {
+                    "source": "database",
+                    "latest_fiscal_year": latest_year,
+                    "display": f"Laporan Fiskal {latest_year}" if latest_year else "—",
+                },
                 "financials_history": [{
                     "year": d.year,
                     "revenue": d.revenue,
@@ -228,7 +268,7 @@ def get_historical_financials(ticker: str, db=None) -> dict:
                     "liabilities": d.liabilities,
                     "equity": d.equity
                 } for d in local_data],
-                "dividend_history": [] # Kita fetch dividen secara live karena ringan
+                "dividend_history": []
             }
 
     # 2. Jika tidak ada di DB, ambil dari YFinance
@@ -287,7 +327,17 @@ def get_historical_financials(ticker: str, db=None) -> dict:
         # Dividends tetap live karena datanya kecil/ringan
         history_div = [{"date": d.strftime('%Y-%m-%d'), "amount": float(v)} for d, v in divs.items()]
 
+        # Tahun laporan keuangan terbaru
+        latest_fiscal_year = years[0].strftime('%Y') if len(years) > 0 else None
+        fetched_at_hist = datetime.fromtimestamp(time.time(), tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
         return {
+            "last_updated": {
+                "source": "yahoo_finance",
+                "latest_fiscal_year": latest_fiscal_year,
+                "fetched_at": fetched_at_hist,
+                "display": f"Laporan Fiskal {latest_fiscal_year}" if latest_fiscal_year else "—",
+            },
             "financials_history": res_fin,
             "balance_sheet_history": res_bs,
             "dividend_history": history_div
@@ -345,6 +395,6 @@ def get_sector_summary(db) -> list:
             "sentiment": "Bullish" if avg_ai >= 0.40 else ("Netral" if avg_ai >= 0.30 else "Bearish"),
         })
 
-# Urutkan berdasarkan avg_ai_score (sektor paling bullish di atas)
+    # Urutkan berdasarkan avg_ai_score (sektor paling bullish di atas)
     result.sort(key=lambda x: x["avg_ai_score"], reverse=True)
     return result

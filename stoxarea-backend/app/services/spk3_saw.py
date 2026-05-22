@@ -1,122 +1,256 @@
+"""
+spk3_saw.py — SPK Lapis 3: Simple Additive Weighting (SAW)
+
+Kritik 2 — Cache per Profil (Anti-Bottleneck):
+    Hanya ada 3 profil (Konservatif, Moderat, Agresif) × 12 sektor + 1 global
+    = maksimal 39 kombinasi cache.
+
+    Tanpa cache: 1.000 user request → 1.000 kalkulasi SAW bersamaan
+    Dengan cache: 1.000 user request → maksimal 3 kalkulasi, 997 ambil cache
+
+    Cache TTL = 10 menit (sinkron dengan siklus data pasar).
+    Cache di-invalidate otomatis saat pipeline ML selesai jalan.
+"""
+
+import time
+import threading
+import logging
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from app.models.stock import Stock
 from app.models.user import RiskProfileEnum
 from app.services.spk1_profiling import get_profile_weights
-from intelligence_store.ai_scores import ai_store
+from app.services.spk2_scoring import get_qualified_stocks_for_saw
 from app.schemas.recommendation import RecommendationResponse, InsightItem
 
-def calculate_saw_recommendations(db: Session, profile: RiskProfileEnum, target_sector: Optional[str] = None) -> List[RecommendationResponse]:
-    """
-    Menjalankan SPK Lapis 3 (Simple Additive Weighting).
-    Menggabungkan Fundamental (ROE, DER, PER) dengan AI Momentum Score.
-    Bisa difilter berdasarkan sektor spesifik.
-    """
-    # 1. Ambil bobot berdasarkan profil risiko user
-    weights = get_profile_weights(profile)
+logger = logging.getLogger(__name__)
 
-    # 2. Ambil data saham dari DB (Fundamental)
-    # Ambil hanya saham yang lolos filter (is_qualified)
-    query = db.query(Stock).filter(Stock.is_qualified == True)
-    if target_sector:
-        # Fitur filter sektoral
-        query = query.filter(Stock.sector.ilike(f"%{target_sector}%"))
-        
-    stocks = query.all()
-    if not stocks:
-        return []
+# ─── Cache SAW per Profil ─────────────────────────────────────────────────────
+#
+# Struktur: {
+#   "konservatif::all":      {"data": [...], "expiry": timestamp},
+#   "moderat::all":          {"data": [...], "expiry": timestamp},
+#   "agresif::all":          {"data": [...], "expiry": timestamp},
+#   "konservatif::Keuangan": {"data": [...], "expiry": timestamp},
+#   ...
+# }
+#
+# Key format: "{profile}::{sector_or_all}"
+# Kenapa per profil, bukan per user?
+#   → Hanya ada 3 profil. 500 user Agresif cukup hitung 1x, sisanya ambil cache.
 
-    # Filter saham yang juga ada di hasil ML (ai_scores.json)
-    valid_stocks = []
-    for s in stocks:
-        ai_data = ai_store.get_score(s.ticker)
-        # Jika ada AI Score, kita tampilkan. Fundamental boleh kosong (default 0)
-        if ai_data:
-            valid_stocks.append({
-                "ticker": s.ticker,
-                "sector": s.sector or "Unknown",
-                "ai_score": ai_data.get("ai_score", 0.0),
-                "insights": ai_data.get("insights", []),
-                "roe": s.roe if s.roe is not None else 0.0,
-                "der": s.der if s.der is not None else 0.0,
-                "per": s.per if s.per is not None else 0.0
+_SAW_CACHE: dict = {}
+_SAW_CACHE_TTL = 600        # 10 menit — cukup untuk 1 siklus data pasar
+
+# FIX #6: Ganti satu lock global dengan per-key lock untuk mencegah thundering herd.
+#
+# BUG LAMA: Satu _SAW_CACHE_LOCK dipakai untuk cek DAN simpan, tapi kalkulasi berat
+# berjalan di LUAR lock. Jika 100 request datang bersamaan untuk key yang sama,
+# semua 100 mendapat cache miss dan menjalankan kalkulasi paralel (thundering herd).
+#
+# FIX: Gunakan dict of per-key locks (_SAW_KEY_LOCKS).
+# Hanya 1 goroutine yang bisa menghitung untuk key tertentu pada satu waktu.
+# Goroutine lain yang menunggu lock akan langsung mendapat hasil dari cache
+# setelah goroutine pertama selesai menyimpan.
+_SAW_CACHE_LOCK = threading.Lock()          # untuk operasi pada dict _SAW_CACHE & _SAW_KEY_LOCKS
+_SAW_KEY_LOCKS: dict = {}                   # { cache_key: threading.Lock() }
+
+
+def _make_cache_key(profile: RiskProfileEnum, sector: Optional[str]) -> str:
+    """Membuat cache key unik dari kombinasi profil + sektor."""
+    sector_key = sector.lower().strip() if sector else "all"
+    return f"{profile.value.lower()}::{sector_key}"
+
+
+def invalidate_saw_cache() -> int:
+    """
+    Menghapus seluruh cache SAW.
+    Dipanggil oleh pipeline ML setelah data baru selesai diproses,
+    agar rekomendasi berikutnya menggunakan data terbaru.
+
+    Returns:
+        int: jumlah cache entry yang dihapus
+    """
+    global _SAW_CACHE, _SAW_KEY_LOCKS
+    with _SAW_CACHE_LOCK:
+        count = len(_SAW_CACHE)
+        _SAW_CACHE.clear()
+        _SAW_KEY_LOCKS.clear()  # FIX #6: bersihkan juga per-key locks
+    logger.info(f"[SAW Cache] Invalidated {count} cache entries.")
+    return count
+
+
+def get_cache_status() -> dict:
+    """
+    Mengembalikan status cache saat ini.
+    Dipakai oleh admin endpoint untuk monitoring.
+    """
+    now = time.time()
+    with _SAW_CACHE_LOCK:
+        entries = []
+        for key, val in _SAW_CACHE.items():
+            ttl_remaining = max(0, val["expiry"] - now)
+            entries.append({
+                "key": key,
+                "items": len(val["data"]),
+                "ttl_remaining_sec": round(ttl_remaining, 1),
+                "expired": ttl_remaining <= 0
             })
+    return {
+        "total_entries": len(entries),
+        "entries": entries
+    }
 
-    if not valid_stocks:
-        return []
 
-    # 3. Cari Nilai Max (Benefit) dan Min (Cost) untuk Normalisasi
-    # Benefit: AI Score, ROE
-    # Cost: DER, PER
-    # 3. Cari Nilai Max (Benefit) dan Min (Cost) untuk Normalisasi dengan Capping (Outlier Removal)
-    # Benefit: AI Score, ROE
-    # Cost: DER, PER
-    
-    # Capping values to prevent outliers from distorting normalization
-    # ROE > 50% dianggap sudah sangat bagus (capped di 50)
-    # DER > 5 dianggap sangat berisiko (capped di 5)
-    processed_stocks = []
-    for item in valid_stocks:
-        processed_stocks.append({
-            **item,
-            "roe_capped": min(50.0, max(0.0, item["roe"])),
-            "der_capped": min(5.0, max(0.0, item["der"])),
-            "per_capped": min(100.0, max(0.0, item["per"]))
-        })
+# ─── Fungsi Utama SAW ─────────────────────────────────────────────────────────
 
-    max_ai  = max(item["ai_score"] for item in processed_stocks) or 1.0
-    max_roe = max(item["roe_capped"] for item in processed_stocks) or 1.0
-    
-    # Untuk Cost, kita ambil nilai > 0 agar tidak devide-by-zero.
-    min_der = min((item["der_capped"] for item in processed_stocks if item["der_capped"] > 0), default=0.5)
-    min_per = min((item["per_capped"] for item in processed_stocks if item["per_capped"] > 0), default=5.0)
+def calculate_saw_recommendations(
+    db: Session,
+    profile: RiskProfileEnum,
+    target_sector: Optional[str] = None
+) -> List[RecommendationResponse]:
+    """
+    Menjalankan SPK Lapis 3 (Simple Additive Weighting) dengan cache per profil.
 
-    # 4. Kalkulasi Normalisasi dan Nilai Akhir (SAW)
-    results = []
-    for s in processed_stocks:
-        # --- Normalisasi ---
-        # Benefit: V_i / V_max
-        n_ai = s["ai_score"] / max_ai if max_ai > 0 else 0
-        n_roe = s["roe_capped"] / max_roe if max_roe > 0 else 0
-        
-        # Cost: V_min / V_i
-        if s["der_capped"] <= 0.1: # Hutang hampir nol dianggap sempurna
-            n_der = 1.0
+    Alur:
+        1. Cek cache — jika ada dan belum expired, langsung return
+        2. Ambil bobot profil dari SPK 1
+        3. Ambil data bersih dari SPK 2
+        4. Normalisasi SAW
+        5. Hitung skor akhir, simpan ke cache, return
+    """
+
+    # ── 1. Cek Cache dengan Double-Checked Locking ───────────────────────────
+    # FIX #6: Implementasi per-key lock untuk mencegah thundering herd.
+    #
+    # Alur:
+    #   a. Cek cache tanpa lock (fast path) — jika HIT, langsung return
+    #   b. Ambil/buat per-key lock untuk cache_key ini
+    #   c. Acquire per-key lock (hanya 1 thread yang bisa masuk per key)
+    #   d. Cek cache LAGI di dalam lock (double-check) — mungkin thread lain
+    #      sudah mengisi cache saat kita menunggu lock
+    #   e. Jika masih MISS, hitung SAW dan simpan ke cache
+    #   f. Release per-key lock → thread lain yang menunggu akan langsung
+    #      mendapat hasil dari cache (langkah d)
+
+    cache_key = _make_cache_key(profile, target_sector)
+    now = time.time()
+
+    # a. Fast path: cek tanpa lock
+    cached = _SAW_CACHE.get(cache_key)
+    if cached and now < cached["expiry"]:
+        logger.debug(f"[SAW Cache] HIT (fast path) — key='{cache_key}'")
+        return cached["data"]
+
+    # b. Ambil atau buat per-key lock
+    with _SAW_CACHE_LOCK:
+        if cache_key not in _SAW_KEY_LOCKS:
+            _SAW_KEY_LOCKS[cache_key] = threading.Lock()
+        key_lock = _SAW_KEY_LOCKS[cache_key]
+
+    # c. Acquire per-key lock — hanya 1 thread per cache_key yang masuk ke sini
+    with key_lock:
+        # d. Double-check: mungkin thread sebelumnya sudah mengisi cache
+        now = time.time()
+        cached = _SAW_CACHE.get(cache_key)
+        if cached and now < cached["expiry"]:
+            logger.debug(f"[SAW Cache] HIT (double-check) — key='{cache_key}'")
+            return cached["data"]
+
+        # Cache miss yang sesungguhnya — hitung dari awal
+        logger.info(f"[SAW Cache] MISS — key='{cache_key}', menghitung SAW...")
+
+        # ── 2. Bobot dari profil risiko user (hasil SPK 1) ───────────────────
+        weights = get_profile_weights(profile)
+
+        # ── 3. Ambil data bersih dari SPK 2 ──────────────────────────────────
+        stocks = get_qualified_stocks_for_saw(db, target_sector)
+        if not stocks:
+            return []
+
+        # ── 4. Hitung Referensi Normalisasi ──────────────────────────────────
+
+        max_ai = max(s["ai_score"] for s in stocks) or 1.0
+
+        # ROE (Benefit) — guard untuk semua ROE negatif
+        all_roe = [s["roe_clean"] for s in stocks]
+        roe_min_actual = min(all_roe)
+        if roe_min_actual < 0:
+            roe_shift = abs(roe_min_actual)
+            roe_shifted = {s["ticker"]: s["roe_clean"] + roe_shift for s in stocks}
         else:
-            n_der = min_der / s["der_capped"]
-            
-        n_per = 0 if s["per_capped"] <= 0 else (min_per / s["per_capped"])
+            roe_shifted = {s["ticker"]: s["roe_clean"] for s in stocks}
 
-        # Mencegah nilai abnormal > 1.0 akibat data ekstrem
-        n_ai = min(1.0, max(0.0, n_ai))
-        n_roe = min(1.0, max(0.0, n_roe))
-        n_der = min(1.0, max(0.0, n_der))
-        n_per = min(1.0, max(0.0, n_per))
+        max_roe_shifted = max(roe_shifted.values()) or 1.0
 
-        # --- Skor Akhir ---
-        final_score = (
-            (n_ai * weights["ai_score"]) +
-            (n_roe * weights["roe"]) +
-            (n_der * weights["der"]) +
-            (n_per * weights["per"])
+        # DER & PER (Cost)
+        min_der = min(
+            (s["der_clean"] for s in stocks if s["der_clean"] > 0),
+            default=0.1
+        )
+        min_per = min(
+            (s["per_clean"] for s in stocks if s["per_clean"] > 0),
+            default=5.0
         )
 
-        insights = [InsightItem(**i) for i in s["insights"]]
-        
-        results.append(
-            RecommendationResponse(
-                ticker=s["ticker"],
-                sector=s["sector"],
-                match_score=round(final_score, 4),
-                match_score_percent=f"{final_score * 100:.1f}%",
-                ai_score_percent=f"{s['ai_score'] * 100:.1f}%",
-                insights=insights,
-                roe=round(s["roe"], 2),
-                der=round(s["der"], 2),
-                per=round(s["per"], 2)
+        # ── 5. Kalkulasi Normalisasi SAW & Skor Akhir ────────────────────────
+        results = []
+        for s in stocks:
+
+            n_ai  = s["ai_score"] / max_ai if max_ai > 0 else 0.0
+            n_roe = roe_shifted[s["ticker"]] / max_roe_shifted if max_roe_shifted > 0 else 0.0
+
+            if s["der_clean"] <= 0.1:
+                n_der = 1.0
+            else:
+                n_der = min_der / s["der_clean"]
+
+            n_per = 0.0 if s["per_clean"] <= 0 else (min_per / s["per_clean"])
+
+            # Clamp ke [0, 1]
+            n_ai  = min(1.0, max(0.0, n_ai))
+            n_roe = min(1.0, max(0.0, n_roe))
+            n_der = min(1.0, max(0.0, n_der))
+            n_per = min(1.0, max(0.0, n_per))
+
+            final_score = (
+                (n_ai  * weights["ai_score"]) +
+                (n_roe * weights["roe"])      +
+                (n_der * weights["der"])      +
+                (n_per * weights["per"])
             )
+
+            insights = [InsightItem(**i) for i in s["insights"]]
+
+            roe_display = round(s["roe_raw"], 2) if s["roe_raw"] is not None else 0.0
+            der_display = round(s["der_raw"], 2) if s["der_raw"] is not None else 0.0
+            per_display = round(s["per_raw"], 2) if s["per_raw"] is not None else 0.0
+
+            results.append(
+                RecommendationResponse(
+                    ticker=s["ticker"],
+                    sector=s["sector"],
+                    match_score=round(final_score, 4),
+                    match_score_percent=f"{final_score * 100:.1f}%",
+                    ai_score_percent=f"{s['ai_score'] * 100:.1f}%",
+                    insights=insights,
+                    roe=roe_display,
+                    der=der_display,
+                    per=per_display,
+                )
+            )
+
+        # Urutkan berdasarkan Match Score tertinggi
+        results.sort(key=lambda x: x.match_score, reverse=True)
+
+        # ── 6. Simpan ke Cache (masih di dalam key_lock) ─────────────────────
+        with _SAW_CACHE_LOCK:
+            _SAW_CACHE[cache_key] = {
+                "data":   results,
+                "expiry": now + _SAW_CACHE_TTL
+            }
+        logger.info(
+            f"[SAW Cache] STORED — key='{cache_key}', "
+            f"{len(results)} saham, TTL={_SAW_CACHE_TTL}s"
         )
 
-    # 5. Urutkan berdasarkan Match Score tertinggi
-    results.sort(key=lambda x: x.match_score, reverse=True)
-    return results
+        return results

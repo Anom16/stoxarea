@@ -50,6 +50,9 @@ def process_ticker(ticker: str, file_path: Path) -> pd.DataFrame:
     if len(df) < 60:  # Butuh cukup data untuk MA50 dan MACD
         return pd.DataFrame()
 
+    # Tambahkan kolom ticker agar bisa diidentifikasi saat digabung
+    df["ticker"] = ticker
+
     close = df["Close"]
     high  = df["High"]
     
@@ -86,16 +89,33 @@ def process_ticker(ticker: str, file_path: Path) -> pd.DataFrame:
     df["vol_ma_ratio"] = df["Volume"] / vol_ma_20
     
     # ── Target Generation ──
-    # Mencari nilai High tertinggi dalam 5 hari ke depan
-    # shift(-5) menggeser data dari masa depan ke baris saat ini
-    # min_periods=1 agar tidak NaN jika < 5 hari di akhir, tapi kita butuh persis 5 hari.
-    future_max_high = high.rolling(window=TARGET_HORIZON_DAYS).max().shift(-TARGET_HORIZON_DAYS)
-    
+    # FIX #2: Perbaikan data leakage pada label target.
+    #
+    # BUG LAMA (SALAH):
+    #   high.rolling(window=5).max().shift(-5)
+    #   → rolling() mengambil window [t-4, t-3, t-2, t-1, t] (termasuk hari ini & masa lalu)
+    #   → shift(-5) hanya menggeser posisi baris, BUKAN mengambil masa depan murni
+    #   → Hasilnya: label di baris t mencerminkan max(high[t-9]...high[t-5]), bukan masa depan
+    #
+    # FIX BENAR:
+    #   1. shift(-1) dulu → geser high satu hari ke depan (hari t+1 masuk ke baris t)
+    #   2. rolling(5).max() → ambil max dari [t+1, t+2, t+3, t+4, t+5]
+    #   → Hasilnya: label di baris t = max High dari 5 hari SETELAH hari t (murni masa depan)
+    #   → Tidak ada informasi hari ini yang bocor ke label
+    future_max_high = high.shift(-1).rolling(
+        window=TARGET_HORIZON_DAYS,
+        min_periods=TARGET_HORIZON_DAYS  # wajib persis 5 hari, bukan kurang
+    ).max()
+
     # Label 1 jika future max high > 5% dari close hari ini
     target_pct = (future_max_high - close) / close
-    
-    # Biarkan NaN tetap NaN, jangan cast langsung ke int
-    df["target_5d_up"] = np.where(target_pct.isna(), np.nan, (target_pct >= TARGET_PROFIT_PCT).astype(int))
+
+    # Biarkan NaN tetap NaN (baris 5 terakhir tidak punya label valid)
+    df["target_5d_up"] = np.where(
+        target_pct.isna(),
+        np.nan,
+        (target_pct >= TARGET_PROFIT_PCT).astype(int)
+    )
     
     # Tandai baris terbaru untuk inferensi
     df["is_latest"] = False

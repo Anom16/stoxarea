@@ -1,6 +1,20 @@
+"""
+spk2_scoring.py — SPK Lapis 2: Penyaringan & Scoring Saham
+
+Tanggung jawab layer ini (Task 1.3 — Separation of Concerns):
+    - Menyaring saham tidak qualified (is_qualified = False)
+    - Menyiapkan data fundamental yang sudah BERSIH (di-clamp) untuk SPK 3
+    - SPK 3 tidak perlu tahu soal outlier — tugasnya hanya menghitung SAW
+
+Fungsi utama:
+    get_top_momentum_stocks()     → untuk halaman Market (tampilan publik)
+    get_qualified_stocks_for_saw() → khusus untuk dikonsumsi SPK 3 (data bersih)
+"""
+
 import time
 from intelligence_store.ai_scores import ai_store
-from typing import List, Dict, Optional
+from intelligence_store.capping_bounds import bounds_store   # ← Task 1.3
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.models.stock import Stock
 
@@ -119,3 +133,77 @@ def get_ai_score_by_ticker(ticker: str) -> dict:
             return all_scores[f]
             
     return {}
+
+
+# ─── Task 1.3: Data Gateway untuk SPK 3 ──────────────────────────────────────
+
+def get_qualified_stocks_for_saw(
+    db: Session,
+    target_sector: Optional[str] = None
+) -> List[dict]:
+    """
+    [Task 1.3 — Separation of Concerns]
+    Menyiapkan data saham yang sudah BERSIH untuk dikonsumsi SPK 3 (SAW).
+
+    Tanggung jawab fungsi ini:
+        1. Filter saham is_qualified = True (lolos SPK 2)
+        2. Gabungkan dengan AI Score dari intelligence_store
+        3. Clamp nilai fundamental (ROE, DER, PER) menggunakan bounds persentil
+           → SPK 3 tidak perlu tahu soal outlier, tinggal hitung SAW
+
+    Perbedaan dengan get_top_momentum_stocks():
+        - Fungsi itu: untuk halaman Market (butuh sparkline, harga, sentimen)
+        - Fungsi ini: khusus untuk SAW (butuh fundamental bersih, tidak butuh harga)
+
+    Returns:
+        List of dict dengan field:
+            ticker, sector, ai_score, insights,
+            roe_raw, der_raw, per_raw,      ← nilai asli untuk ditampilkan di UI
+            roe_clean, der_clean, per_clean  ← nilai bersih untuk kalkulasi SAW
+    """
+    # Query saham qualified dari DB
+    query = db.query(Stock).filter(Stock.is_qualified == True)
+    if target_sector:
+        query = query.filter(Stock.sector.ilike(f"%{target_sector}%"))
+
+    stocks = query.all()
+    if not stocks:
+        return []
+
+    all_scores = ai_store.get_all_scores()
+    result = []
+
+    for s in stocks:
+        ai_data = all_scores.get(s.ticker)
+        if not ai_data:
+            # Skip saham yang belum punya AI Score (pipeline belum jalan)
+            continue
+
+        # Nilai mentah — disimpan untuk ditampilkan di UI
+        roe_raw = s.roe
+        der_raw = s.der
+        per_raw = s.per
+
+        # Nilai bersih — sudah di-clamp ke batas persentil P5-P95
+        # Ini yang dipakai untuk kalkulasi normalisasi SAW di SPK 3
+        # SPK 3 tidak perlu tahu batas capping — sudah ditangani di sini
+        roe_clean = bounds_store.clamp(roe_raw, "roe")
+        der_clean = bounds_store.clamp(der_raw, "der")
+        per_clean = bounds_store.clamp(per_raw, "per")
+
+        result.append({
+            "ticker":    s.ticker,
+            "sector":    s.sector or "Unknown",
+            "ai_score":  ai_data.get("ai_score", 0.0),
+            "insights":  ai_data.get("insights", []),
+            # Nilai asli (untuk UI)
+            "roe_raw":   roe_raw,
+            "der_raw":   der_raw,
+            "per_raw":   per_raw,
+            # Nilai bersih (untuk SAW) — sudah bebas outlier
+            "roe_clean": roe_clean,
+            "der_clean": der_clean,
+            "per_clean": per_clean,
+        })
+
+    return result
