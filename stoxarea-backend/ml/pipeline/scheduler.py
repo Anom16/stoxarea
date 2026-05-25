@@ -1,6 +1,9 @@
 import logging
 import traceback
+import threading
+import time
 from datetime import datetime, date
+from pathlib import Path
 
 # Impor semua modul dalam urutan pipeline
 from ml.pipeline import ingestor
@@ -14,9 +17,13 @@ from app.services.spk3_saw import invalidate_saw_cache
 
 logger = logging.getLogger(__name__)
 
+# FIX #10: Threading lock untuk prevent concurrent pipeline execution
+# Jika 2+ server jalan APScheduler, hanya 1 yang boleh run pipeline bersamaan
+_PIPELINE_LOCK = threading.Lock()
+_PIPELINE_LOCK_FILE = Path("logs/pipeline.lock")
+
 # FIX #8: Daftar hari libur bursa BEI.
 # Perlu diupdate setiap tahun sesuai pengumuman resmi BEI.
-# Format: set of date objects untuk lookup O(1).
 BEI_HOLIDAYS_2025: set[date] = {
     date(2025, 1, 1),   # Tahun Baru Masehi
     date(2025, 1, 27),  # Isra Mi'raj
@@ -33,7 +40,6 @@ BEI_HOLIDAYS_2025: set[date] = {
     date(2025, 9, 5),   # Maulid Nabi Muhammad SAW
     date(2025, 12, 25), # Hari Raya Natal
     date(2025, 12, 26), # Cuti Bersama Natal
-    # Lebaran 2025 (estimasi, sesuaikan dengan pengumuman resmi)
     date(2025, 3, 28),
     date(2025, 3, 29),
     date(2025, 3, 30),
@@ -46,22 +52,16 @@ BEI_HOLIDAYS_2025: set[date] = {
 
 BEI_HOLIDAYS_2026: set[date] = {
     date(2026, 1, 1),   # Tahun Baru Masehi
-    # Tambahkan sesuai pengumuman resmi BEI 2026
 }
 
-# Gabungkan semua tahun
 BEI_HOLIDAYS: set[date] = BEI_HOLIDAYS_2025 | BEI_HOLIDAYS_2026
 
 
 def is_bei_trading_day(check_date: date | None = None) -> bool:
-    """
-    Memeriksa apakah tanggal yang diberikan adalah hari bursa BEI aktif.
-    Mengembalikan False jika hari Sabtu, Minggu, atau hari libur BEI.
-    """
+    """Memeriksa apakah tanggal adalah hari bursa BEI aktif"""
     if check_date is None:
         check_date = date.today()
 
-    # Sabtu = 5, Minggu = 6
     if check_date.weekday() >= 5:
         return False
 
@@ -70,73 +70,145 @@ def is_bei_trading_day(check_date: date | None = None) -> bool:
 
     return True
 
+
 def run_daily_pipeline():
     """
-    Fungsi utama (Orkestrator) untuk menjalankan rutinitas ML harian:
-    1. Unduh OHLCV terbaru (Ingestor)
-    2. Kalkulasi fitur teknikal (Feature Engineering)
-    3. Inferensi XGBoost & kalkulasi SHAP (SHAP Explainer)
-    4. Sinkronisasi data fundamental terbaru ke Database (Sync DB)
-    5. Hitung batas capping outlier berbasis persentil (Outlier Guard)
-    6. Muat ulang memori FastAPI agar UI langsung update (Hot-reload)
+    Pipeline ML harian dengan FIX #10 (race condition prevention) dan error recovery
+    
+    6-step process dengan proper error handling:
+    1. Unduh OHLCV terbaru
+    2. Kalkulasi fitur teknikal
+    3. XGBoost inference + SHAP
+    4. Sinkronisasi DB
+    5. Hitung outlier bounds
+    6. Hot-reload memory
     """
-    # FIX #8: Cek hari libur bursa sebelum menjalankan pipeline.
-    # Jika hari ini bukan hari bursa aktif, skip pipeline untuk menghindari
-    # data kosong/basi yang bisa merusak ai_scores.json.
+    
+    # FIX #8: Skip jika bukan hari bursa
     today = date.today()
     if not is_bei_trading_day(today):
         day_name = today.strftime("%A, %d %B %Y")
-        if today.weekday() >= 5:
-            reason = "akhir pekan"
-        else:
-            reason = "hari libur bursa BEI"
-        logger.info(f"[Pipeline] Dilewati — {day_name} adalah {reason}. Tidak ada data pasar baru.")
+        reason = "akhir pekan" if today.weekday() >= 5 else "hari libur bursa BEI"
+        logger.info(f"[Pipeline] Dilewati — {day_name} adalah {reason}.")
         return
 
-    logger.info("="*50)
-    logger.info(f"🚀 MEMULAI PIPELINE HARIAN STOXAREA: {datetime.now()}")
-    logger.info("="*50)
+    # FIX #10: Acquire lock (prevent concurrent execution)
+    acquired = _PIPELINE_LOCK.acquire(blocking=False)
+    if not acquired:
+        logger.warning("[Pipeline] Sudah ada pipeline yang berjalan. Skipping execution ini.")
+        return
+    
+    pipeline_start_time = time.time()
     
     try:
-        # STEP 1: Ingest Data
-        logger.info("\n[STEP 1/6] Mengunduh data pasar terbaru...")
-        ingestor.run()
+        logger.info("="*70)
+        logger.info(f"🚀 MEMULAI PIPELINE HARIAN STOXAREA: {datetime.now().isoformat()}")
+        logger.info("="*70)
         
-        # STEP 2: Feature Engineering
-        logger.info("\n[STEP 2/6] Mengkalkulasi indikator teknikal...")
-        feature_engineering.run()
+        step_results = {}
         
-        # STEP 3: Inference & SHAP
-        logger.info("\n[STEP 3/6] Menjalankan inferensi XGBoost & kalkulasi SHAP...")
-        shap_explainer.run()
+        # ============ STEP 1: Ingest Data ============
+        try:
+            logger.info("\n[STEP 1/6] Mengunduh data pasar terbaru...")
+            step_start = time.time()
+            ingestor.run()
+            step_results['ingestor'] = {'success': True, 'duration': time.time() - step_start}
+            logger.info(f"[STEP 1/6] ✅ SUKSES ({step_results['ingestor']['duration']:.1f}s)")
+        except Exception as e:
+            logger.error(f"[STEP 1/6] ❌ GAGAL: {str(e)}")
+            logger.error(traceback.format_exc())
+            step_results['ingestor'] = {'success': False, 'error': str(e)}
+            # Continue ke step berikutnya (tolerant terhadap error)
         
-        # STEP 4: Database Sync
-        # Penting: sync_db harus selesai SEBELUM outlier_guard,
-        # karena outlier_guard membaca data ROE/DER/PER dari DB yang baru di-sync.
-        logger.info("\n[STEP 4/6] Sinkronisasi fundamental ke Database...")
-        sync_db.sync_stocks()
+        # ============ STEP 2: Feature Engineering ============
+        try:
+            logger.info("\n[STEP 2/6] Mengkalkulasi indikator teknikal...")
+            step_start = time.time()
+            feature_engineering.run()
+            step_results['feature_engineering'] = {'success': True, 'duration': time.time() - step_start}
+            logger.info(f"[STEP 2/6] ✅ SUKSES ({step_results['feature_engineering']['duration']:.1f}s)")
+        except Exception as e:
+            logger.error(f"[STEP 2/6] ❌ GAGAL: {str(e)}")
+            logger.error(traceback.format_exc())
+            step_results['feature_engineering'] = {'success': False, 'error': str(e)}
         
-        # STEP 5: Hitung Batas Capping Outlier (Task 1.1)
-        # Membaca data DB yang sudah fresh dari Step 4,
-        # menghitung persentil P5-P95, lalu simpan ke capping_bounds.json
-        logger.info("\n[STEP 5/6] Menghitung batas capping outlier berbasis persentil...")
-        compute_and_save_capping_bounds()
+        # ============ STEP 3: Inference & SHAP ============
+        try:
+            logger.info("\n[STEP 3/6] Menjalankan inferensi XGBoost & kalkulasi SHAP...")
+            step_start = time.time()
+            shap_explainer.run()
+            step_results['inference'] = {'success': True, 'duration': time.time() - step_start}
+            logger.info(f"[STEP 3/6] ✅ SUKSES ({step_results['inference']['duration']:.1f}s)")
+        except Exception as e:
+            logger.error(f"[STEP 3/6] ❌ GAGAL: {str(e)}")
+            logger.error(traceback.format_exc())
+            step_results['inference'] = {'success': False, 'error': str(e)}
         
-        # STEP 6: Hot-reload semua store di memori
-        # Urutan penting: ai_store dulu, baru bounds_store, baru invalidate SAW cache
-        logger.info("\n[STEP 6/6] Melakukan hot-reload store ke memori server...")
-        ai_store._load_data()
-        bounds_store.reload()           # reload bounds baru ke memori SPK 3
-        invalidated = invalidate_saw_cache()  # hapus cache SAW lama — paksa hitung ulang
-        logger.info(f"[STEP 6/6] SAW Cache dihapus: {invalidated} entries.")
+        # ============ STEP 4: Database Sync ============
+        try:
+            logger.info("\n[STEP 4/6] Sinkronisasi fundamental ke Database...")
+            step_start = time.time()
+            sync_db.sync_stocks()
+            step_results['sync_db'] = {'success': True, 'duration': time.time() - step_start}
+            logger.info(f"[STEP 4/6] ✅ SUKSES ({step_results['sync_db']['duration']:.1f}s)")
+        except Exception as e:
+            logger.error(f"[STEP 4/6] ❌ GAGAL: {str(e)}")
+            logger.error(traceback.format_exc())
+            step_results['sync_db'] = {'success': False, 'error': str(e)}
         
-        logger.info("="*50)
-        logger.info("✅ PIPELINE HARIAN SELESAI DENGAN SUKSES!")
-        logger.info("="*50)
+        # ============ STEP 5: Outlier Bounds ============
+        try:
+            logger.info("\n[STEP 5/6] Menghitung batas capping outlier berbasis persentil...")
+            step_start = time.time()
+            compute_and_save_capping_bounds()
+            step_results['outlier_guard'] = {'success': True, 'duration': time.time() - step_start}
+            logger.info(f"[STEP 5/6] ✅ SUKSES ({step_results['outlier_guard']['duration']:.1f}s)")
+        except Exception as e:
+            logger.error(f"[STEP 5/6] ❌ GAGAL: {str(e)}")
+            logger.error(traceback.format_exc())
+            step_results['outlier_guard'] = {'success': False, 'error': str(e)}
+        
+        # ============ STEP 6: Hot-reload ============
+        try:
+            logger.info("\n[STEP 6/6] Melakukan hot-reload store ke memori server...")
+            step_start = time.time()
+            ai_store._load_data()
+            bounds_store.reload()
+            invalidated = invalidate_saw_cache()
+            step_results['hot_reload'] = {'success': True, 'duration': time.time() - step_start}
+            logger.info(f"[STEP 6/6] ✅ SUKSES ({step_results['hot_reload']['duration']:.1f}s) - SAW Cache invalidated: {invalidated} entries")
+        except Exception as e:
+            logger.error(f"[STEP 6/6] ❌ GAGAL: {str(e)}")
+            logger.error(traceback.format_exc())
+            step_results['hot_reload'] = {'success': False, 'error': str(e)}
+        
+        # ============ SUMMARY ============
+        total_duration = time.time() - pipeline_start_time
+        success_count = sum(1 for r in step_results.values() if r.get('success'))
+        
+        logger.info("="*70)
+        logger.info(f"📊 RINGKASAN PIPELINE")
+        logger.info(f"   Total waktu: {total_duration:.1f}s")
+        logger.info(f"   Step berhasil: {success_count}/{len(step_results)}")
+        for step_name, result in step_results.items():
+            status = "✅" if result['success'] else "❌"
+            logger.info(f"   {status} {step_name}: {result.get('duration', 0):.1f}s" if result['success'] else f"   {status} {step_name}: {result.get('error', 'Unknown error')}")
+        
+        if success_count == len(step_results):
+            logger.info("✅ PIPELINE HARIAN SELESAI DENGAN SUKSES!")
+        else:
+            logger.warning(f"⚠️  PIPELINE SELESAI DENGAN PARTIAL SUCCESS ({success_count}/{len(step_results)} steps)")
+        logger.info("="*70)
         
     except Exception as e:
-        logger.error("❌ PIPELINE GAGAL! Terjadi kesalahan kritis.")
+        logger.error("❌ PIPELINE GAGAL! Terjadi kesalahan kritis yang tidak terduga.")
         logger.error(traceback.format_exc())
+    finally:
+        # Release lock
+        _PIPELINE_LOCK.release()
+        logger.info(f"[Pipeline] Lock dirilis. Siap untuk eksekusi berikutnya.")
+
 
 if __name__ == "__main__":
     run_daily_pipeline()
+

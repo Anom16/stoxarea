@@ -3,9 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 
 from app.core.database import engine, Base
+from app.core.config import settings
 from app.api import auth, recommendation, market, portfolio, admin_ml
 from apscheduler.schedulers.background import BackgroundScheduler
 from ml.pipeline.scheduler import run_daily_pipeline
+
+# Rate limiting
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 # Setup Logger Global
 logging.basicConfig(
@@ -14,6 +19,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address)
+
 # Initialize FastAPI App
 app = FastAPI(
     title="StoxArea Backend API",
@@ -21,17 +29,20 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS Middleware (agar Next.js bisa memanggil API ini)
-# CATATAN: allow_origins="*" tidak bisa dikombinasikan dengan allow_credentials=True
-# karena browser akan reject request. Pilih salah satu:
-#   - Development: pakai list origin spesifik + credentials=True
-#   - Production: ganti dengan URL frontend yang sebenarnya
+# Attach limiter to app
+app.state.limiter = limiter
+
+# CORS Middleware - now from environment variables
+# Parse comma-separated origins
+allowed_origins = settings.ALLOWED_ORIGINS
+if isinstance(allowed_origins, str):
+    allowed_origins = [o.strip() for o in allowed_origins.split(",")]
+
+logger.info(f"CORS Allowed Origins: {allowed_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",   # Next.js dev server
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -65,3 +76,8 @@ def read_root():
         "message": "Welcome to StoxArea API",
         "docs": "Akses /docs untuk melihat dokumentasi interaktif Swagger UI."
     }
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint untuk monitoring"""
+    return {"status": "healthy"}

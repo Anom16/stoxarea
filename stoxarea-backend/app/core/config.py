@@ -1,18 +1,42 @@
 from pydantic_settings import BaseSettings
+from pydantic import Field
+import os
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "sqlite:///./stoxarea.db"
-    SECRET_KEY: str = "ganti-dengan-secret-key-yang-kuat"
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
+    # Database
+    DATABASE_URL: str = Field(
+        default="sqlite:///./stoxarea.db",
+        env="DATABASE_URL",
+        description="Database connection URL (PostgreSQL/SQLite)"
+    )
     
-    # Konfigurasi ML Pipeline Paths
+    # Security - CRITICAL: Must be set in production via .env
+    SECRET_KEY: str = Field(
+        default="change-me-in-production",
+        env="SECRET_KEY",
+        description="JWT secret key. Use strong random value in production!"
+    )
+    ALGORITHM: str = Field(default="HS256", env="ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=1440, env="ACCESS_TOKEN_EXPIRE_MINUTES")
+    
+    # API
+    ALLOWED_ORIGINS: list[str] = Field(
+        default=["http://localhost:3000"],
+        env="ALLOWED_ORIGINS",
+        description="Comma-separated CORS allowed origins"
+    )
+    
+    # ML Pipeline Paths
     AI_SCORES_PATH: str = "data/processed/ai_scores.json"
     CAPPING_BOUNDS_PATH: str = "data/processed/capping_bounds.json"
     MODEL_PATH: str = "ml/models_saved/xgb_model.pkl"
-
+    
+    # Feature: Rate limiting
+    RATE_LIMIT_ENABLED: bool = Field(default=True, env="RATE_LIMIT_ENABLED")
+    
     class Config:
         env_file = ".env"
-        extra = "ignore"
+        env_file_encoding = "utf-8"
+        extra = "allow"
 
 settings = Settings()

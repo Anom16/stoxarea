@@ -2,6 +2,9 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
 from app.core.database import get_db
 from app.core.security import get_password_hash, verify_password, create_access_token, get_current_user_email
 from app.models.user import User
@@ -12,8 +15,13 @@ from app.core.questions import QUESTIONNAIRE_DATA
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["Auth & Profiling"])
 
+# Rate limiter
+limiter = Limiter(key_func=get_remote_address)
+
 @router.post("/register", response_model=UserResponse)
-def register(user_in: UserCreate, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")  # Max 5 registration attempts per minute
+def register(request, user_in: UserCreate, db: Session = Depends(get_db)):
+    """Register new user with rate limiting"""
     logger.info(f"Mencoba mendaftarkan user baru: {user_in.email}")
     user = db.query(User).filter(User.email == user_in.email).first()
     if user:
@@ -32,12 +40,16 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+@limiter.limit("10/minute")  # Max 10 login attempts per minute
+def login(request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    """Login user with rate limiting to prevent brute force"""
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.password_hash):
+        logger.warning(f"Login GAGAL: Invalid credentials untuk {form_data.username}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     access_token = create_access_token(data={"sub": user.email})
+    logger.info(f"Login SUCCESS: {form_data.username}")
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=UserResponse)
