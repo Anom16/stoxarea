@@ -31,7 +31,7 @@ class CappingBoundsStore:
     _FALLBACK = {
         "roe": {"p5": -10.0, "p95": 40.0,  "median": 10.0, "sample_size": 0},
         "der": {"p5":   0.0, "p95":  3.0,  "median":  1.0, "sample_size": 0},
-        "per": {"p5":   5.0, "p95": 80.0,  "median": 20.0, "sample_size": 0},
+        "pbv": {"p5":   0.1, "p95": 10.0,  "median":  1.5, "sample_size": 0},
     }
 
     def __init__(self):
@@ -49,7 +49,7 @@ class CappingBoundsStore:
                     f"[CappingBounds] Berhasil memuat batas capping "
                     f"(ROE P95={self._bounds['roe']['p95']}, "
                     f"DER P95={self._bounds['der']['p95']}, "
-                    f"PER P95={self._bounds['per']['p95']})"
+                    f"PBV P95={self._bounds['pbv']['p95']})"
                 )
             except Exception as e:
                 logger.error(f"[CappingBounds] Gagal membaca file: {e}. Menggunakan fallback.")
@@ -71,7 +71,7 @@ class CappingBoundsStore:
 
         Args:
             value: Nilai mentah dari DB (bisa None, negatif, atau ekstrem)
-            metric: "roe", "der", atau "per"
+            metric: "roe", "der", atau "pbv"
 
         Returns:
             float: Nilai yang sudah di-clamp, aman untuk normalisasi SAW.
@@ -80,7 +80,7 @@ class CappingBoundsStore:
             bounds_store.clamp(5000.0, "roe")  → 40.0  (di-cap ke P95)
             bounds_store.clamp(-200.0, "roe")  → -10.0 (di-cap ke P5, tetap negatif)
             bounds_store.clamp(None,   "der")  → 0.0   (None → batas bawah)
-            bounds_store.clamp(1500.0, "per")  → 80.0  (di-cap ke P95)
+            bounds_store.clamp(15.0,   "pbv")  → 10.0  (di-cap ke P95)
         """
         if value is None:
             # None → gunakan batas bawah (paling aman/konservatif)

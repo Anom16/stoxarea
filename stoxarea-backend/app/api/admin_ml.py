@@ -1,7 +1,7 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status, Body
 from pydantic import BaseModel
 from typing import Optional
-from ml.pipeline.scheduler import run_daily_pipeline
+from ml.pipeline.scheduler import run_daily_pipeline, run_weekly_retrain
 from app.services.spk3_saw import invalidate_saw_cache, get_cache_status
 from app.services.corporate_action_guard import get_pending_flags, resolve_flag
 from app.core.security import get_current_user_email
@@ -50,30 +50,50 @@ def _background_pipeline_runner():
         with pipeline_lock:
             PIPELINE_RUNNING = False
 
+def _background_retrain_runner():
+    global PIPELINE_RUNNING
+    try:
+        run_weekly_retrain()
+    finally:
+        with pipeline_lock:
+            PIPELINE_RUNNING = False
+
 @router.post("/trigger-pipeline")
 def trigger_pipeline_manually(
     background_tasks: BackgroundTasks,
-    _: User = Depends(_get_admin_user)   # ← wajib login
+    _: User = Depends(_get_admin_user)
 ):
     """
-    Endpoint khusus admin untuk memicu pipeline ML Harian secara manual.
-    Berguna jika scheduler cron gagal berjalan, atau untuk testing.
-    Proses berjalan di background.
+    Trigger pipeline harian secara manual (ingest + inference, tanpa retrain).
     """
     global PIPELINE_RUNNING
-    
     with pipeline_lock:
         if PIPELINE_RUNNING:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Pipeline sedang berjalan di background. Harap tunggu hingga selesai."
-            )
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                detail="Pipeline sedang berjalan. Harap tunggu.")
         PIPELINE_RUNNING = True
-
-    logger.info("Menerima request manual untuk trigger ML Pipeline...")
     background_tasks.add_task(_background_pipeline_runner)
-    
-    return {"message": "Pipeline ML berhasil di-trigger dan sedang berjalan di background."}
+    return {"message": "Pipeline harian berhasil di-trigger dan sedang berjalan di background."}
+
+
+@router.post("/trigger-retrain")
+def trigger_retrain_manually(
+    background_tasks: BackgroundTasks,
+    _: User = Depends(_get_admin_user)
+):
+    """
+    Trigger weekly retrain XGBoost secara manual.
+    Proses lebih lama (~10-15 menit) karena melakukan full retrain model.
+    """
+    global PIPELINE_RUNNING
+    with pipeline_lock:
+        if PIPELINE_RUNNING:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                detail="Pipeline sedang berjalan. Harap tunggu.")
+        PIPELINE_RUNNING = True
+    logger.info("Menerima request manual untuk Weekly Retrain XGBoost...")
+    background_tasks.add_task(_background_retrain_runner)
+    return {"message": "Weekly retrain XGBoost berhasil di-trigger. Estimasi waktu: 10-15 menit."}
 
 
 @router.post("/invalidate-cache")

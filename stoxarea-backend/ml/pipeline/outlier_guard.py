@@ -53,13 +53,13 @@ def compute_and_save_capping_bounds() -> dict:
     # Kumpulkan nilai yang valid (tidak None)
     roe_vals = [s.roe for s in stocks if s.roe is not None]
     der_vals = [s.der for s in stocks if s.der is not None and s.der > 0]
-    per_vals = [s.per for s in stocks if s.per is not None and s.per > 0]
+    pbv_vals = [s.pbv for s in stocks if s.pbv is not None and s.pbv > 0]
 
     logger.info(
         f"[OutlierGuard] Data terkumpul — "
         f"ROE: {len(roe_vals)} saham, "
         f"DER: {len(der_vals)} saham, "
-        f"PER: {len(per_vals)} saham"
+        f"PBV: {len(pbv_vals)} saham"
     )
 
     # Fallback ke default jika data terlalu sedikit untuk persentil bermakna
@@ -94,19 +94,19 @@ def compute_and_save_capping_bounds() -> dict:
         logger.warning("[OutlierGuard] Sampel DER kurang dari 10, pakai default.")
         bounds["der"] = _get_default_bounds()["der"]
 
-    # --- PER (Cost: makin rendah makin baik) ---
-    # P5 sebagai batas bawah: hindari PER sangat kecil yang anomali (misal: 0.1x)
-    # P95 sebagai batas atas: memotong PER ekstrem (misal: 1500x saat rugi)
-    if len(per_vals) >= MIN_SAMPLE:
-        bounds["per"] = {
-            "p5":  round(float(np.percentile(per_vals, 5)),  4),
-            "p95": round(float(np.percentile(per_vals, 95)), 4),
-            "median": round(float(np.median(per_vals)), 4),
-            "sample_size": len(per_vals)
+    # --- PBV (Cost: makin rendah makin baik) ---
+    # P5 sebagai batas bawah: hindari PBV sangat kecil yang anomali (misal: 0.05x)
+    # P95 sebagai batas atas: memotong PBV ekstrem (misal: 50x saat euforia)
+    if len(pbv_vals) >= MIN_SAMPLE:
+        bounds["pbv"] = {
+            "p5":  round(float(np.percentile(pbv_vals, 5)),  4),
+            "p95": round(float(np.percentile(pbv_vals, 95)), 4),
+            "median": round(float(np.median(pbv_vals)), 4),
+            "sample_size": len(pbv_vals)
         }
     else:
-        logger.warning("[OutlierGuard] Sampel PER kurang dari 10, pakai default.")
-        bounds["per"] = _get_default_bounds()["per"]
+        logger.warning("[OutlierGuard] Sampel PBV kurang dari 10, pakai default.")
+        bounds["pbv"] = _get_default_bounds()["pbv"]
 
     # Simpan ke JSON
     _save_bounds(bounds)
@@ -117,8 +117,8 @@ def compute_and_save_capping_bounds() -> dict:
         f"(median: {bounds['roe']['median']})\n"
         f"  DER  → [0.0, {bounds['der']['p95']}] "
         f"(median: {bounds['der']['median']})\n"
-        f"  PER  → [{bounds['per']['p5']}, {bounds['per']['p95']}] "
-        f"(median: {bounds['per']['median']})"
+        f"  PBV  → [{bounds['pbv']['p5']}, {bounds['pbv']['p95']}] "
+        f"(median: {bounds['pbv']['median']})"
     )
 
     return bounds
@@ -143,12 +143,12 @@ def _get_default_bounds() -> dict:
     Nilai ini diambil dari referensi umum pasar BEI:
     - ROE: mayoritas saham BEI berkisar -10% hingga 40%
     - DER: mayoritas 0 hingga 3x (sektor non-keuangan)
-    - PER: mayoritas 5x hingga 80x
+    - PBV: mayoritas 0.1x hingga 10.0x
     """
     return {
         "roe": {"p5": -10.0, "p95": 40.0,  "median": 10.0, "sample_size": 0},
         "der": {"p5":   0.0, "p95":  3.0,  "median":  1.0, "sample_size": 0},
-        "per": {"p5":   5.0, "p95": 80.0,  "median": 20.0, "sample_size": 0},
+        "pbv": {"p5":   0.1, "p95": 10.0,  "median":  1.5, "sample_size": 0},
     }
 
 

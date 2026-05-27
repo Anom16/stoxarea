@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from slowapi import Limiter
@@ -20,7 +20,7 @@ limiter = Limiter(key_func=get_remote_address)
 
 @router.post("/register", response_model=UserResponse)
 @limiter.limit("5/minute")  # Max 5 registration attempts per minute
-def register(request, user_in: UserCreate, db: Session = Depends(get_db)):
+def register(request: Request, user_in: UserCreate, db: Session = Depends(get_db)):
     """Register new user with rate limiting"""
     logger.info(f"Mencoba mendaftarkan user baru: {user_in.email}")
     user = db.query(User).filter(User.email == user_in.email).first()
@@ -41,7 +41,7 @@ def register(request, user_in: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login")
 @limiter.limit("10/minute")  # Max 10 login attempts per minute
-def login(request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """Login user with rate limiting to prevent brute force"""
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.password_hash):

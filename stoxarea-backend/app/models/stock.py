@@ -15,6 +15,6 @@ class Stock(Base):
     # Metrik Fundamental (diambil saat batch data pipeline)
     roe = Column(Float, nullable=True)
     der = Column(Float, nullable=True)
-    per = Column(Float, nullable=True)
+    pbv = Column(Float, nullable=True)
 
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())

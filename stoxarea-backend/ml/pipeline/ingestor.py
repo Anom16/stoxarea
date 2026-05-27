@@ -47,23 +47,43 @@ REQUEST_DELAY      = 0.5
 # Sumber: daftar emiten aktif BEI, sudah ditambah suffix .JK
 # Ini adalah contoh subset — pada produksi, list ini ditarik dari
 # file tickers_bei.json yang diupdate berkala
-def load_ticker_list(filepath: str = "data/tickers_bei.json") -> list[str]:
+def load_ticker_list(filepath: str = "data/tickers/tickers_filtered.json") -> list[str]:
     """
     Load daftar ticker BEI dari file JSON.
-    Format file: ["BBCA.JK", "BBRI.JK", "GOTO.JK", ...]
+    Prioritas: tickers_filtered.json (sudah divalidasi) → tickers_bei.json (raw)
     """
     path = Path(filepath)
+    
+    # Fallback chain: filtered → bei → hardcoded
+    fallback_paths = [
+        Path("data/tickers/tickers_filtered.json"),
+        Path("data/tickers/tickers_bei.json"),
+    ]
+    
     if not path.exists():
-        logger.error(f"File ticker tidak ditemukan: {filepath}")
-        raise FileNotFoundError(f"File ticker tidak ditemukan: {filepath}")
+        for fb in fallback_paths:
+            if fb.exists():
+                logger.warning(f"File {filepath} tidak ditemukan, pakai fallback: {fb}")
+                path = fb
+                break
+        else:
+            raise FileNotFoundError(f"Tidak ada file ticker yang ditemukan!")
 
     with open(path, "r") as f:
         data = json.load(f)
     
-    # Ekstrak hanya ticker string jika formatnya adalah list of dicts
-    tickers = [item["ticker"] if isinstance(item, dict) else item for item in data]
+    # Handle dua format: list of strings atau list of dicts
+    tickers = []
+    for item in data:
+        if isinstance(item, dict):
+            tickers.append(item["ticker"])
+        elif isinstance(item, str):
+            # Bersihkan karakter aneh seperti $ atau spasi
+            clean = item.strip().replace("$", "")
+            if clean:
+                tickers.append(clean)
 
-    logger.info(f"Total ticker dimuat: {len(tickers)}")
+    logger.info(f"Total ticker dimuat dari {path}: {len(tickers)}")
     return tickers
 
 
@@ -127,7 +147,7 @@ def fetch_fundamental(ticker: str) -> dict | None:
 
         roe = info.get("returnOnEquity", None)   # yfinance: desimal (0.18 = 18%) ATAU sudah persen
         der = info.get("debtToEquity",   None)   # rasio kelipatan
-        per = info.get("trailingPE",     None)   # rasio kelipatan
+        pbv = info.get("priceToBook",    None)   # rasio kelipatan
 
         # FIX #7: Konversi ROE ke persentase dengan deteksi format otomatis.
         #
@@ -151,7 +171,7 @@ def fetch_fundamental(ticker: str) -> dict | None:
             "ticker" : ticker,
             "roe"    : roe,
             "der"    : der,
-            "per"    : per,
+            "pbv"    : pbv,
         }
 
         # Catat mana yang kosong (untuk monitoring kualitas data)
@@ -163,7 +183,7 @@ def fetch_fundamental(ticker: str) -> dict | None:
         if all(v is None for k, v in result.items() if k != "ticker"):
             return None
 
-        logger.info(f"[{ticker}] Fundamental berhasil: ROE={roe}, DER={der}, PER={per}")
+        logger.info(f"[{ticker}] Fundamental berhasil: ROE={roe}, DER={der}, PBV={pbv}")
         return result
 
     except Exception as e:
@@ -192,7 +212,7 @@ def impute_fundamental(
     """
     df = df_fundamental.merge(df_sector, on="ticker", how="left")
 
-    for col in ["roe", "der", "per"]:
+    for col in ["roe", "der", "pbv"]:
         # Hitung median per sektor
         sector_median = df.groupby("sector")[col].transform("median")
         # Isi NaN dengan median sektornya
@@ -313,10 +333,10 @@ def run():
             skipped_flagged.append(ticker)
             continue
 
-        # Ambil data OHLCV terbaru (2 hari untuk bisa bandingkan harga)
+        # Ambil data OHLCV terbaru — gunakan 1mo agar ada cukup data untuk append
         try:
             import yfinance as yf
-            df = yf.download(ticker, period="5d", interval="1d", progress=False, auto_adjust=True)
+            df = yf.download(ticker, period="1mo", interval="1d", progress=False, auto_adjust=True)
             if df.empty or len(df) < 2:
                 failed.append(ticker)
                 continue
@@ -336,12 +356,40 @@ def run():
                     skipped_flagged.append(ticker)
                     continue
 
-            # Simpan OHLCV ke file CSV
+                # Simpan OHLCV ke file CSV — APPEND ke data yang sudah ada
             ohlcv_path = OUTPUT_DIR / "ohlcv" / f"{ticker}.csv"
             df_reset = df.reset_index()
+            # yfinance 1.4.0 kadang pakai 'index' atau 'Datetime' bukan 'Date'
+            if "index" in df_reset.columns:
+                df_reset = df_reset.rename(columns={"index": "Date"})
+            elif "Datetime" in df_reset.columns:
+                df_reset = df_reset.rename(columns={"Datetime": "Date"})
+            # Flatten MultiIndex columns jika ada
+            if isinstance(df_reset.columns, pd.MultiIndex):
+                df_reset.columns = [c[0] if isinstance(c, tuple) else c for c in df_reset.columns]
             df_reset["ticker"] = ticker
-            df_reset.to_csv(ohlcv_path, index=False)
-            logger.info(f"[{ticker}] OHLCV diperbarui: {len(df_reset)} baris")
+            # Pastikan hanya kolom yang dibutuhkan
+            keep_cols = [c for c in ["Date", "Open", "High", "Low", "Close", "Volume", "ticker"] if c in df_reset.columns]
+            df_reset = df_reset[keep_cols]
+
+            if ohlcv_path.exists():
+                # Baca data lama, gabungkan dengan data baru, buang duplikat
+                df_old = pd.read_csv(ohlcv_path)
+                if "index" in df_old.columns:
+                    df_old = df_old.rename(columns={"index": "Date"})
+                elif "Datetime" in df_old.columns:
+                    df_old = df_old.rename(columns={"Datetime": "Date"})
+                df_old["Date"] = pd.to_datetime(df_old["Date"])
+                df_reset["Date"] = pd.to_datetime(df_reset["Date"])
+                df_combined = pd.concat([df_old, df_reset], ignore_index=True)
+                df_combined = df_combined.drop_duplicates(subset=["Date"], keep="last")
+                df_combined = df_combined.sort_values("Date").reset_index(drop=True)
+                df_combined.to_csv(ohlcv_path, index=False)
+                logger.info(f"[{ticker}] OHLCV diperbarui: {len(df_combined)} baris total (tambah {len(df_reset)} baris baru)")
+            else:
+                # File belum ada, simpan langsung
+                df_reset.to_csv(ohlcv_path, index=False)
+                logger.info(f"[{ticker}] OHLCV baru disimpan: {len(df_reset)} baris")
 
         except Exception as e:
             logger.error(f"[{ticker}] Gagal update: {e}")

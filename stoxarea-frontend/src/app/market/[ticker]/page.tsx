@@ -37,7 +37,7 @@ const FEATURE_LABELS: Record<string, string> = {
   vol_ma_ratio: 'Volume Ratio',
   roe: 'Profitabilitas (ROE)',
   der: 'Hutang (DER)',
-  per: 'Valuasi (PER)',
+  pbv: 'Valuasi (PBV)',
   close: 'Harga Terakhir',
   bb_width: 'Volatilitas (Bollinger)',
   log_ret_1d: 'Return Harian',
@@ -182,9 +182,25 @@ export default function StockDetailPage() {
 
   if (!data || data.fundamental.error) return (
     <div className="flex-center" style={{ height: '100vh' }}>
-      <div className="card text-center">
-        <h2 className="text-red">Emiten Tidak Ditemukan</h2>
-        <Link href="/market" className="btn-primary mt-16" style={{ textDecoration: 'none' }}>Kembali ke Jelajah Pasar</Link>
+      <div className="card text-center" style={{ maxWidth: 400 }}>
+        <h2 className="text-red" style={{ marginBottom: 8 }}>Data Tidak Tersedia</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 16 }}>
+          {data?.fundamental?.error?.includes('throttle')
+            ? 'Yahoo Finance sedang sibuk. Coba lagi dalam beberapa detik.'
+            : `Data untuk ${tickerStr} tidak ditemukan.`}
+        </p>
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button
+            className="btn-primary"
+            onClick={() => window.location.reload()}
+            style={{ fontSize: 13 }}
+          >
+            🔄 Coba Lagi
+          </button>
+          <Link href="/market" className="btn-secondary" style={{ textDecoration: 'none', fontSize: 13 }}>
+            ← Kembali ke Jelajah Pasar
+          </Link>
+        </div>
       </div>
     </div>
   )
@@ -387,9 +403,7 @@ export default function StockDetailPage() {
         { 'Keterangan': 'Volume',           'Nilai': f?.price?.volume ?? '—' },
         { 'Keterangan': 'Market Cap',       'Nilai': f?.price?.market_cap ?? '—' },
         { 'Keterangan': 'Beta',             'Nilai': f?.price?.beta ?? '—' },
-        { 'Keterangan': '',                 'Nilai': '' },
         { 'Keterangan': '── Valuasi ──',    'Nilai': '' },
-        { 'Keterangan': 'PER',              'Nilai': f?.valuation?.per ?? '—' },
         { 'Keterangan': 'PBV',              'Nilai': f?.valuation?.pbv ?? '—' },
         { 'Keterangan': '',                 'Nilai': '' },
         { 'Keterangan': '── Profitabilitas ──', 'Nilai': '' },
@@ -681,7 +695,7 @@ export default function StockDetailPage() {
                       })()}
                     </div>
                   } collapsed={collapsed} onToggle={toggleCard}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 12 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 12 }}>
                       <div className="stat-card" style={{ padding: 12 }}>
                         <div className="stat-label" style={{ fontSize: 10 }}>Market Cap</div>
                         <div className="stat-value" style={{ fontSize: 16 }}>{formatMoney(f.price.market_cap)}</div>
@@ -689,10 +703,6 @@ export default function StockDetailPage() {
                       <div className="stat-card" style={{ padding: 12 }}>
                         <div className="stat-label" style={{ fontSize: 10 }}>Beta</div>
                         <div className="stat-value" style={{ fontSize: 16 }}>{f.price.beta || '—'}</div>
-                      </div>
-                      <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>PER</div>
-                        <div className="stat-value" style={{ fontSize: 16 }}>{f.valuation.per}x</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
                         <div className="stat-label" style={{ fontSize: 10 }}>PBV</div>

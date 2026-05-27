@@ -39,25 +39,25 @@ def get_profile_weights(profile: RiskProfileEnum) -> dict:
     """
     if profile == RiskProfileEnum.konservatif:
         return {
-            "ai_score": 0.10, # Sangat kecil, utamakan keamanan fundamental
-            "roe": 0.50,      # Laba konsisten adalah raja
-            "der": 0.30,      # Sangat sensitif terhadap hutang (Cost)
-            "per": 0.10       # Valuasi harus murah/wajar (Cost)
+            "ai_score": 0.10, 
+            "roe": 0.45,      
+            "der": 0.35,      
+            "pbv": 0.10       
         }
     elif profile == RiskProfileEnum.moderat:
         return {
-            "ai_score": 0.40, # Keseimbangan antara tren dan fundamental
+            "ai_score": 0.35, 
             "roe": 0.30,      
-            "der": 0.20,      
-            "per": 0.10       
+            "der": 0.15,      
+            "pbv": 0.20       
         }
     elif profile == RiskProfileEnum.agresif:
         return {
-            "ai_score": 0.80, # Mengejar pertumbuhan cepat / momentum (High Risk High Return)
+            "ai_score": 0.60, 
             "roe": 0.10,      
-            "der": 0.05,      
-            "per": 0.05       
+            "der": 0.10,      
+            "pbv": 0.20       
         }
     
     # Default fallback
-    return {"ai_score": 0.25, "roe": 0.25, "der": 0.25, "per": 0.25}
+    return {"ai_score": 0.25, "roe": 0.25, "der": 0.25, "pbv": 0.25}

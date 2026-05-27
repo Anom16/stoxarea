@@ -7,12 +7,35 @@ from typing import Optional
 
 _YF_LOCK = threading.Lock()
 
+# Rate limiter: pastikan jeda minimal antar request ke Yahoo Finance
+_LAST_YF_REQUEST = 0.0
+_YF_MIN_INTERVAL = 1.0  # minimal 1 detik antar request
+
+def _yf_rate_limit():
+    """Pastikan ada jeda minimal antar request ke Yahoo Finance."""
+    global _LAST_YF_REQUEST
+    now = time.time()
+    elapsed = now - _LAST_YF_REQUEST
+    if elapsed < _YF_MIN_INTERVAL:
+        time.sleep(_YF_MIN_INTERVAL - elapsed)
+    _LAST_YF_REQUEST = time.time()
+
 # Cache sederhana untuk optimasi kecepatan load
 # Format: { "TICKER_KEY": (timestamp, data) }
 _TECHNICAL_CACHE = {}
 _FUNDAMENTAL_CACHE = {}
-CACHE_TTL_TECH = 600  # 10 menit
-CACHE_TTL_FUND = 1800 # 30 menit
+CACHE_TTL_TECH = 600   # 10 menit
+CACHE_TTL_FUND = 3600  # 1 jam
+
+# Retry config untuk Yahoo Finance throttling
+_YF_MAX_RETRIES = 3
+_YF_RETRY_DELAY = 2.0  # detik antar retry
+
+# yfinance 1.4.0+ menggunakan curl_cffi untuk bypass rate limiting
+try:
+    yf.set_tz_cache_location("cache/yf_tz")
+except Exception:
+    pass
 
 def get_technical_data(ticker: str, period: str = "3mo", interval: str = "1d") -> dict:
     """
@@ -29,6 +52,7 @@ def get_technical_data(ticker: str, period: str = "3mo", interval: str = "1d") -
 
     try:
         with _YF_LOCK:
+            _yf_rate_limit()
             df = yf.download(ticker, period=period, interval=interval, progress=False, auto_adjust=True)
         if df.empty:
             return {"error": f"Data tidak tersedia untuk {ticker}"}
@@ -110,6 +134,7 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
     """
     [OPTIMIZED] Mengambil data fundamental inti (cepat).
     Tidak mengambil data historis yang berat.
+    Dilengkapi retry logic untuk menangani Yahoo Finance throttling.
     """
     now = time.time()
     if ticker in _FUNDAMENTAL_CACHE:
@@ -117,10 +142,56 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
         if now - ts < CACHE_TTL_FUND:
             return data
 
+    # Retry loop untuk menangani Yahoo Finance throttling
+    info = None
+    last_error = None
+    for attempt in range(_YF_MAX_RETRIES):
+        try:
+            with _YF_LOCK:
+                _yf_rate_limit()
+                t = yf.Ticker(ticker)
+                info = t.info
+            # Validasi: info harus punya minimal satu field harga
+            if info and (info.get("currentPrice") or info.get("regularMarketPrice") or info.get("previousClose")):
+                break  # Berhasil, keluar dari retry loop
+            # Info kosong/tidak valid, coba lagi
+            info = None
+            if attempt < _YF_MAX_RETRIES - 1:
+                time.sleep(_YF_RETRY_DELAY * (attempt + 1))
+        except Exception as e:
+            last_error = e
+            if attempt < _YF_MAX_RETRIES - 1:
+                time.sleep(_YF_RETRY_DELAY * (attempt + 1))
+
+    # Jika semua retry gagal, coba ambil dari database sebagai fallback
+    if not info:
+        if db:
+            try:
+                from app.models.stock import Stock
+                stock = db.query(Stock).filter_by(ticker=ticker).first()
+                if stock:
+                    # Return data minimal dari database agar halaman tetap bisa tampil
+                    return {
+                        "ticker": ticker,
+                        "name": stock.name or ticker.replace(".JK", ""),
+                        "sector": stock.sector,
+                        "industry": None,
+                        "last_updated": {"source": "database_fallback"},
+                        "price": {"current": None, "open": None, "day_high": None,
+                                  "day_low": None, "week_52_high": None, "week_52_low": None,
+                                  "volume": 0, "avg_volume": 0, "market_cap": None, "beta": None},
+                        "valuation": {"per": stock.pbv, "pbv": stock.pbv},
+                        "profitability": {"roe": stock.roe, "roa": None, "net_margin": None},
+                        "health": {"der": stock.der},
+                        "dividend": {"yield_pct": None, "payout_ratio": None},
+                        "description": None,
+                        "_fallback": True,
+                    }
+            except Exception:
+                pass
+        return {"error": f"Data tidak tersedia untuk {ticker}. Yahoo Finance sedang throttle. Coba lagi dalam beberapa detik."}
+
     try:
-        with _YF_LOCK:
-            t = yf.Ticker(ticker)
-            info = t.info
 
         def safe(key, default=None, digits=2):
             val = info.get(key)
@@ -130,12 +201,12 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
                 return default
 
         # Data dari DB jika tersedia
-        db_roe, db_der, db_per = None, None, None
+        db_roe, db_der, db_pbv = None, None, None
         if db:
             from app.models.stock import Stock
             stock = db.query(Stock).filter_by(ticker=ticker).first()
             if stock:
-                db_roe, db_der, db_per = stock.roe, stock.der, stock.per
+                db_roe, db_der, db_pbv = stock.roe, stock.der, stock.pbv
 
         # Waktu update harga terakhir dari Yahoo Finance
         # regularMarketTime = Unix timestamp kapan harga terakhir diupdate di Yahoo
@@ -178,8 +249,7 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
                 "beta":            safe("beta"),
             },
             "valuation": {
-                "per":  db_per if db_per is not None else safe("trailingPE"),
-                "pbv":  safe("priceToBook"),
+                "pbv":  db_pbv if db_pbv is not None else safe("priceToBook"),
             },
             "profitability": {
                 "roe":          db_roe if db_roe is not None else safe("returnOnEquity"),
@@ -211,6 +281,7 @@ def get_live_price(ticker: str) -> float:
             t += ".JK"
             
         with _YF_LOCK:
+            _yf_rate_limit()
             df = yf.download(t, period="5d", interval="1d", progress=False, auto_adjust=True)
         if not df.empty:
             close_col = df["Close"]
@@ -226,6 +297,7 @@ def get_live_price(ticker: str) -> float:
         
         # Fallback ke .info HANYA jika download benar-benar gagal total
         with _YF_LOCK:
+            _yf_rate_limit()
             info = yf.Ticker(t).info
         # Pastikan info yang didapat memang milik ticker kita (hindari bug cache yfinance)
         if info and info.get("symbol", "").upper() == t:
@@ -274,6 +346,7 @@ def get_historical_financials(ticker: str, db=None) -> dict:
     # 2. Jika tidak ada di DB, ambil dari YFinance
     try:
         with _YF_LOCK:
+            _yf_rate_limit()
             t = yf.Ticker(ticker)
             fin_raw = t.financials.T
             bs_raw = t.balance_sheet.T

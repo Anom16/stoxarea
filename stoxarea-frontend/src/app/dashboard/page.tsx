@@ -12,7 +12,7 @@ interface Recommendation {
   ai_score_percent: string
   roe: number
   der: number
-  per: number
+  pbv: number
   insights: { feature: string; description: string; contribution: number }[]
 }
 
@@ -177,8 +177,8 @@ export default function DashboardPage() {
                     <div className="metric-value">{r.roe}%</div>
                   </div>
                   <div className="metric">
-                    <div className="metric-label">PER</div>
-                    <div className="metric-value">{r.per}x</div>
+                    <div className="metric-label">PBV</div>
+                    <div className="metric-value">{r.pbv}x</div>
                   </div>
                   <div className="metric">
                     <div className="metric-label">DER</div>

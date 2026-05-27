@@ -17,4 +17,4 @@ class RecommendationResponse(BaseModel):
     # Fundamental data pendukung (opsional ditampilkan di UI)
     roe: Optional[float] = None
     der: Optional[float] = None
-    per: Optional[float] = None
+    pbv: Optional[float] = None

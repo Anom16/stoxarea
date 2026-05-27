@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     # ML Pipeline Paths
     AI_SCORES_PATH: str = "data/processed/ai_scores.json"
     CAPPING_BOUNDS_PATH: str = "data/processed/capping_bounds.json"
-    MODEL_PATH: str = "ml/models_saved/xgb_model.pkl"
+    MODEL_PATH: str = "models/xgb_model.pkl"
     
     # Feature: Rate limiting
     RATE_LIMIT_ENABLED: bool = Field(default=True, env="RATE_LIMIT_ENABLED")

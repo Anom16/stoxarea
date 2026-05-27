@@ -35,7 +35,7 @@ OUTPUT_PATH     = Path("data/processed/features_targets.csv")
 
 # ── Parameter Target ──
 TARGET_HORIZON_DAYS = 5
-TARGET_PROFIT_PCT   = 0.05  # 5%
+TARGET_PROFIT_PCT   = 0.0  # 0% (Hanya perlu naik, tanpa threshold)
 
 
 
@@ -97,24 +97,29 @@ def process_ticker(ticker: str, file_path: Path) -> pd.DataFrame:
     #   → shift(-5) hanya menggeser posisi baris, BUKAN mengambil masa depan murni
     #   → Hasilnya: label di baris t mencerminkan max(high[t-9]...high[t-5]), bukan masa depan
     #
-    # FIX BENAR:
-    #   1. shift(-1) dulu → geser high satu hari ke depan (hari t+1 masuk ke baris t)
-    #   2. rolling(5).max() → ambil max dari [t+1, t+2, t+3, t+4, t+5]
-    #   → Hasilnya: label di baris t = max High dari 5 hari SETELAH hari t (murni masa depan)
-    #   → Tidak ada informasi hari ini yang bocor ke label
-    future_max_high = high.shift(-1).rolling(
-        window=TARGET_HORIZON_DAYS,
-        min_periods=TARGET_HORIZON_DAYS  # wajib persis 5 hari, bukan kurang
-    ).max()
+    # SEBELUMNYA:
+    #   high.shift(-1).rolling(5).max()
+    #   → Ini juga BOCOR! Karena rolling(5) di pandas selalu backward-looking,
+    #     maka pada hari t, ia menghitung max dari shift(-1) pada hari t-4, t-3, t-2, t-1, t.
+    #     Yang berarti max(high[t-3], high[t-2], high[t-1], high[t], high[t+1]).
+    #     Ini membocorkan data masa lalu dan hari ini (high[t-3]..high[t]) ke target hari ini!
+    #
+    # SOLUSI BEBAS LEAKAGE (BENAR):
+    #   Menggeser hasil rolling max kembali ke atas sebanyak (horizon - 1) hari.
+    #   Untuk horizon 5 hari, kita shift(-4) setelah rolling.
+    #   Hasilnya: target hari t = max(high[t+1], high[t+2], high[t+3], high[t+4], high[t+5]).
+    #   Murni masa depan!
+    # Ambil harga Close tepat 5 hari ke depan
+    future_close = close.shift(-TARGET_HORIZON_DAYS)
 
-    # Label 1 jika future max high > 5% dari close hari ini
-    target_pct = (future_max_high - close) / close
+    # Label 1 jika future close > 0% dari close hari ini (naik)
+    target_pct = (future_close - close) / close
 
     # Biarkan NaN tetap NaN (baris 5 terakhir tidak punya label valid)
     df["target_5d_up"] = np.where(
         target_pct.isna(),
         np.nan,
-        (target_pct >= TARGET_PROFIT_PCT).astype(int)
+        (target_pct > TARGET_PROFIT_PCT).astype(int)
     )
     
     # Tandai baris terbaru untuk inferensi

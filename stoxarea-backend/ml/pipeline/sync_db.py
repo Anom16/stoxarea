@@ -58,7 +58,7 @@ def sync_stocks():
             #
             # FIX: Coba kedua format (dengan dan tanpa .JK) agar match selalu ditemukan
             # terlepas dari format yang dipakai saat ingestor menyimpan data.
-            roe, der, per = None, None, None
+            roe, der, pbv = None, None, None
             if not fund_df.empty:
                 ticker_bare = ticker.split('.')[0]          # "BBCA.JK" → "BBCA"
                 ticker_full = ticker_bare + ".JK"           # "BBCA"    → "BBCA.JK"
@@ -74,7 +74,7 @@ def sync_stocks():
                 if not match.empty:
                     roe = float(match.iloc[0]['roe']) if pd.notnull(match.iloc[0]['roe']) else None
                     der = float(match.iloc[0]['der']) if pd.notnull(match.iloc[0]['der']) else None
-                    per = float(match.iloc[0]['per']) if pd.notnull(match.iloc[0]['per']) else None
+                    pbv = float(match.iloc[0]['pbv']) if pd.notnull(match.iloc[0]['pbv']) else None
 
             # Update atau Create
             stock = db.query(Stock).filter(Stock.ticker == ticker).first()
@@ -86,17 +86,17 @@ def sync_stocks():
             stock.sector = sector_name
             stock.roe = roe
             stock.der = der
-            stock.per = per
+            stock.pbv = pbv
 
             # FIX #1 — Filter saham dengan fundamental berbahaya untuk SAW.
             #
-            # Masalah: rumus normalisasi SAW untuk kriteria Cost (PER, DER) adalah
+            # Masalah: rumus normalisasi SAW untuk kriteria Cost (PBV, DER) adalah
             #   n = min_value / x
             # Jika x negatif, hasil normalisasi menjadi negatif dan merusak seluruh
-            # matriks ranking. Contoh: PER = -5 → n = 5 / -5 = -1.0 (tidak valid).
+            # matriks ranking. Contoh: PBV = -0.5 → n = 0.1 / -0.5 = -0.2 (tidak valid).
             #
             # Aturan gugur otomatis (is_qualified = False):
-            #   1. PER <= 0  → perusahaan sedang RUGI (EPS negatif). Tidak layak masuk SAW.
+            #   1. PBV <= 0  → perusahaan dengan ekuitas negatif (Book Value negatif). Tidak layak masuk SAW.
             #   2. DER < 0   → ekuitas negatif (utang > aset total). Kondisi teknis bangkrut.
             #   3. ROE < -50 → kerugian ekstrem, bukan sekadar rugi sementara.
             #
@@ -105,9 +105,9 @@ def sync_stocks():
             fundamental_disqualified = False
             disqualify_reason = None
 
-            if per is not None and per <= 0:
+            if pbv is not None and pbv <= 0:
                 fundamental_disqualified = True
-                disqualify_reason = f"PER negatif ({per:.2f}) — perusahaan sedang rugi"
+                disqualify_reason = f"PBV negatif ({pbv:.2f}) — ekuitas negatif"
             elif der is not None and der < 0:
                 fundamental_disqualified = True
                 disqualify_reason = f"DER negatif ({der:.2f}) — ekuitas negatif"

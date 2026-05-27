@@ -50,8 +50,8 @@ def get_top_momentum_stocks(db: Session, limit: int = 30, target_sector: Optiona
     stocks_list = []
     for s in db_stocks:
         ticker = s.ticker
-        # Ambil skor AI jika ada
-        data = all_scores.get(ticker)
+        # Ambil skor AI jika ada (Cek tanpa dan dengan .JK)
+        data = all_scores.get(ticker) or all_scores.get(f"{ticker}.JK")
         
         # HANYA TAMPILKAN JIKA ADA DATA AI (Tidak 0%)
         if data:
@@ -68,42 +68,54 @@ def get_top_momentum_stocks(db: Session, limit: int = 30, target_sector: Optiona
     # Gunakan limit yang lebih besar sesuai jumlah database
     top_stocks = stocks_list[:150]
 
+    if not top_stocks:
+        return []
+
     # 3. Fetch Data Pasar (Sparkline & Price) - Ini yang biasanya menyebabkan LAG
     import yfinance as yf
     try:
         tickers = [s["ticker"] for s in top_stocks]
         yf_tickers = [t if t.endswith(".JK") else t + ".JK" for t in tickers]
         
-        # Download data 1 bulan terakhir secara kolektif (satu request saja)
-        data = yf.download(yf_tickers, period="1mo", interval="1d", progress=False, auto_adjust=True)
+        # Batasi batch size agar tidak throttle Yahoo Finance
+        # Download maksimal 30 ticker per batch, dengan jeda antar batch
+        BATCH_SIZE = 30
+        all_prices = {}
         
-        if not data.empty:
-            # Jika hanya satu saham, pandas return Series. Jika banyak, return DataFrame.
-            # Kita handle agar selalu konsisten
-            if len(yf_tickers) > 1:
-                prices = data["Close"]
-            else:
-                prices = {yf_tickers[0]: data["Close"]}
-
-            for s in top_stocks:
-                t = s["ticker"]
-                yf_t = t if t.endswith(".JK") else t + ".JK"
-                
-                if yf_t in prices:
-                    # Ambil 7 hari terakhir untuk sparkline
-                    p_series = prices[yf_t].dropna().tail(7).tolist()
-                    s["sparkline"] = [round(float(x), 2) for x in p_series]
-                    s["current_price"] = round(float(p_series[-1]), 2) if p_series else 0
-                    
-                    if len(p_series) >= 2:
-                        change = p_series[-1] - p_series[0]
-                        s["sentiment"] = "Bullish" if change > 0 else "Bearish"
+        for i in range(0, len(yf_tickers), BATCH_SIZE):
+            batch = yf_tickers[i:i + BATCH_SIZE]
+            try:
+                data = yf.download(batch, period="1mo", interval="1d", progress=False, auto_adjust=True)
+                if not data.empty:
+                    if len(batch) > 1:
+                        prices_batch = data["Close"]
                     else:
-                        s["sentiment"] = "Netral"
+                        prices_batch = {batch[0]: data["Close"]}
+                    all_prices.update({k: v for k, v in prices_batch.items()})
+            except Exception:
+                pass
+            # Jeda antar batch untuk menghindari throttle
+            if i + BATCH_SIZE < len(yf_tickers):
+                time.sleep(0.5)
+
+        for s in top_stocks:
+            t = s["ticker"]
+            yf_t = t if t.endswith(".JK") else t + ".JK"
+            
+            if yf_t in all_prices:
+                p_series = all_prices[yf_t].dropna().tail(7).tolist()
+                s["sparkline"] = [round(float(x), 2) for x in p_series]
+                s["current_price"] = round(float(p_series[-1]), 2) if p_series else 0
+                
+                if len(p_series) >= 2:
+                    change = p_series[-1] - p_series[0]
+                    s["sentiment"] = "Bullish" if change > 0 else "Bearish"
                 else:
-                    s["sparkline"] = []
                     s["sentiment"] = "Netral"
-                    s["current_price"] = 0
+            else:
+                s["sparkline"] = []
+                s["sentiment"] = "Netral"
+                s["current_price"] = 0
     except Exception as e:
         print(f"Error fetching market data: {e}")
         # Berikan data kosong agar UI tidak hancur
@@ -148,7 +160,7 @@ def get_qualified_stocks_for_saw(
     Tanggung jawab fungsi ini:
         1. Filter saham is_qualified = True (lolos SPK 2)
         2. Gabungkan dengan AI Score dari intelligence_store
-        3. Clamp nilai fundamental (ROE, DER, PER) menggunakan bounds persentil
+        3. Clamp nilai fundamental (ROE, DER, PBV) menggunakan bounds persentil
            → SPK 3 tidak perlu tahu soal outlier, tinggal hitung SAW
 
     Perbedaan dengan get_top_momentum_stocks():
@@ -158,8 +170,8 @@ def get_qualified_stocks_for_saw(
     Returns:
         List of dict dengan field:
             ticker, sector, ai_score, insights,
-            roe_raw, der_raw, per_raw,      ← nilai asli untuk ditampilkan di UI
-            roe_clean, der_clean, per_clean  ← nilai bersih untuk kalkulasi SAW
+            roe_raw, der_raw, pbv_raw,      ← nilai asli untuk ditampilkan di UI
+            roe_clean, der_clean, pbv_clean  ← nilai bersih untuk kalkulasi SAW
     """
     # Query saham qualified dari DB
     query = db.query(Stock).filter(Stock.is_qualified == True)
@@ -174,7 +186,7 @@ def get_qualified_stocks_for_saw(
     result = []
 
     for s in stocks:
-        ai_data = all_scores.get(s.ticker)
+        ai_data = all_scores.get(s.ticker) or all_scores.get(f"{s.ticker}.JK")
         if not ai_data:
             # Skip saham yang belum punya AI Score (pipeline belum jalan)
             continue
@@ -182,14 +194,14 @@ def get_qualified_stocks_for_saw(
         # Nilai mentah — disimpan untuk ditampilkan di UI
         roe_raw = s.roe
         der_raw = s.der
-        per_raw = s.per
+        pbv_raw = s.pbv
 
         # Nilai bersih — sudah di-clamp ke batas persentil P5-P95
         # Ini yang dipakai untuk kalkulasi normalisasi SAW di SPK 3
         # SPK 3 tidak perlu tahu batas capping — sudah ditangani di sini
         roe_clean = bounds_store.clamp(roe_raw, "roe")
         der_clean = bounds_store.clamp(der_raw, "der")
-        per_clean = bounds_store.clamp(per_raw, "per")
+        pbv_clean = bounds_store.clamp(pbv_raw, "pbv")
 
         result.append({
             "ticker":    s.ticker,
@@ -199,11 +211,11 @@ def get_qualified_stocks_for_saw(
             # Nilai asli (untuk UI)
             "roe_raw":   roe_raw,
             "der_raw":   der_raw,
-            "per_raw":   per_raw,
+            "pbv_raw":   pbv_raw,
             # Nilai bersih (untuk SAW) — sudah bebas outlier
             "roe_clean": roe_clean,
             "der_clean": der_clean,
-            "per_clean": per_clean,
+            "pbv_clean": pbv_clean,
         })
 
     return result

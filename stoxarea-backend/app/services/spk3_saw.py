@@ -182,14 +182,14 @@ def calculate_saw_recommendations(
 
         max_roe_shifted = max(roe_shifted.values()) or 1.0
 
-        # DER & PER (Cost)
+        # DER & PBV (Cost)
         min_der = min(
             (s["der_clean"] for s in stocks if s["der_clean"] > 0),
             default=0.1
         )
-        min_per = min(
-            (s["per_clean"] for s in stocks if s["per_clean"] > 0),
-            default=5.0
+        min_pbv = min(
+            (s["pbv_clean"] for s in stocks if s["pbv_clean"] > 0),
+            default=0.2
         )
 
         # ── 5. Kalkulasi Normalisasi SAW & Skor Akhir ────────────────────────
@@ -204,26 +204,26 @@ def calculate_saw_recommendations(
             else:
                 n_der = min_der / s["der_clean"]
 
-            n_per = 0.0 if s["per_clean"] <= 0 else (min_per / s["per_clean"])
+            n_pbv = 0.0 if s["pbv_clean"] <= 0 else (min_pbv / s["pbv_clean"])
 
             # Clamp ke [0, 1]
             n_ai  = min(1.0, max(0.0, n_ai))
             n_roe = min(1.0, max(0.0, n_roe))
             n_der = min(1.0, max(0.0, n_der))
-            n_per = min(1.0, max(0.0, n_per))
+            n_pbv = min(1.0, max(0.0, n_pbv))
 
             final_score = (
                 (n_ai  * weights["ai_score"]) +
                 (n_roe * weights["roe"])      +
                 (n_der * weights["der"])      +
-                (n_per * weights["per"])
+                (n_pbv * weights["pbv"])
             )
 
             insights = [InsightItem(**i) for i in s["insights"]]
 
             roe_display = round(s["roe_raw"], 2) if s["roe_raw"] is not None else 0.0
             der_display = round(s["der_raw"], 2) if s["der_raw"] is not None else 0.0
-            per_display = round(s["per_raw"], 2) if s["per_raw"] is not None else 0.0
+            pbv_display = round(s["pbv_raw"], 2) if s["pbv_raw"] is not None else 0.0
 
             results.append(
                 RecommendationResponse(
@@ -235,7 +235,7 @@ def calculate_saw_recommendations(
                     insights=insights,
                     roe=roe_display,
                     der=der_display,
-                    per=per_display,
+                    pbv=pbv_display,
                 )
             )
 

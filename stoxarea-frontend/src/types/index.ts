@@ -7,7 +7,7 @@ export interface Stock {
   aiScore:  number
   roe:      number
   der:      number
-  per:      number
+  pbv:      number
   sawScore: number
   match:    number
 }
