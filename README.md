@@ -13,25 +13,48 @@
 ## 🎯 Fitur Utama
 
 ### 🔐 SPK Lapis 1: Risk Profiling
-- Questionnaire 10 pertanyaan untuk menentukan profil risiko pengguna
-- Klasifikasi: **Konservatif** | **Moderat** | **Agresif**
-- VETO logic: Pengguna dengan dana darurat dipaksa profil Konservatif
-- Penyimpanan profil untuk rekomendasi yang konsisten
+- Questionnaire 10 pertanyaan (5 dimensi K1-K5) untuk menentukan profil risiko
+- Klasifikasi berdasarkan total skor:
+  - **Konservatif**: Total skor < 12 (risk-averse)
+  - **Moderat**: Total skor 12-18 (balanced)
+  - **Agresif**: Total skor > 18 (risk-seeking)
+- **VETO Safety Logic** (Perlindungan Dana Darurat):
+  - Jika K5 ≤ 1 (kapasitas finansial sangat rendah) → Paksa Konservatif
+  - Jika K5 == 3 AND K3 == 1 (medium capacity + low tolerance) → Paksa Konservatif
+  - Mencegah investasi dengan dana darurat/kebutuhan pokok
+- **Bobot W** untuk SAW (fixed per profil, bukan per-user):
+  - Konservatif: AI 10%, ROE 45%, DER 35%, PBV 10%
+  - Moderat: AI 35%, ROE 30%, DER 15%, PBV 20%
+  - Agresif: AI 60%, ROE 10%, DER 10%, PBV 20%
 
-### 🤖 SPK Lapis 2: AI Momentum Scoring
-- **XGBoost Classifier** untuk prediksi momentum saham
-- Pelatihan dengan walk-forward validation (time-series safe)
-- **SHAP Explainability**: Top 3 fitur yang mempengaruhi prediksi
+### 🤖 SPK Lapis 2: Stock Scoring & Filtering
+- **XGBoost Classifier** untuk prediksi momentum (11 indikator teknikal):
+  - Input: Log returns, MA, RSI, MACD, Bollinger Bands, Volume
+  - Output: AI Score (0-100%) probabilitas naik dalam 7 hari
+- **Penilaian 4 Kriteria** (normalized 0-1):
+  - AI Score (benefit: semakin tinggi semakin baik)
+  - ROE (benefit: semakin tinggi semakin baik)
+  - DER (cost: semakin rendah semakin baik)
+  - PBV (cost: semakin rendah semakin baik)
+- **Outlier Handling**: Clamp nilai ROE, DER, PBV ke persentil P5-P95 (remove ekstrem values)
+- **Pre-filtering**: Only `is_qualified = True` stocks proceed ke SPK Lapis 3
+- **SHAP Explainability**: Top 3 fitur teknikal yang mempengaruhi prediksi
 - Daily ML pipeline: Otomatis update setiap hari pukul 17:00 (Senin-Jumat)
 - Caching 5 menit untuk performa optimal
 
-### 📊 SPK Lapis 3: SAW Recommendations
-- **Simple Additive Weighting** algorithm untuk personalisasi
-- Bobot dinamis berdasarkan risk profile:
-  - Konservatif: 50% ROE, 30% DER, 10% PER, 10% AI
-  - Moderat: 40% AI, 30% ROE, 20% DER, 10% PER
-  - Agresif: 80% AI, 10% ROE, 5% DER, 5% PER
-- Top 10 rekomendasi personal per pengguna
+### 📊 SPK Lapis 3: Personalized Ranking (SAW)
+- **Simple Additive Weighting (SAW)** formula:
+  - $V_i = \sum (W_j \times N_{ij})$ dimana:
+    - $W_j$ = bobot per profil (dari Tier 1)
+    - $N_{ij}$ = normalized score saham (dari Tier 2)
+- **Cache per Profil**: 3 profil × 12 sektor + global = 39 cache entries max
+  - Cache TTL = 10 menit (sync dengan siklus pasar)
+  - Thread-safe dengan double-checked locking
+- **Filtering & Blacklist**: Sudah dilakukan di Tier 2 via `is_qualified` flag
+  - Saham dengan fundamental ekstrem tidak masuk ke SAW
+- **Output**: Top 5-10 rekomendasi personal per pengguna
+  - Sorted by match_score tertinggi
+  - Include: AI score, fundamental metrics, SHAP insights
 
 ### 💹 Virtual Trading
 - Simulasi trading dengan modal virtual Rp 100 Juta
@@ -87,6 +110,68 @@
     │  OHLCV (5 years) │ Fundamental Data     │
     └─────────────────────────────────────────┘
 ```
+
+---
+
+## 🎯 Three-Tier SPK Architecture (Implementation Details)
+
+### Tier 1: User Profiling
+**Input:** Kuesioner 10 item (K1-K5)  
+**Process:**
+1. Agregasi K1-K5 menjadi total skor
+2. Tentukan profil (Konservatif/Moderat/Agresif) dari threshold:
+   - Skor < 12 → Konservatif
+   - Skor 12-18 → Moderat
+   - Skor > 18 → Agresif
+3. Apply VETO safety logic jika K5 terlalu rendah
+4. Ambil bobot W yang sesuai dengan profil (fixed per profil, tidak per-user)
+
+**Output:** Profil risiko + Vektor Bobot W untuk SPK Lapis 3
+
+---
+
+### Tier 2: Stock Scoring & Filtering
+**Input:** Dataset saham 150+ ticker, 11 indikator teknikal  
+**Process:**
+1. **Hitung AI Score** dari XGBoost (teknikal only)
+2. **Normalisasi 4 Kriteria** ke [0, 1]:
+   - ROE (benefit): normalize dengan shift jika ada negatif
+   - DER, PBV (cost): inverse normalisasi (min_value / x)
+   - AI Score (benefit): direct normalisasi
+3. **Clamp Outliers**: P5-P95 persentil untuk ROE, DER, PBV
+4. **Pre-filter**: Only `is_qualified = True` → pass ke Tier 3
+5. Simpan clean values untuk SAW + raw values untuk UI display
+
+**Output:** Matriks R (N × 4) dengan normalized scores, siap untuk SAW
+
+---
+
+### Tier 3: Personalized Ranking (SAW)
+**Input:** Bobot W dari Tier 1 + Normalized scores R dari Tier 2  
+**Process:**
+1. **Hitung SAW Score** untuk setiap saham:
+   $$V_i = \sum_{j=1}^{4} W_j \times N_{ij}$$
+2. **Cache per Profil** (3 profil × 12 sektor = 39 cache entries):
+   - Cache TTL = 10 menit
+   - Double-checked locking + per-key locks (thread-safe)
+   - Invalidate setelah ML pipeline selesai
+3. **Sort & Rank** dari V_i tertinggi ke terendah
+4. **Return Top 5** rekomendasi personal
+
+**Output:** Rekomendasi saham sorted by match_score + fundamental metrics + SHAP insights
+
+---
+
+### Key Differences from Theory
+| Aspek | Desain Teoritis | Implementasi Actual | Alasan |
+|:------|:---|:---|:---|
+| Bobot W | Per-user (proporsional K1-K4) | Fixed per profil (3 bobot) | Cache efficiency, 3 profil = simple |
+| K-Means Clustering | Ya (initial profiling) | Threshold sederhana | Production simplicity |
+| Filtering | Tier 3 rule-based blacklist | Tier 2 pre-filter `is_qualified` | Early filtering saves resources |
+| Outlier Handling | Tier 3 capping | Tier 2 P5-P95 clamp | Clean data into SAW |
+| Veto Logic | K5 ≤ 2 | K5 ≤ 1 atau (K5==3 && K3==1) | Stricter safety for users |
+
+**Kesimpulan:** Implementasi lebih pragmatis & production-focused, dengan early filtering dan cache strategy yang optimal.
 
 ---
 
