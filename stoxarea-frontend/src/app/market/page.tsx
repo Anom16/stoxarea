@@ -9,14 +9,16 @@ import { AreaChart, Area, ResponsiveContainer } from 'recharts'
 interface StockRow {
   ticker: string
   sector: string
+  name?: string
   ai_score_percent: string
-  match_score_percent: string
-  sentiment: string
+  ai_score?: number
+  match_score_percent?: string
+  sentiment?: string
   sparkline?: number[]
   current_price?: number
-  name?: string
   cluster?: string
   is_qualified?: boolean
+  has_ai_score?: boolean
 }
 
 interface SectorRow {
@@ -70,11 +72,15 @@ function MarketExplorerContent() {
     fetchData()
   }, [])
 
+  const [showOnlyQualified, setShowOnlyQualified] = useState(false)
+
   const sortedAndFilteredStocks = stocks
     .filter(s => {
-      const matchesSearch = s.ticker.toLowerCase().includes(search.toLowerCase())
+      const matchesSearch = s.ticker.toLowerCase().includes(search.toLowerCase()) ||
+        (s.name || '').toLowerCase().includes(search.toLowerCase())
       const matchesSector = selectedSector ? s.sector === selectedSector : true
-      return matchesSearch && matchesSector
+      const matchesQualified = showOnlyQualified ? s.is_qualified !== false : true
+      return matchesSearch && matchesSector && matchesQualified
     })
     .sort((a, b) => {
       let aVal: any = a[sortConfig.key] ?? ''
@@ -110,15 +116,46 @@ function MarketExplorerContent() {
               />
             </div>
             <p className="fs-12 text-muted mt-8" style={{ marginTop: 12 }}>
-              Menampilkan {sortedAndFilteredStocks.length} saham yang terpantau aktif oleh radar StoxArea.
+              Menampilkan {sortedAndFilteredStocks.length} dari {stocks.length} saham terdaftar.
+              <span style={{ color: '#4CAF50', marginLeft: 6 }}>
+                {stocks.filter(s => s.is_qualified).length} qualified untuk rekomendasi SPK.
+              </span>
             </p>
           </div>
 
           {/* 2. Daftar Saham Lengkap */}
           <div className="card mb-24">
-            <div className="flex-between mb-16">
-              <h3 className="section-title" style={{ fontSize: 18 }}>Daftar Saham</h3>
-              <div className="sentiment-badge bullish">SPK Lapis 2 & 3 Aktif</div>
+            <div className="flex-between mb-16" style={{ flexWrap: 'wrap', gap: 10 }}>
+              <h3 className="section-title" style={{ fontSize: 18 }}>
+                Daftar Saham
+                <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text-muted)', marginLeft: 8 }}>
+                  ({sortedAndFilteredStocks.length} saham)
+                </span>
+              </h3>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button
+                  onClick={() => setShowOnlyQualified(false)}
+                  style={{
+                    background: !showOnlyQualified ? 'var(--accent)' : 'transparent',
+                    color: !showOnlyQualified ? '#000' : 'var(--text-muted)',
+                    border: '1px solid var(--border)', borderRadius: 8,
+                    padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                  }}
+                >
+                  Semua Saham
+                </button>
+                <button
+                  onClick={() => setShowOnlyQualified(true)}
+                  style={{
+                    background: showOnlyQualified ? 'var(--accent)' : 'transparent',
+                    color: showOnlyQualified ? '#000' : 'var(--text-muted)',
+                    border: '1px solid var(--border)', borderRadius: 8,
+                    padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                  }}
+                >
+                  ✅ Qualified Saja
+                </button>
+              </div>
             </div>
             
             {loading ? (
@@ -148,20 +185,25 @@ function MarketExplorerContent() {
                         <td>
                           <Link href={`/market/${s.ticker}`} style={{ textDecoration: 'none' }}>
                             <div className="fw-700 text-primary" style={{ fontSize: 16 }}>{s.ticker.replace('.JK', '')}</div>
-                            {s.cluster && (
-                              <div className="fs-10 px-6 py-2 rounded mt-4" style={{ 
-                                display: 'inline-block',
-                                background: s.cluster.includes('Sultan') ? 'rgba(16, 185, 129, 0.1)' : 
-                                            s.cluster.includes('Value') ? 'rgba(59, 130, 246, 0.1)' : 
-                                            'rgba(245, 158, 11, 0.1)',
-                                color: s.cluster.includes('Sultan') ? '#10b981' : 
-                                       s.cluster.includes('Value') ? '#3b82f6' : 
-                                       '#f59e0b',
-                                border: `1px solid currentColor`
-                              }}>
-                                {s.cluster}
-                              </div>
+                            {s.name && (
+                              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>
                             )}
+                            <div style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
+                              {s.is_qualified === false && (
+                                <span style={{
+                                  fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 4,
+                                  background: 'rgba(244,67,54,0.12)', color: '#f44336',
+                                  border: '1px solid rgba(244,67,54,0.3)',
+                                }}>Tidak Qualified</span>
+                              )}
+                              {!s.has_ai_score && (
+                                <span style={{
+                                  fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 4,
+                                  background: 'rgba(158,158,158,0.12)', color: '#888',
+                                  border: '1px solid rgba(158,158,158,0.3)',
+                                }}>No AI Score</span>
+                              )}
+                            </div>
                           </Link>
                         </td>
                         <td className="text-secondary fs-13">{s.sector}</td>

@@ -232,64 +232,65 @@ export default function OnboardingPage() {
 
   return (
     <div style={styles.fullPage}>
-      <div style={{ width: '100%', maxWidth: 500, padding: 24 }}>
+      {/* Background glow effects */}
+      <div className="bg-glow-1"></div>
+      <div className="bg-glow-2"></div>
+      
+      <div style={{ width: '100%', maxWidth: 540, padding: 24, position: 'relative', zIndex: 10 }}>
 
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <div style={{ textAlign: 'center', marginBottom: 40, animation: 'fadeInDown 0.6s ease-out' }}>
           <div style={{
-            width: 56, height: 56, margin: '0 auto 12px',
+            width: 64, height: 64, margin: '0 auto 16px',
             background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
-            borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 24, fontWeight: 900, color: 'white',
+            borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 28, fontWeight: 900, color: 'white',
+            boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.4)'
           }}>S</div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: 'white' }}>
-            Analisis <span style={{ color: '#10b981' }}>Profil Risiko</span>
+          <h1 style={{ fontSize: 28, fontWeight: 800, color: 'white', letterSpacing: '-0.5px' }}>
+            Analisis <span style={{ background: 'linear-gradient(to right, #10b981, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Profil Risiko</span>
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: 13, marginTop: 4 }}>
-            Bantu AI memahami gaya investasi Anda
+          <p style={{ color: '#94a3b8', fontSize: 14, marginTop: 6 }}>
+            Bantu AI menyesuaikan strategi investasi terbaik untuk Anda
           </p>
         </div>
 
-        <div style={styles.card}>
+        <div className="glass-card question-transition" key={currentStep}>
           {/* Progress Bar */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#94a3b8', marginBottom: 8 }}>
-              <span>Pertanyaan {currentStep + 1} / {questions.length}</span>
-              <span>{Math.round(progress)}%</span>
+          <div style={{ marginBottom: 32 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 600, color: '#94a3b8', marginBottom: 12 }}>
+              <span style={{ textTransform: 'uppercase', letterSpacing: '1px' }}>Pertanyaan {currentStep + 1} / {questions.length}</span>
+              <span style={{ color: '#10b981' }}>{Math.round(progress)}%</span>
             </div>
-            <div style={{ height: 4, background: '#0f172a', borderRadius: 2 }}>
+            <div style={{ height: 6, background: 'rgba(15, 23, 42, 0.6)', borderRadius: 3, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
               <div style={{
-                height: '100%', background: '#10b981',
-                width: `${progress}%`, transition: 'width 0.3s', borderRadius: 2,
+                height: '100%', 
+                background: 'linear-gradient(90deg, #3b82f6 0%, #10b981 100%)',
+                width: `${progress}%`, transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)', 
+                borderRadius: 3,
+                boxShadow: '0 0 10px rgba(16, 185, 129, 0.5)'
               }} />
             </div>
           </div>
 
           {/* Pertanyaan */}
-          <div style={{ marginBottom: 24 }}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.5, color: 'white' }}>
+          <div style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.6, color: '#f8fafc' }}>
               {q.question}
             </h2>
           </div>
 
           {/* Pilihan Jawaban */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {q.options.map((opt: any, i: number) => {
               const isSelected = answers[currentStep] === opt.value
               return (
                 <button
                   key={i}
+                  className={`option-btn ${isSelected ? 'selected' : ''}`}
                   onClick={() => handleAnswer(opt.value)}
-                  style={{
-                    width: '100%', textAlign: 'left',
-                    background: isSelected ? 'rgba(16, 185, 129, 0.15)' : '#0f172a',
-                    border: isSelected ? '1px solid #10b981' : '1px solid #334155',
-                    borderRadius: 10, padding: '16px',
-                    color: 'white', fontSize: 14, cursor: 'pointer',
-                    transition: 'all 0.2s', outline: 'none',
-                  }}
                 >
-                  {opt.text}
+                  <div style={{ paddingRight: 30 }}>{opt.text}</div>
                 </button>
               )
             })}
@@ -298,24 +299,27 @@ export default function OnboardingPage() {
           {/* Error message */}
           {error && (
             <div style={{
-              marginTop: 16, padding: '10px 14px',
-              background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444',
-              borderRadius: 8, color: '#f87171', fontSize: 13,
+              marginTop: 20, padding: '12px 16px',
+              background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)',
+              borderRadius: 10, color: '#f87171', fontSize: 13,
+              animation: 'fadeIn 0.3s'
             }}>
-              {error}
+              ⚠️ {error}
             </div>
           )}
 
           {/* Navigasi */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24, alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32, alignItems: 'center' }}>
             <button
               onClick={() => setCurrentStep(currentStep - 1)}
               disabled={currentStep === 0}
               style={{
                 background: 'transparent', border: 'none', color: '#94a3b8',
-                fontSize: 13, cursor: currentStep === 0 ? 'default' : 'pointer',
-                opacity: currentStep === 0 ? 0.3 : 1,
+                fontSize: 14, fontWeight: 600, cursor: currentStep === 0 ? 'default' : 'pointer',
+                opacity: currentStep === 0 ? 0.3 : 1, transition: 'all 0.2s'
               }}
+              onMouseOver={(e) => { if(currentStep !== 0) e.currentTarget.style.color = 'white' }}
+              onMouseOut={(e) => { if(currentStep !== 0) e.currentTarget.style.color = '#94a3b8' }}
             >
               ← Kembali
             </button>
@@ -323,16 +327,9 @@ export default function OnboardingPage() {
             {/* Tombol Selesai muncul di pertanyaan terakhir setelah dijawab */}
             {isLastQuestion && answers[currentStep] !== undefined && (
               <button
+                className="finish-btn"
                 onClick={handleSubmit}
                 disabled={submitting || !allAnswered}
-                style={{
-                  background: submitting ? '#374151' : '#10b981',
-                  color: 'white', border: 'none',
-                  borderRadius: 8, padding: '10px 20px',
-                  fontSize: 14, fontWeight: 700,
-                  cursor: submitting ? 'not-allowed' : 'pointer',
-                  opacity: submitting ? 0.7 : 1,
-                }}
               >
                 {submitting ? 'Menganalisis...' : 'Selesai & Lihat Hasil →'}
               </button>
@@ -341,11 +338,137 @@ export default function OnboardingPage() {
         </div>
       </div>
 
-      <style jsx>{`
-        button:hover:not(:disabled) {
-          opacity: 0.9;
+      <style dangerouslySetInnerHTML={{__html: `
+        .bg-glow-1 {
+          position: fixed;
+          top: -100px;
+          right: -100px;
+          width: 400px;
+          height: 400px;
+          background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(0,0,0,0) 70%);
+          border-radius: 50%;
+          z-index: 1;
         }
-      `}</style>
+        .bg-glow-2 {
+          position: fixed;
+          bottom: -100px;
+          left: -100px;
+          width: 400px;
+          height: 400px;
+          background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(0,0,0,0) 70%);
+          border-radius: 50%;
+          z-index: 1;
+        }
+        .glass-card {
+          background: rgba(30, 41, 59, 0.7);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          padding: 40px;
+          border-radius: 24px;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .question-transition {
+          animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .option-btn {
+          position: relative;
+          width: 100%;
+          text-align: left;
+          background: rgba(15, 23, 42, 0.4);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 12px;
+          padding: 18px 20px;
+          color: #cbd5e1;
+          font-size: 15px;
+          line-height: 1.5;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          outline: none;
+          font-family: inherit;
+        }
+        .option-btn:hover:not(.selected) {
+          background: rgba(30, 41, 59, 0.9);
+          border-color: rgba(59, 130, 246, 0.4);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+          color: white;
+        }
+        .option-btn.selected {
+          background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(59,130,246,0.1) 100%);
+          border-color: #10b981;
+          color: white;
+          font-weight: 600;
+          box-shadow: 0 0 20px rgba(16,185,129,0.15), inset 0 0 0 1px #10b981;
+          transform: scale(1.02);
+        }
+        .option-btn.selected::after {
+          content: '✓';
+          position: absolute;
+          right: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #10b981;
+          font-weight: 900;
+          font-size: 18px;
+          background: rgba(16,185,129,0.15);
+          width: 28px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .finish-btn {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: white;
+          border: none;
+          border-radius: 12px;
+          padding: 12px 24px;
+          font-size: 15px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+          animation: pulseGlow 2s infinite;
+        }
+        .finish-btn:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 15px 25px -5px rgba(16, 185, 129, 0.4);
+        }
+        .finish-btn:disabled {
+          background: #334155;
+          box-shadow: none;
+          cursor: not-allowed;
+          animation: none;
+          color: #94a3b8;
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUpFade {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+          0% { opacity: 0; transform: translateY(-50%) scale(0.5); }
+          50% { transform: translateY(-50%) scale(1.2); }
+          100% { opacity: 1; transform: translateY(-50%) scale(1); }
+        }
+        @keyframes pulseGlow {
+          0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+          70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}} />
     </div>
   )
 }
@@ -353,17 +476,13 @@ export default function OnboardingPage() {
 const styles = {
   fullPage: {
     minHeight: '100vh',
-    background: '#0f172a',
+    background: '#0a0f1a', // Lebih gelap agar glow lebih terlihat
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     fontFamily: 'Inter, sans-serif',
-  },
-  card: {
-    background: '#1e293b',
-    padding: 32,
-    borderRadius: 16,
-    border: '1px solid #334155',
-    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)',
-  },
+    position: 'relative' as const,
+    overflow: 'hidden' as const,
+  }
 }
+

@@ -1,0 +1,576 @@
+{
+  "metadata": {
+    "date": "2026-06-01T09:55:07Z",
+    "total_stocks": 61,
+    "k_optimal": 3,
+    "inertia": 96.634,
+    "silhouette_score": 0.3745,
+    "features_used": [
+      "return_1y",
+      "volatility",
+      "avg_volume",
+      "beta"
+    ],
+    "cluster_labels": {
+      "1": "Defensif",
+      "2": "Growth",
+      "0": "Agresif"
+    },
+    "distribution": {
+      "Defensif": 41,
+      "Growth": 19,
+      "Agresif": 1
+    }
+  },
+  "stocks": {
+    "AALI.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Agriculture",
+      "return_1y": 19.14,
+      "volatility": 26.71,
+      "avg_volume_m": 1.49,
+      "beta": 0.266
+    },
+    "ADRO.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Energy",
+      "return_1y": 47.83,
+      "volatility": 43.97,
+      "avg_volume_m": 114.69,
+      "beta": 1.061
+    },
+    "AKRA.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Energy",
+      "return_1y": 11.67,
+      "volatility": 39.89,
+      "avg_volume_m": 23.91,
+      "beta": 0.827
+    },
+    "ASII.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Industrials",
+      "return_1y": 22.15,
+      "volatility": 30.26,
+      "avg_volume_m": 45.58,
+      "beta": 1.068
+    },
+    "ASSA.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Transportation & Logistics",
+      "return_1y": -6.01,
+      "volatility": 52.96,
+      "avg_volume_m": 10.27,
+      "beta": 1.777
+    },
+    "BBCA.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Finance",
+      "return_1y": -34.3,
+      "volatility": 23.65,
+      "avg_volume_m": 153.34,
+      "beta": 0.913
+    },
+    "BBNI.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Finance",
+      "return_1y": -5.52,
+      "volatility": 29.95,
+      "avg_volume_m": 56.11,
+      "beta": 0.944
+    },
+    "BBRI.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Finance",
+      "return_1y": -17.08,
+      "volatility": 28.41,
+      "avg_volume_m": 217.95,
+      "beta": 0.966
+    },
+    "BBTN.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Finance",
+      "return_1y": 6.56,
+      "volatility": 34.54,
+      "avg_volume_m": 33.81,
+      "beta": 1.37
+    },
+    "BIRD.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Transportation & Logistics",
+      "return_1y": -11.0,
+      "volatility": 37.18,
+      "avg_volume_m": 1.71,
+      "beta": 0.639
+    },
+    "BJBR.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Finance",
+      "return_1y": -1.0,
+      "volatility": 17.69,
+      "avg_volume_m": 4.44,
+      "beta": 0.467
+    },
+    "BMRI.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Finance",
+      "return_1y": -15.96,
+      "volatility": 29.91,
+      "avg_volume_m": 164.76,
+      "beta": 1.029
+    },
+    "BNGA.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Finance",
+      "return_1y": -1.73,
+      "volatility": 21.17,
+      "avg_volume_m": 5.09,
+      "beta": 0.418
+    },
+    "BRIS.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Finance",
+      "return_1y": -33.75,
+      "volatility": 41.74,
+      "avg_volume_m": 23.6,
+      "beta": 0.954
+    },
+    "BRPT.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Basic Materials",
+      "return_1y": 125.73,
+      "volatility": 63.27,
+      "avg_volume_m": 194.98,
+      "beta": 2.311
+    },
+    "BSDE.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Properties & Real Estate",
+      "return_1y": -20.83,
+      "volatility": 31.75,
+      "avg_volume_m": 19.59,
+      "beta": 1.282
+    },
+    "BUKA.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Technology",
+      "return_1y": -13.1,
+      "volatility": 50.24,
+      "avg_volume_m": 215.45,
+      "beta": 1.071
+    },
+    "BUMI.JK": {
+      "cluster_id": 0,
+      "cluster_label": "Agresif",
+      "sector": "Unknown",
+      "return_1y": 122.68,
+      "volatility": 66.77,
+      "avg_volume_m": 4324.69,
+      "beta": 0.272
+    },
+    "CTRA.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Properties & Real Estate",
+      "return_1y": -34.07,
+      "volatility": 36.06,
+      "avg_volume_m": 23.81,
+      "beta": 1.17
+    },
+    "DMAS.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Unknown",
+      "return_1y": 29.85,
+      "volatility": 21.39,
+      "avg_volume_m": 66.47,
+      "beta": 0.156
+    },
+    "ELSA.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Energy",
+      "return_1y": 37.44,
+      "volatility": 38.18,
+      "avg_volume_m": 60.51,
+      "beta": 0.797
+    },
+    "EMTK.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Technology",
+      "return_1y": 13.41,
+      "volatility": 57.07,
+      "avg_volume_m": 100.26,
+      "beta": 2.248
+    },
+    "EXCL.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Infrastructure",
+      "return_1y": 35.59,
+      "volatility": 39.91,
+      "avg_volume_m": 19.75,
+      "beta": 1.951
+    },
+    "GIAA.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Transportation & Logistics",
+      "return_1y": 56.76,
+      "volatility": 49.49,
+      "avg_volume_m": 123.99,
+      "beta": 1.915
+    },
+    "HEAL.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Healthcare",
+      "return_1y": -22.91,
+      "volatility": 32.64,
+      "avg_volume_m": 10.7,
+      "beta": 0.34
+    },
+    "HRUM.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Energy",
+      "return_1y": -0.62,
+      "volatility": 52.09,
+      "avg_volume_m": 34.53,
+      "beta": 1.81
+    },
+    "ICBP.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Consumer Non-Cyclicals",
+      "return_1y": -36.54,
+      "volatility": 26.8,
+      "avg_volume_m": 8.32,
+      "beta": 0.659
+    },
+    "INDF.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Consumer Non-Cyclicals",
+      "return_1y": -7.97,
+      "volatility": 23.72,
+      "avg_volume_m": 11.39,
+      "beta": 0.48
+    },
+    "INDY.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Energy",
+      "return_1y": 68.42,
+      "volatility": 57.12,
+      "avg_volume_m": 33.67,
+      "beta": 1.441
+    },
+    "INKP.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Basic Materials",
+      "return_1y": 32.17,
+      "volatility": 41.98,
+      "avg_volume_m": 9.4,
+      "beta": 1.681
+    },
+    "INTP.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Basic Materials",
+      "return_1y": 0.61,
+      "volatility": 33.6,
+      "avg_volume_m": 2.02,
+      "beta": 0.856
+    },
+    "ISAT.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Infrastructure",
+      "return_1y": 17.69,
+      "volatility": 43.6,
+      "avg_volume_m": 17.45,
+      "beta": 1.117
+    },
+    "ITMG.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Energy",
+      "return_1y": 7.61,
+      "volatility": 34.81,
+      "avg_volume_m": 2.05,
+      "beta": 0.296
+    },
+    "JSMR.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Infrastructure",
+      "return_1y": -24.23,
+      "volatility": 31.07,
+      "avg_volume_m": 5.97,
+      "beta": 0.711
+    },
+    "KLBF.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Healthcare",
+      "return_1y": -45.35,
+      "volatility": 32.99,
+      "avg_volume_m": 68.59,
+      "beta": 0.882
+    },
+    "LPKR.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Unknown",
+      "return_1y": -1.2,
+      "volatility": 53.26,
+      "avg_volume_m": 191.0,
+      "beta": 0.306
+    },
+    "LSIP.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Agriculture",
+      "return_1y": 8.04,
+      "volatility": 32.87,
+      "avg_volume_m": 13.23,
+      "beta": 0.423
+    },
+    "MEDC.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Energy",
+      "return_1y": 14.2,
+      "volatility": 50.71,
+      "avg_volume_m": 83.43,
+      "beta": 0.835
+    },
+    "MIKA.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Healthcare",
+      "return_1y": -31.26,
+      "volatility": 35.61,
+      "avg_volume_m": 5.19,
+      "beta": 0.456
+    },
+    "MYOR.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Consumer Non-Cyclicals",
+      "return_1y": -19.97,
+      "volatility": 33.15,
+      "avg_volume_m": 10.42,
+      "beta": 0.563
+    },
+    "PGAS.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Energy",
+      "return_1y": 25.03,
+      "volatility": 32.76,
+      "avg_volume_m": 45.3,
+      "beta": 0.854
+    },
+    "PNBN.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Finance",
+      "return_1y": -16.81,
+      "volatility": 46.17,
+      "avg_volume_m": 15.65,
+      "beta": 0.86
+    },
+    "PTBA.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Energy",
+      "return_1y": 13.91,
+      "volatility": 33.64,
+      "avg_volume_m": 20.55,
+      "beta": 0.589
+    },
+    "PTPP.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Infrastructure",
+      "return_1y": -51.43,
+      "volatility": 50.33,
+      "avg_volume_m": 27.6,
+      "beta": 1.504
+    },
+    "PWON.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Properties & Real Estate",
+      "return_1y": -22.96,
+      "volatility": 29.96,
+      "avg_volume_m": 66.64,
+      "beta": 0.962
+    },
+    "ROTI.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Consumer Non-Cyclicals",
+      "return_1y": -31.96,
+      "volatility": 21.54,
+      "avg_volume_m": 1.32,
+      "beta": 0.447
+    },
+    "SCMA.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Consumer Cyclicals",
+      "return_1y": 26.32,
+      "volatility": 54.74,
+      "avg_volume_m": 180.81,
+      "beta": 2.283
+    },
+    "SIDO.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Healthcare",
+      "return_1y": -17.81,
+      "volatility": 27.36,
+      "avg_volume_m": 22.0,
+      "beta": 0.512
+    },
+    "SIMP.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Agriculture",
+      "return_1y": 40.68,
+      "volatility": 29.33,
+      "avg_volume_m": 19.43,
+      "beta": 0.453
+    },
+    "SMDR.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Transportation & Logistics",
+      "return_1y": 14.24,
+      "volatility": 52.25,
+      "avg_volume_m": 44.54,
+      "beta": 1.557
+    },
+    "SMGR.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Basic Materials",
+      "return_1y": -28.69,
+      "volatility": 39.52,
+      "avg_volume_m": 12.73,
+      "beta": 1.476
+    },
+    "SMRA.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Properties & Real Estate",
+      "return_1y": -34.19,
+      "volatility": 37.45,
+      "avg_volume_m": 45.1,
+      "beta": 1.279
+    },
+    "SSMS.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Unknown",
+      "return_1y": -14.02,
+      "volatility": 50.65,
+      "avg_volume_m": 8.36,
+      "beta": 0.006
+    },
+    "TKIM.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Basic Materials",
+      "return_1y": 1.76,
+      "volatility": 41.11,
+      "avg_volume_m": 2.43,
+      "beta": 1.549
+    },
+    "TLKM.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Infrastructure",
+      "return_1y": 29.95,
+      "volatility": 29.93,
+      "avg_volume_m": 108.36,
+      "beta": 1.037
+    },
+    "TOWR.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Infrastructure",
+      "return_1y": -37.14,
+      "volatility": 35.4,
+      "avg_volume_m": 41.93,
+      "beta": 1.323
+    },
+    "TPIA.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Basic Materials",
+      "return_1y": -79.7,
+      "volatility": 58.33,
+      "avg_volume_m": 24.0,
+      "beta": 1.876
+    },
+    "ULTJ.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Consumer Non-Cyclicals",
+      "return_1y": 15.19,
+      "volatility": 26.09,
+      "avg_volume_m": 4.86,
+      "beta": 0.455
+    },
+    "UNTR.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Industrials",
+      "return_1y": 13.99,
+      "volatility": 34.74,
+      "avg_volume_m": 4.4,
+      "beta": 1.07
+    },
+    "UNVR.JK": {
+      "cluster_id": 1,
+      "cluster_label": "Defensif",
+      "sector": "Consumer Non-Cyclicals",
+      "return_1y": 0.96,
+      "volatility": 41.34,
+      "avg_volume_m": 32.36,
+      "beta": 1.073
+    },
+    "WOOD.JK": {
+      "cluster_id": 2,
+      "cluster_label": "Growth",
+      "sector": "Consumer Cyclicals",
+      "return_1y": -26.78,
+      "volatility": 46.53,
+      "avg_volume_m": 5.69,
+      "beta": 1.349
+    }
+  }
+}

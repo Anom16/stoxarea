@@ -17,7 +17,7 @@ git init
 git add .
 
 # Simpan perubahan
-git commit -m "Initial commit: VERSI 1.3"
+git commit -m "Initial commit: VERSI 1.4"
 
 # Atur branch utama
 git branch -M main

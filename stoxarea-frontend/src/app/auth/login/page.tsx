@@ -30,9 +30,15 @@ export default function LoginPage() {
       const name = userRes.data.full_name || userRes.data.email?.split('@')[0] || 'Pengguna'
       toast.success(
         `Selamat Datang, ${name}! 👋`,
-        'Login berhasil. Mengalihkan ke dashboard...',
+        'Login berhasil. Mengalihkan...',
       )
       setTimeout(() => {
+        // Admin → langsung ke admin panel
+        if (userRes.data.is_admin) {
+          router.push('/admin')
+          return
+        }
+        // User biasa → cek sudah onboarding atau belum
         if (!userRes.data.risk_profile) {
           router.push('/onboarding')
         } else {

@@ -1,10 +1,12 @@
 from fastapi import FastAPI  # Trigger uvicorn reload to load newly calibrated AI scores
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import logging
+from pathlib import Path
 
 from app.core.database import engine, Base
 from app.core.config import settings
-from app.api import auth, recommendation, market, portfolio, admin_ml
+from app.api import auth, recommendation, market, portfolio, admin_ml, admin_users
 from apscheduler.schedulers.background import BackgroundScheduler
 from ml.pipeline.scheduler import run_daily_pipeline, run_weekly_retrain
 
@@ -43,6 +45,7 @@ logger.info(f"CORS Allowed Origins: {allowed_origins}")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=".*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -54,6 +57,12 @@ app.include_router(recommendation.router)
 app.include_router(market.router)
 app.include_router(portfolio.router)
 app.include_router(admin_ml.router)
+app.include_router(admin_users.router)
+
+# Static files untuk reports (plot evaluasi model)
+reports_dir = Path("reports")
+reports_dir.mkdir(exist_ok=True)
+app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
 @app.on_event("startup")
 def on_startup():

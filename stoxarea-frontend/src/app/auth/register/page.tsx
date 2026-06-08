@@ -31,7 +31,15 @@ export default function RegisterPage() {
       )
       setTimeout(() => router.push('/auth/login'), 1800)
     } catch (err: any) {
-      const msg = err.response?.data?.detail || 'Pendaftaran gagal. Email mungkin sudah terdaftar.'
+      console.error("Register error:", err)
+      let msg = 'Pendaftaran gagal. Cek koneksi backend Anda.'
+      if (err.response?.data?.detail) {
+        if (typeof err.response.data.detail === 'string') {
+          msg = err.response.data.detail
+        } else if (Array.isArray(err.response.data.detail)) {
+          msg = err.response.data.detail.map((d: any) => d.msg).join(', ')
+        }
+      }
       setError(msg)
       toast.error('Pendaftaran Gagal', msg)
     } finally {

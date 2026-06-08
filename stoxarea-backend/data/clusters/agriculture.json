@@ -1,0 +1,89 @@
+{
+    "metadata": {
+        "last_updated": "2026-05-27T13:18:48Z",
+        "n_clusters": 3,
+        "sector": "Pertanian",
+        "personas": {
+            "0": "High Growth / High Volatility",
+            "1": "High Growth / High Volatility",
+            "2": "Steady Growth / Defensive"
+        }
+    },
+    "clusters": {
+        "2": {
+            "persona": "Steady Growth / Defensive",
+            "members": [
+                {
+                    "ticker": "LSIP.JK",
+                    "return_1y": 0.09808391753056085,
+                    "volatility": 0.3767380934736933,
+                    "avg_volume": 13306816.25
+                },
+                {
+                    "ticker": "AALI.JK",
+                    "return_1y": 0.17455007752208454,
+                    "volatility": 0.28445521545514735,
+                    "avg_volume": 1531177.0833333333
+                },
+                {
+                    "ticker": "TBLA.JK",
+                    "return_1y": -0.1032121771936557,
+                    "volatility": 0.30248730633672377,
+                    "avg_volume": 3691499.1666666665
+                },
+                {
+                    "ticker": "ANJT.JK",
+                    "return_1y": -0.03151862464183381,
+                    "volatility": 0.47146410719395626,
+                    "avg_volume": 1198618.3333333333
+                }
+            ]
+        },
+        "0": {
+            "persona": "High Growth / High Volatility",
+            "members": [
+                {
+                    "ticker": "TAPG.JK",
+                    "return_1y": 0.7268327816002881,
+                    "volatility": 0.5130510632709494,
+                    "avg_volume": 22340450.833333332
+                },
+                {
+                    "ticker": "DSNG.JK",
+                    "return_1y": 0.5759406143048705,
+                    "volatility": 0.6032300653030352,
+                    "avg_volume": 25640562.916666668
+                },
+                {
+                    "ticker": "SIMP.JK",
+                    "return_1y": 0.3675841994220281,
+                    "volatility": 0.47265790753459386,
+                    "avg_volume": 20183902.916666668
+                },
+                {
+                    "ticker": "SGRO.JK",
+                    "return_1y": 0.23728813559322035,
+                    "volatility": 0.5894402815523595,
+                    "avg_volume": 2278003.3333333335
+                },
+                {
+                    "ticker": "STAA.JK",
+                    "return_1y": 0.31407088074590206,
+                    "volatility": 0.4903590071102478,
+                    "avg_volume": 12231330.0
+                }
+            ]
+        },
+        "1": {
+            "persona": "High Growth / High Volatility",
+            "members": [
+                {
+                    "ticker": "BWPT.JK",
+                    "return_1y": 0.5087719298245614,
+                    "volatility": 0.865753949329959,
+                    "avg_volume": 234487468.75
+                }
+            ]
+        }
+    }
+}

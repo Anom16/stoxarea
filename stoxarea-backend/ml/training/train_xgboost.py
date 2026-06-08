@@ -1,11 +1,3 @@
-"""
-ml/pipeline/train_xgboost.py
-----------------------------
-Tugas:
-  1. Melatih model XGBoost Classifier menggunakan dataset fitur teknikal.
-  2. Menggunakan Walk-Forward Validation (TimeSeriesSplit) untuk menguji model.
-  3. Menyimpan model ke disk untuk inferensi harian.
-"""
 
 import pandas as pd
 import numpy as np
@@ -33,10 +25,12 @@ MODEL_DIR   = Path("models")
 MODEL_PATH  = MODEL_DIR / "xgb_model.pkl"
 
 FEATURES = [
-    "log_ret_1d", "log_ret_5d", "ma_20_dist", "ma_50_dist", 
-    "bb_width", "bb_position", "rsi_14", 
-    "macd_norm", "macd_signal_norm", "macd_hist_norm", 
-    "vol_ma_ratio"
+    "log_ret_1d", "log_ret_5d",
+    "ma_20_dist", "ma_50_dist",
+    "bb_width", "bb_position",
+    "rsi_14",
+    "macd_norm", "macd_signal_norm", "macd_hist_norm",
+    "vol_ma_ratio",
 ]
 TARGET = "target_5d_up"
 
@@ -63,17 +57,6 @@ def run():
     
     logger.info(f"Total sampel latih: {len(X)}")
     
-    # FIX #9: Tangani class imbalance dengan scale_pos_weight.
-    #
-    # BUG LAMA: Tidak ada penanganan imbalance. Untuk saham blue-chip BEI,
-    # kenaikan 5% dalam 5 hari adalah kejadian langka → kelas 1 jauh lebih sedikit
-    # dari kelas 0. Model yang dilatih tanpa penanganan ini akan bias ke kelas 0
-    # (selalu prediksi "tidak naik") dan tetap mendapat akurasi tinggi secara statistik,
-    # tapi precision untuk kelas 1 (yang kita butuhkan) mendekati 0.
-    #
-    # FIX: Hitung scale_pos_weight = count(kelas 0) / count(kelas 1).
-    # XGBoost akan memberi bobot lebih tinggi pada sampel kelas minoritas (kelas 1)
-    # sehingga model lebih sensitif terhadap sinyal momentum naik.
     n_neg = int((y == 0).sum())
     n_pos = int((y == 1).sum())
     if n_pos == 0:

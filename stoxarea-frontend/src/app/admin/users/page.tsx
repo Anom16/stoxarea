@@ -1,0 +1,230 @@
+'use client'
+import { useEffect, useState } from 'react'
+import api from '@/lib/api'
+
+const RISK_OPTIONS = ['Konservatif', 'Moderat', 'Agresif']
+
+const profileColor = (p: string | null) => {
+  if (p === 'Konservatif') return '#4CAF50'
+  if (p === 'Moderat')     return '#FF9800'
+  if (p === 'Agresif')     return '#f44336'
+  return '#888'
+}
+
+interface UserData {
+  id: number
+  email: string
+  full_name: string | null
+  risk_profile: string | null
+  virtual_balance: number
+  is_admin: boolean
+  created_at: string
+}
+
+export default function AdminUsersPage() {
+  const [users, setUsers]       = useState<UserData[]>([])
+  const [loading, setLoading]   = useState(true)
+  const [search, setSearch]     = useState('')
+  const [editId, setEditId]     = useState<number | null>(null)
+  const [editData, setEditData] = useState<any>({})
+  const [msg, setMsg]           = useState('')
+  const [msgType, setMsgType]   = useState<'ok' | 'err'>('ok')
+
+  const load = () => {
+    setLoading(true)
+    api.get('/admin/users/')
+      .then(r => setUsers(r.data))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => { load() }, [])
+
+  const showMsg = (text: string, type: 'ok' | 'err' = 'ok') => {
+    setMsg(text); setMsgType(type)
+    setTimeout(() => setMsg(''), 3000)
+  }
+
+  const saveEdit = async (id: number) => {
+    try {
+      await api.patch(`/admin/users/${id}`, editData)
+      showMsg('✅ User berhasil diperbarui')
+      setEditId(null)
+      load()
+    } catch (e: any) {
+      showMsg(`❌ ${e?.response?.data?.detail || e.message}`, 'err')
+    }
+  }
+
+  const deleteUser = async (u: UserData) => {
+    if (!confirm(`Hapus user ${u.email}?`)) return
+    try {
+      await api.delete(`/admin/users/${u.id}`)
+      showMsg(`✅ User ${u.email} dihapus`)
+      load()
+    } catch (e: any) {
+      showMsg(`❌ ${e?.response?.data?.detail || e.message}`, 'err')
+    }
+  }
+
+  const resetBalance = async (u: UserData) => {
+    if (!confirm(`Reset saldo ${u.email} ke Rp 100.000.000?`)) return
+    try {
+      await api.post(`/admin/users/${u.id}/reset-balance`)
+      showMsg(`✅ Saldo ${u.email} direset`)
+      load()
+    } catch (e: any) {
+      showMsg(`❌ ${e?.response?.data?.detail}`, 'err')
+    }
+  }
+
+  const filtered = users.filter(u =>
+    u.email.toLowerCase().includes(search.toLowerCase()) ||
+    (u.full_name || '').toLowerCase().includes(search.toLowerCase())
+  )
+
+  return (
+    <div>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>👥 Kelola User</h1>
+        <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>
+          Total {users.length} user terdaftar
+        </p>
+      </div>
+
+      {msg && (
+        <div style={{
+          background: msgType === 'ok' ? 'rgba(76,175,80,0.1)' : 'rgba(244,67,54,0.1)',
+          border: `1px solid ${msgType === 'ok' ? '#4CAF50' : '#f44'}`,
+          borderRadius: 8, padding: '10px 16px', marginBottom: 16,
+          fontSize: 13, color: msgType === 'ok' ? '#4CAF50' : '#f44',
+        }}>
+          {msg}
+        </div>
+      )}
+
+      {/* Search */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'center' }}>
+        <input
+          value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="🔍 Cari email atau nama..."
+          style={{ background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '10px 14px', color: '#fff', fontSize: 13, width: 280 }}
+        />
+        <button onClick={load} style={{ background: '#2255AA', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 16px', fontSize: 13, cursor: 'pointer' }}>
+          🔄 Refresh
+        </button>
+      </div>
+
+      {loading && <p style={{ color: '#888' }}>Memuat...</p>}
+
+      {/* Tabel */}
+      <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid var(--border)' }}>
+              {['ID', 'Email', 'Nama', 'Profil Risiko', 'Saldo Virtual', 'Role', 'Daftar', 'Aksi'].map(h => (
+                <th key={h} style={{ padding: '12px 14px', textAlign: 'left', color: '#888', fontWeight: 600, fontSize: 11, textTransform: 'uppercase', letterSpacing: 0.5 }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(u => (
+              <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                {editId === u.id ? (
+                  // Mode Edit
+                  <>
+                    <td style={{ padding: '10px 14px', color: '#888' }}>{u.id}</td>
+                    <td style={{ padding: '10px 14px', color: '#888' }}>{u.email}</td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <input
+                        value={editData.full_name ?? u.full_name ?? ''}
+                        onChange={e => setEditData({ ...editData, full_name: e.target.value })}
+                        style={{ background: '#0a0f1a', border: '1px solid #444', borderRadius: 6, padding: '6px 10px', color: '#fff', fontSize: 12, width: 120 }}
+                      />
+                    </td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <select
+                        value={editData.risk_profile ?? u.risk_profile ?? ''}
+                        onChange={e => setEditData({ ...editData, risk_profile: e.target.value })}
+                        style={{ background: '#0a0f1a', border: '1px solid #444', borderRadius: 6, padding: '6px 10px', color: '#fff', fontSize: 12 }}
+                      >
+                        <option value="">-- Belum --</option>
+                        {RISK_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                      </select>
+                    </td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <input
+                        type="number"
+                        value={editData.virtual_balance ?? u.virtual_balance}
+                        onChange={e => setEditData({ ...editData, virtual_balance: parseFloat(e.target.value) })}
+                        style={{ background: '#0a0f1a', border: '1px solid #444', borderRadius: 6, padding: '6px 10px', color: '#fff', fontSize: 12, width: 120 }}
+                      />
+                    </td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <select
+                        value={editData.is_admin !== undefined ? String(editData.is_admin) : String(u.is_admin)}
+                        onChange={e => setEditData({ ...editData, is_admin: e.target.value === 'true' })}
+                        style={{ background: '#0a0f1a', border: '1px solid #444', borderRadius: 6, padding: '6px 10px', color: '#fff', fontSize: 12 }}
+                      >
+                        <option value="false">User</option>
+                        <option value="true">Admin</option>
+                      </select>
+                    </td>
+                    <td style={{ padding: '10px 14px', color: '#888', fontSize: 11 }}>{new Date(u.created_at).toLocaleDateString('id-ID')}</td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button onClick={() => saveEdit(u.id)} style={{ background: '#4CAF50', color: '#fff', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 11, cursor: 'pointer' }}>💾 Simpan</button>
+                        <button onClick={() => setEditId(null)} style={{ background: '#555', color: '#fff', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 11, cursor: 'pointer' }}>Batal</button>
+                      </div>
+                    </td>
+                  </>
+                ) : (
+                  // Mode Normal
+                  <>
+                    <td style={{ padding: '10px 14px', color: '#888' }}>{u.id}</td>
+                    <td style={{ padding: '10px 14px', fontWeight: 600 }}>{u.email}</td>
+                    <td style={{ padding: '10px 14px', color: '#ccc' }}>{u.full_name || '—'}</td>
+                    <td style={{ padding: '10px 14px' }}>
+                      {u.risk_profile ? (
+                        <span style={{ background: `${profileColor(u.risk_profile)}22`, color: profileColor(u.risk_profile), borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>
+                          {u.risk_profile}
+                        </span>
+                      ) : <span style={{ color: '#666', fontSize: 11 }}>Belum diisi</span>}
+                    </td>
+                    <td style={{ padding: '10px 14px', fontFamily: 'monospace' }}>
+                      Rp {u.virtual_balance.toLocaleString('id-ID')}
+                    </td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <span style={{
+                        background: u.is_admin ? 'rgba(255,68,68,0.15)' : 'rgba(33,150,243,0.1)',
+                        color: u.is_admin ? '#ff6666' : '#64B5F6',
+                        borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700,
+                      }}>
+                        {u.is_admin ? '🛡️ Admin' : '👤 User'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '10px 14px', color: '#888', fontSize: 11 }}>
+                      {new Date(u.created_at).toLocaleDateString('id-ID')}
+                    </td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <div style={{ display: 'flex', gap: 5 }}>
+                        <button onClick={() => { setEditId(u.id); setEditData({}) }} style={{ background: '#2255AA', color: '#fff', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 11, cursor: 'pointer' }}>✏️ Edit</button>
+                        <button onClick={() => resetBalance(u)} style={{ background: '#FF9800', color: '#fff', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 11, cursor: 'pointer' }} title="Reset saldo ke 100 juta">💰</button>
+                        {!u.is_admin && (
+                          <button onClick={() => deleteUser(u)} style={{ background: '#f44336', color: '#fff', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 11, cursor: 'pointer' }}>🗑</button>
+                        )}
+                      </div>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {!loading && filtered.length === 0 && (
+          <div style={{ padding: 24, textAlign: 'center', color: '#888' }}>Tidak ada user yang cocok</div>
+        )}
+      </div>
+    </div>
+  )
+}

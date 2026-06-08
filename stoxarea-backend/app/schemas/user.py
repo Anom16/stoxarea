@@ -18,6 +18,7 @@ class UserResponse(UserBase):
     full_name: Optional[str] = None
     risk_profile: Optional[RiskProfileEnum] = None
     virtual_balance: float
+    is_admin: bool = False
     created_at: datetime
 
     class Config:

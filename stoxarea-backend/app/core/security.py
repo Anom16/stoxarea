@@ -36,3 +36,24 @@ def get_current_user_email(token: str = Depends(oauth2_scheme)) -> str:
         return email
     except jwt.PyJWTError:
         raise credentials_exception
+
+def require_admin(
+    email: str = Depends(get_current_user_email),
+) -> str:
+    """
+    Dependency: memastikan request berasal dari user dengan is_admin=True.
+    Digunakan oleh semua endpoint admin.
+    """
+    from app.core.database import SessionLocal
+    from app.models.user import User as UserModel
+    db = SessionLocal()
+    try:
+        user = db.query(UserModel).filter(UserModel.email == email).first()
+        if not user or not user.is_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Akses ditolak. Hanya admin yang dapat mengakses endpoint ini."
+            )
+        return email
+    finally:
+        db.close()

@@ -16,7 +16,7 @@ import numpy as np
 import json
 import logging
 from pathlib import Path
-from ml.features.technical_indicators import compute_rsi, compute_macd
+from ml.features.technical_indicators import compute_rsi, compute_macd, compute_atr, detect_candlestick
 
 # ── Setup logging ──────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -35,7 +35,7 @@ OUTPUT_PATH     = Path("data/processed/features_targets.csv")
 
 # ── Parameter Target ──
 TARGET_HORIZON_DAYS = 5
-TARGET_PROFIT_PCT   = 0.0  # 0% (Hanya perlu naik, tanpa threshold)
+TARGET_PROFIT_PCT   = 0.03  # 3% dalam 5 hari — lebih realistis untuk pasar BEI
 
 
 
@@ -60,6 +60,8 @@ def process_ticker(ticker: str, file_path: Path) -> pd.DataFrame:
     # 1. Log Returns
     df["log_ret_1d"] = np.log(close / close.shift(1))
     df["log_ret_5d"] = np.log(close / close.shift(5))
+    df["log_ret_14d"] = np.log(close / close.shift(14))
+    df["log_ret_30d"] = np.log(close / close.shift(30))
     
     # 2. Moving Averages (Jarak Persentase terhadap MA)
     ma_20 = close.rolling(20).mean()
@@ -75,7 +77,9 @@ def process_ticker(ticker: str, file_path: Path) -> pd.DataFrame:
     df["bb_position"] = (close - bb_lower) / (bb_upper - bb_lower) # 0 = di bawah, 1 = di atas
     
     # 4. RSI (14)
+    # 4. RSI (14)
     df["rsi_14"] = compute_rsi(close, 14)
+    df["rsi_zscore"] = (df["rsi_14"] - df["rsi_14"].rolling(30).mean()) / df["rsi_14"].rolling(30).std()
     
     # 5. MACD
     macd, macd_signal, macd_hist = compute_macd(close)
@@ -83,6 +87,12 @@ def process_ticker(ticker: str, file_path: Path) -> pd.DataFrame:
     df["macd_norm"] = macd / close
     df["macd_signal_norm"] = macd_signal / close
     df["macd_hist_norm"] = macd_hist / close
+    df["macd_hist_zscore"] = (df["macd_hist_norm"] - df["macd_hist_norm"].rolling(30).mean()) / df["macd_hist_norm"].rolling(30).std()
+    
+    # 6. ATR & Candlestick
+    df["atr_14"] = compute_atr(high, df["Low"], close, 14)
+    df["atr_norm"] = df["atr_14"] / close
+    df = detect_candlestick(df)
     
     # 6. Volume Momentum
     vol_ma_20 = df["Volume"].rolling(20).mean()

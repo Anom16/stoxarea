@@ -1,0 +1,104 @@
+{
+  "model": "XGBoost Classifier + Isotonic Calibration",
+  "dataset": {
+    "total_samples": 65842,
+    "class_0_count": 51468,
+    "class_1_count": 14374,
+    "positive_rate": 21.83
+  },
+  "parameters": {
+    "n_estimators": 150,
+    "max_depth": 4,
+    "learning_rate": 0.05,
+    "scale_pos_weight": 3.5806,
+    "calibration": "isotonic",
+    "validation": "TimeSeriesSplit (5 fold)",
+    "optimal_threshold": 0.3
+  },
+  "metrics_final_model": {
+    "accuracy": 78.3,
+    "precision": 77.56,
+    "recall": 0.84,
+    "f1_score": 1.67,
+    "auc_roc": 0.6611
+  },
+  "confusion_matrix": {
+    "true_negative": 51433,
+    "false_positive": 35,
+    "false_negative": 14253,
+    "true_positive": 121
+  },
+  "walkforward_per_fold": [
+    {
+      "fold": 1,
+      "train_size": 10977,
+      "test_size": 10973,
+      "accuracy": 0.5174,
+      "precision": 0.249,
+      "recall": 0.6333,
+      "f1": 0.3574,
+      "auc": 0.583
+    },
+    {
+      "fold": 2,
+      "train_size": 21950,
+      "test_size": 10973,
+      "accuracy": 0.559,
+      "precision": 0.2299,
+      "recall": 0.5331,
+      "f1": 0.3212,
+      "auc": 0.5738
+    },
+    {
+      "fold": 3,
+      "train_size": 32923,
+      "test_size": 10973,
+      "accuracy": 0.5602,
+      "precision": 0.2585,
+      "recall": 0.5391,
+      "f1": 0.3494,
+      "auc": 0.5711
+    },
+    {
+      "fold": 4,
+      "train_size": 43896,
+      "test_size": 10973,
+      "accuracy": 0.5106,
+      "precision": 0.2876,
+      "recall": 0.7315,
+      "f1": 0.4129,
+      "auc": 0.6285
+    },
+    {
+      "fold": 5,
+      "train_size": 54869,
+      "test_size": 10973,
+      "accuracy": 0.5235,
+      "precision": 0.2506,
+      "recall": 0.6867,
+      "f1": 0.3672,
+      "auc": 0.6162
+    }
+  ],
+  "walkforward_mean": {
+    "accuracy": 0.5341,
+    "precision": 0.2551,
+    "recall": 0.6247,
+    "f1": 0.3616,
+    "auc": 0.5945
+  },
+  "top3_features": [
+    {
+      "feature": "macd_norm",
+      "importance": 0.061024099588394165
+    },
+    {
+      "feature": "macd_hist_norm",
+      "importance": 0.06963671743869781
+    },
+    {
+      "feature": "atr_norm",
+      "importance": 0.2521136701107025
+    }
+  ]
+}

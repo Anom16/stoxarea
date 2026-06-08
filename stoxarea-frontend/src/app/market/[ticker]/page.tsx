@@ -7,6 +7,7 @@ import Sidebar from '@/components/ui/Sidebar'
 import Topbar from '@/components/ui/Topbar'
 import TechnicalChart from '@/components/charts/TechnicalChart'
 import ToastContainer from '@/components/ui/Toast'
+import FundamentalTooltip, { FundamentalTooltipProvider } from '@/components/ui/FundamentalTooltip'
 import DisclaimerFooter from '@/components/ui/DisclaimerFooter'
 import { useToast } from '@/hooks/useToast'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
@@ -156,7 +157,11 @@ export default function StockDetailPage() {
 
   // Lazy Load untuk Laporan Keuangan & Dividen
   useEffect(() => {
-    if ((activeTab === 'financials' || activeTab === 'dividends') && !historyData && tickerStr) {
+    // Re-fetch jika: belum ada data, ATAU data ada tapi dividend_history kosong dan tab dividen aktif
+    const needsFetch = !historyData ||
+      (activeTab === 'dividends' && historyData && (historyData.dividend_history || []).length === 0)
+
+    if ((activeTab === 'financials' || activeTab === 'dividends') && needsFetch && tickerStr) {
       const fetchHistory = async () => {
         setLoadingHist(true)
         try {
@@ -329,8 +334,12 @@ export default function StockDetailPage() {
   const handlePeriodChange = (period: string) => {
     const intervalMap: Record<string, string> = {
       '1mo': '1d',
+      '3mo': '1d',
+      '6mo': '1d',
       '1y':  '1d',
+      '2y':  '1wk',
       '3y':  '1wk',
+      '5y':  '1wk',
     }
     const interval = intervalMap[period] || '1d'
     setChartPeriod(period)
@@ -567,9 +576,13 @@ export default function StockDetailPage() {
                           borderRadius: 8, padding: 3
                         }}>
                           {[
-                            { label: '1M', value: '1mo' },
-                            { label: '1Y', value: '1y' },
-                            { label: '3Y', value: '3y' },
+                            { label: '1M',  value: '1mo' },
+                            { label: '3M',  value: '3mo' },
+                            { label: '6M',  value: '6mo' },
+                            { label: '1T',  value: '1y'  },
+                            { label: '2T',  value: '2y'  },
+                            { label: '3T',  value: '3y'  },
+                            { label: '5T',  value: '5y'  },
                           ].map(p => (
                             <button
                               key={p.value}
@@ -686,6 +699,7 @@ export default function StockDetailPage() {
                   </div>
 
                   {/* Fundamental Stats Grid */}
+                  <FundamentalTooltipProvider>
                   <CollapsibleCard id="fundamental" title={
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <span>📊 Fundamental & Market Statistics</span>
@@ -695,39 +709,77 @@ export default function StockDetailPage() {
                       })()}
                     </div>
                   } collapsed={collapsed} onToggle={toggleCard}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 12 }}>
+                    {/* ── Harga & Pasar ── */}
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Harga &amp; Pasar</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 16 }}>
+                      {[
+                        { label: 'Market Cap',  val: formatMoney(f.price?.market_cap),  key: 'market_cap',  raw: null },
+                        { label: 'Open',        val: f.price?.open ? `Rp ${f.price.open.toLocaleString('id-ID')}` : '—', key: 'open', raw: null },
+                        { label: 'Day High',    val: f.price?.day_high ? `Rp ${f.price.day_high.toLocaleString('id-ID')}` : '—', key: 'day_high', raw: null, color: '#10b981' },
+                        { label: 'Day Low',     val: f.price?.day_low  ? `Rp ${f.price.day_low.toLocaleString('id-ID')}`  : '—', key: 'day_low',  raw: null, color: '#ef4444' },
+                        { label: '52W High',    val: f.price?.week_52_high ? `Rp ${f.price.week_52_high.toLocaleString('id-ID')}` : '—', key: 'week_52_high', raw: null, color: '#10b981' },
+                        { label: '52W Low',     val: f.price?.week_52_low  ? `Rp ${f.price.week_52_low.toLocaleString('id-ID')}`  : '—', key: 'week_52_low',  raw: null, color: '#ef4444' },
+                        { label: 'Volume',      val: formatMoney(f.price?.volume),     key: 'volume',     raw: null },
+                        { label: 'Avg Volume',  val: formatMoney(f.price?.avg_volume), key: 'avg_volume', raw: null },
+                      ].map((item, i) => (
+                        <div key={i} className="stat-card" style={{ padding: 12 }}>
+                          <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>
+                            {item.label}
+                            <FundamentalTooltip metricKey={item.key} value={item.raw} label={item.label} />
+                          </div>
+                          <div className="stat-value" style={{ fontSize: 15, color: (item as any).color || undefined }}>{item.val}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* ── Valuasi ── */}
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Valuasi</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 16 }}>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>Market Cap</div>
-                        <div className="stat-value" style={{ fontSize: 16 }}>{formatMoney(f.price.market_cap)}</div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>PBV <FundamentalTooltip metricKey="pbv" value={f.valuation?.pbv} label="PBV" /></div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.valuation?.pbv != null ? `${f.valuation.pbv}x` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>Beta</div>
-                        <div className="stat-value" style={{ fontSize: 16 }}>{f.price.beta || '—'}</div>
-                      </div>
-                      <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>PBV</div>
-                        <div className="stat-value" style={{ fontSize: 16 }}>{f.valuation.pbv}x</div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Beta <FundamentalTooltip metricKey="beta" value={f.price?.beta} label="Beta" /></div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.price?.beta ?? '—'}</div>
                       </div>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+
+                    {/* ── Profitabilitas ── */}
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Profitabilitas</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 16 }}>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>ROE</div>
-                        <div className="stat-value" style={{ fontSize: 16 }}>{(f.profitability.roe * 100).toFixed(2)}%</div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>ROE <FundamentalTooltip metricKey="roe" value={f.profitability?.roe} label="ROE" /></div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.roe != null ? `${(f.profitability.roe * 100).toFixed(2)}%` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>DER</div>
-                        <div className="stat-value" style={{ fontSize: 16 }}>{f.health.der}</div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>ROA <FundamentalTooltip metricKey="roa" value={f.profitability?.roa} label="ROA" /></div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.roa != null ? `${(f.profitability.roa * 100).toFixed(2)}%` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>Div. Yield</div>
-                        <div className="stat-value" style={{ fontSize: 16 }}>{(f.dividend.yield_pct * 100).toFixed(2)}%</div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Net Margin <FundamentalTooltip metricKey="net_margin" value={f.profitability?.net_margin} label="Net Margin" /></div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.net_margin != null ? `${(f.profitability.net_margin * 100).toFixed(2)}%` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>Avg Vol</div>
-                        <div className="stat-value" style={{ fontSize: 16 }}>{formatMoney(f.price.avg_volume)}</div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>DER <FundamentalTooltip metricKey="der" value={f.health?.der} label="DER" /></div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.health?.der ?? '—'}</div>
+                      </div>
+                    </div>
+
+                    {/* ── Dividen ── */}
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Dividen</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+                      <div className="stat-card" style={{ padding: 12 }}>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Div. Yield <FundamentalTooltip metricKey="div_yield" value={f.dividend?.yield_pct} label="Dividend Yield" /></div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.dividend?.yield_pct != null ? `${(f.dividend.yield_pct * 100).toFixed(2)}%` : '—'}</div>
+                      </div>
+                      <div className="stat-card" style={{ padding: 12 }}>
+                        <div className="stat-label" style={{ fontSize: 10 }}>Payout Ratio</div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.dividend?.payout_ratio != null ? `${(f.dividend.payout_ratio * 100).toFixed(1)}%` : '—'}</div>
                       </div>
                     </div>
                   </CollapsibleCard>
+                  </FundamentalTooltipProvider>
                 </>
               )}
 
@@ -819,32 +871,42 @@ export default function StockDetailPage() {
                     </>
                   ) : historyData ? (
                     <>
-                      <div style={{ height: 300, width: '100%', marginBottom: 24 }}>
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={historyData.dividend_history}>
-                            <XAxis dataKey="date" stroke="#94a3b8" fontSize={10} />
-                            <YAxis stroke="#94a3b8" fontSize={12} />
-                            <Tooltip contentStyle={{ background: '#1e293b', border: 'none', borderRadius: 8 }} />
-                            <Bar dataKey="amount" name="Dividend (IDR)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </div>
-                      <table className="ranking-table">
-                        <thead>
-                          <tr>
-                            <th>Tanggal (Ex-Date)</th>
-                            <th style={{ textAlign: 'right' }}>Jumlah per Lembar</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {[...(historyData.dividend_history || [])].reverse().map((d: any, i: number) => (
-                            <tr key={i}>
-                              <td>{d.date}</td>
-                              <td style={{ textAlign: 'right' }} className="text-accent fw-700">Rp {d.amount.toLocaleString()}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                      {(historyData.dividend_history || []).length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '32px 16px', color: '#888' }}>
+                          <div style={{ fontSize: 32, marginBottom: 8 }}>💤</div>
+                          <div style={{ fontWeight: 600, marginBottom: 4 }}>Tidak Ada Riwayat Dividen</div>
+                          <div style={{ fontSize: 12 }}>Perusahaan ini tidak membagikan dividen atau data belum tersedia di Yahoo Finance.</div>
+                        </div>
+                      ) : (
+                        <>
+                          <div style={{ height: 300, width: '100%', marginBottom: 24 }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                              <BarChart data={historyData.dividend_history}>
+                                <XAxis dataKey="date" stroke="#94a3b8" fontSize={10} />
+                                <YAxis stroke="#94a3b8" fontSize={12} />
+                                <Tooltip contentStyle={{ background: '#1e293b', border: 'none', borderRadius: 8 }} />
+                                <Bar dataKey="amount" name="Dividend (IDR)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                              </BarChart>
+                            </ResponsiveContainer>
+                          </div>
+                          <table className="ranking-table">
+                            <thead>
+                              <tr>
+                                <th>Tanggal (Ex-Date)</th>
+                                <th style={{ textAlign: 'right' }}>Jumlah per Lembar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {[...(historyData.dividend_history || [])].reverse().map((d: any, i: number) => (
+                                <tr key={i}>
+                                  <td>{d.date}</td>
+                                  <td style={{ textAlign: 'right' }} className="text-accent fw-700">Rp {d.amount.toLocaleString()}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </>
+                      )}
                     </>
                   ) : (
                     <div className="flex-center" style={{ height: 200 }}>
@@ -855,26 +917,51 @@ export default function StockDetailPage() {
               )}
 
               {/* Technical Indicators Grid */}
+              <FundamentalTooltipProvider>
               <CollapsibleCard id="tech-indicators" title="⚡ Technical Indicators" collapsed={collapsed} onToggle={toggleCard}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-                  <div className="stat-card" style={{ padding: 12, borderLeft: '3px solid var(--blue)' }}>
-                    <div className="stat-label" style={{ fontSize: 10 }}>RSI (14)</div>
-                    <div className="stat-value" style={{ fontSize: 18 }}>{data.technical?.indicators?.rsi?.slice(-1)[0] || '—'}</div>
-                  </div>
-                  <div className="stat-card" style={{ padding: 12, borderLeft: '3px solid var(--accent)' }}>
-                    <div className="stat-label" style={{ fontSize: 10 }}>MACD</div>
-                    <div className="stat-value" style={{ fontSize: 18 }}>{data.technical?.indicators?.macd?.slice(-1)[0] || '—'}</div>
-                  </div>
-                  <div className="stat-card" style={{ padding: 12, borderLeft: '3px solid var(--yellow)' }}>
-                    <div className="stat-label" style={{ fontSize: 10 }}>MA-20</div>
-                    <div className="stat-value" style={{ fontSize: 18 }}>{data.technical?.indicators?.ma_20?.slice(-1)[0] || '—'}</div>
-                  </div>
-                  <div className="stat-card" style={{ padding: 12, borderLeft: '3px solid var(--red)' }}>
-                    <div className="stat-label" style={{ fontSize: 10 }}>BB Upper</div>
-                    <div className="stat-value" style={{ fontSize: 18 }}>{data.technical?.indicators?.bb_upper?.slice(-1)[0] || '—'}</div>
-                  </div>
-                </div>
+                {(() => {
+                  const ind = data.technical?.indicators
+                  const rsi   = ind?.rsi?.slice(-1)[0]
+                  const macd  = ind?.macd?.slice(-1)[0]
+                  const macdSig = ind?.macd_signal?.slice(-1)[0]
+                  const macdHist = ind?.macd_hist?.slice(-1)[0]
+                  const ma20  = ind?.ma_20?.slice(-1)[0]
+                  const ma50  = ind?.ma_50?.slice(-1)[0]
+                  const bbUp  = ind?.bb_upper?.slice(-1)[0]
+                  const bbMid = ind?.bb_mid?.slice(-1)[0]
+                  const bbLow = ind?.bb_lower?.slice(-1)[0]
+
+                  const fmt = (v: any) => v != null ? Number(v).toLocaleString('id-ID', { maximumFractionDigits: 2 }) : '—'
+                  const fmtF = (v: any, d = 4) => v != null ? Number(v).toFixed(d) : '—'
+
+                  const techItems = [
+                    { key: 'rsi',  label: 'RSI (14)',      val: fmt(rsi),      raw: rsi,   color: '#3b82f6' },
+                    { key: 'macd', label: 'MACD',          val: fmtF(macd),    raw: macd,  color: '#10b981' },
+                    { key: 'macd', label: 'MACD Signal',   val: fmtF(macdSig), raw: macdSig, color: '#f59e0b' },
+                    { key: 'macd', label: 'MACD Histogram',val: fmtF(macdHist),raw: macdHist,color: '#9333ea' },
+                    { key: 'ma20', label: 'MA-20',         val: `Rp ${fmt(ma20)}`, raw: null, color: '#2196F3' },
+                    { key: 'ma50', label: 'MA-50',         val: `Rp ${fmt(ma50)}`, raw: null, color: '#FF9800' },
+                    { key: 'bb',   label: 'BB Upper',      val: `Rp ${fmt(bbUp)}`, raw: null, color: '#ef4444' },
+                    { key: 'bb',   label: 'BB Mid (MA20)', val: `Rp ${fmt(bbMid)}`,raw: null, color: '#888' },
+                    { key: 'bb',   label: 'BB Lower',      val: `Rp ${fmt(bbLow)}`,raw: null, color: '#10b981' },
+                  ]
+
+                  return (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                      {techItems.map((item, i) => (
+                        <div key={i} className="stat-card" style={{ padding: 12, borderLeft: `3px solid ${item.color}` }}>
+                          <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>
+                            {item.label}
+                            <FundamentalTooltip metricKey={item.key} value={item.raw ?? null} label={item.label} />
+                          </div>
+                          <div className="stat-value" style={{ fontSize: 15, color: item.color }}>{item.val}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                })()}
               </CollapsibleCard>
+              </FundamentalTooltipProvider>
 
               {/* Profil Perusahaan — dipindah ke sini agar kolom kiri-kanan proporsional */}
               <CollapsibleCard id="profil" title="🏢 Profil Perusahaan" defaultOpen={true} collapsed={collapsed} onToggle={toggleCard}>

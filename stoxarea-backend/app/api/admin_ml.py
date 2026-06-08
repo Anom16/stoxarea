@@ -1,6 +1,9 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status, Body
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 from typing import Optional
+from pathlib import Path
+import json
 from ml.pipeline.scheduler import run_daily_pipeline, run_weekly_retrain
 from app.services.spk3_saw import invalidate_saw_cache, get_cache_status
 from app.services.corporate_action_guard import get_pending_flags, resolve_flag
@@ -12,6 +15,8 @@ import logging
 import threading
 
 logger = logging.getLogger(__name__)
+
+REPORTS_DIR = Path("reports")
 
 router = APIRouter(
     prefix="/admin/ml",
@@ -116,11 +121,50 @@ def invalidate_cache_manually(
 def check_cache_status(
     _: User = Depends(_get_admin_user)
 ):
-    """
-    Melihat status cache SAW saat ini.
-    Menampilkan semua cache entry yang aktif beserta sisa TTL-nya.
-    """
+    """Melihat status cache SAW saat ini."""
     return get_cache_status()
+
+
+# ── Model Performance Endpoints ───────────────────────────────────────────────
+
+@router.get("/reports/summary")
+def get_model_summary():
+    """
+    Mengembalikan hasil evaluasi model XGBoost dalam format JSON.
+    Digunakan oleh frontend untuk menampilkan metrik performa.
+    Tidak butuh login — data ini bersifat informatif/publik.
+    """
+    path = REPORTS_DIR / "evaluation_summary.json"
+    if not path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="Laporan evaluasi belum tersedia. Jalankan python -m ml.training.evaluate terlebih dahulu."
+        )
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+@router.get("/reports/{plot_name}")
+def get_model_plot(plot_name: str):
+    """
+    Mengembalikan gambar plot evaluasi model.
+    plot_name: confusion_matrix | roc_curve | feature_importance | walkforward_results
+    """
+    valid = {
+        "confusion_matrix":   "confusion_matrix.png",
+        "roc_curve":          "roc_curve.png",
+        "feature_importance": "feature_importance.png",
+        "walkforward":        "walkforward_results.png",
+    }
+    if plot_name not in valid:
+        raise HTTPException(
+            status_code=400,
+            detail=f"plot_name tidak valid. Pilihan: {list(valid.keys())}"
+        )
+    path = REPORTS_DIR / valid[plot_name]
+    if not path.exists():
+        raise HTTPException(status_code=404, detail=f"Plot {plot_name} belum tersedia.")
+    return FileResponse(path, media_type="image/png")
 
 
 # ── Corporate Action Endpoints ────────────────────────────────────────────────

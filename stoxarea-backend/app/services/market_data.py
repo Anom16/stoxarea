@@ -51,9 +51,15 @@ def get_technical_data(ticker: str, period: str = "3mo", interval: str = "1d") -
             return data
 
     try:
+        # Untuk period pendek, fetch data lebih panjang agar indikator MA50 bisa dihitung
+        WARMUP = {"1mo": "3mo", "3mo": "6mo", "6mo": "1y"}
+        fetch_period = WARMUP.get(period, period)
+        # Update trim days sesuai period
+        PERIOD_DAYS = {"1mo": 31, "3mo": 92, "6mo": 183}
+
         with _YF_LOCK:
             _yf_rate_limit()
-            df = yf.download(ticker, period=period, interval=interval, progress=False, auto_adjust=True)
+            df = yf.download(ticker, period=fetch_period, interval=interval, progress=False, auto_adjust=True)
         if df.empty:
             return {"error": f"Data tidak tersedia untuk {ticker}"}
 
@@ -87,6 +93,12 @@ def get_technical_data(ticker: str, period: str = "3mo", interval: str = "1d") -
 
         # Buang baris NaN lalu konversi ke list untuk JSON
         df = df.dropna()
+
+        # Trim ke period asli jika menggunakan warmup
+        PERIOD_DAYS = {"1mo": 31, "3mo": 92, "6mo": 183}
+        if period in PERIOD_DAYS and len(df) > PERIOD_DAYS[period]:
+            df = df.tail(PERIOD_DAYS[period])
+
         dates = df.index.strftime("%Y-%m-%d").tolist()
 
         # Tanggal candle terakhir = data terbaru dari Yahoo Finance
@@ -323,6 +335,17 @@ def get_historical_financials(ticker: str, db=None) -> dict:
         local_data = db.query(FinancialHistory).filter_by(ticker=ticker).order_by(FinancialHistory.year.desc()).all()
         if local_data:
             latest_year = local_data[0].year if local_data else None
+
+            # Fetch dividen live dari Yahoo (ringan, tidak disimpan ke DB)
+            try:
+                with _YF_LOCK:
+                    _yf_rate_limit()
+                    t_obj = yf.Ticker(ticker)
+                    divs = t_obj.dividends.tail(10)
+                history_div = [{"date": d.strftime('%Y-%m-%d'), "amount": float(v)} for d, v in divs.items()]
+            except Exception:
+                history_div = []
+
             return {
                 "last_updated": {
                     "source": "database",
@@ -340,7 +363,7 @@ def get_historical_financials(ticker: str, db=None) -> dict:
                     "liabilities": d.liabilities,
                     "equity": d.equity
                 } for d in local_data],
-                "dividend_history": []
+                "dividend_history": history_div
             }
 
     # 2. Jika tidak ada di DB, ambil dari YFinance

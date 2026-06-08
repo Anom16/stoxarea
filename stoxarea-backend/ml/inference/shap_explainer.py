@@ -34,25 +34,27 @@ MODEL_PATH  = Path(settings.MODEL_PATH)   # ← pakai config, bukan hardcode
 OUTPUT_PATH = Path(settings.AI_SCORES_PATH)
 
 FEATURES = [
-    "log_ret_1d", "log_ret_5d", "ma_20_dist", "ma_50_dist", 
-    "bb_width", "bb_position", "rsi_14", 
-    "macd_norm", "macd_signal_norm", "macd_hist_norm", 
-    "vol_ma_ratio"
+    "log_ret_1d", "log_ret_5d",
+    "ma_20_dist", "ma_50_dist",
+    "bb_width", "bb_position",
+    "rsi_14",
+    "macd_norm", "macd_signal_norm", "macd_hist_norm",
+    "vol_ma_ratio",
 ]
 
 # Mapping fitur ke nama yang lebih mudah dipahami user (Human Readable)
 FEATURE_NAMES = {
-    "log_ret_1d": "Perubahan Harga Harian",
-    "log_ret_5d": "Momentum Mingguan",
-    "ma_20_dist": "Jarak ke Harga Rata-rata (MA20)",
-    "ma_50_dist": "Trend Menengah (MA50)",
-    "bb_width": "Volatilitas / Squeeze (BB)",
-    "bb_position": "Posisi Harga (Bollinger)",
-    "rsi_14": "Tingkat Kejenuhan Pasar (RSI)",
-    "macd_norm": "Kekuatan Tren (MACD)",
+    "log_ret_1d":       "Perubahan Harga Harian",
+    "log_ret_5d":       "Momentum 5 Hari",
+    "ma_20_dist":       "Jarak ke Harga Rata-rata (MA20)",
+    "ma_50_dist":       "Trend Menengah (MA50)",
+    "bb_width":         "Volatilitas / Squeeze (BB)",
+    "bb_position":      "Posisi Harga (Bollinger)",
+    "rsi_14":           "Tingkat Kejenuhan Pasar (RSI)",
+    "macd_norm":        "Kekuatan Tren (MACD)",
     "macd_signal_norm": "Sinyal Tren (MACD)",
-    "macd_hist_norm": "Akselerasi Tren (MACD Hist)",
-    "vol_ma_ratio": "Lonjakan Volume"
+    "macd_hist_norm":   "Akselerasi Tren (MACD Hist)",
+    "vol_ma_ratio":     "Lonjakan Volume",
 }
 
 def format_insight(feature_name: str, shap_val: float) -> str:

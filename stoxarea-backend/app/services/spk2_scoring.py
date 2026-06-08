@@ -13,14 +13,14 @@ Fungsi utama:
 
 import time
 from intelligence_store.ai_scores import ai_store
-from intelligence_store.capping_bounds import bounds_store   # ← Task 1.3
+from intelligence_store.capping_bounds import bounds_store
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.models.stock import Stock
 
 # --- Sistem Caching Sederhana ---
-MOMENTUM_CACHE = {} # { "sector_name": {"data": [...], "expiry": timestamp} }
-CACHE_TTL = 300 # Cache berlaku selama 5 menit (300 detik)
+MOMENTUM_CACHE = {}
+CACHE_TTL = 300
 
 def get_top_momentum_stocks(db: Session, limit: int = 30, target_sector: Optional[str] = None) -> List[dict]:
     """
@@ -37,11 +37,9 @@ def get_top_momentum_stocks(db: Session, limit: int = 30, target_sector: Optiona
         if current_time < cache_data["expiry"]:
             return cache_data["data"]
 
-    # 2. Jika tidak ada di cache, lakukan proses berat
-    all_scores = ai_store.get_all_scores()
-    
-    # Ambil data saham dari DB sebagai basis utama (Hanya yang lolos filter)
-    query = db.query(Stock.ticker, Stock.sector).filter(Stock.is_qualified == True)
+    # 2. Ambil SEMUA saham dari DB (qualified maupun tidak) untuk halaman Market
+    # is_qualified hanya dipakai untuk filter rekomendasi SAW, bukan untuk tampilan Market
+    query = db.query(Stock.ticker, Stock.sector, Stock.name, Stock.is_qualified)
     if target_sector:
         query = query.filter(Stock.sector.ilike(f"%{target_sector}%"))
     
@@ -50,18 +48,22 @@ def get_top_momentum_stocks(db: Session, limit: int = 30, target_sector: Optiona
     stocks_list = []
     for s in db_stocks:
         ticker = s.ticker
-        # Ambil skor AI jika ada (Cek tanpa dan dengan .JK)
         data = all_scores.get(ticker) or all_scores.get(f"{ticker}.JK")
         
-        # HANYA TAMPILKAN JIKA ADA DATA AI (Tidak 0%)
-        if data:
-            stocks_list.append({
-                "ticker": ticker,
-                "sector": s.sector or "Unknown",
-                "ai_score": data.get("ai_score", 0.0),
-                "ai_score_percent": data.get("ai_score_percent", "0%"),
-                "insights": data.get("insights", [])
-            })
+        ai_score   = data.get("ai_score", 0.0)   if data else 0.0
+        ai_pct     = data.get("ai_score_percent", "—") if data else "—"
+        insights   = data.get("insights", [])     if data else []
+
+        stocks_list.append({
+            "ticker":         ticker,
+            "name":           s.name or ticker.replace(".JK", ""),
+            "sector":         s.sector or "Unknown",
+            "is_qualified":   s.is_qualified,
+            "ai_score":       ai_score,
+            "ai_score_percent": ai_pct,
+            "insights":       insights,
+            "has_ai_score":   data is not None,
+        })
             
     # Urutkan berdasarkan AI Score tertinggi (yang belum ada skor di bawah)
     stocks_list.sort(key=lambda x: x["ai_score"], reverse=True)
@@ -151,29 +153,12 @@ def get_ai_score_by_ticker(ticker: str) -> dict:
 
 def get_qualified_stocks_for_saw(
     db: Session,
-    target_sector: Optional[str] = None
+    target_sector: Optional[str] = None,
 ) -> List[dict]:
     """
-    [Task 1.3 — Separation of Concerns]
     Menyiapkan data saham yang sudah BERSIH untuk dikonsumsi SPK 3 (SAW).
-
-    Tanggung jawab fungsi ini:
-        1. Filter saham is_qualified = True (lolos SPK 2)
-        2. Gabungkan dengan AI Score dari intelligence_store
-        3. Clamp nilai fundamental (ROE, DER, PBV) menggunakan bounds persentil
-           → SPK 3 tidak perlu tahu soal outlier, tinggal hitung SAW
-
-    Perbedaan dengan get_top_momentum_stocks():
-        - Fungsi itu: untuk halaman Market (butuh sparkline, harga, sentimen)
-        - Fungsi ini: khusus untuk SAW (butuh fundamental bersih, tidak butuh harga)
-
-    Returns:
-        List of dict dengan field:
-            ticker, sector, ai_score, insights,
-            roe_raw, der_raw, pbv_raw,      ← nilai asli untuk ditampilkan di UI
-            roe_clean, der_clean, pbv_clean  ← nilai bersih untuk kalkulasi SAW
+    Filter: is_qualified = True, gabung AI Score, clamp outlier.
     """
-    # Query saham qualified dari DB
     query = db.query(Stock).filter(Stock.is_qualified == True)
     if target_sector:
         query = query.filter(Stock.sector.ilike(f"%{target_sector}%"))
@@ -188,17 +173,12 @@ def get_qualified_stocks_for_saw(
     for s in stocks:
         ai_data = all_scores.get(s.ticker) or all_scores.get(f"{s.ticker}.JK")
         if not ai_data:
-            # Skip saham yang belum punya AI Score (pipeline belum jalan)
             continue
 
-        # Nilai mentah — disimpan untuk ditampilkan di UI
         roe_raw = s.roe
         der_raw = s.der
         pbv_raw = s.pbv
 
-        # Nilai bersih — sudah di-clamp ke batas persentil P5-P95
-        # Ini yang dipakai untuk kalkulasi normalisasi SAW di SPK 3
-        # SPK 3 tidak perlu tahu batas capping — sudah ditangani di sini
         roe_clean = bounds_store.clamp(roe_raw, "roe")
         der_clean = bounds_store.clamp(der_raw, "der")
         pbv_clean = bounds_store.clamp(pbv_raw, "pbv")
@@ -208,11 +188,9 @@ def get_qualified_stocks_for_saw(
             "sector":    s.sector or "Unknown",
             "ai_score":  ai_data.get("ai_score", 0.0),
             "insights":  ai_data.get("insights", []),
-            # Nilai asli (untuk UI)
             "roe_raw":   roe_raw,
             "der_raw":   der_raw,
             "pbv_raw":   pbv_raw,
-            # Nilai bersih (untuk SAW) — sudah bebas outlier
             "roe_clean": roe_clean,
             "der_clean": der_clean,
             "pbv_clean": pbv_clean,

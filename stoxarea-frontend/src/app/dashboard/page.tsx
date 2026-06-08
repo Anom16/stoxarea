@@ -48,7 +48,11 @@ export default function DashboardPage() {
     // Fetch user profile
     api.get('/auth/me', { headers })
       .then(r => {
-        // Prioritas: full_name → bagian depan email → fallback 'Pengguna'
+        // Jika admin mengakses dashboard, redirect ke admin panel
+        if (r.data.is_admin) {
+          window.location.href = '/admin'
+          return
+        }
         const name = r.data.full_name?.trim() || r.data.email?.split('@')[0] || 'Pengguna'
         setUsername(name)
         setProfile(r.data.risk_profile || '—')

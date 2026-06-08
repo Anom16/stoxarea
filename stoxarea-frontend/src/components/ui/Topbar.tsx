@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import api from '@/lib/api'
 
 interface TopbarProps {
@@ -10,10 +9,8 @@ interface TopbarProps {
 }
 
 export default function Topbar({ username: initialUsername, riskProfile: initialRiskProfile, title }: TopbarProps) {
-  const [query, setQuery] = useState('')
   const [username, setUsername] = useState(initialUsername || 'Pengguna')
   const [riskProfile, setRiskProfile] = useState(initialRiskProfile || '—')
-  const router = useRouter()
 
   useEffect(() => {
     if (initialUsername && initialRiskProfile) return
@@ -22,7 +19,6 @@ export default function Topbar({ username: initialUsername, riskProfile: initial
       api.get('/auth/me', { headers: { Authorization: `Bearer ${token}` } })
         .then(r => {
           if (!initialUsername) {
-            // Prioritas: full_name → bagian depan email → fallback 'Pengguna'
             const name = r.data.full_name?.trim() || r.data.email?.split('@')[0] || 'Pengguna'
             setUsername(name)
           }
@@ -32,11 +28,6 @@ export default function Topbar({ username: initialUsername, riskProfile: initial
     }
   }, [initialUsername, initialRiskProfile])
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (query.trim()) router.push(`/market/${query.trim().toUpperCase()}`)
-  }
-
   return (
     <header className="topbar">
       <div className="topbar-greeting">
@@ -44,18 +35,6 @@ export default function Topbar({ username: initialUsername, riskProfile: initial
         {title && <p style={{ fontSize: 14, fontWeight: 'bold', color: 'var(--text-primary)', marginBottom: 4 }}>{title}</p>}
         <p>Profil Risiko Anda: <strong style={{ color: 'var(--accent)' }}>{riskProfile}</strong></p>
       </div>
-
-      <form onSubmit={handleSearch}>
-        <div className="search-box">
-          <span style={{ color: 'var(--text-muted)', fontSize: 16 }}>🔍</span>
-          <input
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="Cari Ticker Saham... (mis: BBCA)"
-            id="search-ticker"
-          />
-        </div>
-      </form>
 
       <div className="profile-avatar" title={username}>
         {username.charAt(0).toUpperCase()}
