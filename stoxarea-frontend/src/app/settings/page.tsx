@@ -62,7 +62,10 @@ export default function SettingsPage() {
     if (!token) { router.push('/auth/login'); return }
 
     const savedTheme = localStorage.getItem('app_theme') as 'dark' | 'light'
-    if (savedTheme) setTheme(savedTheme)
+    if (savedTheme) {
+      setTheme(savedTheme)
+      document.body.classList.toggle('light-mode', savedTheme === 'light')
+    }
     const savedLang = localStorage.getItem('app_lang') as 'id' | 'en'
     if (savedLang) setLang(savedLang)
 

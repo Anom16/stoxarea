@@ -14,8 +14,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className="dark">
+    <html lang="id">
       <body className={inter.className}>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            var theme = localStorage.getItem('app_theme') || 'dark';
+            if (theme === 'light') {
+              document.body.classList.add('light-mode');
+            }
+          })()
+        ` }} />
         <NextTopLoader color="#10b981" showSpinner={false} height={3} />
         <ErrorBoundary>
           {children}

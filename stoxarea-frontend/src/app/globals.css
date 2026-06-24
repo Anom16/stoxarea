@@ -3,11 +3,13 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg-primary:    #0a0e1a;
+  --bg-primary:    #0b0f19;
   --bg-secondary:  #111827;
-  --bg-card:       #161d2e;
+  --bg-sidebar:    #070a12;
+  --bg-card:       #151d2e;
   --bg-hover:      #1e2940;
   --border:        #1f2d45;
+  --border-sidebar:#161f30;
   --border-bright: #2d4166;
   --accent:        #10b981;
   --accent-dim:    #059669;
@@ -26,9 +28,11 @@
 body.light-mode {
   --bg-primary:    #f8fafc;
   --bg-secondary:  #ffffff;
+  --bg-sidebar:    #f1f5f9;
   --bg-card:       #ffffff;
   --bg-hover:      #f1f5f9;
   --border:        #e2e8f0;
+  --border-sidebar:#e2e8f0;
   --border-bright: #cbd5e1;
   --text-primary:  #0f172a;
   --text-secondary:#475569;
@@ -47,13 +51,18 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ─── GLOBAL TRANSITIONS FOR THEME SWITCHING ────────── */
+body, .sidebar, .topbar, .card, input, select, button, .nav-item, .logo-text, .nav-label {
+  transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 /* ─── LAYOUT ─────────────────────────────────────── */
 .app-shell { display: flex; height: 100vh; overflow: hidden; }
 
 .sidebar {
   width: var(--sidebar-w);
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border);
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-sidebar);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -88,7 +97,7 @@ body {
 /* ─── SIDEBAR LOGO ─────────────────────────────────── */
 .sidebar-logo {
   padding: 20px 20px 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-sidebar);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -115,20 +124,31 @@ body {
   padding: 10px 12px; border-radius: 8px; cursor: pointer;
   font-size: 14px; font-weight: 500; color: var(--text-secondary);
   text-decoration: none;
-  transition: all 0.15s;
   margin-bottom: 2px;
+  position: relative;
+  overflow: hidden;
 }
 .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
 .nav-item.active {
   background: var(--accent-glow);
   color: var(--accent);
-  border: 1px solid rgba(16,185,129,0.25);
+  border: 1px solid rgba(16,185,129,0.2);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 4px 4px 0;
 }
 .nav-item .nav-icon { width: 18px; height: 18px; flex-shrink: 0; }
 
 .sidebar-footer {
   padding: 12px 10px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-sidebar);
 }
 
 /* ─── TOPBAR ────────────────────────────────────────── */
