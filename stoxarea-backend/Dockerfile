@@ -21,4 +21,4 @@ COPY . .
 RUN mkdir -p logs reports data/processed data/raw/ohlcv data/clusters
 
 # Jalankan uvicorn (Railway inject $PORT otomatis)
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
