@@ -16,12 +16,20 @@ def create_users():
             {
                 "email": "moderat@gmail.com",
                 "password": "admin",
-                "risk_profile": RiskProfileEnum.moderat
+                "risk_profile": RiskProfileEnum.moderat,
+                "is_admin": False
             },
             {
                 "email": "agresif@gmail.com",
                 "password": "admin",
-                "risk_profile": RiskProfileEnum.agresif
+                "risk_profile": RiskProfileEnum.agresif,
+                "is_admin": False
+            },
+            {
+                "email": "admin@gmail.com",
+                "password": "admin",
+                "risk_profile": RiskProfileEnum.agresif,
+                "is_admin": True
             }
         ]
 
@@ -31,11 +39,13 @@ def create_users():
             if existing:
                 print(f"User {u_data['email']} sudah ada.")
                 existing.risk_profile = u_data["risk_profile"]
+                existing.is_admin = u_data["is_admin"]
             else:
                 new_user = User(
                     email=u_data["email"],
                     password_hash=get_password_hash(u_data["password"]),
-                    risk_profile=u_data["risk_profile"]
+                    risk_profile=u_data["risk_profile"],
+                    is_admin=u_data["is_admin"]
                 )
                 db.add(new_user)
                 print(f"User {u_data['email']} berhasil dibuat.")
