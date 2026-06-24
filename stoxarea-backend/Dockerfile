@@ -20,5 +20,5 @@ COPY . .
 # Buat folder yang dibutuhkan saat runtime
 RUN mkdir -p logs reports data/processed data/raw/ohlcv data/clusters
 
-# Jalankan uvicorn (Railway inject $PORT otomatis)
-CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
+# Jalankan sync database & test users sebelum uvicorn (Railway inject $PORT otomatis)
+CMD python -m ml.pipeline.sync_db && python scripts/create_test_users.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT
