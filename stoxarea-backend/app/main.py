@@ -16,13 +16,17 @@ from slowapi.util import get_remote_address
 
 # Setup Logger Global
 import sys
+# Force UTF-8 encoding for standard streams to prevent UnicodeEncodeError on Windows when logging emojis
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.StreamHandler(
-            stream=open(sys.stdout.fileno(), mode='w', encoding='utf-8', buffering=1)
-        )
+        logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger(__name__)
@@ -51,7 +55,6 @@ logger.info(f"CORS Allowed Origins: {allowed_origins}")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_origin_regex=".*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -72,8 +75,25 @@ app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
 @app.on_event("startup")
 def on_startup():
-    logger.info("Membangun tabel database (jika belum ada)...")
-    Base.metadata.create_all(bind=engine)
+    # Retry database connection and table creation (handles Supabase cold starts/pauses)
+    max_retries = 5
+    retry_delay = 10
+    
+    for attempt in range(1, max_retries + 1):
+        try:
+            logger.info(f"Membangun tabel database (jika belum ada) - Percobaan {attempt}/{max_retries}...")
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database berhasil terhubung dan tabel diverifikasi/dibuat.")
+            break
+        except Exception as e:
+            logger.error(f"Koneksi database gagal pada percobaan {attempt}/{max_retries}: {e}")
+            if attempt < max_retries:
+                logger.info(f"Menunggu {retry_delay} detik sebelum mencoba lagi...")
+                import time as _time
+                _time.sleep(retry_delay)
+            else:
+                logger.critical("Semua percobaan koneksi database gagal. Aplikasi tidak dapat dijalankan.")
+                raise e
     
     # Menjalankan Scheduler ML Pipeline
     logger.info("Memulai Background Scheduler untuk ML Pipeline (Berjalan tiap hari kerja jam 17:00)...")

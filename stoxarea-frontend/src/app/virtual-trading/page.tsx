@@ -6,6 +6,7 @@ import ToastContainer from '@/components/ui/Toast'
 import DisclaimerFooter from '@/components/ui/DisclaimerFooter'
 import { useToast } from '@/hooks/useToast'
 import api from '@/lib/api'
+import TransactionModal from '@/components/ui/Modal'
 
 interface PortfolioItem {
   ticker: string
@@ -33,6 +34,62 @@ export default function VirtualTradingPage() {
   const [processing, setProcessing] = useState(false)
   const [activeTab, setActiveTab] = useState<'portfolio' | 'history'>('portfolio')
   const { toasts, removeToast, toast } = useToast()
+
+  const handleDownloadPDF = async () => {
+    try {
+      toast.info('Memproses PDF', 'Mohon tunggu sebentar...', '')
+      
+      const response = await api.get('/portfolio/transactions/pdf', {
+        responseType: 'blob',
+      })
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'Riwayat_Transaksi_StoxArea.pdf')
+      document.body.appendChild(link)
+      link.click()
+      link.parentNode?.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      
+      toast.success('Unduh Berhasil 📄', 'Laporan riwayat transaksi telah diunduh.', '')
+    } catch (err) {
+      toast.error('Gagal Mengunduh PDF', 'Terjadi kesalahan saat memproses laporan PDF.', '')
+    }
+  }
+
+  const handleDownloadReceipt = async (txId: number) => {
+    try {
+      toast.info('Memproses Kuitansi 📄', 'Mohon tunggu sebentar...', '')
+      
+      const response = await api.get(`/portfolio/transactions/${txId}/pdf`, {
+        responseType: 'blob',
+      })
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `StoxArea_Nota_Transaksi_${txId}.pdf`)
+      document.body.appendChild(link)
+      link.click()
+      link.parentNode?.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      
+      toast.success('Unduh Berhasil 🎉', 'Kuitansi transaksi berhasil diunduh.', '')
+    } catch (err) {
+      toast.error('Gagal Mengunduh', 'Terjadi kesalahan saat memproses kuitansi PDF.', '')
+    }
+  }
+
+  // Modal Trading States
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalTicker, setModalTicker] = useState('')
+  const [modalCompanyName, setModalCompanyName] = useState('')
+  const [modalActionType, setModalActionType] = useState<'BUY' | 'SELL'>('BUY')
+  const [modalCurrentPrice, setModalCurrentPrice] = useState(0)
+  const [modalHoldingQty, setModalHoldingQty] = useState(0)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -63,38 +120,53 @@ export default function VirtualTradingPage() {
 
   useEffect(() => { fetchData() }, [fetchData])
 
-  const handleQuickTrade = async (ticker: string, type: 'buy' | 'sell', currentPrice: number) => {
-    const input = prompt(`Berapa LOT ${ticker.replace('.JK', '')} yang ingin di-${type === 'buy' ? 'BELI' : 'JUAL'}?`, '1')
-    if (!input) return
-    const lot = parseInt(input)
-    if (isNaN(lot) || lot <= 0) {
-      toast.error('Input Tidak Valid', 'Jumlah lot harus berupa angka lebih dari 0')
-      return
-    }
-    setProcessing(true)
-    try {
-      // Backend sekarang mengambil harga sendiri — hanya kirim ticker dan qty (dalam LOT)
-      const res = await api.post(`/portfolio/${type}`, { ticker, qty: lot })
-      const data = res.data
-      const tickerClean = ticker.replace('.JK', '')
+  const handleQuickTrade = (ticker: string, type: 'buy' | 'sell', currentPrice: number) => {
+    const tickerUpper = ticker.toUpperCase()
+    const holding = portfolio.find(p => p.ticker.toUpperCase() === tickerUpper)
+    const holdingQty = holding ? holding.qty : 0
 
-      if (type === 'buy') {
+    setModalTicker(tickerUpper)
+    setModalCompanyName(tickerUpper.replace('.JK', ''))
+    setModalActionType(type === 'buy' ? 'BUY' : 'SELL')
+    setModalCurrentPrice(currentPrice)
+    setModalHoldingQty(holdingQty)
+    setIsModalOpen(true)
+  }
+
+  const handleConfirmTrade = async (lots: number) => {
+    setProcessing(true)
+    const type = modalActionType.toLowerCase() as 'buy' | 'sell'
+    try {
+      const res = await api.post(`/portfolio/${type}`, { 
+        ticker: modalTicker, 
+        qty: lots 
+      })
+      const data = res.data
+      const tickerClean = modalTicker.replace('.JK', '')
+
+      if (modalActionType === 'BUY') {
         toast.success(
           `Pembelian Berhasil 📈`,
-          `${lot} Lot ${tickerClean} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
+          `${lots} Lot ${tickerClean} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
           `Dibayar: Rp ${data.net_value?.toLocaleString('id-ID')} (fee Rp ${data.fee_amount?.toLocaleString('id-ID')})`
         )
       } else {
         toast.success(
           `Penjualan Berhasil 📉`,
-          `${lot} Lot ${tickerClean} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
+          `${lots} Lot ${tickerClean} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
           `Diterima: Rp ${data.net_value?.toLocaleString('id-ID')} (setelah fee Rp ${data.fee_amount?.toLocaleString('id-ID')})`
         )
       }
+      setIsModalOpen(false)
       fetchData()
     } catch (err: any) {
-      toast.error('Transaksi Gagal', err.response?.data?.detail || 'Terjadi kesalahan saat memproses order')
-    } finally { setProcessing(false) }
+      toast.error(
+        'Transaksi Gagal', 
+        err.response?.data?.detail || 'Terjadi kesalahan saat memproses order'
+      )
+    } finally { 
+      setProcessing(false) 
+    }
   }
 
   // Kalkulasi summary
@@ -308,6 +380,7 @@ export default function VirtualTradingPage() {
                             <th style={{ textAlign: 'right' }}>Harga/Lbr</th>
                             <th style={{ textAlign: 'right' }}>Fee</th>
                             <th style={{ textAlign: 'right' }}>Net Nilai</th>
+                            <th style={{ textAlign: 'center' }}>Nota</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -336,6 +409,15 @@ export default function VirtualTradingPage() {
                                 color: tx.type === 'BUY' ? 'var(--red)' : 'var(--accent)' }}>
                                 {tx.type === 'BUY' ? '−' : '+'}Rp {(tx.net_value || tx.qty * tx.price).toLocaleString('id-ID')}
                               </td>
+                              <td style={{ textAlign: 'center' }}>
+                                <button 
+                                  onClick={() => handleDownloadReceipt(tx.id)}
+                                  className="btn-action buy"
+                                  style={{ padding: '3px 8px', fontSize: 11 }}
+                                >
+                                  📄 Nota
+                                </button>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -353,6 +435,20 @@ export default function VirtualTradingPage() {
           <DisclaimerFooter />
         </div>
       </main>
+
+      {/* Transaction Modal Popup */}
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        ticker={modalTicker}
+        companyName={modalCompanyName}
+        actionType={modalActionType}
+        currentPrice={modalCurrentPrice}
+        balance={balance}
+        holdingQty={modalHoldingQty}
+        onConfirm={handleConfirmTrade}
+        processing={processing}
+      />
 
       {/* ── TOAST NOTIFICATION ── */}
       <ToastContainer toasts={toasts} onRemove={removeToast} />

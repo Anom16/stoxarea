@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, field_validator
 from typing import List
@@ -172,3 +172,94 @@ def get_transactions(
         }
         for tx in txs
     ]
+
+
+@router.get("/transactions/pdf")
+def get_transactions_pdf(
+    limit: int = 100,
+    email: str = Depends(get_current_user_email),
+    db: Session = Depends(get_db)
+):
+    """
+    Mengunduh riwayat transaksi virtual trading user dalam bentuk PDF.
+    """
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    txs = (
+        db.query(Transaction)
+        .filter(Transaction.user_id == user.id)
+        .order_by(Transaction.timestamp.desc())
+        .limit(limit)
+        .all()
+    )
+
+    transactions_data = [
+        {
+            "id": tx.id,
+            "ticker": tx.ticker,
+            "type": tx.type.value,
+            "qty": tx.qty,
+            "price": tx.price,
+            "fee": tx.fee,
+            "net_value": tx.net_value,
+            "timestamp": str(tx.timestamp),
+        }
+        for tx in txs
+    ]
+
+    from app.services.portfolio_pdf import generate_transaction_history_pdf
+    client_name = user.full_name or user.email
+    pdf_bytes = generate_transaction_history_pdf(client_name, transactions_data)
+
+    filename = f"StoxArea_Riwayat_Transaksi_{user.email.split('@')[0]}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
+@router.get("/transactions/{transaction_id}/pdf")
+def get_transaction_receipt_pdf(
+    transaction_id: int,
+    email: str = Depends(get_current_user_email),
+    db: Session = Depends(get_db)
+):
+    """
+    Mengunduh bukti kuitansi transaksi tertentu dalam bentuk PDF.
+    """
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    tx = (
+        db.query(Transaction)
+        .filter(Transaction.id == transaction_id, Transaction.user_id == user.id)
+        .first()
+    )
+    if not tx:
+        raise HTTPException(status_code=404, detail="Transaksi tidak ditemukan atau bukan milik Anda.")
+
+    tx_data = {
+        "id": tx.id,
+        "ticker": tx.ticker,
+        "type": tx.type.value,
+        "qty": tx.qty,
+        "price": tx.price,
+        "fee": tx.fee,
+        "net_value": tx.net_value,
+        "timestamp": str(tx.timestamp),
+    }
+
+    from app.services.portfolio_pdf import generate_transaction_receipt_pdf
+    client_name = user.full_name or user.email
+    pdf_bytes = generate_transaction_receipt_pdf(client_name, tx_data)
+
+    filename = f"StoxArea_Nota_TX_{tx.id}_{tx.ticker.replace('.JK', '')}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )

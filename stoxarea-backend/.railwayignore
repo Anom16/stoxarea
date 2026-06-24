@@ -1,0 +1,37 @@
+# ============================================
+# Railway Ignore File
+# File-file ini tidak perlu di-upload ke Railway
+# Data akan di-generate ulang saat pertama jalan
+# ============================================
+
+# Data mentah saham (bisa download ulang dari yfinance)
+data/raw/ohlcv/
+data/raw/fundamental.csv
+
+# Data processed (akan di-generate ulang)
+data/processed/
+
+# Data cluster plots (gambar, tidak perlu)
+data/clusters/plots/
+
+# Cache & logs
+cache/
+logs/
+*.log
+
+# Model ML (akan di-retrain di server)
+# CATATAN: Uncomment baris ini kalau model bisa diretrain otomatis
+# models/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Test files
+tests/
+server_test.log
+
+# Development files
+.vscode/

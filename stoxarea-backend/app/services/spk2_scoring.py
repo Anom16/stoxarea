@@ -11,12 +11,15 @@ Fungsi utama:
     get_qualified_stocks_for_saw() → khusus untuk dikonsumsi SPK 3 (data bersih)
 """
 
+import logging
 import time
 from intelligence_store.ai_scores import ai_store
 from intelligence_store.capping_bounds import bounds_store
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.models.stock import Stock
+
+logger = logging.getLogger(__name__)
 
 # --- Sistem Caching Sederhana ---
 MOMENTUM_CACHE = {}
@@ -120,7 +123,7 @@ def get_top_momentum_stocks(db: Session, limit: int = 30, target_sector: Optiona
                 s["sentiment"] = "Netral"
                 s["current_price"] = 0
     except Exception as e:
-        print(f"Error fetching market data: {e}")
+        logger.warning("Error fetching market data: %s", e)
         # Berikan data kosong agar UI tidak hancur
         for s in top_stocks:
             s["sparkline"] = []

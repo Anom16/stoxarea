@@ -1,1256 +1,1256 @@
 {
     "BBCA.JK": {
-        "ai_score": 0.3645,
-        "ai_score_percent": "36.5%",
+        "ai_score": 0.2927,
+        "ai_score_percent": "29.3%",
         "insights": [
             {
-                "feature": "bb_width",
-                "contribution": 0.38843923807144165,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
                 "feature": "macd_hist_norm",
-                "contribution": 0.32958030700683594,
+                "contribution": 0.3528982102870941,
                 "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
             },
             {
+                "feature": "bb_width",
+                "contribution": 0.33340686559677124,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
                 "feature": "rsi_14",
-                "contribution": 0.10983577370643616,
+                "contribution": 0.07136250287294388,
                 "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
             }
         ],
-        "last_updated": "2026-06-18 16:33:12.322604"
+        "last_updated": "2026-06-22 14:41:45.488721"
     },
     "BBRI.JK": {
-        "ai_score": 0.2938,
-        "ai_score_percent": "29.4%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2484992891550064,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.08571243286132812,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_1d",
-                "contribution": 0.07737912982702255,
-                "description": "Perubahan Harga Harian mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "BMRI.JK": {
-        "ai_score": 0.286,
-        "ai_score_percent": "28.6%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.32515624165534973,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.2824195325374603,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.0628630667924881,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "BBNI.JK": {
-        "ai_score": 0.3096,
-        "ai_score_percent": "31.0%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.3246992826461792,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.11119198054075241,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.09038922190666199,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "TLKM.JK": {
-        "ai_score": 0.2462,
-        "ai_score_percent": "24.6%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.23494739830493927,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_1d",
-                "contribution": 0.11140283197164536,
-                "description": "Perubahan Harga Harian mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.06507602334022522,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "ASII.JK": {
-        "ai_score": 0.2622,
-        "ai_score_percent": "26.2%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2531052827835083,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.1145138293504715,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.050049856305122375,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "UNTR.JK": {
-        "ai_score": 0.3145,
-        "ai_score_percent": "31.4%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.2739190459251404,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.27293944358825684,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.14934062957763672,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "ADRO.JK": {
-        "ai_score": 0.2068,
-        "ai_score_percent": "20.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.11800509691238403,
-                "description": "Volatilitas / Squeeze (BB) menekan turun probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.1063050627708435,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_1d",
-                "contribution": 0.08884888887405396,
-                "description": "Perubahan Harga Harian mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "PTBA.JK": {
-        "ai_score": 0.2178,
-        "ai_score_percent": "21.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.09965629130601883,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_position",
-                "contribution": -0.04955914616584778,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.0480118952691555,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "ITMG.JK": {
-        "ai_score": 0.2182,
-        "ai_score_percent": "21.8%",
-        "insights": [
-            {
-                "feature": "rsi_14",
-                "contribution": 0.08325371891260147,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.06442388892173767,
-                "description": "Lonjakan Volume menekan turun probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.06292401999235153,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "UNVR.JK": {
-        "ai_score": 0.297,
-        "ai_score_percent": "29.7%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.34944599866867065,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.32960471510887146,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.12060404568910599,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.322604"
-    },
-    "ICBP.JK": {
-        "ai_score": 0.2531,
-        "ai_score_percent": "25.3%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.20077095925807953,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.08683837205171585,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.08405076712369919,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "INDF.JK": {
-        "ai_score": 0.2749,
-        "ai_score_percent": "27.5%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.25466617941856384,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.11457496881484985,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.06873945146799088,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "KLBF.JK": {
-        "ai_score": 0.2956,
-        "ai_score_percent": "29.6%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.21682840585708618,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.14200596511363983,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_position",
-                "contribution": -0.0662737563252449,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "PGAS.JK": {
-        "ai_score": 0.2193,
-        "ai_score_percent": "21.9%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2634509801864624,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.09932247549295425,
-                "description": "Lonjakan Volume menekan turun probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.08829854428768158,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "AKRA.JK": {
-        "ai_score": 0.251,
-        "ai_score_percent": "25.1%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.17522338032722473,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.07403778284788132,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.05178232863545418,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "TOWR.JK": {
-        "ai_score": 0.4251,
-        "ai_score_percent": "42.5%",
-        "insights": [
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.2982577681541443,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.294918954372406,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.1980864703655243,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "BRPT.JK": {
-        "ai_score": 0.2966,
-        "ai_score_percent": "29.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.3837989568710327,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.22171160578727722,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.11492744833230972,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "TPIA.JK": {
-        "ai_score": 0.2184,
-        "ai_score_percent": "21.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.30853843688964844,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.21587440371513367,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.2036089152097702,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "INKP.JK": {
-        "ai_score": 0.3072,
-        "ai_score_percent": "30.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.26796481013298035,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.2190469354391098,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_position",
-                "contribution": -0.1202247217297554,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "TKIM.JK": {
-        "ai_score": 0.2501,
-        "ai_score_percent": "25.0%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.41633060574531555,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.2497446984052658,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.12481744587421417,
-                "description": "Sinyal Tren (MACD) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "SMGR.JK": {
-        "ai_score": 0.36,
-        "ai_score_percent": "36.0%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.23472335934638977,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.20073933899402618,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_1d",
-                "contribution": 0.13148924708366394,
-                "description": "Perubahan Harga Harian mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.323691"
-    },
-    "INTP.JK": {
-        "ai_score": 0.2341,
-        "ai_score_percent": "23.4%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.18519163131713867,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.11008541285991669,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.09956221282482147,
-                "description": "Lonjakan Volume menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "HRUM.JK": {
-        "ai_score": 0.3512,
-        "ai_score_percent": "35.1%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.3289368152618408,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.31604379415512085,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.12720435857772827,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "MEDC.JK": {
-        "ai_score": 0.2683,
-        "ai_score_percent": "26.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.22857068479061127,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.08071225881576538,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_20_dist",
-                "contribution": 0.06943707913160324,
-                "description": "Jarak ke Harga Rata-rata (MA20) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "INDY.JK": {
-        "ai_score": 0.2941,
-        "ai_score_percent": "29.4%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.31574195623397827,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.25067418813705444,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.11500729620456696,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "EXCL.JK": {
-        "ai_score": 0.2529,
-        "ai_score_percent": "25.3%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.21998785436153412,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.08427314460277557,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.04932066425681114,
-                "description": "Lonjakan Volume menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "ISAT.JK": {
-        "ai_score": 0.2898,
-        "ai_score_percent": "29.0%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.20995056629180908,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": -0.14522400498390198,
-                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.13488997519016266,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "JSMR.JK": {
-        "ai_score": 0.3066,
-        "ai_score_percent": "30.7%",
-        "insights": [
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.1603395640850067,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_1d",
-                "contribution": 0.1348055899143219,
-                "description": "Perubahan Harga Harian mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.11853248625993729,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "PTPP.JK": {
-        "ai_score": 0.3418,
-        "ai_score_percent": "34.2%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.3103010654449463,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.1911565065383911,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.1034584790468216,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "BSDE.JK": {
-        "ai_score": 0.2626,
-        "ai_score_percent": "26.3%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.29851430654525757,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.1354663372039795,
-                "description": "Lonjakan Volume menekan turun probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.10798446089029312,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "PWON.JK": {
-        "ai_score": 0.2598,
-        "ai_score_percent": "26.0%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.24223880469799042,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.11465784907341003,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_position",
-                "contribution": -0.061515409499406815,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "CTRA.JK": {
-        "ai_score": 0.2804,
-        "ai_score_percent": "28.0%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2290152907371521,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.14633573591709137,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_1d",
-                "contribution": 0.0819399431347847,
-                "description": "Perubahan Harga Harian mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "SMRA.JK": {
-        "ai_score": 0.3609,
-        "ai_score_percent": "36.1%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.39644232392311096,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.3454831540584564,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.09115022420883179,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "ASSA.JK": {
-        "ai_score": 0.3137,
-        "ai_score_percent": "31.4%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.3295868933200836,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.24484063684940338,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.12928391993045807,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "BIRD.JK": {
-        "ai_score": 0.3066,
-        "ai_score_percent": "30.7%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.1748257726430893,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.1643286943435669,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.07092560827732086,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "GIAA.JK": {
-        "ai_score": 0.3229,
-        "ai_score_percent": "32.3%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.31681275367736816,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.26287102699279785,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.12229995429515839,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "SMDR.JK": {
-        "ai_score": 0.2731,
-        "ai_score_percent": "27.3%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.214178204536438,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.1315913200378418,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.1104087308049202,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "SCMA.JK": {
-        "ai_score": 0.2676,
-        "ai_score_percent": "26.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2277803272008896,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.10566316545009613,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_position",
-                "contribution": -0.097298763692379,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.326777"
-    },
-    "EMTK.JK": {
-        "ai_score": 0.2966,
-        "ai_score_percent": "29.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.40636584162712097,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.13291700184345245,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.11263317614793777,
-                "description": "Sinyal Tren (MACD) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "BUKA.JK": {
-        "ai_score": 0.35,
-        "ai_score_percent": "35.0%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.25932398438453674,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.197331964969635,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_norm",
-                "contribution": 0.14188902080059052,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "MIKA.JK": {
-        "ai_score": 0.2894,
-        "ai_score_percent": "28.9%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.19926215708255768,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.13104382157325745,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.09021825343370438,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "HEAL.JK": {
-        "ai_score": 0.2987,
-        "ai_score_percent": "29.9%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.37233418226242065,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.12904301285743713,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.052989229559898376,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "SIDO.JK": {
-        "ai_score": 0.3229,
-        "ai_score_percent": "32.3%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.28988468647003174,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.26398611068725586,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.10283882915973663,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "MYOR.JK": {
-        "ai_score": 0.2782,
-        "ai_score_percent": "27.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2663223147392273,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.1001766100525856,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.0995105504989624,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "ULTJ.JK": {
-        "ai_score": 0.2548,
-        "ai_score_percent": "25.5%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.33678996562957764,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": -0.09163648635149002,
-                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
-            },
-            {
-                "feature": "macd_norm",
-                "contribution": 0.08350666612386703,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "ROTI.JK": {
-        "ai_score": 0.2635,
-        "ai_score_percent": "26.4%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.38657626509666443,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.3466797471046448,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.07568923383951187,
-                "description": "Sinyal Tren (MACD) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "WOOD.JK": {
-        "ai_score": 0.3037,
-        "ai_score_percent": "30.4%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.4705500900745392,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.14803791046142578,
-                "description": "Lonjakan Volume menekan turun probabilitas."
-            },
-            {
-                "feature": "macd_norm",
-                "contribution": 0.10939154773950577,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "BRIS.JK": {
-        "ai_score": 0.2542,
-        "ai_score_percent": "25.4%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.22399115562438965,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "log_ret_1d",
-                "contribution": 0.07271700352430344,
-                "description": "Perubahan Harga Harian mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_position",
-                "contribution": -0.059428419917821884,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "BBTN.JK": {
-        "ai_score": 0.251,
-        "ai_score_percent": "25.1%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.24855050444602966,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.0781392976641655,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.06417899578809738,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "BJBR.JK": {
-        "ai_score": 0.218,
-        "ai_score_percent": "21.8%",
-        "insights": [
-            {
-                "feature": "rsi_14",
-                "contribution": 0.09762290120124817,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.05522729456424713,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": -0.0489598885178566,
-                "description": "Trend Menengah (MA50) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "BNGA.JK": {
-        "ai_score": 0.1965,
-        "ai_score_percent": "19.7%",
-        "insights": [
-            {
-                "feature": "rsi_14",
-                "contribution": 0.120476633310318,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": -0.07904655486345291,
-                "description": "Trend Menengah (MA50) menekan turun probabilitas."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.07558649778366089,
-                "description": "Lonjakan Volume menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "PNBN.JK": {
-        "ai_score": 0.2401,
-        "ai_score_percent": "24.0%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.10187403857707977,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.07556270062923431,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.05667111277580261,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "ELSA.JK": {
-        "ai_score": 0.3688,
-        "ai_score_percent": "36.9%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.27974408864974976,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.27362707257270813,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.2003944218158722,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "LSIP.JK": {
-        "ai_score": 0.3434,
-        "ai_score_percent": "34.3%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.27479952573776245,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.2746507525444031,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.12187708914279938,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
-            }
-        ],
-        "last_updated": "2026-06-18 16:33:12.327887"
-    },
-    "AALI.JK": {
         "ai_score": 0.2442,
         "ai_score_percent": "24.4%",
         "insights": [
             {
                 "feature": "bb_width",
-                "contribution": 0.19435058534145355,
+                "contribution": 0.243469700217247,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.09466338157653809,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.04131568223237991,
+                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "BMRI.JK": {
+        "ai_score": 0.276,
+        "ai_score_percent": "27.6%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.254824697971344,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.1161770299077034,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.11529828608036041,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "BBNI.JK": {
+        "ai_score": 0.2678,
+        "ai_score_percent": "26.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.30449289083480835,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.09610936790704727,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.07483436167240143,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "TLKM.JK": {
+        "ai_score": 0.2632,
+        "ai_score_percent": "26.3%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.20513701438903809,
                 "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
             },
             {
                 "feature": "ma_50_dist",
-                "contribution": 0.13655130565166473,
+                "contribution": 0.08278367668390274,
                 "description": "Trend Menengah (MA50) mendorong naik probabilitas."
             },
             {
                 "feature": "macd_hist_norm",
-                "contribution": -0.06792189180850983,
+                "contribution": -0.055688366293907166,
                 "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
             }
         ],
-        "last_updated": "2026-06-18 16:33:12.327887"
+        "last_updated": "2026-06-22 14:41:45.489722"
     },
-    "SIMP.JK": {
-        "ai_score": 0.3149,
-        "ai_score_percent": "31.5%",
+    "ASII.JK": {
+        "ai_score": 0.261,
+        "ai_score_percent": "26.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2309907078742981,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.17161105573177338,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.10271567851305008,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "UNTR.JK": {
+        "ai_score": 0.3284,
+        "ai_score_percent": "32.8%",
         "insights": [
             {
                 "feature": "macd_hist_norm",
-                "contribution": 0.28401216864585876,
+                "contribution": 0.33532950282096863,
                 "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
             },
             {
                 "feature": "bb_width",
-                "contribution": 0.27853894233703613,
+                "contribution": 0.2764319181442261,
                 "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
             },
             {
                 "feature": "ma_50_dist",
-                "contribution": 0.10773535817861557,
+                "contribution": 0.0872570276260376,
                 "description": "Trend Menengah (MA50) mendorong naik probabilitas."
             }
         ],
-        "last_updated": "2026-06-18 16:33:12.327887"
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "ADRO.JK": {
+        "ai_score": 0.1929,
+        "ai_score_percent": "19.3%",
+        "insights": [
+            {
+                "feature": "rsi_14",
+                "contribution": 0.10807587951421738,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": -0.08487819880247116,
+                "description": "Volatilitas / Squeeze (BB) menekan turun probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": -0.05373578518629074,
+                "description": "Trend Menengah (MA50) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "PTBA.JK": {
+        "ai_score": 0.2399,
+        "ai_score_percent": "24.0%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.17480942606925964,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.08968883007764816,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.06012607365846634,
+                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "ITMG.JK": {
+        "ai_score": 0.2039,
+        "ai_score_percent": "20.4%",
+        "insights": [
+            {
+                "feature": "rsi_14",
+                "contribution": 0.11105479300022125,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": -0.0870269238948822,
+                "description": "Volatilitas / Squeeze (BB) menekan turun probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.05468474701046944,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "UNVR.JK": {
+        "ai_score": 0.3382,
+        "ai_score_percent": "33.8%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.3930822014808655,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.33124998211860657,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.08848782628774643,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "ICBP.JK": {
+        "ai_score": 0.2081,
+        "ai_score_percent": "20.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2019529938697815,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.07644316554069519,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": -0.05754997208714485,
+                "description": "Trend Menengah (MA50) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "INDF.JK": {
+        "ai_score": 0.2546,
+        "ai_score_percent": "25.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.250935822725296,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.08294408768415451,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.07400787621736526,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "KLBF.JK": {
+        "ai_score": 0.3051,
+        "ai_score_percent": "30.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.23392300307750702,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_20_dist",
+                "contribution": 0.1560734063386917,
+                "description": "Jarak ke Harga Rata-rata (MA20) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.12662330269813538,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "PGAS.JK": {
+        "ai_score": 0.1686,
+        "ai_score_percent": "16.9%",
+        "insights": [
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.7907505631446838,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.2312476485967636,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.19376727938652039,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "AKRA.JK": {
+        "ai_score": 0.2514,
+        "ai_score_percent": "25.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.09175305813550949,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.08651365339756012,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.045782286673784256,
+                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "TOWR.JK": {
+        "ai_score": 0.3154,
+        "ai_score_percent": "31.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.30765536427497864,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.2833009958267212,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.14529356360435486,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "BRPT.JK": {
+        "ai_score": 0.2888,
+        "ai_score_percent": "28.9%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.3222528398036957,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.11640667915344238,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.09984342753887177,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "TPIA.JK": {
+        "ai_score": 0.3248,
+        "ai_score_percent": "32.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.49366578459739685,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.34706246852874756,
+                "description": "Momentum 5 Hari mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.16309350728988647,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "INKP.JK": {
+        "ai_score": 0.2742,
+        "ai_score_percent": "27.4%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.3030489981174469,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.275175541639328,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.23631088435649872,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "TKIM.JK": {
+        "ai_score": 0.3034,
+        "ai_score_percent": "30.3%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.32684338092803955,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.2852327823638916,
+                "description": "Momentum 5 Hari mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.16468235850334167,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "SMGR.JK": {
+        "ai_score": 0.3367,
+        "ai_score_percent": "33.7%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.30247944593429565,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.18542654812335968,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_norm",
+                "contribution": 0.12586700916290283,
+                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "INTP.JK": {
+        "ai_score": 0.261,
+        "ai_score_percent": "26.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.20797671377658844,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.0994911938905716,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.08016332238912582,
+                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "HRUM.JK": {
+        "ai_score": 0.3154,
+        "ai_score_percent": "31.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.29611554741859436,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.23536445200443268,
+                "description": "Momentum 5 Hari mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.1990702897310257,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "MEDC.JK": {
+        "ai_score": 0.2119,
+        "ai_score_percent": "21.2%",
+        "insights": [
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.1155683621764183,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.10652542114257812,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.10468492656946182,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "INDY.JK": {
+        "ai_score": 0.3059,
+        "ai_score_percent": "30.6%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.357666939496994,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.14641159772872925,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.11628521233797073,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "EXCL.JK": {
+        "ai_score": 0.2417,
+        "ai_score_percent": "24.2%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.21701714396476746,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.12108718603849411,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.08595579117536545,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "ISAT.JK": {
+        "ai_score": 0.2655,
+        "ai_score_percent": "26.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.345084011554718,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.10531546175479889,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": -0.07417021691799164,
+                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "JSMR.JK": {
+        "ai_score": 0.2388,
+        "ai_score_percent": "23.9%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.18733160197734833,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.09088638424873352,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": -0.08394606411457062,
+                "description": "Trend Menengah (MA50) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "PTPP.JK": {
+        "ai_score": 0.2081,
+        "ai_score_percent": "20.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.23094657063484192,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.1857914924621582,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.09890884160995483,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "BSDE.JK": {
+        "ai_score": 0.2711,
+        "ai_score_percent": "27.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2356947511434555,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_20_dist",
+                "contribution": 0.15400375425815582,
+                "description": "Jarak ke Harga Rata-rata (MA20) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.12698966264724731,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "PWON.JK": {
+        "ai_score": 0.2653,
+        "ai_score_percent": "26.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.25023511052131653,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.09458615630865097,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.055664148181676865,
+                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "CTRA.JK": {
+        "ai_score": 0.2899,
+        "ai_score_percent": "29.0%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.24757598340511322,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.1395396590232849,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_20_dist",
+                "contribution": 0.07306218892335892,
+                "description": "Jarak ke Harga Rata-rata (MA20) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "SMRA.JK": {
+        "ai_score": 0.2888,
+        "ai_score_percent": "28.9%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2234271913766861,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.11413471400737762,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.10639095306396484,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "ASSA.JK": {
+        "ai_score": 0.3064,
+        "ai_score_percent": "30.6%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.31249821186065674,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.2335977554321289,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.1074383556842804,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "BIRD.JK": {
+        "ai_score": 0.2908,
+        "ai_score_percent": "29.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2898749113082886,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.28467264771461487,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.06844593584537506,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "GIAA.JK": {
+        "ai_score": 0.3077,
+        "ai_score_percent": "30.8%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.3347115218639374,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.26747187972068787,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.10806421935558319,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "SMDR.JK": {
+        "ai_score": 0.3051,
+        "ai_score_percent": "30.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.23232164978981018,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.19354015588760376,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.08254710584878922,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "SCMA.JK": {
+        "ai_score": 0.2513,
+        "ai_score_percent": "25.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2318606823682785,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.11117535829544067,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.08217140287160873,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "EMTK.JK": {
+        "ai_score": 0.3185,
+        "ai_score_percent": "31.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.37496277689933777,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.2851247787475586,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.16969552636146545,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "BUKA.JK": {
+        "ai_score": 0.3378,
+        "ai_score_percent": "33.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2931903302669525,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.19558842480182648,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.12248492240905762,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "MIKA.JK": {
+        "ai_score": 0.3247,
+        "ai_score_percent": "32.5%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.2970426678657532,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.27811571955680847,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.1659536212682724,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.489722"
+    },
+    "HEAL.JK": {
+        "ai_score": 0.2823,
+        "ai_score_percent": "28.2%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.32801032066345215,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.3206707835197449,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.08977533876895905,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.490722"
+    },
+    "SIDO.JK": {
+        "ai_score": 0.2888,
+        "ai_score_percent": "28.9%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.23491361737251282,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.166414275765419,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.1154761016368866,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.490722"
+    },
+    "MYOR.JK": {
+        "ai_score": 0.2935,
+        "ai_score_percent": "29.3%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.32485416531562805,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.31841373443603516,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.09415026754140854,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.490722"
+    },
+    "ULTJ.JK": {
+        "ai_score": 0.1477,
+        "ai_score_percent": "14.8%",
+        "insights": [
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.8600426912307739,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.2524123191833496,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": -0.1299709528684616,
+                "description": "Sinyal Tren (MACD) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.490722"
+    },
+    "ROTI.JK": {
+        "ai_score": 0.2341,
+        "ai_score_percent": "23.4%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.4225335419178009,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": -0.3657439053058624,
+                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.31441211700439453,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.490722"
+    },
+    "WOOD.JK": {
+        "ai_score": 0.3383,
+        "ai_score_percent": "33.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.4051566421985626,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.1377667635679245,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.06364014744758606,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
+    },
+    "BRIS.JK": {
+        "ai_score": 0.2323,
+        "ai_score_percent": "23.2%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.23147746920585632,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.09294827282428741,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.07498593628406525,
+                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
+    },
+    "BBTN.JK": {
+        "ai_score": 0.272,
+        "ai_score_percent": "27.2%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.21710121631622314,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.09123387932777405,
+                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.0781695693731308,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
+    },
+    "BJBR.JK": {
+        "ai_score": 0.2006,
+        "ai_score_percent": "20.1%",
+        "insights": [
+            {
+                "feature": "rsi_14",
+                "contribution": 0.10338011384010315,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.09568632394075394,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.04750586301088333,
+                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
+    },
+    "BNGA.JK": {
+        "ai_score": 0.2166,
+        "ai_score_percent": "21.7%",
+        "insights": [
+            {
+                "feature": "rsi_14",
+                "contribution": 0.113662488758564,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.09890184551477432,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.051623307168483734,
+                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
+    },
+    "PNBN.JK": {
+        "ai_score": 0.236,
+        "ai_score_percent": "23.6%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.09235181659460068,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.07850795239210129,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.07281923294067383,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
+    },
+    "ELSA.JK": {
+        "ai_score": 0.3235,
+        "ai_score_percent": "32.4%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.3357084095478058,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.2701214849948883,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.09392295032739639,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
+    },
+    "LSIP.JK": {
+        "ai_score": 0.3382,
+        "ai_score_percent": "33.8%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.39973026514053345,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.2999807596206665,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.10527089238166809,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
+    },
+    "AALI.JK": {
+        "ai_score": 0.2467,
+        "ai_score_percent": "24.7%",
+        "insights": [
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.15787428617477417,
+                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.13505545258522034,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.0943313017487526,
+                "description": "Lonjakan Volume menekan turun probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
+    },
+    "SIMP.JK": {
+        "ai_score": 0.3418,
+        "ai_score_percent": "34.2%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.3649023473262787,
+                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.25737279653549194,
+                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.10565602034330368,
+                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+            }
+        ],
+        "last_updated": "2026-06-22 14:41:45.492349"
     }
 }

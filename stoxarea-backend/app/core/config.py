@@ -20,8 +20,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=1440, env="ACCESS_TOKEN_EXPIRE_MINUTES")
     
     # API
-    ALLOWED_ORIGINS: list[str] = Field(
-        default=["http://localhost:3000"],
+    ALLOWED_ORIGINS: str = Field(
+        default="http://localhost:3000",
         env="ALLOWED_ORIGINS",
         description="Comma-separated CORS allowed origins"
     )

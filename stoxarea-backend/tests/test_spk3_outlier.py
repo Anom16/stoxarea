@@ -10,7 +10,7 @@ Cara jalankan:
     python -m pytest tests/test_spk3_outlier.py -v
 
 Skenario yang diuji:
-    1. Satu saham PER 1500x di antara 99 saham normal
+    1. Satu saham PBV 1500x di antara 99 saham normal
        → 99 saham normal harus tetap punya skor > 0.05
     2. ROE negatif -200% harus dapat skor lebih rendah dari ROE positif
        → Saham rugi tidak boleh disamakan dengan saham ROE 0
@@ -27,7 +27,7 @@ from unittest.mock import MagicMock, patch
 
 # ─── Helper: buat mock Stock object ──────────────────────────────────────────
 
-def make_stock(ticker, sector="Keuangan", roe=15.0, der=1.0, per=20.0,
+def make_stock(ticker, sector="Keuangan", roe=15.0, der=1.0, pbv=20.0,
                is_qualified=True):
     """Membuat mock objek Stock SQLAlchemy."""
     s = MagicMock()
@@ -35,7 +35,7 @@ def make_stock(ticker, sector="Keuangan", roe=15.0, der=1.0, per=20.0,
     s.sector = sector
     s.roe = roe
     s.der = der
-    s.per = per
+    s.pbv = pbv
     s.is_qualified = is_qualified
     return s
 
@@ -65,7 +65,7 @@ def run_saw(stocks_data, profile_str="moderat", bounds=None):
     Jadi yang di-mock adalah fungsi tersebut, bukan ai_store/bounds_store langsung.
 
     Args:
-        stocks_data: list of dict dengan key: ticker, sector, roe, der, per, ai_score
+        stocks_data: list of dict dengan key: ticker, sector, roe, der, pbv, ai_score
         profile_str: "konservatif" | "moderat" | "agresif"
         bounds: dict bounds custom, jika None pakai fallback default
 
@@ -85,7 +85,7 @@ def run_saw(stocks_data, profile_str="moderat", bounds=None):
     default_bounds = {
         "roe": {"p5": -10.0, "p95": 40.0,  "median": 10.0, "sample_size": 50},
         "der": {"p5":   0.0, "p95":  3.0,  "median":  1.0, "sample_size": 50},
-        "per": {"p5":   5.0, "p95": 80.0,  "median": 20.0, "sample_size": 50},
+        "pbv": {"p5":   5.0, "p95": 80.0,  "median": 20.0, "sample_size": 50},
     }
     active_bounds = bounds or default_bounds
 
@@ -102,7 +102,7 @@ def run_saw(stocks_data, profile_str="moderat", bounds=None):
     for d in stocks_data:
         roe_raw = d.get("roe")
         der_raw = d.get("der")
-        per_raw = d.get("per")
+        pbv_raw = d.get("pbv")
         qualified_stocks.append({
             "ticker":    d["ticker"],
             "sector":    d.get("sector", "Keuangan"),
@@ -111,10 +111,10 @@ def run_saw(stocks_data, profile_str="moderat", bounds=None):
                            "description": "RSI menunjukkan oversold"}],
             "roe_raw":   roe_raw,
             "der_raw":   der_raw,
-            "per_raw":   per_raw,
+            "pbv_raw":   pbv_raw,
             "roe_clean": clamp_fn(roe_raw, "roe"),
             "der_clean": clamp_fn(der_raw, "der"),
-            "per_clean": clamp_fn(per_raw, "per"),
+            "pbv_clean": clamp_fn(pbv_raw, "pbv"),
         })
 
     mock_db = MagicMock()
@@ -133,26 +133,26 @@ def run_saw(stocks_data, profile_str="moderat", bounds=None):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SKENARIO 1: Satu outlier PER 1500x tidak merusak 99 saham normal
+# SKENARIO 1: Satu outlier PBV 1500x tidak merusak 99 saham normal
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class TestOutlierPER:
+class TestOutlierPBV:
 
     def test_99_saham_normal_tetap_punya_skor_layak(self):
         """
-        Jika ada 1 saham dengan PER 1500x, 99 saham normal harus tetap
+        Jika ada 1 saham dengan PBV 1500x, 99 saham normal harus tetap
         mendapat match_score > 0.05. Sebelum Task 1.2, skor mereka bisa
         mendekati 0.0001 karena normalisasi rusak.
         """
         stocks = [
             {"ticker": f"NORM{i:02d}", "roe": 15.0, "der": 1.0,
-             "per": 20.0, "ai_score": 0.65}
+             "pbv": 20.0, "ai_score": 0.65}
             for i in range(99)
         ]
-        # Tambah 1 outlier PER ekstrem
+        # Tambah 1 outlier PBV ekstrem
         stocks.append(
             {"ticker": "OUTLIER", "roe": 15.0, "der": 1.0,
-             "per": 1500.0, "ai_score": 0.65}
+             "pbv": 1500.0, "ai_score": 0.65}
         )
 
         results = run_saw(stocks, profile_str="moderat")
@@ -162,20 +162,20 @@ class TestOutlierPER:
         for r in normal_results:
             assert r.match_score > 0.05, (
                 f"Saham {r.ticker} punya skor {r.match_score:.4f} — "
-                f"terlalu rendah akibat outlier PER 1500x"
+                f"terlalu rendah akibat outlier PBV 1500x"
             )
 
-    def test_outlier_per_dapat_skor_lebih_rendah_dari_normal(self):
-        """Saham dengan PER 1500x harus ranking lebih rendah dari saham PER normal."""
+    def test_outlier_pbv_dapat_skor_lebih_rendah_dari_normal(self):
+        """Saham dengan PBV 1500x harus ranking lebih rendah dari saham PBV normal."""
         stocks = [
-            {"ticker": "NORMAL", "roe": 15.0, "der": 1.0, "per": 20.0,  "ai_score": 0.65},
-            {"ticker": "OUTLIER","roe": 15.0, "der": 1.0, "per": 1500.0, "ai_score": 0.65},
+            {"ticker": "NORMAL", "roe": 15.0, "der": 1.0, "pbv": 20.0,  "ai_score": 0.65},
+            {"ticker": "OUTLIER","roe": 15.0, "der": 1.0, "pbv": 1500.0, "ai_score": 0.65},
         ]
         results = run_saw(stocks, profile_str="konservatif")
         scores = {r.ticker: r.match_score for r in results}
 
         assert scores["NORMAL"] > scores["OUTLIER"], (
-            f"Saham normal (PER 20x) harus ranking lebih tinggi dari outlier (PER 1500x). "
+            f"Saham normal (PBV 20x) harus ranking lebih tinggi dari outlier (PBV 1500x). "
             f"Normal={scores['NORMAL']:.4f}, Outlier={scores['OUTLIER']:.4f}"
         )
 
@@ -193,8 +193,8 @@ class TestROENegatif:
         sama karena ROE negatif dipaksa ke 0.
         """
         stocks = [
-            {"ticker": "PROFIT", "roe":  15.0, "der": 1.0, "per": 20.0, "ai_score": 0.65},
-            {"ticker": "RUGI",   "roe": -200.0, "der": 1.0, "per": 20.0, "ai_score": 0.65},
+            {"ticker": "PROFIT", "roe":  15.0, "der": 1.0, "pbv": 20.0, "ai_score": 0.65},
+            {"ticker": "RUGI",   "roe": -200.0, "der": 1.0, "pbv": 20.0, "ai_score": 0.65},
         ]
         results = run_saw(stocks, profile_str="konservatif")
         scores = {r.ticker: r.match_score for r in results}
@@ -207,9 +207,9 @@ class TestROENegatif:
     def test_roe_negatif_tidak_crash_sistem(self):
         """ROE negatif tidak boleh menyebabkan exception atau division by zero."""
         stocks = [
-            {"ticker": "RUGI1", "roe": -50.0,  "der": 1.0, "per": 20.0, "ai_score": 0.5},
-            {"ticker": "RUGI2", "roe": -200.0, "der": 2.0, "per": 30.0, "ai_score": 0.4},
-            {"ticker": "RUGI3", "roe": -5.0,   "der": 0.5, "per": 15.0, "ai_score": 0.6},
+            {"ticker": "RUGI1", "roe": -50.0,  "der": 1.0, "pbv": 20.0, "ai_score": 0.5},
+            {"ticker": "RUGI2", "roe": -200.0, "der": 2.0, "pbv": 30.0, "ai_score": 0.4},
+            {"ticker": "RUGI3", "roe": -5.0,   "der": 0.5, "pbv": 15.0, "ai_score": 0.6},
         ]
         # Tidak boleh raise exception
         results = run_saw(stocks, profile_str="moderat")
@@ -239,9 +239,9 @@ class TestDERNol:
         berhutang besar jelas lebih rendah dari 1.0.
         """
         stocks = [
-            {"ticker": "TANPAHUTANG", "roe": 15.0, "der": 0.0, "per": 20.0, "ai_score": 0.65},
-            {"ticker": "HUTANG_KECIL","roe": 15.0, "der": 0.5, "per": 20.0, "ai_score": 0.65},
-            {"ticker": "HUTANG_BESAR","roe": 15.0, "der": 3.0, "per": 20.0, "ai_score": 0.65},
+            {"ticker": "TANPAHUTANG", "roe": 15.0, "der": 0.0, "pbv": 20.0, "ai_score": 0.65},
+            {"ticker": "HUTANG_KECIL","roe": 15.0, "der": 0.5, "pbv": 20.0, "ai_score": 0.65},
+            {"ticker": "HUTANG_BESAR","roe": 15.0, "der": 3.0, "pbv": 20.0, "ai_score": 0.65},
         ]
         results = run_saw(stocks, profile_str="konservatif")
         scores = {r.ticker: r.match_score for r in results}
@@ -261,8 +261,8 @@ class TestDERNol:
     def test_der_sangat_kecil_dianggap_sempurna(self):
         """DER 0.05 (hampir nol) harus dapat skor DER = 1.0 (threshold <= 0.1)."""
         stocks = [
-            {"ticker": "HAMPIR_NOL", "roe": 15.0, "der": 0.05, "per": 20.0, "ai_score": 0.65},
-            {"ticker": "NORMAL_DER", "roe": 15.0, "der": 1.5,  "per": 20.0, "ai_score": 0.65},
+            {"ticker": "HAMPIR_NOL", "roe": 15.0, "der": 0.05, "pbv": 20.0, "ai_score": 0.65},
+            {"ticker": "NORMAL_DER", "roe": 15.0, "der": 1.5,  "pbv": 20.0, "ai_score": 0.65},
         ]
         results = run_saw(stocks, profile_str="konservatif")
         scores = {r.ticker: r.match_score for r in results}
@@ -282,7 +282,7 @@ class TestEdgeCaseDivisionByZero:
         jika tidak ada guard. Harus tidak crash dan semua skor valid.
         """
         stocks = [
-            {"ticker": f"SAME{i}", "roe": 10.0, "der": 1.0, "per": 20.0, "ai_score": 0.5 + i * 0.01}
+            {"ticker": f"SAME{i}", "roe": 10.0, "der": 1.0, "pbv": 20.0, "ai_score": 0.5 + i * 0.01}
             for i in range(5)
         ]
         results = run_saw(stocks, profile_str="moderat")
@@ -293,7 +293,7 @@ class TestEdgeCaseDivisionByZero:
     def test_semua_roe_nol_tidak_crash(self):
         """ROE = 0 untuk semua saham tidak boleh menyebabkan division by zero."""
         stocks = [
-            {"ticker": f"ZERO{i}", "roe": 0.0, "der": 1.0, "per": 20.0, "ai_score": 0.6}
+            {"ticker": f"ZERO{i}", "roe": 0.0, "der": 1.0, "pbv": 20.0, "ai_score": 0.6}
             for i in range(3)
         ]
         results = run_saw(stocks, profile_str="moderat")
@@ -302,7 +302,7 @@ class TestEdgeCaseDivisionByZero:
     def test_semua_der_nol_tidak_crash(self):
         """DER = 0 untuk semua saham tidak boleh menyebabkan division by zero."""
         stocks = [
-            {"ticker": f"NODBT{i}", "roe": 15.0, "der": 0.0, "per": 20.0, "ai_score": 0.6}
+            {"ticker": f"NODBT{i}", "roe": 15.0, "der": 0.0, "pbv": 20.0, "ai_score": 0.6}
             for i in range(3)
         ]
         results = run_saw(stocks, profile_str="moderat")
@@ -322,9 +322,9 @@ class TestSemuaROENegatif:
         (paling tidak rugi) harus tetap ranking lebih tinggi.
         """
         stocks = [
-            {"ticker": "PALING_BAGUS", "roe": -2.0,  "der": 1.0, "per": 20.0, "ai_score": 0.65},
-            {"ticker": "SEDANG",       "roe": -8.0,  "der": 1.0, "per": 20.0, "ai_score": 0.65},
-            {"ticker": "PALING_BURUK", "roe": -10.0, "der": 1.0, "per": 20.0, "ai_score": 0.65},
+            {"ticker": "PALING_BAGUS", "roe": -2.0,  "der": 1.0, "pbv": 20.0, "ai_score": 0.65},
+            {"ticker": "SEDANG",       "roe": -8.0,  "der": 1.0, "pbv": 20.0, "ai_score": 0.65},
+            {"ticker": "PALING_BURUK", "roe": -10.0, "der": 1.0, "pbv": 20.0, "ai_score": 0.65},
         ]
         results = run_saw(stocks, profile_str="konservatif")
         scores = {r.ticker: r.match_score for r in results}
@@ -338,7 +338,7 @@ class TestSemuaROENegatif:
         """Semua skor harus tetap dalam range [0, 1] meski semua ROE negatif."""
         stocks = [
             {"ticker": f"NEG{i}", "roe": -float(i * 2 + 1), "der": 1.0,
-             "per": 20.0, "ai_score": 0.5}
+             "pbv": 20.0, "ai_score": 0.5}
             for i in range(5)
         ]
         results = run_saw(stocks, profile_str="moderat")
@@ -361,12 +361,12 @@ class TestOutlierROE:
         """
         stocks = [
             {"ticker": f"NORM{i:02d}", "roe": 15.0, "der": 1.0,
-             "per": 20.0, "ai_score": 0.65}
+             "pbv": 20.0, "ai_score": 0.65}
             for i in range(10)
         ]
         stocks.append(
             {"ticker": "ROE_GILA", "roe": 5000.0, "der": 1.0,
-             "per": 20.0, "ai_score": 0.65}
+             "pbv": 20.0, "ai_score": 0.65}
         )
 
         results = run_saw(stocks, profile_str="moderat")
@@ -387,14 +387,14 @@ class TestProfilBerbedaRankingBerbeda:
 
     def test_agresif_prioritaskan_ai_score_tinggi(self):
         """
-        Profil Agresif (bobot AI Score = 0.80) harus memprioritaskan saham
+        Profil Agresif (bobot AI Score = 0.60) harus memprioritaskan saham
         dengan AI Score tinggi, meski fundamentalnya biasa saja.
         """
         stocks = [
             # AI Score tinggi, fundamental biasa
-            {"ticker": "MOMENTUM", "roe": 10.0, "der": 2.0, "per": 30.0, "ai_score": 0.95},
+            {"ticker": "MOMENTUM", "roe": 10.0, "der": 2.0, "pbv": 30.0, "ai_score": 0.95},
             # AI Score rendah, fundamental bagus
-            {"ticker": "FUNDAMENTAL", "roe": 35.0, "der": 0.3, "per": 8.0, "ai_score": 0.20},
+            {"ticker": "FUNDAMENTAL", "roe": 35.0, "der": 0.3, "pbv": 8.0, "ai_score": 0.20},
         ]
         results_agresif = run_saw(stocks, profile_str="agresif")
         scores_agresif = {r.ticker: r.match_score for r in results_agresif}
@@ -407,14 +407,14 @@ class TestProfilBerbedaRankingBerbeda:
 
     def test_konservatif_prioritaskan_fundamental_bagus(self):
         """
-        Profil Konservatif (bobot ROE=0.50, DER=0.30) harus memprioritaskan
+        Profil Konservatif (bobot ROE=0.45, DER=0.35) harus memprioritaskan
         saham dengan fundamental kuat, meski AI Score-nya rendah.
         """
         stocks = [
             # AI Score tinggi, fundamental biasa
-            {"ticker": "MOMENTUM",    "roe": 10.0, "der": 2.0, "per": 30.0, "ai_score": 0.95},
+            {"ticker": "MOMENTUM",    "roe": 10.0, "der": 2.0, "pbv": 30.0, "ai_score": 0.95},
             # AI Score rendah, fundamental bagus
-            {"ticker": "FUNDAMENTAL", "roe": 35.0, "der": 0.3, "per": 8.0,  "ai_score": 0.20},
+            {"ticker": "FUNDAMENTAL", "roe": 35.0, "der": 0.3, "pbv": 8.0,  "ai_score": 0.20},
         ]
         results_konservatif = run_saw(stocks, profile_str="konservatif")
         scores_konservatif = {r.ticker: r.match_score for r in results_konservatif}
@@ -435,8 +435,8 @@ class TestDataNone:
     def test_roe_none_tidak_crash(self):
         """Saham dengan ROE = None (data tidak tersedia) tidak boleh crash."""
         stocks = [
-            {"ticker": "NO_ROE",  "roe": None,  "der": 1.0,  "per": 20.0, "ai_score": 0.6},
-            {"ticker": "HAS_ROE", "roe": 15.0,  "der": 1.0,  "per": 20.0, "ai_score": 0.6},
+            {"ticker": "NO_ROE",  "roe": None,  "der": 1.0,  "pbv": 20.0, "ai_score": 0.6},
+            {"ticker": "HAS_ROE", "roe": 15.0,  "der": 1.0,  "pbv": 20.0, "ai_score": 0.6},
         ]
         results = run_saw(stocks, profile_str="moderat")
         assert len(results) == 2
@@ -446,7 +446,7 @@ class TestDataNone:
     def test_semua_data_none_tidak_crash(self):
         """Saham dengan semua fundamental None tidak boleh crash sistem."""
         stocks = [
-            {"ticker": "GHOST", "roe": None, "der": None, "per": None, "ai_score": 0.5},
+            {"ticker": "GHOST", "roe": None, "der": None, "pbv": None, "ai_score": 0.5},
         ]
         results = run_saw(stocks, profile_str="moderat")
         assert len(results) == 1
@@ -454,11 +454,11 @@ class TestDataNone:
 
     def test_ui_tetap_dapat_nilai_asli_bukan_capped(self):
         """
-        Nilai yang ditampilkan ke UI (roe, der, per di response) harus
+        Nilai yang ditampilkan ke UI (roe, der, pbv di response) harus
         nilai mentah asli dari DB, bukan nilai yang sudah di-clamp.
         """
         stocks = [
-            {"ticker": "EXTREME", "roe": 5000.0, "der": 50.0, "per": 1500.0, "ai_score": 0.5},
+            {"ticker": "EXTREME", "roe": 5000.0, "der": 50.0, "pbv": 1500.0, "ai_score": 0.5},
         ]
         results = run_saw(stocks, profile_str="moderat")
         r = results[0]
@@ -466,4 +466,4 @@ class TestDataNone:
         # UI harus tampilkan nilai asli, bukan nilai yang di-clamp ke P95
         assert r.roe == 5000.0, f"ROE di UI harus 5000.0, dapat {r.roe}"
         assert r.der == 50.0,   f"DER di UI harus 50.0, dapat {r.der}"
-        assert r.per == 1500.0, f"PER di UI harus 1500.0, dapat {r.per}"
+        assert r.pbv == 1500.0, f"PBV di UI harus 1500.0, dapat {r.pbv}"

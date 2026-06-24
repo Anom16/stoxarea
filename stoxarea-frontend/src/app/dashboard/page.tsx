@@ -1,29 +1,7 @@
 'use client'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import api from '@/lib/api'
 import DisclaimerFooter from '@/components/ui/DisclaimerFooter'
-
-interface Recommendation {
-  ticker: string
-  sector: string
-  match_score: number
-  match_score_percent: string
-  ai_score_percent: string
-  roe: number
-  der: number
-  pbv: number
-  insights: { feature: string; description: string; contribution: number }[]
-}
-
-interface SectorRow {
-  sector: string
-  total_stocks: number
-  avg_ai_score: number
-  avg_ai_score_percent: string
-  sentiment: string
-  top_movers: { ticker: string; ai_score_percent: string }[]
-}
+import { useDashboardData } from '@/hooks/useRecommendation'
 
 const PROFILE_COLORS: Record<string, string> = {
   Konservatif: '#10b981',
@@ -32,43 +10,7 @@ const PROFILE_COLORS: Record<string, string> = {
 }
 
 export default function DashboardPage() {
-  const [recs, setRecs] = useState<Recommendation[]>([])
-  const [sectors, setSectors] = useState<SectorRow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [profile, setProfile] = useState('—')
-  const [username, setUsername] = useState('Pengguna')
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    const token = localStorage.getItem('access_token')
-    if (!token) { window.location.href = '/auth/login'; return }
-
-    const headers = { Authorization: `Bearer ${token}` }
-
-    // Fetch user profile
-    api.get('/auth/me', { headers })
-      .then(r => {
-        // Jika admin mengakses dashboard, redirect ke admin panel
-        if (r.data.is_admin) {
-          window.location.href = '/admin'
-          return
-        }
-        const name = r.data.full_name?.trim() || r.data.email?.split('@')[0] || 'Pengguna'
-        setUsername(name)
-        setProfile(r.data.risk_profile || '—')
-      })
-      .catch(() => { localStorage.removeItem('access_token'); window.location.href = '/auth/login' })
-
-    // Fetch top picks SPK Lapis 3
-    api.get('/recommendation/top-picks', { headers })
-      .then(r => setRecs(r.data))
-      .catch(() => setError('Gagal memuat data analisis. Pastikan server backend berjalan.'))
-
-    // Fetch sector overview
-    api.get('/market/sectors')
-      .then(r => setSectors(r.data))
-      .finally(() => setLoading(false))
-  }, [])
+  const { recs, sectors, loading, profile, username, error } = useDashboardData()
 
   const rankColor = (i: number) => {
     if (i === 0) return 'gold'

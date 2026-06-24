@@ -11,6 +11,7 @@ import FundamentalTooltip, { FundamentalTooltipProvider } from '@/components/ui/
 import DisclaimerFooter from '@/components/ui/DisclaimerFooter'
 import { useToast } from '@/hooks/useToast'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import TransactionModal from '@/components/ui/Modal'
 
 // --- Skeleton Component ---
 const Skeleton = ({ height = 20, width = '100%', mb = 12 }) => (
@@ -109,11 +110,14 @@ export default function StockDetailPage() {
   const [translating, setTranslating] = useState(false)
   
   // States for Trading
-  const [lots, setLots] = useState(1)
-  const [customPrice, setCustomPrice] = useState(0)
   const [dbCash, setDbCash] = useState(0)
   const [dbHoldingShares, setDbHoldingShares] = useState(0)
   const { toasts, removeToast, toast } = useToast()
+
+  // Modal Trading States
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalActionType, setModalActionType] = useState<'BUY' | 'SELL'>('BUY')
+  const [tradeProcessing, setTradeProcessing] = useState(false)
 
   useEffect(() => {
     const fetchMainData = async () => {
@@ -132,7 +136,6 @@ export default function StockDetailPage() {
           technical: techRes.data,
           ai: aiRes.data
         })
-        setCustomPrice(fundRes.data.price?.current || 0)
         setDbCash(userRes.data.virtual_balance || 0)
         
         const currentHolding = portRes.data.find(
@@ -247,51 +250,41 @@ export default function StockDetailPage() {
     return { label: '—' }
   }
 
-  const handleBuy = async () => {
+  const handleConfirmTrade = async (tradeLots: number) => {
     const fullTicker = tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'
+    setTradeProcessing(true)
+    const endpoint = modalActionType === 'BUY' ? '/portfolio/buy' : '/portfolio/sell'
     try {
-      // Backend ambil harga sendiri — hanya kirim ticker dan qty dalam LOT
-      const res = await api.post('/portfolio/buy', {
+      const res = await api.post(endpoint, {
         ticker: fullTicker,
-        qty: lots,   // dalam LOT, bukan lembar
+        qty: tradeLots,
       })
       const data = res.data
-      toast.success(
-        `Order Masuk 📈`,
-        `${lots} Lot ${tickerStr} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
-        `Dibayar: Rp ${data.net_value?.toLocaleString('id-ID')} (fee Rp ${data.fee_amount?.toLocaleString('id-ID')})`
-      )
-      setDbCash(prev => prev - (data.net_value || 0))
-      setDbHoldingShares(prev => prev + (data.qty_lembar || lots * 100))
+      if (modalActionType === 'BUY') {
+        toast.success(
+          `Order Masuk 📈`,
+          `${tradeLots} Lot ${tickerStr} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
+          `Dibayar: Rp ${data.net_value?.toLocaleString('id-ID')} (fee Rp ${data.fee_amount?.toLocaleString('id-ID')})`
+        )
+        setDbCash(prev => prev - (data.net_value || 0))
+        setDbHoldingShares(prev => prev + (data.qty_lembar || tradeLots * 100))
+      } else {
+        toast.success(
+          `Order Keluar 📉`,
+          `${tradeLots} Lot ${tickerStr} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
+          `Diterima: Rp ${data.net_value?.toLocaleString('id-ID')} (setelah fee Rp ${data.fee_amount?.toLocaleString('id-ID')})`
+        )
+        setDbCash(prev => prev + (data.net_value || 0))
+        setDbHoldingShares(prev => Math.max(0, prev - (data.qty_lembar || tradeLots * 100)))
+      }
+      setIsModalOpen(false)
     } catch (err: any) {
       toast.error(
         'Order Gagal',
         err.response?.data?.detail || 'Terjadi kesalahan saat memproses order'
       )
-    }
-  }
-
-  const handleSell = async () => {
-    const fullTicker = tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'
-    try {
-      // Backend ambil harga sendiri — hanya kirim ticker dan qty dalam LOT
-      const res = await api.post('/portfolio/sell', {
-        ticker: fullTicker,
-        qty: lots,   // dalam LOT, bukan lembar
-      })
-      const data = res.data
-      toast.success(
-        `Order Keluar 📉`,
-        `${lots} Lot ${tickerStr} · Rp ${data.executed_price?.toLocaleString('id-ID')}/lembar`,
-        `Diterima: Rp ${data.net_value?.toLocaleString('id-ID')} (setelah fee Rp ${data.fee_amount?.toLocaleString('id-ID')})`
-      )
-      setDbCash(prev => prev + (data.net_value || 0))
-      setDbHoldingShares(prev => Math.max(0, prev - (data.qty_lembar || lots * 100)))
-    } catch (err: any) {
-      toast.error(
-        'Order Gagal',
-        err.response?.data?.detail || 'Terjadi kesalahan saat memproses order'
-      )
+    } finally {
+      setTradeProcessing(false)
     }
   }
 
@@ -1336,7 +1329,7 @@ export default function StockDetailPage() {
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center'
                 }}>
                   <div>
-                    <div style={{ fontWeight: 800, fontSize: 15 }}>📋 Order Book</div>
+                    <div style={{ fontWeight: 800, fontSize: 15 }}>📋 Transaksi Virtual</div>
                     <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Simulasi Virtual Trading</div>
                   </div>
                   <span style={{ 
@@ -1378,7 +1371,7 @@ export default function StockDetailPage() {
                   {/* Harga Pasar */}
                   <div style={{ 
                     background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)',
-                    borderRadius: 10, padding: '12px 14px', marginBottom: 16,
+                    borderRadius: 10, padding: '12px 14px', marginBottom: 20,
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center'
                   }}>
                     <div>
@@ -1395,103 +1388,40 @@ export default function StockDetailPage() {
                     </div>
                   </div>
 
-                  {/* Input Harga & Lot */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                        <label style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Harga Order</label>
-                        <button 
-                          onClick={() => setCustomPrice(currentPrice)}
-                          style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 10, cursor: 'pointer', padding: 0, fontWeight: 600 }}
-                        >↺ Pasar</button>
-                      </div>
-                      <input 
-                        type="number" value={customPrice}
-                        onChange={(e) => setCustomPrice(parseInt(e.target.value))}
-                        style={{ 
-                          width: '100%', padding: '10px 12px', borderRadius: 8,
-                          background: 'var(--bg-primary)', border: '1px solid var(--border)',
-                          color: 'var(--text-primary)', fontSize: 14, fontWeight: 600, outline: 'none'
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                        <label style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Jumlah Lot</label>
-                        <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>1 Lot = 100 lbr</span>
-                      </div>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <button onClick={() => setLots(Math.max(1, lots - 1))} style={{ 
-                          width: 34, height: 38, borderRadius: 8, border: '1px solid var(--border)',
-                          background: 'var(--bg-hover)', color: 'var(--text-primary)', fontSize: 18,
-                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                        }}>−</button>
-                        <input 
-                          type="number" value={lots} min={1}
-                          onChange={(e) => setLots(Math.max(1, parseInt(e.target.value) || 1))}
-                          style={{ 
-                            flex: 1, padding: '10px 8px', borderRadius: 8, textAlign: 'center',
-                            background: 'var(--bg-primary)', border: '1px solid var(--border)',
-                            color: 'var(--text-primary)', fontSize: 14, fontWeight: 700, outline: 'none'
-                          }}
-                        />
-                        <button onClick={() => setLots(lots + 1)} style={{ 
-                          width: 34, height: 38, borderRadius: 8, border: '1px solid var(--border)',
-                          background: 'var(--bg-hover)', color: 'var(--text-primary)', fontSize: 18,
-                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                        }}>+</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Order Summary */}
-                  <div style={{ 
-                    background: 'var(--bg-primary)', border: '1px solid var(--border)',
-                    borderRadius: 10, padding: '12px 14px', marginBottom: 16
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-secondary)', marginBottom: 6 }}>
-                      <span>Harga × Lembar</span>
-                      <span>Rp {customPrice.toLocaleString('id-ID')} × {(lots * 100).toLocaleString()}</span>
-                    </div>
-                    <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Total Estimasi</span>
-                      <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent)' }}>
-                        Rp {(customPrice * lots * 100).toLocaleString('id-ID')}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6, textAlign: 'right' }}>
-                      Sisa saldo: Rp {Math.max(0, dbCash - customPrice * lots * 100).toLocaleString('id-ID')}
-                    </div>
-                  </div>
-
-                  {/* BUY / SELL Buttons */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <button onClick={handleBuy} style={{ 
-                      padding: '13px', borderRadius: 10, border: 'none',
-                      background: 'var(--accent)', color: '#fff',
-                      fontSize: 14, fontWeight: 800, cursor: 'pointer',
-                      transition: 'all 0.2s', letterSpacing: 0.3
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-dim)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent)')}
+                  {/* Action Buttons to open popup */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <button 
+                      onClick={() => { setModalActionType('BUY'); setIsModalOpen(true); }}
+                      style={{ 
+                        width: '100%', padding: '14px', borderRadius: 10, border: 'none',
+                        background: 'var(--accent)', color: '#fff',
+                        fontSize: 14, fontWeight: 800, cursor: 'pointer',
+                        transition: 'all 0.2s', letterSpacing: 0.3,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-dim)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'var(--accent)')}
                     >
-                      📈 BELI
+                      📈 BELI SAHAM
                     </button>
-                    <button onClick={handleSell} style={{ 
-                      padding: '13px', borderRadius: 10,
-                      border: '1px solid var(--red)', background: 'rgba(239,68,68,0.1)',
-                      color: 'var(--red)', fontSize: 14, fontWeight: 800, cursor: 'pointer',
-                      transition: 'all 0.2s', letterSpacing: 0.3
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--red)'; e.currentTarget.style.color = '#fff' }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = 'var(--red)' }}
+                    <button 
+                      onClick={() => { setModalActionType('SELL'); setIsModalOpen(true); }}
+                      style={{ 
+                        width: '100%', padding: '14px', borderRadius: 10,
+                        border: '1px solid var(--red)', background: 'rgba(239,68,68,0.1)',
+                        color: 'var(--red)', fontSize: 14, fontWeight: 800, cursor: 'pointer',
+                        transition: 'all 0.2s', letterSpacing: 0.3,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'var(--red)'; e.currentTarget.style.color = '#fff' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = 'var(--red)' }}
                     >
-                      📉 JUAL
+                      📉 JUAL SAHAM
                     </button>
                   </div>
 
-                  <p style={{ fontSize: 10, color: 'var(--text-muted)', textAlign: 'center', marginTop: 12 }}>
-                    ⚠️ Simulasi virtual — tidak menggunakan dana nyata
+                  <p style={{ fontSize: 10, color: 'var(--text-muted)', textAlign: 'center', marginTop: 12, marginBottom: 0 }}>
+                    ⚠️ Klik tombol untuk membuka menu transaksi
                   </p>
                 </div>
               </div>
@@ -1501,6 +1431,20 @@ export default function StockDetailPage() {
           <DisclaimerFooter />
         </div>
       </main>
+
+      {/* Transaction Modal Popup */}
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        ticker={f.ticker}
+        companyName={f.name}
+        actionType={modalActionType}
+        currentPrice={currentPrice}
+        balance={dbCash}
+        holdingQty={dbHoldingShares}
+        onConfirm={handleConfirmTrade}
+        processing={tradeProcessing}
+      />
     </div>
   )
 }

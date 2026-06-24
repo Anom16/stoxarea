@@ -1,7 +1,3 @@
-"""
-core/logging_config.py
-Structured logging configuration untuk production-ready observability.
-"""
 
 import json
 import logging

@@ -40,7 +40,7 @@ def upgrade() -> None:
     
     # Index untuk transactions (critical untuk virtual trading)
     op.create_index('idx_transactions_user_id', 'transactions', ['user_id'], if_not_exists=True)
-    op.create_index('idx_transactions_created_at', 'transactions', ['created_at'], if_not_exists=True)
+    op.create_index('idx_transactions_timestamp', 'transactions', ['timestamp'], if_not_exists=True)
     
     # === PRECISION FIX ===
     # Drop old Float columns dan create new Numeric (Decimal) columns
@@ -75,7 +75,7 @@ def downgrade() -> None:
     op.drop_index('idx_portfolios_user_id', table_name='portfolios', if_exists=True)
     op.drop_index('idx_portfolios_ticker', table_name='portfolios', if_exists=True)
     op.drop_index('idx_transactions_user_id', table_name='transactions', if_exists=True)
-    op.drop_index('idx_transactions_created_at', table_name='transactions', if_exists=True)
+    op.drop_index('idx_transactions_timestamp', table_name='transactions', if_exists=True)
     
     # Revert precision back to Float (not recommended, but for downgrade compatibility)
     op.alter_column(
