@@ -476,13 +476,22 @@ export default function OnboardingPage() {
 const styles = {
   fullPage: {
     minHeight: '100vh',
-    background: '#0a0f1a', // Lebih gelap agar glow lebih terlihat
+    background: '#0a0f1a',
     display: 'flex' as const,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     fontFamily: 'Inter, sans-serif',
     position: 'relative' as const,
     overflow: 'hidden' as const,
+  },
+  card: {
+    background: 'rgba(30, 41, 59, 0.7)',
+    backdropFilter: 'blur(16px)',
+    padding: '40px',
+    borderRadius: '24px',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+    width: '100%',
   }
 }
 
