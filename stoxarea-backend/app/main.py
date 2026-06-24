@@ -15,9 +15,15 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 # Setup Logger Global
+import sys
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(
+            stream=open(sys.stdout.fileno(), mode='w', encoding='utf-8', buffering=1)
+        )
+    ]
 )
 logger = logging.getLogger(__name__)
 

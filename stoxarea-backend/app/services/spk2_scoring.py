@@ -39,6 +39,7 @@ def get_top_momentum_stocks(db: Session, limit: int = 30, target_sector: Optiona
 
     # 2. Ambil SEMUA saham dari DB (qualified maupun tidak) untuk halaman Market
     # is_qualified hanya dipakai untuk filter rekomendasi SAW, bukan untuk tampilan Market
+    all_scores = ai_store.get_all_scores()
     query = db.query(Stock.ticker, Stock.sector, Stock.name, Stock.is_qualified)
     if target_sector:
         query = query.filter(Stock.sector.ilike(f"%{target_sector}%"))

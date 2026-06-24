@@ -25,10 +25,18 @@ else:
     engine = create_engine(
         DATABASE_URL,
         poolclass=QueuePool,
-        pool_size=20,              # Max open connections
-        max_overflow=40,           # Max waiting in queue
-        pool_recycle=3600,         # Recycle connection setiap 1 jam
-        pool_pre_ping=True,        # Test connection sebelum pakai (detect stale)
+        pool_size=10,
+        max_overflow=20,
+        pool_recycle=1800,         # Recycle setiap 30 menit (lebih sering)
+        pool_pre_ping=True,        # Test koneksi sebelum pakai
+        pool_timeout=30,           # Timeout 30 detik
+        connect_args={
+            "connect_timeout": 10,
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        },
         echo=False
     )
 

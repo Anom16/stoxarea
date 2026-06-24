@@ -8,9 +8,17 @@ env/
 venv/
 ENV/
 
-# Database
+# Database lokal
 stoxarea.db
 *.sqlite3
 
 # Logs
 *.log
+
+# Cache
+cache/
+__pycache__/
+
+# Test & temp files
+*.tmp
+.DS_Store
