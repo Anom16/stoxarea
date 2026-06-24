@@ -6,6 +6,7 @@
   --bg-primary:    #0b0f19;
   --bg-secondary:  #111827;
   --bg-sidebar:    #070a12;
+  --bg-sidebar-rgba: rgba(7, 10, 18, 0.85);
   --bg-card:       #151d2e;
   --bg-hover:      #1e2940;
   --border:        #1f2d45;
@@ -29,6 +30,7 @@ body.light-mode {
   --bg-primary:    #f8fafc;
   --bg-secondary:  #ffffff;
   --bg-sidebar:    #f1f5f9;
+  --bg-sidebar-rgba: rgba(241, 245, 249, 0.9);
   --bg-card:       #ffffff;
   --bg-hover:      #f1f5f9;
   --border:        #e2e8f0;
@@ -388,73 +390,76 @@ body, .sidebar, .topbar, .card, input, select, button, .nav-item, .logo-text, .n
   to   { transform: translateY(0); opacity: 1; }
 }
 
-/* ─── INSIGHT PILLS ──────────────────────────────────── */
-.insight-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
-  border-radius: 20px; padding: 4px 12px;
-  font-size: 12px; color: var(--accent);
-  margin: 3px;
-}
-
-/* ─── UTIL ───────────────────────────────────────────── */
-.text-accent   { color: var(--accent); }
-.text-blue     { color: var(--blue); }
-.text-yellow   { color: var(--yellow); }
-.text-red      { color: var(--red); }
-.text-muted    { color: var(--text-muted); }
-.text-secondary{ color: var(--text-secondary); }
-.flex-center   { display: flex; align-items: center; justify-content: center; }
-.flex-between  { display: flex; align-items: center; justify-content: space-between; }
-.gap-8  { gap: 8px; }
-.gap-12 { gap: 12px; }
-.gap-16 { gap: 16px; }
-.mb-8  { margin-bottom: 8px; }
-.mb-16 { margin-bottom: 16px; }
-.mb-24 { margin-bottom: 24px; }
-.fw-700 { font-weight: 700; }
-.fs-12 { font-size: 12px; }
-.fs-14 { font-size: 14px; }
-.hover-opacity { transition: opacity 0.2s; cursor: pointer; }
-.hover-opacity:hover { opacity: 0.7; }
-.mobile-only { display: none; }
-
 /* ─── MOBILE RESPONSIVE (PWA) ────────────────────────── */
 @media (max-width: 768px) {
   .mobile-only { display: flex !important; }
   
   .app-shell {
     flex-direction: column;
-    padding-bottom: 60px; /* Space for bottom nav */
+    padding-bottom: 96px; /* Memberikan ruang ekstra untuk bottom nav melayang */
   }
 
   .sidebar {
     position: fixed;
-    bottom: 0; left: 0; width: 100%; height: 64px;
-    flex-direction: row; justify-content: space-around; align-items: center;
-    border-right: none; border-top: 1px solid var(--border);
-    z-index: 100;
-    padding: 0;
-    background: var(--bg-secondary);
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    width: calc(100% - 32px);
+    height: 66px;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid var(--border-sidebar) !important;
+    border-radius: 18px;
+    z-index: 1000;
+    padding: 0 10px;
+    background: var(--bg-sidebar-rgba) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   }
 
   .sidebar-logo { display: none; }
   .nav-section-label { display: none; }
   
   .sidebar-nav {
-    display: flex; flex-direction: row; padding: 0; width: 100%; justify-content: space-around;
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
   }
   
-  .sidebar-footer { display: none; } /* Hide footer items on mobile nav, we'll move settings to topbar if needed or just keep them hidden for now */
+  .sidebar-footer { display: none; } /* Sembunyikan footer di mobile */
 
   .nav-item {
-    flex-direction: column; gap: 4px; padding: 6px;
-    font-size: 10px; flex: 1; justify-content: center;
-    border-radius: 0; margin-bottom: 0;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 12px;
+    font-size: 10px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    margin-bottom: 0;
+    color: var(--text-secondary);
   }
   
-  .nav-item.active { border: none; border-top: 2px solid var(--accent); background: var(--bg-hover); }
-  .nav-item .nav-icon { width: 20px; height: 20px; font-size: 20px !important; }
+  .nav-item.active {
+    border: none;
+    background: var(--accent-glow) !important;
+    color: var(--accent) !important;
+  }
+  .nav-item.active::before {
+    display: none; /* Sembunyikan bar vertikal sebelah kiri di mobile */
+  }
+  
+  .nav-item span:first-child {
+    font-size: 20px !important;
+    margin-bottom: 1px;
+    width: auto !important;
+    text-align: center;
+  }
 
   .main-content {
     flex: 1;
@@ -464,17 +469,19 @@ body, .sidebar, .topbar, .card, input, select, button, .nav-item, .logo-text, .n
   .topbar {
     padding: 0 16px;
     gap: 10px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
   }
   
   .topbar-greeting h2 { font-size: 14px; }
   .topbar-greeting p { display: none; }
 
   .search-box {
-    width: 40px; /* Collapse search box on mobile to icon only, or use 100% if we change layout */
+    width: 40px; /* Perkecil kotak pencarian menjadi ikon saja di mobile */
     padding: 8px;
     justify-content: center;
   }
-  .search-box input { display: none; } /* Hide input on small screens for now, or make a responsive search bar later */
+  .search-box input { display: none; }
   
   .stats-row { grid-template-columns: 1fr 1fr; gap: 12px; }
   .compare-grid { grid-template-columns: 1fr; }
@@ -483,3 +490,4 @@ body, .sidebar, .topbar, .card, input, select, button, .nav-item, .logo-text, .n
   
   .page-body { padding: 16px; }
 }
+
