@@ -59,6 +59,7 @@ body, .sidebar, .topbar, .card, input, select, button, .nav-item, .logo-text, .n
 }
 
 /* ─── LAYOUT ─────────────────────────────────────── */
+.mobile-only { display: none; }
 .app-shell { display: flex; height: 100vh; overflow: hidden; }
 
 .sidebar {
@@ -388,6 +389,165 @@ body, .sidebar, .topbar, .card, input, select, button, .nav-item, .logo-text, .n
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
+}
+
+/* ─── MOBILE RESPONSIVE / PWA ────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Tampilkan Settings di bottom nav hanya di mobile */
+  .mobile-only { display: flex !important; }
+
+  /* Shell utama: kolom, beri ruang bawah untuk bottom nav */
+  .app-shell {
+    flex-direction: column;
+    padding-bottom: 88px;
+  }
+
+  /* ── Bottom Navigation Bar ── */
+  .sidebar {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    width: calc(100% - 24px);
+    height: 64px;
+    flex-direction: row;
+    border-radius: 20px;
+    border: 1px solid var(--border-sidebar) !important;
+    background: var(--bg-sidebar-rgba) !important;
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255,255,255,0.05) inset;
+    z-index: 1000;
+    overflow: visible;
+    padding: 0;
+  }
+
+  /* Sembunyikan elemen sidebar yang tidak perlu */
+  .sidebar-logo,
+  .nav-section-label,
+  .sidebar-footer { display: none !important; }
+
+  /* Nav dalam bottom bar */
+  .sidebar-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 8px;
+    width: 100%;
+    height: 100%;
+    gap: 0;
+  }
+
+  /* Setiap item navigasi */
+  .nav-item {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+    flex: 1;
+    padding: 8px 4px;
+    margin-bottom: 0;
+    border-radius: 14px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-height: 48px;
+    letter-spacing: 0.2px;
+    border: none !important;
+  }
+
+  /* Icon di nav item */
+  .nav-item .nav-icon,
+  .nav-item > span:first-child {
+    font-size: 20px !important;
+    width: auto !important;
+    height: auto !important;
+    line-height: 1;
+    margin-bottom: 0;
+    text-align: center;
+    display: block;
+    transition: transform 0.2s ease;
+  }
+
+  /* Label teks di bawah icon */
+  .nav-label {
+    font-size: 10px !important;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 64px;
+  }
+
+  /* State aktif */
+  .nav-item.active {
+    background: var(--accent-glow) !important;
+    color: var(--accent) !important;
+  }
+  .nav-item.active > span:first-child {
+    transform: scale(1.15);
+  }
+  /* Hapus bar kiri di mobile */
+  .nav-item.active::before { display: none !important; }
+
+  /* Hover di mobile (touchstart tidak ada border) */
+  .nav-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  /* ── Main Content ── */
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    padding: 0 16px;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-greeting h2 { font-size: 15px; }
+  .topbar-greeting > p:last-child { font-size: 11px; }
+
+  /* ── Search Box ── */
+  .search-box {
+    width: 42px;
+    padding: 8px;
+    justify-content: center;
+    border-radius: 10px;
+  }
+  .search-box input,
+  .search-box svg + span { display: none; }
+
+  /* ── Page Body ── */
+  .page-body { padding: 16px 14px; }
+
+  /* ── Grid Adjustments ── */
+  .stats-row       { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .compare-grid    { grid-template-columns: 1fr; }
+  .top-picks-grid  { grid-template-columns: 1fr; }
+  .sector-grid     { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+  /* ── Toast offset agar tidak tertutup bottom nav ── */
+  .toast {
+    bottom: 90px;
+    right: 16px;
+    left: 16px;
+    max-width: calc(100% - 32px);
+  }
+}
+
+/* Layar sangat kecil (< 360px) */
+@media (max-width: 359px) {
+  .nav-label { display: none; }
+  .nav-item { gap: 0; min-height: 44px; }
 }
 
 
