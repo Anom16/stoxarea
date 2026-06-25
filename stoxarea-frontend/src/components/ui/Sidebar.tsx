@@ -34,18 +34,9 @@ export default function Sidebar() {
             <span className="nav-label">{item.label}</span>
           </Link>
         ))}
-        <Link href="/settings"
-          className={`nav-item mobile-only ${pathname.startsWith('/settings') ? 'active' : ''}`}>
-          <span style={{ fontSize: 16, width: 18, textAlign: 'center' }}>⚙</span>
-          <span className="nav-label">Pengaturan</span>
-        </Link>
       </nav>
 
       <div className="sidebar-footer">
-        <Link href="/settings" className="nav-item">
-          <span style={{ fontSize: 16, width: 18, textAlign: 'center' }}>⚙</span>
-          Profil & Pengaturan
-        </Link>
         <button onClick={handleLogout} className="nav-item"
           style={{ background: 'transparent', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left', color: 'inherit', padding: 0 }}>
           <span style={{ fontSize: 16, width: 18, textAlign: 'center' }}>→</span>
