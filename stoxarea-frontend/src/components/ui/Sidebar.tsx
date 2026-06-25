@@ -6,6 +6,7 @@ const navItems = [
   { href: '/dashboard',       label: 'Dashboard Anda',  icon: '⊞' },
   { href: '/market',          label: 'Jelajah Pasar',   icon: '◎' },
   { href: '/virtual-trading', label: 'Virtual Trading', icon: '◈' },
+  { href: '/settings',        label: 'Pengaturan',      icon: '⚙' },
 ]
 
 export default function Sidebar() {
