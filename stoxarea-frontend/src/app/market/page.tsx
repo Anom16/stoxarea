@@ -117,9 +117,6 @@ function MarketExplorerContent() {
             </div>
             <p className="fs-12 text-muted mt-8" style={{ marginTop: 12 }}>
               Menampilkan {sortedAndFilteredStocks.length} dari {stocks.length} saham terdaftar.
-              <span style={{ color: '#4CAF50', marginLeft: 6 }}>
-                {stocks.filter(s => s.is_qualified).length} qualified untuk rekomendasi SPK.
-              </span>
             </p>
           </div>
 
@@ -132,30 +129,7 @@ function MarketExplorerContent() {
                   ({sortedAndFilteredStocks.length} saham)
                 </span>
               </h3>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <button
-                  onClick={() => setShowOnlyQualified(false)}
-                  style={{
-                    background: !showOnlyQualified ? 'var(--accent)' : 'transparent',
-                    color: !showOnlyQualified ? '#000' : 'var(--text-muted)',
-                    border: '1px solid var(--border)', borderRadius: 8,
-                    padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-                  }}
-                >
-                  Semua Saham
-                </button>
-                <button
-                  onClick={() => setShowOnlyQualified(true)}
-                  style={{
-                    background: showOnlyQualified ? 'var(--accent)' : 'transparent',
-                    color: showOnlyQualified ? '#000' : 'var(--text-muted)',
-                    border: '1px solid var(--border)', borderRadius: 8,
-                    padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-                  }}
-                >
-                  ✅ Qualified Saja
-                </button>
-              </div>
+
             </div>
             
             {loading ? (
@@ -189,13 +163,6 @@ function MarketExplorerContent() {
                               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>
                             )}
                             <div style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
-                              {s.is_qualified === false && (
-                                <span style={{
-                                  fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 4,
-                                  background: 'rgba(244,67,54,0.12)', color: '#f44336',
-                                  border: '1px solid rgba(244,67,54,0.3)',
-                                }}>Tidak Qualified</span>
-                              )}
                               {!s.has_ai_score && (
                                 <span style={{
                                   fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 4,
