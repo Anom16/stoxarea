@@ -135,8 +135,10 @@ function MarketExplorerContent() {
             {loading ? (
               <div className="skeleton" style={{ height: 400, width: '100%' }}></div>
             ) : (
-              <div style={{ overflowX: 'auto' }}>
-                <table className="ranking-table">
+              <>
+                {/* Desktop: Tabel */}
+                <div className="market-table-desktop" style={{ overflowX: 'auto' }}>
+                  <table className="ranking-table">
                   <thead>
                     <tr>
                       <th onClick={() => requestSort('ticker')} style={{ cursor: 'pointer' }}>
@@ -220,8 +222,68 @@ function MarketExplorerContent() {
                       </tr>
                     ))}
                   </tbody>
-                </table>
-              </div>
+                  </table>
+                </div>
+
+                {/* Mobile: Card List */}
+                <div className="market-card-mobile">
+                  {sortedAndFilteredStocks.slice(0, visibleCount).map((s) => (
+                    <Link key={s.ticker} href={`/market/${s.ticker}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div className="market-stock-card">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                          <div>
+                            <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)' }}>
+                              {s.ticker.replace('.JK', '')}
+                            </div>
+                            {s.name && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>{s.name}</div>}
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--accent)' }}>
+                              Rp {s.current_price?.toLocaleString() || '0'}
+                            </div>
+                            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>{s.sector}</div>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 3 }}>AI Score</div>
+                            <div className="ai-bar-wrap">
+                              <div className="ai-bar-track" style={{ flex: 1 }}>
+                                <div className="ai-bar-fill" style={{ width: s.ai_score_percent, background: 'var(--blue)' }} />
+                              </div>
+                              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--blue)', minWidth: 36 }}>{s.ai_score_percent}</span>
+                            </div>
+                          </div>
+                          <div style={{ width: 60, height: 28, flexShrink: 0 }}>
+                            {s.sparkline && s.sparkline.length > 0 ? (
+                              <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={s.sparkline.map((v) => ({ v }))}>
+                                  <defs>
+                                    <linearGradient id={`mg-${s.ticker}`} x1="0" y1="0" x2="0" y2="1">
+                                      <stop offset="5%" stopColor={s.sentiment === 'Bullish' ? '#10b981' : '#ef4444'} stopOpacity={0.3}/>
+                                      <stop offset="95%" stopColor={s.sentiment === 'Bullish' ? '#10b981' : '#ef4444'} stopOpacity={0}/>
+                                    </linearGradient>
+                                  </defs>
+                                  <Area type="monotone" dataKey="v"
+                                    stroke={s.sentiment === 'Bullish' ? '#10b981' : '#ef4444'}
+                                    fillOpacity={1} fill={`url(#mg-${s.ticker})`}
+                                    strokeWidth={1.5} dot={false}
+                                  />
+                                </AreaChart>
+                              </ResponsiveContainer>
+                            ) : null}
+                          </div>
+                          {s.sentiment && (
+                            <span className={`sentiment-badge ${s.sentiment.toLowerCase()}`} style={{ fontSize: 10, padding: '2px 7px', flexShrink: 0 }}>
+                              {s.sentiment === 'Bullish' ? '▲' : s.sentiment === 'Bearish' ? '▼' : '●'} {s.sentiment}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </>
             )}
 
             {visibleCount < sortedAndFilteredStocks.length && (
@@ -239,7 +301,7 @@ function MarketExplorerContent() {
 
           {/* 3. Pilihan Sektor (Bawah) */}
           <h3 className="section-title mb-16" style={{ fontSize: 16 }}>Navigasi Sektoral (Radar Sektor)</h3>
-          <div className="sector-grid">
+          <div className="sector-grid sector-grid-scroll">
             <div 
               className={`sector-card ${selectedSector === '' ? 'active' : ''}`}
               onClick={() => setSelectedSector('')}

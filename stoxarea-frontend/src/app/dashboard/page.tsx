@@ -186,6 +186,7 @@ export default function DashboardPage() {
           <div className="card">
             <div className="section-title" style={{ fontSize: 16, marginBottom: 4 }}>📊 Ranking SPK Keseluruhan</div>
             <div className="section-sub" style={{ marginBottom: 16 }}>15 Emiten Paling Sesuai berdasarkan Skor SAW</div>
+            <div className="ranking-table-wrap">
             <table className="ranking-table">
               <thead>
                 <tr>
@@ -221,12 +222,14 @@ export default function DashboardPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Sector Overview */}
           <div className="card">
             <div className="section-title" style={{ fontSize: 16, marginBottom: 4 }}>🌐 Radar Sektor BEI</div>
             <div className="section-sub" style={{ marginBottom: 16 }}>Sentimen AI per Sektor (Bullish/Netral/Bearish)</div>
+            <div className="ranking-table-wrap">
             <table className="ranking-table">
               <thead>
                 <tr>
@@ -262,6 +265,7 @@ export default function DashboardPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       </section>

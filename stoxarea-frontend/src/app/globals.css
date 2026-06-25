@@ -542,12 +542,105 @@ body, .sidebar, .topbar, .card, input, select, button, .nav-item, .logo-text, .n
     left: 16px;
     max-width: calc(100% - 32px);
   }
+
+  /* ══════════════════════════════════════
+     DASHBOARD — Mobile Specific Styles
+  ══════════════════════════════════════ */
+
+  /* Greeting lebih compact */
+  .dashboard-section h1 { font-size: 20px !important; }
+
+  /* Stats row: 2 kolom rapi */
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stat-card { padding: 14px; }
+  .stat-value { font-size: 20px; }
+  .stat-label { font-size: 11px; }
+  .stat-sub   { font-size: 10px; }
+
+  /* Ranking + Radar: stack jadi 1 kolom di mobile */
+  .dashboard-section [style*="grid-template-columns: 1fr 1fr"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  /* Tabel ranking: scroll horizontal agar tidak terpotong */
+  .ranking-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .ranking-table { min-width: 360px; }
+  .ranking-table th,
+  .ranking-table td { padding: 10px 10px; font-size: 12px; }
+
+  /* Sector grid: 2 kolom */
+  .sector-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .sector-card { padding: 12px; }
+  .sector-name { font-size: 12px; }
+  .sector-count { font-size: 10px; }
+
+  /* Top Picks: full width 1 kolom */
+  .top-picks-grid { grid-template-columns: 1fr; }
+  .pick-card { padding: 16px; }
+  .pick-ticker { font-size: 18px; }
+  .match-pct  { font-size: 22px; }
+
+  /* Pick metrics: 4 kolom tetap tapi lebih compact */
+  .pick-metrics { gap: 8px; }
+  .metric-label { font-size: 9px; }
+  .metric-value { font-size: 13px; }
+
+  /* Disclaimer: lebih compact */
+  .dashboard-section + div[style*="rgba(245,158,11"] {
+    padding: 10px 12px !important;
+  }
 }
 
 /* Layar sangat kecil (< 360px) */
 @media (max-width: 359px) {
   .nav-label { display: none; }
   .nav-item { gap: 0; min-height: 44px; }
+}
+
+/* ─── MARKET PAGE ────────────────────────────────────── */
+
+/* Default: tampilkan tabel, sembunyikan card */
+.market-table-desktop { display: block; }
+.market-card-mobile   { display: none; }
+
+/* Stock card style (dipakai di mobile) */
+.market-stock-card {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.market-stock-card:active { background: var(--bg-hover); }
+
+@media (max-width: 768px) {
+  /* Di mobile: sembunyikan tabel, tampilkan card */
+  .market-table-desktop { display: none !important; }
+  .market-card-mobile   { display: block !important; }
+
+  /* Search box di market jadi full width */
+  .market-search-full { width: 100% !important; font-size: 14px !important; }
+
+  /* Sector grid jadi scroll horizontal di market */
+  .sector-grid-scroll {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .sector-grid-scroll::-webkit-scrollbar { display: none; }
+  .sector-grid-scroll .sector-card {
+    flex-shrink: 0;
+    min-width: 110px;
+    padding: 10px 12px;
+  }
 }
 
 

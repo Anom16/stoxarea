@@ -74,9 +74,7 @@ export default function OnboardingPage() {
       }
     })
 
-    // Ambil nilai yang paling sering muncul (mode) per kategori.
-    // Lebih aman dari rata-rata karena hasilnya selalu 1, 3, atau 5.
-    // Jika seri (misal [1, 5]), ambil yang lebih konservatif (nilai terkecil).
+   
     const payload: Record<string, number> = {}
     Object.entries(categoryScores).forEach(([cat, scores]) => {
       const freq: Record<number, number> = {}
@@ -85,7 +83,7 @@ export default function OnboardingPage() {
       const candidates = Object.keys(freq)
         .map(Number)
         .filter(s => freq[s] === maxFreq)
-      // Jika seri, ambil nilai terkecil (lebih konservatif = lebih aman)
+      
       payload[cat] = Math.min(...candidates)
     })
 
@@ -98,7 +96,7 @@ export default function OnboardingPage() {
     try {
       const payload = buildPayload(answers)
 
-      // Validasi payload sebelum kirim — pastikan semua 5 kategori ada
+      
       const requiredKeys = [
         'k1_target_keuntungan',
         'k2_kualitas_perusahaan',
@@ -115,7 +113,7 @@ export default function OnboardingPage() {
 
       const res = await api.post('/auth/submit-profiling', payload)
 
-      // Tampilkan halaman verifikasi hasil — JANGAN langsung redirect
+      
       const profile = res.data.risk_profile
       setResultProfile(profile)
     } catch (err: any) {
@@ -123,7 +121,7 @@ export default function OnboardingPage() {
       if (typeof detail === 'string') {
         setError(detail)
       } else if (Array.isArray(detail)) {
-        // Pydantic validation error — tampilkan pesan pertama
+       
         setError(detail[0]?.msg || 'Jawaban tidak valid.')
       } else {
         setError('Gagal mengirim jawaban. Coba lagi.')

@@ -184,7 +184,7 @@ export default function VirtualTradingPage() {
         <div className="page-body">
 
           {/* ── HEADER ── */}
-          <div className="flex-between mb-16">
+          <div className="vt-header-row mb-16">
             <div>
               <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5 }}>Virtual Trading Simulator</h1>
               <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
@@ -295,67 +295,116 @@ export default function VirtualTradingPage() {
                       </a>
                     </div>
                   ) : (
-                    <div style={{ overflowX: 'auto' }}>
-                      <table className="ranking-table">
-                        <thead>
-                          <tr>
-                            <th>Emiten</th>
-                            <th style={{ textAlign: 'right' }}>Kepemilikan</th>
-                            <th style={{ textAlign: 'right' }}>Avg. Beli</th>
-                            <th style={{ textAlign: 'right' }}>Harga Kini</th>
-                            <th style={{ textAlign: 'right' }}>Nilai Pasar</th>
-                            <th style={{ textAlign: 'right' }}>Gain / Loss</th>
-                            <th style={{ textAlign: 'center' }}>Aksi</th>
-                          </tr> 
-                        </thead>
-                        <tbody>
-                          {portfolio.map((s) => {
-                            const cp = s.current_price || s.avg_price
-                            const pl = cp - s.avg_price
-                            const plPct = (pl / s.avg_price) * 100
-                            const marketVal = s.qty * cp
-                            const isProfit = pl >= 0
-                            return (
-                              <tr key={s.ticker}>
-                                <td>
-                                  <div style={{ fontWeight: 700, fontSize: 15 }}>{s.ticker.replace('.JK', '')}</div>
-                                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty / 100} Lot · {s.qty.toLocaleString()} lembar</div>
-                                </td>
-                                <td style={{ textAlign: 'right' }}>
-                                  <div style={{ fontWeight: 600 }}>{s.qty / 100} Lot</div>
-                                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty.toLocaleString()} lbr</div>
-                                </td>
-                                <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>
-                                  Rp {s.avg_price.toLocaleString('id-ID')}
-                                </td>
-                                <td style={{ textAlign: 'right', color: 'var(--accent)', fontWeight: 600 }}>
-                                  Rp {cp.toLocaleString('id-ID')}
-                                </td>
-                                <td style={{ textAlign: 'right', fontWeight: 700 }}>
-                                  Rp {marketVal.toLocaleString('id-ID')}
-                                </td>
-                                <td style={{ textAlign: 'right' }}>
-                                  <div style={{ fontWeight: 700, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                    <>
+                      {/* Desktop: Tabel Portfolio */}
+                      <div className="vt-table-desktop" style={{ overflowX: 'auto' }}>
+                        <table className="ranking-table">
+                          <thead>
+                            <tr>
+                              <th>Emiten</th>
+                              <th style={{ textAlign: 'right' }}>Kepemilikan</th>
+                              <th style={{ textAlign: 'right' }}>Avg. Beli</th>
+                              <th style={{ textAlign: 'right' }}>Harga Kini</th>
+                              <th style={{ textAlign: 'right' }}>Nilai Pasar</th>
+                              <th style={{ textAlign: 'right' }}>Gain / Loss</th>
+                              <th style={{ textAlign: 'center' }}>Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {portfolio.map((s) => {
+                              const cp = s.current_price || s.avg_price
+                              const pl = cp - s.avg_price
+                              const plPct = (pl / s.avg_price) * 100
+                              const marketVal = s.qty * cp
+                              const isProfit = pl >= 0
+                              return (
+                                <tr key={s.ticker}>
+                                  <td>
+                                    <div style={{ fontWeight: 700, fontSize: 15 }}>{s.ticker.replace('.JK', '')}</div>
+                                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty / 100} Lot · {s.qty.toLocaleString()} lembar</div>
+                                  </td>
+                                  <td style={{ textAlign: 'right' }}>
+                                    <div style={{ fontWeight: 600 }}>{s.qty / 100} Lot</div>
+                                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty.toLocaleString()} lbr</div>
+                                  </td>
+                                  <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>Rp {s.avg_price.toLocaleString('id-ID')}</td>
+                                  <td style={{ textAlign: 'right', color: 'var(--accent)', fontWeight: 600 }}>Rp {cp.toLocaleString('id-ID')}</td>
+                                  <td style={{ textAlign: 'right', fontWeight: 700 }}>Rp {marketVal.toLocaleString('id-ID')}</td>
+                                  <td style={{ textAlign: 'right' }}>
+                                    <div style={{ fontWeight: 700, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                                      {isProfit ? '+' : ''}{plPct.toFixed(2)}%
+                                    </div>
+                                    <div style={{ fontSize: 11, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                                      {isProfit ? '+' : ''}Rp {(pl * s.qty).toLocaleString('id-ID')}
+                                    </div>
+                                  </td>
+                                  <td style={{ textAlign: 'center' }}>
+                                    <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+                                      <button className="btn-action buy" disabled={processing}
+                                        onClick={() => handleQuickTrade(s.ticker, 'buy', s.current_price || s.avg_price)}>+ Beli</button>
+                                      <button className="btn-action sell" disabled={processing}
+                                        onClick={() => handleQuickTrade(s.ticker, 'sell', s.current_price || s.avg_price)}>− Jual</button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile: Card Portfolio */}
+                      <div className="vt-card-mobile">
+                        {portfolio.map((s) => {
+                          const cp = s.current_price || s.avg_price
+                          const pl = cp - s.avg_price
+                          const plPct = (pl / s.avg_price) * 100
+                          const marketVal = s.qty * cp
+                          const isProfit = pl >= 0
+                          return (
+                            <div key={s.ticker} className="vt-portfolio-card">
+                              {/* Baris 1: Ticker + Gain/Loss */}
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                                <div>
+                                  <div style={{ fontSize: 18, fontWeight: 800 }}>{s.ticker.replace('.JK', '')}</div>
+                                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.qty / 100} Lot · {s.qty.toLocaleString()} lembar</div>
+                                </div>
+                                <div style={{ textAlign: 'right' }}>
+                                  <div style={{ fontSize: 16, fontWeight: 800, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
                                     {isProfit ? '+' : ''}{plPct.toFixed(2)}%
                                   </div>
                                   <div style={{ fontSize: 11, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
                                     {isProfit ? '+' : ''}Rp {(pl * s.qty).toLocaleString('id-ID')}
                                   </div>
-                                </td>
-                                <td style={{ textAlign: 'center' }}>
-                                  <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-                                    <button className="btn-action buy" disabled={processing}
-                                      onClick={() => handleQuickTrade(s.ticker, 'buy', s.current_price || s.avg_price)}>+ Beli</button>
-                                    <button className="btn-action sell" disabled={processing}
-                                      onClick={() => handleQuickTrade(s.ticker, 'sell', s.current_price || s.avg_price)}>− Jual</button>
-                                  </div>
-                                </td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
+                                </div>
+                              </div>
+                              {/* Baris 2: Harga avg vs kini */}
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 12 }}>
+                                <div>
+                                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 2 }}>Avg. Beli</div>
+                                  <div style={{ fontSize: 13, fontWeight: 600 }}>Rp {s.avg_price.toLocaleString('id-ID')}</div>
+                                </div>
+                                <div>
+                                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 2 }}>Harga Kini</div>
+                                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent)' }}>Rp {cp.toLocaleString('id-ID')}</div>
+                                </div>
+                                <div>
+                                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 2 }}>Nilai Pasar</div>
+                                  <div style={{ fontSize: 13, fontWeight: 700 }}>Rp {marketVal.toLocaleString('id-ID')}</div>
+                                </div>
+                              </div>
+                              {/* Baris 3: Tombol aksi */}
+                              <div style={{ display: 'flex', gap: 8 }}>
+                                <button className="btn-action buy" disabled={processing} style={{ flex: 1, padding: '8px', fontSize: 13 }}
+                                  onClick={() => handleQuickTrade(s.ticker, 'buy', s.current_price || s.avg_price)}>+ Beli</button>
+                                <button className="btn-action sell" disabled={processing} style={{ flex: 1, padding: '8px', fontSize: 13 }}
+                                  onClick={() => handleQuickTrade(s.ticker, 'sell', s.current_price || s.avg_price)}>− Jual</button>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </>
                   )}
                 </div>
               )}
@@ -369,64 +418,87 @@ export default function VirtualTradingPage() {
                       <div className="empty-text">Belum ada riwayat transaksi</div>
                     </div>
                   ) : (
-                    <div style={{ overflowX: 'auto' }}>
-                      <table className="ranking-table">
-                        <thead>
-                          <tr>
-                            <th>Waktu</th>
-                            <th>Emiten</th>
-                            <th style={{ textAlign: 'center' }}>Tipe</th>
-                            <th style={{ textAlign: 'right' }}>Lot</th>
-                            <th style={{ textAlign: 'right' }}>Harga/Lbr</th>
-                            <th style={{ textAlign: 'right' }}>Fee</th>
-                            <th style={{ textAlign: 'right' }}>Net Nilai</th>
-                            <th style={{ textAlign: 'center' }}>Nota</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {transactions.slice(0, 30).map((tx) => (
-                            <tr key={tx.id}>
-                              <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                                {new Date(tx.timestamp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: '2-digit' })}
-                                <div style={{ fontSize: 11 }}>{new Date(tx.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</div>
-                              </td>
-                              <td style={{ fontWeight: 700 }}>{tx.ticker.replace('.JK', '')}</td>
-                              <td style={{ textAlign: 'center' }}>
-                                <span className={`vt-tx-badge ${tx.type.toLowerCase()}`}>
-                                  {tx.type === 'BUY' ? '📈 BELI' : '📉 JUAL'}
-                                </span>
-                              </td>
-                              <td style={{ textAlign: 'right' }}>{tx.qty / 100} Lot</td>
-                              <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>
-                                Rp {tx.price.toLocaleString('id-ID')}
-                              </td>
-                              {/* Fee — merah untuk beli, oranye untuk jual */}
-                              <td style={{ textAlign: 'right', fontSize: 12, color: '#f59e0b' }}>
-                                −Rp {(tx.fee || 0).toLocaleString('id-ID')}
-                              </td>
-                              {/* Net value — merah (keluar) untuk beli, hijau (masuk) untuk jual */}
-                              <td style={{ textAlign: 'right', fontWeight: 700,
-                                color: tx.type === 'BUY' ? 'var(--red)' : 'var(--accent)' }}>
-                                {tx.type === 'BUY' ? '−' : '+'}Rp {(tx.net_value || tx.qty * tx.price).toLocaleString('id-ID')}
-                              </td>
-                              <td style={{ textAlign: 'center' }}>
-                                <button 
-                                  onClick={() => handleDownloadReceipt(tx.id)}
-                                  className="btn-action buy"
-                                  style={{ padding: '3px 8px', fontSize: 11 }}
-                                >
-                                  📄 Nota
-                                </button>
-                              </td>
+                    <>
+                      {/* Desktop: Tabel History */}
+                      <div className="vt-table-desktop" style={{ overflowX: 'auto' }}>
+                        <table className="ranking-table">
+                          <thead>
+                            <tr>
+                              <th>Waktu</th>
+                              <th>Emiten</th>
+                              <th style={{ textAlign: 'center' }}>Tipe</th>
+                              <th style={{ textAlign: 'right' }}>Lot</th>
+                              <th style={{ textAlign: 'right' }}>Harga/Lbr</th>
+                              <th style={{ textAlign: 'right' }}>Fee</th>
+                              <th style={{ textAlign: 'right' }}>Net Nilai</th>
+                              <th style={{ textAlign: 'center' }}>Nota</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      {/* Keterangan fee */}
-                      <div style={{ padding: '10px 16px', borderTop: '1px solid var(--border)', fontSize: 11, color: 'var(--text-muted)' }}>
-                        💡 Fee Beli: 0.15% · Fee Jual: 0.25% (termasuk PPN & PPh Final) — sesuai standar broker BEI
+                          </thead>
+                          <tbody>
+                            {transactions.slice(0, 30).map((tx) => (
+                              <tr key={tx.id}>
+                                <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                                  {new Date(tx.timestamp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: '2-digit' })}
+                                  <div style={{ fontSize: 11 }}>{new Date(tx.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</div>
+                                </td>
+                                <td style={{ fontWeight: 700 }}>{tx.ticker.replace('.JK', '')}</td>
+                                <td style={{ textAlign: 'center' }}>
+                                  <span className={`vt-tx-badge ${tx.type.toLowerCase()}`}>
+                                    {tx.type === 'BUY' ? '📈 BELI' : '📉 JUAL'}
+                                  </span>
+                                </td>
+                                <td style={{ textAlign: 'right' }}>{tx.qty / 100} Lot</td>
+                                <td style={{ textAlign: 'right', color: 'var(--text-secondary)' }}>Rp {tx.price.toLocaleString('id-ID')}</td>
+                                <td style={{ textAlign: 'right', fontSize: 12, color: '#f59e0b' }}>−Rp {(tx.fee || 0).toLocaleString('id-ID')}</td>
+                                <td style={{ textAlign: 'right', fontWeight: 700, color: tx.type === 'BUY' ? 'var(--red)' : 'var(--accent)' }}>
+                                  {tx.type === 'BUY' ? '−' : '+'}Rp {(tx.net_value || tx.qty * tx.price).toLocaleString('id-ID')}
+                                </td>
+                                <td style={{ textAlign: 'center' }}>
+                                  <button onClick={() => handleDownloadReceipt(tx.id)} className="btn-action buy" style={{ padding: '3px 8px', fontSize: 11 }}>📄 Nota</button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <div style={{ padding: '10px 16px', borderTop: '1px solid var(--border)', fontSize: 11, color: 'var(--text-muted)' }}>
+                          💡 Fee Beli: 0.15% · Fee Jual: 0.25% (termasuk PPN & PPh Final) — sesuai standar broker BEI
+                        </div>
                       </div>
-                    </div>
+
+                      {/* Mobile: Card History */}
+                      <div className="vt-card-mobile">
+                        {transactions.slice(0, 30).map((tx) => (
+                          <div key={tx.id} className="vt-history-card">
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                              <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
+                                  <span style={{ fontSize: 16, fontWeight: 800 }}>{tx.ticker.replace('.JK', '')}</span>
+                                  <span className={`vt-tx-badge ${tx.type.toLowerCase()}`} style={{ fontSize: 10 }}>
+                                    {tx.type === 'BUY' ? '📈 BELI' : '📉 JUAL'}
+                                  </span>
+                                </div>
+                                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                                  {new Date(tx.timestamp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: '2-digit' })} · {new Date(tx.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                              </div>
+                              <div style={{ textAlign: 'right' }}>
+                                <div style={{ fontSize: 15, fontWeight: 800, color: tx.type === 'BUY' ? 'var(--red)' : 'var(--accent)' }}>
+                                  {tx.type === 'BUY' ? '−' : '+'}Rp {(tx.net_value || tx.qty * tx.price).toLocaleString('id-ID')}
+                                </div>
+                                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{tx.qty / 100} Lot · Rp {tx.price.toLocaleString('id-ID')}/lbr</div>
+                              </div>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <div style={{ fontSize: 11, color: '#f59e0b' }}>Fee: −Rp {(tx.fee || 0).toLocaleString('id-ID')}</div>
+                              <button onClick={() => handleDownloadReceipt(tx.id)} className="btn-action buy" style={{ padding: '4px 10px', fontSize: 11 }}>📄 Nota</button>
+                            </div>
+                          </div>
+                        ))}
+                        <div style={{ padding: '10px 16px', fontSize: 11, color: 'var(--text-muted)', textAlign: 'center' }}>
+                          💡 Fee Beli: 0.15% · Fee Jual: 0.25%
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
               )}
@@ -454,6 +526,32 @@ export default function VirtualTradingPage() {
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       <style jsx>{`
+        /* Header Row */
+        .vt-header-row {
+          display: flex; justify-content: space-between; align-items: flex-start;
+        }
+
+        /* Desktop/Mobile toggle */
+        .vt-table-desktop { display: block; }
+        .vt-card-mobile   { display: none; }
+
+        /* Portfolio card (mobile) */
+        .vt-portfolio-card {
+          padding: 16px;
+          border-bottom: 1px solid var(--border);
+          transition: background 0.15s;
+        }
+        .vt-portfolio-card:last-child { border-bottom: none; }
+        .vt-portfolio-card:active { background: var(--bg-hover); }
+
+        /* History card (mobile) */
+        .vt-history-card {
+          padding: 14px 16px;
+          border-bottom: 1px solid var(--border);
+          transition: background 0.15s;
+        }
+        .vt-history-card:last-child { border-bottom: none; }
+
         /* Summary Grid */
         .vt-summary-grid {
           display: grid;
@@ -596,6 +694,17 @@ export default function VirtualTradingPage() {
         @media (max-width: 1024px) {
           .vt-summary-grid { grid-template-columns: repeat(2, 1fr); }
           .vt-main-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+          .vt-summary-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+          .vt-stat-card { padding: 12px; gap: 10px; }
+          .vt-stat-icon { width: 36px; height: 36px; font-size: 16px; }
+          .vt-stat-value { font-size: 14px; }
+          .vt-stat-label { font-size: 11px; }
+          .vt-stat-sub { font-size: 10px; }
+          .vt-header-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+          .vt-table-desktop { display: none !important; }
+          .vt-card-mobile { display: block !important; }
         }
         @media (max-width: 640px) {
           .vt-summary-grid { grid-template-columns: 1fr 1fr; }
