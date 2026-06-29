@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ToastContainer from '@/components/ui/Toast'
@@ -13,6 +13,8 @@ export default function LoginPage() {
   const [loading, setLoading]   = useState(false)
   const router = useRouter()
   const { toasts, removeToast, toast } = useToast()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -60,18 +62,15 @@ export default function LoginPage() {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontFamily: 'Inter, sans-serif'
     }}>
-      <ToastContainer toasts={toasts} onRemove={removeToast} />
+      {mounted && <ToastContainer toasts={toasts} onRemove={removeToast} />}
       <div style={{ width: '100%', maxWidth: 400, padding: 24 }}>
         
         {/* Logo Section */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{
-            width: 64, height: 64, margin: '0 auto 16px',
-            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
-            borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 28, fontWeight: 900, color: 'white',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)'
-          }}>S</div>
+          <img src="/icons/icon-192x192.png" alt="StoxArea Logo" style={{
+            width: 80, height: 80, margin: '0 auto 16px',
+            display: 'block', objectFit: 'contain'
+          }} />
           <h1 style={{ fontSize: 32, fontWeight: 800, color: 'white', margin: 0 }}>
             Stox<span style={{ color: '#10b981' }}>Area</span>
           </h1>

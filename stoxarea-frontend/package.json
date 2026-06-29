@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:fresh": "Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue; next dev",
     "build": "next build",
     "start": "next start"
   },

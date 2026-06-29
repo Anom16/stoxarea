@@ -1,10 +1,13 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import api from '@/lib/api'
 import Sidebar from '@/components/ui/Sidebar'
 import Topbar from '@/components/ui/Topbar'
 import { AreaChart, Area, ResponsiveContainer } from 'recharts'
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
 interface StockRow {
   ticker: string
@@ -25,9 +28,6 @@ interface SectorRow {
   sector: string
   total_stocks: number
 }
-
-import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
 
 function MarketExplorerContent() {
   const searchParams = useSearchParams()
@@ -53,14 +53,8 @@ function MarketExplorerContent() {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const token = localStorage.getItem('access_token')
-        const headers = token ? { Authorization: `Bearer ${token}` } : {}
-        
-        // Ambil momentum stocks (SPK 2) secara netral untuk scanner pasar
-        const [stocksRes, sectorsRes] = await Promise.all([
-          api.get('/market/momentum'),
-          api.get('/market/sectors')
-        ])
+        const stocksRes = await api.get('/market/momentum')
+        const sectorsRes = await api.get('/market/sectors')
         setStocks(stocksRes.data)
         setSectors(sectorsRes.data)
       } catch (err) {
@@ -72,21 +66,17 @@ function MarketExplorerContent() {
     fetchData()
   }, [])
 
-  const [showOnlyQualified, setShowOnlyQualified] = useState(false)
-
   const sortedAndFilteredStocks = stocks
     .filter(s => {
       const matchesSearch = s.ticker.toLowerCase().includes(search.toLowerCase()) ||
         (s.name || '').toLowerCase().includes(search.toLowerCase())
       const matchesSector = selectedSector ? s.sector === selectedSector : true
-      const matchesQualified = showOnlyQualified ? s.is_qualified !== false : true
-      return matchesSearch && matchesSector && matchesQualified
+      return matchesSearch && matchesSector
     })
     .sort((a, b) => {
       let aVal: any = a[sortConfig.key] ?? ''
       let bVal: any = b[sortConfig.key] ?? ''
       
-      // Jika sorting berdasarkan AI Score, bersihkan tanda % agar jadi angka asli
       if (sortConfig.key === 'ai_score_percent') {
         aVal = parseFloat(String(aVal).replace('%', ''))
         bVal = parseFloat(String(bVal).replace('%', ''))
@@ -103,42 +93,61 @@ function MarketExplorerContent() {
       <main className="main-content">
         <Topbar />
         <div className="page-body">
-          {/* 1. Fitur Cari Saham (Paling Atas) */}
-          <div className="card mb-24" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--accent-glow)' }}>
-            <h2 className="section-title mb-16" style={{ fontSize: 20 }}>Cari Saham & Analisis AI</h2>
-            <div className="search-box" style={{ width: '100%', padding: '12px 18px', background: 'var(--bg-primary)' }}>
-              <span style={{ fontSize: 20 }}>🔍</span>
-              <input 
-                placeholder="Masukkan Ticker Saham (Contoh: BBCA, ASII, ADRO)..." 
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                style={{ fontSize: 16 }}
-              />
-            </div>
-            <p className="fs-12 text-muted mt-8" style={{ marginTop: 12 }}>
-              Menampilkan {sortedAndFilteredStocks.length} dari {stocks.length} saham terdaftar.
+          
+          {/* Header */}
+          <div style={{ marginBottom: 24 }}>
+            <h1 style={{ fontSize: 24, fontWeight: 800 }}>Jelajah Pasar</h1>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
+              Eksplorasi tren dan sentimen kecerdasan buatan (AI Score) emiten IDX
             </p>
           </div>
 
-          {/* 2. Daftar Saham Lengkap */}
-          <div className="card mb-24">
-            <div className="flex-between mb-16" style={{ flexWrap: 'wrap', gap: 10 }}>
-              <h3 className="section-title" style={{ fontSize: 18 }}>
-                Daftar Saham
-                <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text-muted)', marginLeft: 8 }}>
-                  ({sortedAndFilteredStocks.length} saham)
-                </span>
-              </h3>
+          {/* Underline Search Bar */}
+          <div className="search-underline-wrap">
+            <span className="search-icon-absolute">🔍</span>
+            <input 
+              className="search-underline"
+              placeholder="Cari emiten berdasarkan kode saham atau nama perusahaan..." 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
 
+          {/* Horizontal Sector Filter Pills */}
+          <div className="pills-container">
+            <button 
+              className={`pill-btn ${selectedSector === '' ? 'active' : ''}`}
+              onClick={() => { setSelectedSector(''); setVisibleCount(30); }}
+            >
+              Semua Sektor ({stocks.length})
+            </button>
+            {sectors.filter(s => s.total_stocks > 0).map(s => (
+              <button 
+                key={s.sector} 
+                className={`pill-btn ${selectedSector === s.sector ? 'active' : ''}`}
+                onClick={() => { setSelectedSector(s.sector); setVisibleCount(30); }}
+              >
+                {s.sector} ({s.total_stocks})
+              </button>
+            ))}
+          </div>
+
+          {loading ? (
+            <div className="clean-list" style={{ marginTop: 24 }}>
+              {[1, 2, 3, 4, 5].map(i => (
+                <div key={i} className="skeleton" style={{ height: 60, marginBottom: 8 }} />
+              ))}
             </div>
-            
-            {loading ? (
-              <div className="skeleton" style={{ height: 400, width: '100%' }}></div>
-            ) : (
-              <>
-                {/* Desktop: Tabel */}
-                <div className="market-table-desktop" style={{ overflowX: 'auto' }}>
-                  <table className="ranking-table">
+          ) : sortedAndFilteredStocks.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon">🔍</div>
+              <div className="empty-text">Tidak ada saham yang cocok dengan kriteria pencarian.</div>
+            </div>
+          ) : (
+            <>
+              {/* Desktop Table View (Divider-line based) */}
+              <div className="market-table-desktop" style={{ overflowX: 'auto', marginTop: 16 }}>
+                <table className="clean-table">
                   <thead>
                     <tr>
                       <th onClick={() => requestSort('ticker')} style={{ cursor: 'pointer' }}>
@@ -160,48 +169,43 @@ function MarketExplorerContent() {
                       <tr key={s.ticker}>
                         <td>
                           <Link href={`/market/${s.ticker}`} style={{ textDecoration: 'none' }}>
-                            <div className="fw-700 text-primary" style={{ fontSize: 16 }}>{s.ticker.replace('.JK', '')}</div>
+                            <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>
+                              {s.ticker.replace('.JK', '')}
+                            </div>
                             {s.name && (
                               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>
                             )}
-                            <div style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
-                              {!s.has_ai_score && (
-                                <span style={{
-                                  fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 4,
-                                  background: 'rgba(158,158,158,0.12)', color: '#888',
-                                  border: '1px solid rgba(158,158,158,0.3)',
-                                }}>No AI Score</span>
-                              )}
-                            </div>
                           </Link>
                         </td>
-                        <td className="text-secondary fs-13">{s.sector}</td>
+                        <td>
+                          <span className="badge-sector">{s.sector}</span>
+                        </td>
                         <td>
                           <div className="ai-bar-wrap">
-                            <div className="ai-bar-track" style={{ width: 80 }}>
+                            <div className="ai-bar-track">
                               <div className="ai-bar-fill" style={{ width: s.ai_score_percent, background: 'var(--blue)' }} />
                             </div>
-                            <span className="fw-700 text-blue">{s.ai_score_percent}</span>
+                            <span style={{ fontWeight: 700, color: 'var(--blue)', fontSize: 13 }}>{s.ai_score_percent}</span>
                           </div>
                         </td>
-                        <td className="fw-700 text-accent">
-                          Rp {s.current_price?.toLocaleString() || '0'}
+                        <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+                          Rp {s.current_price?.toLocaleString('id-ID') || '0'}
                         </td>
                         <td>
                           <div style={{ width: 100, height: 35 }}>
                             {s.sparkline && s.sparkline.length > 0 ? (
                               <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={s.sparkline.map((v, i) => ({ v }))}>
+                                <AreaChart data={s.sparkline.map((v) => ({ v }))}>
                                   <defs>
                                     <linearGradient id={`grad-${s.ticker}`} x1="0" y1="0" x2="0" y2="1">
-                                      <stop offset="5%" stopColor={s.sentiment === 'Bullish' ? '#10b981' : '#ef4444'} stopOpacity={0.3}/>
-                                      <stop offset="95%" stopColor={s.sentiment === 'Bullish' ? '#10b981' : '#ef4444'} stopOpacity={0}/>
+                                      <stop offset="5%" stopColor={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} stopOpacity={0.3}/>
+                                      <stop offset="95%" stopColor={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} stopOpacity={0}/>
                                     </linearGradient>
                                   </defs>
                                   <Area 
                                     type="monotone" 
                                     dataKey="v" 
-                                    stroke={s.sentiment === 'Bullish' ? '#10b981' : '#ef4444'} 
+                                    stroke={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} 
                                     fillOpacity={1} 
                                     fill={`url(#grad-${s.ticker})`} 
                                     strokeWidth={1.5}
@@ -210,118 +214,74 @@ function MarketExplorerContent() {
                                 </AreaChart>
                               </ResponsiveContainer>
                             ) : (
-                              <div className="text-muted fs-10">No Data</div>
+                              <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>No Data</div>
                             )}
                           </div>
                         </td>
                         <td style={{ textAlign: 'right' }}>
-                          <Link href={`/market/${s.ticker}`} className="btn-outline" style={{ padding: '6px 14px', textDecoration: 'none', fontSize: 12 }}>
+                          <Link href={`/market/${s.ticker}`} className="btn-outline" style={{ padding: '6px 14px', fontSize: 12 }}>
                             Detail Analisis
                           </Link>
                         </td>
                       </tr>
                     ))}
                   </tbody>
-                  </table>
-                </div>
+                </table>
+              </div>
 
-                {/* Mobile: Card List */}
-                <div className="market-card-mobile">
-                  {sortedAndFilteredStocks.slice(0, visibleCount).map((s) => (
-                    <Link key={s.ticker} href={`/market/${s.ticker}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <div className="market-stock-card">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                          <div>
-                            <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)' }}>
-                              {s.ticker.replace('.JK', '')}
-                            </div>
-                            {s.name && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>{s.name}</div>}
+              {/* Mobile List View (Card list redesign using bottom divider lines only) */}
+              <div className="market-card-mobile" style={{ marginTop: 16 }}>
+                {sortedAndFilteredStocks.slice(0, visibleCount).map((s) => (
+                  <Link key={s.ticker} href={`/market/${s.ticker}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <div style={{ padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                        <div>
+                          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
+                            {s.ticker.replace('.JK', '')}
                           </div>
-                          <div style={{ textAlign: 'right' }}>
-                            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--accent)' }}>
-                              Rp {s.current_price?.toLocaleString() || '0'}
-                            </div>
-                            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>{s.sector}</div>
-                          </div>
+                          {s.name && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>}
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 3 }}>AI Score</div>
-                            <div className="ai-bar-wrap">
-                              <div className="ai-bar-track" style={{ flex: 1 }}>
-                                <div className="ai-bar-fill" style={{ width: s.ai_score_percent, background: 'var(--blue)' }} />
-                              </div>
-                              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--blue)', minWidth: 36 }}>{s.ai_score_percent}</span>
-                            </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>
+                            Rp {s.current_price?.toLocaleString('id-ID') || '0'}
                           </div>
-                          <div style={{ width: 60, height: 28, flexShrink: 0 }}>
-                            {s.sparkline && s.sparkline.length > 0 ? (
-                              <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={s.sparkline.map((v) => ({ v }))}>
-                                  <defs>
-                                    <linearGradient id={`mg-${s.ticker}`} x1="0" y1="0" x2="0" y2="1">
-                                      <stop offset="5%" stopColor={s.sentiment === 'Bullish' ? '#10b981' : '#ef4444'} stopOpacity={0.3}/>
-                                      <stop offset="95%" stopColor={s.sentiment === 'Bullish' ? '#10b981' : '#ef4444'} stopOpacity={0}/>
-                                    </linearGradient>
-                                  </defs>
-                                  <Area type="monotone" dataKey="v"
-                                    stroke={s.sentiment === 'Bullish' ? '#10b981' : '#ef4444'}
-                                    fillOpacity={1} fill={`url(#mg-${s.ticker})`}
-                                    strokeWidth={1.5} dot={false}
-                                  />
-                                </AreaChart>
-                              </ResponsiveContainer>
-                            ) : null}
-                          </div>
-                          {s.sentiment && (
-                            <span className={`sentiment-badge ${s.sentiment.toLowerCase()}`} style={{ fontSize: 10, padding: '2px 7px', flexShrink: 0 }}>
-                              {s.sentiment === 'Bullish' ? '▲' : s.sentiment === 'Bearish' ? '▼' : '●'} {s.sentiment}
-                            </span>
-                          )}
+                          <span className="badge-sector" style={{ marginTop: 4 }}>{s.sector}</span>
                         </div>
                       </div>
-                    </Link>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {visibleCount < sortedAndFilteredStocks.length && (
-              <div className="flex-center mt-24">
-                <button 
-                  className="btn-outline" 
-                  onClick={() => setVisibleCount(prev => prev + 30)}
-                  style={{ width: '100%', padding: '12px', borderStyle: 'dashed' }}
-                >
-                  Lihat 30 Saham Lagi... ({sortedAndFilteredStocks.length - visibleCount} sisa)
-                </button>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 10 }}>
+                        <div style={{ flex: 1 }}>
+                          <div className="ai-bar-wrap">
+                            <div className="ai-bar-track" style={{ flex: 1 }}>
+                              <div className="ai-bar-fill" style={{ width: s.ai_score_percent, background: 'var(--blue)' }} />
+                            </div>
+                            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--blue)', minWidth: 32 }}>{s.ai_score_percent}</span>
+                          </div>
+                        </div>
+                        {s.sentiment && (
+                          <span className={`sentiment-badge ${s.sentiment.toLowerCase()}`} style={{ fontSize: 10, padding: '2px 6px' }}>
+                            {s.sentiment}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            )}
-          </div>
+            </>
+          )}
 
-          {/* 3. Pilihan Sektor (Bawah) */}
-          <h3 className="section-title mb-16" style={{ fontSize: 16 }}>Navigasi Sektoral (Radar Sektor)</h3>
-          <div className="sector-grid sector-grid-scroll">
-            <div 
-              className={`sector-card ${selectedSector === '' ? 'active' : ''}`}
-              onClick={() => setSelectedSector('')}
-              style={{ border: selectedSector === '' ? '1px solid var(--accent)' : '1px solid var(--border)' }}
-            >
-              <div className="sector-name">Semua Sektor</div>
-              <div className="sector-count">{stocks.length} Saham</div>
-            </div>
-            {sectors.filter(s => s.total_stocks > 0).map(s => (
-              <div 
-                key={s.sector} 
-                className={`sector-card ${selectedSector === s.sector ? 'active' : ''}`}
-                onClick={() => setSelectedSector(s.sector)}
-                style={{ border: selectedSector === s.sector ? '1px solid var(--accent)' : '1px solid var(--border)' }}
+          {visibleCount < sortedAndFilteredStocks.length && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}>
+              <button 
+                className="btn-outline" 
+                onClick={() => setVisibleCount(prev => prev + 30)}
+                style={{ width: '100%', padding: '12px', borderStyle: 'dashed' }}
               >
-                <div className="sector-name">{s.sector}</div>
-                <div className="sector-count">{s.total_stocks} Saham</div>
-              </div>
-            ))}
-          </div>
+                Lihat Lebih Banyak Saham... ({sortedAndFilteredStocks.length - visibleCount} tersisa)
+              </button>
+            </div>
+          )}
+
         </div>
       </main>
     </div>
@@ -330,7 +290,7 @@ function MarketExplorerContent() {
 
 export default function MarketExplorer() {
   return (
-    <Suspense fallback={<div className="flex-center" style={{ height: '100vh' }}>Loading Scanner...</div>}>
+    <Suspense fallback={<div className="app-shell"><Sidebar /><main className="main-content"><Topbar /><div className="page-body">Memuat Pasar...</div></main></div>}>
       <MarketExplorerContent />
     </Suspense>
   )
