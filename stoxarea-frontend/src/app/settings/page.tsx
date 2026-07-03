@@ -7,7 +7,90 @@ import ToastContainer from '@/components/ui/Toast'
 import { useToast } from '@/hooks/useToast'
 import api from '@/lib/api'
 
-type Tab = 'account' | 'security' | 'risk' | 'preferences'
+type Tab = 'account' | 'security' | 'risk' | 'preferences' | 'faq'
+
+const FAQ_ITEMS = [
+  {
+    category: '🗂 Platform & Akun',
+    items: [
+      {
+        q: 'Apa itu StoxArea?',
+        a: 'StoxArea adalah platform analitik dan edukasi pasar saham Indonesia berbasis kecerdasan buatan. Sistem ini menggabungkan algoritma Machine Learning (XGBoost) dan metode Sistem Pendukung Keputusan (SAW) untuk menghasilkan rekomendasi saham yang dipersonalisasi sesuai profil risiko Anda.'
+      },
+      {
+        q: 'Apakah StoxArea gratis digunakan?',
+        a: 'Ya, StoxArea sepenuhnya gratis. Seluruh fitur termasuk AI Watchlist, analisis fundamental/teknikal, dan Virtual Trading tersedia tanpa biaya apapun.'
+      },
+      {
+        q: 'Bagaimana cara mengubah nama profil saya?',
+        a: 'Masuk ke Pengaturan → Akun, ketik nama baru pada kolom "Nama Lengkap", lalu klik tombol Simpan. Perubahan akan langsung terlihat di sapaan Dashboard.'
+      },
+      {
+        q: 'Bagaimana cara mengubah password?',
+        a: 'Buka Pengaturan → Keamanan. Masukkan password lama, password baru, dan konfirmasi password baru. Klik Perbarui Password untuk menyimpan perubahan.'
+      },
+      {
+        q: 'Apa yang terjadi jika saya lupa password?',
+        a: 'Saat ini fitur reset password via email masih dalam pengembangan. Hubungi administrator sistem untuk pemulihan akun Anda.'
+      },
+    ]
+  },
+  {
+    category: '🤖 AI & Rekomendasi',
+    items: [
+      {
+        q: 'Apa itu AI Score dan bagaimana cara kerjanya?',
+        a: 'AI Score (0–100%) adalah skor momentum teknikal yang dihasilkan oleh algoritma Machine Learning XGBoost. Model ini menganalisis indikator teknikal historis (RSI, MACD, Volume, dll) untuk memproyeksikan kekuatan tren pergerakan harga saham ke depan.'
+      },
+      {
+        q: 'Apa itu Match Score?',
+        a: 'Match Score adalah skor kecocokan akhir antara profil saham dengan profil risiko investasi Anda. Skor ini dihitung oleh metode SAW (Simple Additive Weighting) yang memadukan AI Score dengan data fundamental (ROE, DER, PBV) secara berbobot sesuai preferensi risiko Anda.'
+      },
+      {
+        q: 'Mengapa rekomendasi saya berbeda dengan pengguna lain?',
+        a: 'Rekomendasi dipersonalisasi berdasarkan profil risiko (Konservatif, Moderat, atau Agresif) masing-masing pengguna. Metode SAW memberikan bobot berbeda pada setiap kriteria tergantung profil, sehingga urutan rekomendasi saham akan berbeda antar pengguna.'
+      },
+      {
+        q: 'Apakah rekomendasi StoxArea dapat dijadikan dasar keputusan investasi?',
+        a: 'Tidak. Seluruh output StoxArea — termasuk AI Score, Match Score, dan AI Watchlist — adalah hasil kalkulasi matematis algoritmik, bukan saran investasi. StoxArea tidak terdaftar sebagai Penasihat Investasi di OJK. Selalu lakukan riset mandiri sebelum berinvestasi.'
+      },
+      {
+        q: 'Seberapa sering data rekomendasi diperbarui?',
+        a: 'Data AI Score dan rekomendasi diperbarui setiap hari kerja (Senin–Jumat) pukul 17:00 WIB, setelah pasar tutup. Data harga saham real-time diambil langsung dari Yahoo Finance.'
+      },
+    ]
+  },
+  {
+    category: '📈 Virtual Trading',
+    items: [
+      {
+        q: 'Apa itu Virtual Trading?',
+        a: 'Virtual Trading adalah fitur simulasi jual-beli saham menggunakan saldo kas virtual (bukan uang nyata). Fitur ini dirancang untuk membantu Anda berlatih strategi investasi dan memahami mekanisme pasar saham tanpa risiko kehilangan uang.'
+      },
+      {
+        q: 'Berapa saldo awal Virtual Trading saya?',
+        a: 'Setiap pengguna mendapatkan saldo awal sebesar Rp 100.000.000 (seratus juta rupiah) secara virtual untuk mulai berinvestasi di fitur simulasi.'
+      },
+      {
+        q: 'Apakah saldo Virtual Trading bisa direset?',
+        a: 'Ya. Hubungi administrator atau gunakan fitur reset portofolio jika tersedia di halaman Virtual Trading. Reset akan mengembalikan saldo ke Rp 100.000.000 dan menghapus seluruh riwayat transaksi virtual Anda.'
+      },
+    ]
+  },
+  {
+    category: '🔒 Data & Keamanan',
+    items: [
+      {
+        q: 'Dari mana data harga saham diambil?',
+        a: 'Data harga saham dan indeks pasar (termasuk IHSG) diambil secara real-time dari Yahoo Finance melalui library yfinance. Data ini digunakan untuk keperluan edukasi dan analisis, bukan transaksi keuangan nyata.'
+      },
+      {
+        q: 'Apakah data pribadi saya aman di StoxArea?',
+        a: 'Data pribadi Anda (email, nama, dan profil risiko) disimpan di database PostgreSQL yang dihosting di Supabase dengan enkripsi standar industri. Password disimpan dalam bentuk hash menggunakan algoritma bcrypt. StoxArea tidak menyimpan informasi keuangan atau rekening bank Anda.'
+      },
+    ]
+  },
+]
 
 const PROFILE_OPTIONS = [
   {
@@ -37,6 +120,7 @@ export default function SettingsPage() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<Tab>('account')
+  const [openFaq, setOpenFaq] = useState<string | null>(null)
 
   // Tab: Akun
   const [fullName, setFullName] = useState('')
@@ -55,6 +139,7 @@ export default function SettingsPage() {
 
   // Tab: Preferensi
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const [dashboardLayout, setDashboardLayout] = useState<'classic' | 'modern'>('classic')
   const [lang, setLang] = useState<'id' | 'en'>('id')
 
   useEffect(() => {
@@ -68,6 +153,8 @@ export default function SettingsPage() {
     }
     const savedLang = localStorage.getItem('app_lang') as 'id' | 'en'
     if (savedLang) setLang(savedLang)
+    const savedDashLayout = localStorage.getItem('dashboard_layout') as 'classic' | 'modern'
+    if (savedDashLayout) setDashboardLayout(savedDashLayout)
 
     api.get('/auth/me')
       .then(r => {
@@ -146,16 +233,24 @@ export default function SettingsPage() {
     }
   }
 
-  // ── Handler: Preferensi Tampilan ──────────────────────────────────────────
+  // ── Handler: Preferensi Tampilan ──────────────────────────────────────
   const handleThemeChange = (t: 'dark' | 'light') => {
     setTheme(t)
     localStorage.setItem('app_theme', t)
     document.body.classList.toggle('light-mode', t === 'light')
   }
 
+  const handleDashLayoutChange = (layout: 'classic' | 'modern') => {
+    setDashboardLayout(layout)
+    localStorage.setItem('dashboard_layout', layout)
+  }
+
   const handleSavePreferences = () => {
     localStorage.setItem('app_lang', lang)
-    toast.success('Preferensi Disimpan ✅', `Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'} · Tema: ${theme === 'dark' ? 'Gelap' : 'Terang'}`)
+    toast.success(
+      'Preferensi Disimpan ✅',
+      `Tema: ${theme === 'dark' ? 'Gelap' : 'Terang'} · Dashboard: ${dashboardLayout === 'classic' ? 'Klasik' : 'Modern'} · Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'}`
+    )
   }
 
   // ── Handler: Logout ───────────────────────────────────────────────────────
@@ -171,6 +266,7 @@ export default function SettingsPage() {
     { id: 'security',    label: '🔒 Keamanan & Sandi' },
     { id: 'risk',        label: '📊 Profil Risiko' },
     { id: 'preferences', label: '🌐 Preferensi' },
+    { id: 'faq',         label: '❓ FAQ' },
   ]
 
   return (
@@ -290,8 +386,25 @@ export default function SettingsPage() {
                           <div style={{ fontSize: 13, fontWeight: 700, color: '#10b981' }}>● Aktif</div>
                         </div>
                       </div>
+
+                      <hr style={{ margin: '28px 0', borderColor: 'var(--border)' }} />
+
+                      <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Panduan Aplikasi</h3>
+                      <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 14 }}>
+                        Tampilkan kembali tutorial langkah demi langkah penggunaan StoxArea.
+                      </p>
+                      <button
+                        onClick={() => {
+                          localStorage.removeItem('stoxarea_tour_done')
+                          window.dispatchEvent(new Event('stoxarea:open-tutorial'))
+                        }}
+                        style={{ ...btnOutline, display: 'flex', alignItems: 'center', gap: 8 }}
+                      >
+                        🎓 Lihat Tutorial Aplikasi
+                      </button>
                     </div>
                   )}
+
 
                   {/* ── TAB: KEAMANAN ── */}
                   {activeTab === 'security' && (
@@ -441,6 +554,59 @@ export default function SettingsPage() {
                         Pengaturan ini disimpan di browser Anda (localStorage).
                       </p>
 
+                      {/* Tampilan Dashboard */}
+                      <label style={labelStyle}>Tampilan Dashboard</label>
+                      <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, marginTop: 4 }}>
+                        Pilih tampilan halaman utama Dashboard sesuai preferensi Anda.
+                      </p>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 28 }}>
+                        {[
+                          {
+                            id: 'classic' as const,
+                            emoji: '📊',
+                            name: 'Klasik',
+                            desc: 'Stats ringkasan, kartu top pick emiten, tabel Ranking SPK & Radar Sektor, Top Mover per sektor.',
+                            color: '#10b981',
+                          },
+                          {
+                            id: 'modern' as const,
+                            emoji: '🖥️',
+                            name: 'Modern',
+                            desc: 'Widget IHSG, ringkasan portofolio virtual, tab Ringkasan Pasar & Analisis Sektoral interaktif.',
+                            color: '#3b82f6',
+                          },
+                        ].map(opt => {
+                          const isActive = dashboardLayout === opt.id
+                          return (
+                            <div
+                              key={opt.id}
+                              onClick={() => handleDashLayoutChange(opt.id)}
+                              style={{
+                                padding: '16px 18px',
+                                borderRadius: 12,
+                                cursor: 'pointer',
+                                border: isActive ? `2px solid ${opt.color}` : '1px solid var(--border)',
+                                background: isActive ? `${opt.color}12` : 'rgba(255,255,255,0.02)',
+                                transition: 'all 0.2s',
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                                <span style={{ fontSize: 22 }}>{opt.emoji}</span>
+                                <span style={{ fontWeight: 800, fontSize: 15, color: isActive ? opt.color : 'var(--text-primary)' }}>
+                                  {opt.name}
+                                </span>
+                                {isActive && (
+                                  <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 700, color: opt.color }}>✓ Aktif</span>
+                                )}
+                              </div>
+                              <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>{opt.desc}</p>
+                            </div>
+                          )
+                        })}
+                      </div>
+
+                      <hr style={{ margin: '0 0 24px', borderColor: 'var(--border)' }} />
+
                       {/* Tema */}
                       <label style={labelStyle}>Tema Tampilan</label>
                       <div style={{ display: 'flex', gap: 12, marginBottom: 24, marginTop: 8 }}>
@@ -493,6 +659,70 @@ export default function SettingsPage() {
                       </button>
                     </div>
                   )}
+
+                  {/* ── TAB: FAQ ── */}
+                  {activeTab === 'faq' && (
+                    <div>
+                      <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 4 }}>Pertanyaan yang Sering Diajukan</h3>
+                      <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 28 }}>Klik pertanyaan untuk melihat jawabannya.</p>
+
+                      {FAQ_ITEMS.map((group) => (
+                        <div key={group.category} style={{ marginBottom: 28 }}>
+                          <div style={{
+                            fontSize: 11, fontWeight: 700, color: 'var(--text-muted)',
+                            textTransform: 'uppercase', letterSpacing: 0.8,
+                            marginBottom: 10, paddingBottom: 6,
+                            borderBottom: '1px solid var(--border)'
+                          }}>
+                            {group.category}
+                          </div>
+
+                          {group.items.map((item, idx) => {
+                            const key = `${group.category}-${idx}`
+                            const isOpen = openFaq === key
+                            return (
+                              <div key={key} style={{ borderBottom: '1px solid var(--border)' }}>
+                                <button
+                                  onClick={() => setOpenFaq(isOpen ? null : key)}
+                                  style={{
+                                    width: '100%', display: 'flex', justifyContent: 'space-between',
+                                    alignItems: 'center', padding: '14px 0',
+                                    background: 'transparent', border: 'none',
+                                    cursor: 'pointer', textAlign: 'left', gap: 12,
+                                  }}
+                                >
+                                  <span style={{
+                                    fontSize: 14, fontWeight: 600,
+                                    color: isOpen ? 'var(--accent)' : 'var(--text-primary)',
+                                    transition: 'color 0.15s',
+                                  }}>
+                                    {item.q}
+                                  </span>
+                                  <span style={{
+                                    fontSize: 18, color: 'var(--text-muted)',
+                                    transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                                    transition: 'transform 0.2s',
+                                    flexShrink: 0,
+                                  }}>▾</span>
+                                </button>
+                                {isOpen && (
+                                  <div style={{
+                                    padding: '0 0 16px 0',
+                                    fontSize: 13, color: 'var(--text-secondary)',
+                                    lineHeight: 1.8,
+                                    animation: 'fadeIn 0.2s ease',
+                                  }}>
+                                    {item.a}
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                 </>
               )}
             </div>

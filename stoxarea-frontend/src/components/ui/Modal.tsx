@@ -93,11 +93,12 @@ export default function TransactionModal({
         position: 'relative',
         width: '100%',
         maxWidth: 460,
+        maxHeight: '90vh',
+        overflowY: 'auto',
         background: 'var(--bg-card, #161d2e)',
         border: `1px solid ${isBuy ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)'}`,
         borderRadius: 16,
         boxShadow: `0 24px 64px rgba(0, 0, 0, 0.6), 0 0 40px ${isBuy ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)'}`,
-        overflow: 'hidden',
         animation: 'slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
       }}>
         

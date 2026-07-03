@@ -529,7 +529,7 @@ export default function StockDetailPage() {
             </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20, marginBottom: 24, alignItems: 'start' }}>
+          <div className="ticker-split-layout">
             {/* Left Column Content */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               
@@ -704,7 +704,7 @@ export default function StockDetailPage() {
                   } collapsed={collapsed} onToggle={toggleCard}>
                     {/* ── Harga & Pasar ── */}
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Harga &amp; Pasar</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 16 }}>
+                    <div className="ticker-card-grid">
                       {[
                         { label: 'Market Cap',  val: formatMoney(f.price?.market_cap),  key: 'market_cap',  raw: null },
                         { label: 'Open',        val: f.price?.open ? `Rp ${f.price.open.toLocaleString('id-ID')}` : '—', key: 'open', raw: null },
@@ -727,7 +727,7 @@ export default function StockDetailPage() {
 
                     {/* ── Valuasi ── */}
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Valuasi</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 16 }}>
+                    <div className="ticker-card-grid">
                       <div className="stat-card" style={{ padding: 12 }}>
                         <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>PBV <FundamentalTooltip metricKey="pbv" value={f.valuation?.pbv} label="PBV" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.valuation?.pbv != null ? `${f.valuation.pbv}x` : '—'}</div>
@@ -740,7 +740,7 @@ export default function StockDetailPage() {
 
                     {/* ── Profitabilitas ── */}
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Profitabilitas</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 16 }}>
+                    <div className="ticker-card-grid">
                       <div className="stat-card" style={{ padding: 12 }}>
                         <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>ROE <FundamentalTooltip metricKey="roe" value={f.profitability?.roe} label="ROE" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.roe != null ? `${(f.profitability.roe * 100).toFixed(2)}%` : '—'}</div>
@@ -761,7 +761,7 @@ export default function StockDetailPage() {
 
                     {/* ── Dividen ── */}
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Dividen</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+                    <div className="ticker-card-grid-nobottom">
                       <div className="stat-card" style={{ padding: 12 }}>
                         <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Div. Yield <FundamentalTooltip metricKey="div_yield" value={f.dividend?.yield_pct} label="Dividend Yield" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.dividend?.yield_pct != null ? `${(f.dividend.yield_pct * 100).toFixed(2)}%` : '—'}</div>
@@ -940,7 +940,7 @@ export default function StockDetailPage() {
                   ]
 
                   return (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                    <div className="ticker-card-grid-3col">
                       {techItems.map((item, i) => (
                         <div key={i} className="stat-card" style={{ padding: 12, borderLeft: `3px solid ${item.color}` }}>
                           <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>
@@ -956,33 +956,7 @@ export default function StockDetailPage() {
               </CollapsibleCard>
               </FundamentalTooltipProvider>
 
-              {/* Profil Perusahaan — dipindah ke sini agar kolom kiri-kanan proporsional */}
-              <CollapsibleCard id="profil" title="🏢 Profil Perusahaan" defaultOpen={true} collapsed={collapsed} onToggle={toggleCard}>
-                <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-                  {f.sector && (
-                    <span style={{
-                      fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20,
-                      background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.25)'
-                    }}>{f.sector}</span>
-                  )}
-                  {f.industry && (
-                    <span style={{
-                      fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20,
-                      background: 'rgba(255,255,255,0.04)', color: 'var(--text-secondary)', border: '1px solid var(--border)'
-                    }}>{f.industry}</span>
-                  )}
-                </div>
-                {translating ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)', fontSize: 13 }}>
-                    <span style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }}>⏳</span>
-                    Menerjemahkan deskripsi ke Bahasa Indonesia...
-                  </div>
-                ) : (
-                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.8, margin: 0 }}>
-                    {translatedDesc || f.description || 'Deskripsi tidak tersedia.'}
-                  </p>
-                )}
-              </CollapsibleCard>
+
             </div>
 
             {/* Right: AI & Trading */}
@@ -1102,14 +1076,7 @@ export default function StockDetailPage() {
                         </div>
 
                         {/* ── Mini Indikator Teknikal ── */}
-                        <div style={{
-                          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8,
-                          marginBottom: 16,
-                          padding: '12px',
-                          background: 'rgba(255,255,255,0.02)',
-                          borderRadius: 10,
-                          border: '1px solid var(--border)'
-                        }}>
+                        <div className="ticker-card-grid-3col-mini">
                           {/* RSI */}
                           <div style={{ textAlign: 'center' }}>
                             <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 4 }}>RSI (14)</div>
@@ -1248,7 +1215,7 @@ export default function StockDetailPage() {
                   <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Sinyal Teknikal Aktif
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div className="ticker-card-grid-2col-mini">
                     {(() => {
                       const ind = data?.technical?.indicators
                       const rsi = ind?.rsi?.slice(-1)[0]
@@ -1342,9 +1309,7 @@ export default function StockDetailPage() {
                 <div style={{ padding: 20 }}>
 
                   {/* Account Info */}
-                  <div style={{ 
-                    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16
-                  }}>
+                  <div className="ticker-card-grid-2col-mini-spaced">
                     <div style={{ 
                       background: 'var(--bg-primary)', borderRadius: 10, padding: '12px 14px',
                       border: '1px solid var(--border)'
@@ -1369,11 +1334,7 @@ export default function StockDetailPage() {
                   </div>
 
                   {/* Harga Pasar */}
-                  <div style={{ 
-                    background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)',
-                    borderRadius: 10, padding: '12px 14px', marginBottom: 20,
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                  }}>
+                  <div className="ticker-trade-info">
                     <div>
                       <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Harga Pasar Saat Ini</div>
                       <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--accent)', marginTop: 2 }}>
@@ -1445,6 +1406,88 @@ export default function StockDetailPage() {
         onConfirm={handleConfirmTrade}
         processing={tradeProcessing}
       />
+      <style>{`
+        .ticker-split-layout {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 20px;
+          margin-bottom: 24px;
+          align-items: start;
+        }
+        .ticker-card-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 10px;
+          margin-bottom: 16px;
+        }
+        .ticker-card-grid-nobottom {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 10px;
+        }
+        .ticker-card-grid-3col {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+        }
+        .ticker-card-grid-3col-mini {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 8px;
+          margin-bottom: 16px;
+          padding: 12px;
+          background: rgba(255,255,255,0.02);
+          borderRadius: 10;
+          border: 1px solid var(--border);
+        }
+        .ticker-card-grid-2col-mini {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+        .ticker-card-grid-2col-mini-spaced {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+          margin-bottom: 16px;
+        }
+        .ticker-trade-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: rgba(16,185,129,0.06);
+          border: 1px solid rgba(16,185,129,0.2);
+          border-radius: 10px;
+          padding: 12px 14px;
+          margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+          .ticker-split-layout {
+            grid-template-columns: 1fr !important;
+          }
+          .ticker-card-grid, .ticker-card-grid-nobottom {
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+          }
+          .ticker-card-grid-3col {
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+          }
+          .ticker-card-grid-3col-mini {
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)) !important;
+          }
+          .ticker-card-grid-2col-mini, .ticker-card-grid-2col-mini-spaced {
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)) !important;
+          }
+          .ticker-trade-info {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px !important;
+          }
+          .ticker-trade-info > div:last-child {
+            text-align: left !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }
