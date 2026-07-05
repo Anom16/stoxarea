@@ -4,7 +4,7 @@ import api from '@/lib/api'
 import Sidebar from '@/components/ui/Sidebar'
 import Topbar from '@/components/ui/Topbar'
 
-const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const BASE = process.env.NEXT_PUBLIC_API_URL || 'https://stoxarea-production.up.railway.app'
 
 // Plot images served as static files → /reports/<filename>
 function getPlotUrl(filename: string) {
