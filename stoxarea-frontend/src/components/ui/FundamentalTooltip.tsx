@@ -394,6 +394,14 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
   const id = metricKey
   const open = activeId === id
 
+  const [zoomScale, setZoomScale] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('tooltip_zoom')
+      if (saved) return parseFloat(saved)
+    }
+    return 1.1 // Default zoom level: 110%
+  })
+
   const info = METRIC_INFO[metricKey]
   if (!info) return null
 
@@ -447,8 +455,8 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: 320,
-              maxHeight: '80vh',
+              width: typeof window !== 'undefined' && window.innerWidth < 480 ? '90vw' : Math.min(520, 340 * zoomScale),
+              maxHeight: '90vh',
               overflowY: 'auto',
               background: '#1e293b',
               border: '1px solid rgba(59,130,246,0.4)',
@@ -456,21 +464,84 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
               padding: 20,
               zIndex: 99999,
               boxShadow: '0 25px 60px rgba(0,0,0,0.8)',
+              transition: 'all 0.15s',
             }}
           >
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 800, color: '#fff', lineHeight: 1.3 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <div style={{ fontSize: 13 * zoomScale, fontWeight: 800, color: '#fff', lineHeight: 1.3, marginRight: 12 }}>
                 {info.fullName}
               </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); setActiveId(null) }}
-                style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: 20, lineHeight: 1, padding: 0, marginLeft: 8 }}
-              >×</button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                {/* Zoom Control */}
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    const next = Math.max(0.9, zoomScale - 0.1)
+                    setZoomScale(next)
+                    localStorage.setItem('tooltip_zoom', next.toString())
+                  }}
+                  title="Perkecil Teks"
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: '#94a3b8',
+                    borderRadius: 4,
+                    padding: '2px 6px',
+                    fontSize: 9,
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  A-
+                </button>
+                <span style={{ fontSize: 9, color: '#64748b', fontWeight: 'bold' }}>
+                  {Math.round(zoomScale * 100)}%
+                </span>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    const next = Math.min(1.5, zoomScale + 0.1)
+                    setZoomScale(next)
+                    localStorage.setItem('tooltip_zoom', next.toString())
+                  }}
+                  title="Perbesar Teks"
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    color: '#94a3b8',
+                    borderRadius: 4,
+                    padding: '2px 6px',
+                    fontSize: 9,
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  A+
+                </button>
+                
+                {/* Close Button */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); setActiveId(null) }}
+                  style={{ 
+                    background: 'transparent', 
+                    border: 'none', 
+                    color: '#94a3b8', 
+                    cursor: 'pointer', 
+                    fontSize: 18, 
+                    lineHeight: 1, 
+                    padding: 0, 
+                    marginLeft: 8,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  ×
+                </button>
+              </div>
             </div>
 
             {/* Deskripsi */}
-            <p style={{ fontSize: 11, color: '#94a3b8', lineHeight: 1.6, margin: '0 0 12px' }}>
+            <p style={{ fontSize: 11.5 * zoomScale, color: '#94a3b8', lineHeight: 1.6, margin: '0 0 12px' }}>
               {info.description}
             </p>
 
@@ -481,10 +552,10 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
                 border: `1px solid ${interp.color}40`,
                 borderRadius: 8, padding: '8px 10px', marginBottom: 12,
               }}>
-                <div style={{ fontSize: 10, color: '#94a3b8', marginBottom: 3 }}>
+                <div style={{ fontSize: 10 * zoomScale, color: '#94a3b8', marginBottom: 3 }}>
                   Nilai {label || metricKey.toUpperCase()} saham ini:
                 </div>
-                <div style={{ fontSize: 12, color: interp.color, fontWeight: 700 }}>
+                <div style={{ fontSize: 12 * zoomScale, color: interp.color, fontWeight: 700 }}>
                   {interp.text}
                 </div>
               </div>
@@ -492,15 +563,15 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
 
             {/* Panduan Baca */}
             <div style={{ marginBottom: 10 }}>
-              <div style={{ fontSize: 10, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
+              <div style={{ fontSize: 10 * zoomScale, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
                 Panduan Baca
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {info.howToRead.map((r, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <div style={{ width: 6, height: 6, borderRadius: '50%', background: r.color, flexShrink: 0 }} />
-                    <span style={{ fontSize: 11, color: r.color, fontWeight: 600, minWidth: 60 }}>{r.range}</span>
-                    <span style={{ fontSize: 11, color: '#94a3b8' }}>{r.label}</span>
+                    <span style={{ fontSize: 11 * zoomScale, color: r.color, fontWeight: 600, minWidth: 60 }}>{r.range}</span>
+                    <span style={{ fontSize: 11 * zoomScale, color: '#94a3b8' }}>{r.label}</span>
                   </div>
                 ))}
               </div>
@@ -512,10 +583,10 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
               border: '1px solid rgba(16,185,129,0.2)',
               borderRadius: 8, padding: '8px 10px',
             }}>
-              <div style={{ fontSize: 10, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
+              <div style={{ fontSize: 10 * zoomScale, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
                 Peran dalam SPK
               </div>
-              <div style={{ fontSize: 11, color: '#10b981', lineHeight: 1.5 }}>
+              <div style={{ fontSize: 11.5 * zoomScale, color: '#10b981', lineHeight: 1.5 }}>
                 {info.spkRole}
               </div>
             </div>
