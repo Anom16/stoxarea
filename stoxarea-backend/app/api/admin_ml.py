@@ -47,10 +47,10 @@ def _get_admin_user(
     return user
 
 
-def _background_pipeline_runner():
+def _background_pipeline_runner(force: bool = False):
     global PIPELINE_RUNNING
     try:
-        run_daily_pipeline()
+        run_daily_pipeline(force=force)
     finally:
         with pipeline_lock:
             PIPELINE_RUNNING = False
@@ -66,6 +66,7 @@ def _background_retrain_runner():
 @router.post("/trigger-pipeline")
 def trigger_pipeline_manually(
     background_tasks: BackgroundTasks,
+    force: bool = True,
     _: User = Depends(_get_admin_user)
 ):
     """
@@ -77,7 +78,7 @@ def trigger_pipeline_manually(
             raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                 detail="Pipeline sedang berjalan. Harap tunggu.")
         PIPELINE_RUNNING = True
-    background_tasks.add_task(_background_pipeline_runner)
+    background_tasks.add_task(_background_pipeline_runner, force=force)
     return {"message": "Pipeline harian berhasil di-trigger dan sedang berjalan di background."}
 
 

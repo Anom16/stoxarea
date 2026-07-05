@@ -70,7 +70,7 @@ def is_bei_trading_day(check_date: date | None = None) -> bool:
     return True
 
 
-def run_daily_pipeline():
+def run_daily_pipeline(force: bool = False):
     """
     Pipeline ML harian dengan FIX #10 (race condition prevention) dan error recovery
     
@@ -85,10 +85,10 @@ def run_daily_pipeline():
     
     # FIX #8: Skip jika bukan hari bursa
     today = date.today()
-    if not is_bei_trading_day(today):
+    if not force and not is_bei_trading_day(today):
         day_name = today.strftime("%A, %d %B %Y")
         reason = "akhir pekan" if today.weekday() >= 5 else "hari libur bursa BEI"
-        logger.info(f"[Pipeline] Dilewati — {day_name} adalah {reason}.")
+        logger.info(f"[Pipeline] Dilewati — {day_name} adalah {reason}. (Gunakan parameter force jika ingin memaksakan jalan)")
         return
 
     # FIX #10: Acquire lock (prevent concurrent execution)
