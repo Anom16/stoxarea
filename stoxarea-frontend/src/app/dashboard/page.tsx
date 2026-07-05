@@ -314,71 +314,99 @@ export default function DashboardPage() {
 
             ) : (
               /* ── TAB: ANALISIS SEKTORAL ── */
-              <div className="modern-sector-grid">
-                {/* Sector List */}
-                <div className="card" style={{ padding: 16 }}>
-                  <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 4 }}>Daftar Sektor BEI</div>
-                  <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 12 }}>Pilih sektor untuk melihat detail</div>
-                  {validSectors.map((s) => (
-                    <button
-                      key={s.sector}
-                      onClick={() => setActiveSector(s.sector)}
-                      style={{
-                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                        width: '100%', padding: '9px 10px', borderRadius: 8, border: '1px solid',
-                        borderColor: activeSector === s.sector ? 'var(--accent)' : 'transparent',
-                        background: activeSector === s.sector ? 'var(--accent-glow)' : 'transparent',
-                        cursor: 'pointer', marginBottom: 4, textAlign: 'left',
-                      }}
-                    >
-                      <span style={{ fontSize: 12, fontWeight: 700, color: activeSector === s.sector ? 'var(--accent)' : 'var(--text-primary)' }}>
-                        {s.sector}
-                      </span>
-                      <span className={`sentiment-badge ${s.sentiment.toLowerCase()}`} style={{ fontSize: 9 }}>
-                        {s.sentiment}
-                      </span>
-                    </button>
-                  ))}
+              <div className="card" style={{ padding: 20 }}>
+                <div className="section-title" style={{ fontSize: 16, marginBottom: 4, fontWeight: 800 }}>Analisis Sektoral BEI</div>
+                <div className="section-sub" style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+                  Pilih sektor untuk melihat detail emiten dan sentimen pasar.
                 </div>
 
-                {/* Sector Detail */}
-                <div className="card">
-                  {(() => {
-                    const s = validSectors.find(sec => sec.sector === activeSector)
-                    if (!s) return <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>Pilih sektor dari daftar di kiri untuk melihat detail.</div>
-                    return (
-                      <div>
-                        <span style={{ fontSize: 10, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
-                          Detail Analisis Sektor
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {validSectors.map((s) => (
+                    <div
+                      key={s.sector}
+                      style={{
+                        background: 'rgba(255,255,255,0.01)',
+                        border: '1px solid var(--border)',
+                        borderRadius: 10,
+                        overflow: 'hidden',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      {/* Header button */}
+                      <button
+                        onClick={() => setActiveSector(activeSector === s.sector ? null : s.sector)}
+                        style={{
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                          width: '100%', padding: '12px 16px', borderRadius: 10, border: 'none',
+                          background: activeSector === s.sector ? 'var(--accent-glow)' : 'transparent',
+                          cursor: 'pointer', textAlign: 'left',
+                          transition: 'all 0.2s',
+                        }}
+                      >
+                        <span style={{ fontSize: 13, fontWeight: 800, color: activeSector === s.sector ? 'var(--accent)' : 'var(--text-primary)' }}>
+                          📁 Sektor {s.sector}
                         </span>
-                        <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', marginTop: 4 }}>Sektor {s.sector}</h2>
-                        <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>{s.total_stocks} emiten aktif terlacak</p>
-                        <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 8 }}>
-                          <span className={`sentiment-badge ${s.sentiment.toLowerCase()}`}>{s.sentiment}</span>
-                          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--blue)' }}>Avg: {s.avg_ai_score_percent}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span className={`sentiment-badge ${s.sentiment.toLowerCase()}`} style={{ fontSize: 9 }}>
+                            {s.sentiment}
+                          </span>
+                          <span style={{ color: 'var(--text-muted)', fontSize: 10, fontWeight: 'bold' }}>
+                            {activeSector === s.sector ? '▼' : '▶'}
+                          </span>
                         </div>
-                        <hr style={{ margin: '16px 0', borderColor: 'var(--border)' }} />
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 12 }}>
-                          3 Emiten Teratas — Momentum AI Tertinggi
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
-                          {s.top_movers.length > 0 ? s.top_movers.map((m) => (
-                            <div key={m.ticker} style={{ padding: 14, background: 'var(--bg-primary)', borderRadius: 12, border: '1px solid var(--border)' }}>
-                              <Link href={`/market/${m.ticker}`} style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)', textDecoration: 'none' }}>
-                                {m.ticker.replace('.JK', '')}
-                              </Link>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
-                                <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>AI Score</span>
-                                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--blue)' }}>{m.ai_score_percent}</span>
-                              </div>
+                      </button>
+
+                      {/* Details (Accordion body) */}
+                      {activeSector === s.sector && (
+                        <div style={{ 
+                          padding: '16px', 
+                          borderTop: '1px solid var(--border)', 
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 12,
+                        }}>
+                          {/* Sub-info */}
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 12, color: 'var(--text-secondary)' }}>
+                            <div>📈 <strong>{s.total_stocks}</strong> emiten aktif</div>
+                            <div>|</div>
+                            <div>Nilai Rata-rata AI: <strong style={{ color: 'var(--blue)' }}>{s.avg_ai_score_percent}</strong></div>
+                          </div>
+
+                          {/* Top 3 Emiten */}
+                          <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 12 }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8 }}>
+                              3 Emiten Teratas — Momentum AI Tertinggi
                             </div>
-                          )) : (
-                            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Tidak ada emiten aktif di sektor ini</span>
-                          )}
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                              {s.top_movers.length > 0 ? s.top_movers.map((m) => (
+                                <div 
+                                  key={m.ticker} 
+                                  style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: 8,
+                                    padding: '6px 12px', 
+                                    background: 'var(--bg-primary)', 
+                                    borderRadius: 6, 
+                                    border: '1px solid var(--border)',
+                                    fontSize: 12,
+                                  }}
+                                >
+                                  <Link href={`/market/${m.ticker}`} style={{ fontWeight: 800, color: 'var(--text-primary)', textDecoration: 'none' }}>
+                                    {m.ticker.replace('.JK', '')}
+                                  </Link>
+                                  <span style={{ color: 'var(--text-muted)', fontSize: 10 }}>|</span>
+                                  <span style={{ fontWeight: 700, color: 'var(--blue)' }}>AI {m.ai_score_percent}</span>
+                                </div>
+                              )) : (
+                                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Tidak ada emiten aktif di sektor ini</span>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    )
-                  })()}
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
