@@ -148,7 +148,7 @@ export default function DashboardPage() {
             )}
 
             {/* Overview Deck: IHSG + Portfolio */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
+            <div className="modern-deck-grid">
               {/* IHSG Card */}
               <div className="card">
                 <span style={{ fontSize: 10, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
 
             {/* ── TAB: RINGKASAN PASAR ── */}
             {activeDashboardTab === 'overview' ? (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 24 }}>
+              <div className="modern-overview-grid">
                 {/* Left: Watchlist */}
                 <section>
                   <div className="section-title" style={{ fontSize: 15, marginBottom: 4 }}>AI Watchlist — Top Matches</div>
@@ -314,7 +314,7 @@ export default function DashboardPage() {
 
             ) : (
               /* ── TAB: ANALISIS SEKTORAL ── */
-              <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 20 }}>
+              <div className="modern-sector-grid">
                 {/* Sector List */}
                 <div className="card" style={{ padding: 16 }}>
                   <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 4 }}>Daftar Sektor BEI</div>

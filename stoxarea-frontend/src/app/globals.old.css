@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -462,4 +462,43 @@ body {
   .sector-grid { grid-template-columns: repeat(2, 1fr); }
   
   .page-body { padding: 16px; }
+}
+
+/* ── Modern Dashboard Layout Responsive Grids ── */
+.modern-deck-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.modern-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+.modern-sector-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .modern-overview-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-deck-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .modern-sector-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }

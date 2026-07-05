@@ -1290,3 +1290,42 @@ body, .sidebar, .topbar, .nav-item, .logo-text, .nav-label {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Modern Dashboard Layout Responsive Grids ── */
+.modern-deck-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.modern-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+.modern-sector-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .modern-overview-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modern-deck-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .modern-sector-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
