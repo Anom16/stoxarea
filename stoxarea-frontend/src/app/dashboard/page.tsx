@@ -76,7 +76,11 @@ export default function DashboardPage() {
       .catch(() => setError('Gagal memuat data analisis. Pastikan server backend berjalan.'))
 
     api.get('/market/sectors')
-      .then(r => setSectors(r.data))
+      .then(r => {
+        setSectors(r.data)
+        const firstValid = r.data.find((s: any) => s.total_stocks > 0)
+        if (firstValid) setActiveSector(firstValid.sector)
+      })
       .finally(() => setLoading(false))
   }, [])
 
@@ -87,13 +91,7 @@ export default function DashboardPage() {
       .catch(() => {})
   }, [])
 
-  // Auto-select first valid sector for modern layout
-  useEffect(() => {
-    if (sectors.length > 0 && !activeSector) {
-      const firstValid = sectors.find(s => s.total_stocks > 0)
-      if (firstValid) setActiveSector(firstValid.sector)
-    }
-  }, [sectors, activeSector])
+
 
   const rankColor = (i: number) => {
     if (i === 0) return 'gold'
@@ -374,29 +372,29 @@ export default function DashboardPage() {
 
                           {/* Top 3 Emiten */}
                           <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 12 }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 8 }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 10 }}>
                               3 Emiten Teratas — Momentum AI Tertinggi
                             </div>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                              {s.top_movers.length > 0 ? s.top_movers.map((m) => (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                              {s.top_movers.length > 0 ? s.top_movers.map((m, idx) => (
                                 <div 
                                   key={m.ticker} 
                                   style={{ 
                                     display: 'flex', 
                                     alignItems: 'center', 
-                                    gap: 8,
-                                    padding: '6px 12px', 
+                                    gap: 12,
+                                    padding: '8px 14px', 
                                     background: 'var(--bg-primary)', 
-                                    borderRadius: 6, 
+                                    borderRadius: 8, 
                                     border: '1px solid var(--border)',
-                                    fontSize: 12,
+                                    fontSize: 13,
                                   }}
                                 >
-                                  <Link href={`/market/${m.ticker}`} style={{ fontWeight: 800, color: 'var(--text-primary)', textDecoration: 'none' }}>
+                                  <span style={{ fontWeight: 800, color: 'var(--accent)', fontSize: 14 }}>{idx + 1}.</span>
+                                  <Link href={`/market/${m.ticker}`} style={{ fontWeight: 800, color: 'var(--text-primary)', textDecoration: 'none', flex: 1 }}>
                                     {m.ticker.replace('.JK', '')}
                                   </Link>
-                                  <span style={{ color: 'var(--text-muted)', fontSize: 10 }}>|</span>
-                                  <span style={{ fontWeight: 700, color: 'var(--blue)' }}>AI {m.ai_score_percent}</span>
+                                  <span style={{ fontWeight: 700, color: 'var(--blue)', fontSize: 12 }}>AI Score: {m.ai_score_percent}</span>
                                 </div>
                               )) : (
                                 <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Tidak ada emiten aktif di sektor ini</span>
