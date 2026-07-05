@@ -4,6 +4,7 @@ from pathlib import Path
 from app.core.database import SessionLocal, engine, Base
 from app.models.stock import Stock
 from app.models.user import User
+from app.models.indicator import StockIndicatorValue, StockProfileMapping
 
 def sync_stocks():
     # 1. Pastikan tabel dibuat dengan struktur terbaru
@@ -51,13 +52,6 @@ def sync_stocks():
             sector_name = id_sectors.get(ticker, item.get("sector", "Lainnya"))
             
             # FIX #3: Perbaikan mismatch format ticker antara fundamental.csv dan sync_db.
-            #
-            # BUG LAMA: sync_db mencari "BBCA" di fund_df, tapi ingestor menyimpan
-            # fundamental dengan ticker "BBCA.JK" (format yfinance).
-            # Akibatnya: match selalu kosong → semua saham tersimpan dengan ROE/DER/PER = None.
-            #
-            # FIX: Coba kedua format (dengan dan tanpa .JK) agar match selalu ditemukan
-            # terlepas dari format yang dipakai saat ingestor menyimpan data.
             roe, der, pbv = None, None, None
             if not fund_df.empty:
                 ticker_bare = ticker.split('.')[0]          # "BBCA.JK" → "BBCA"
@@ -89,19 +83,6 @@ def sync_stocks():
             stock.pbv = pbv
 
             # FIX #1 — Filter saham dengan fundamental berbahaya untuk SAW.
-            #
-            # Masalah: rumus normalisasi SAW untuk kriteria Cost (PBV, DER) adalah
-            #   n = min_value / x
-            # Jika x negatif, hasil normalisasi menjadi negatif dan merusak seluruh
-            # matriks ranking. Contoh: PBV = -0.5 → n = 0.1 / -0.5 = -0.2 (tidak valid).
-            #
-            # Aturan gugur otomatis (is_qualified = False):
-            #   1. PBV <= 0  → perusahaan dengan ekuitas negatif (Book Value negatif). Tidak layak masuk SAW.
-            #   2. DER < 0   → ekuitas negatif (utang > aset total). Kondisi teknis bangkrut.
-            #   3. ROE < -50 → kerugian ekstrem, bukan sekadar rugi sementara.
-            #
-            # Saham yang lolos filter volume/harga (tickers_filtered.json) tapi punya
-            # fundamental berbahaya ini tetap digugurkan di tahap ini.
             fundamental_disqualified = False
             disqualify_reason = None
 
@@ -121,6 +102,24 @@ def sync_stocks():
             else:
                 # Hanya set qualified jika lolos filter volume/harga DAN fundamental sehat
                 stock.is_qualified = (ticker in qualified_tickers)
+            
+            # Sync to StockIndicatorValue for SAW compatibility
+            for ind_id, val in [("roe", roe), ("der", der), ("pbv", pbv)]:
+                if val is not None:
+                    ind_val = db.query(StockIndicatorValue).filter(
+                        StockIndicatorValue.ticker == ticker,
+                        StockIndicatorValue.indicator_id == ind_id
+                    ).first()
+                    if not ind_val:
+                        ind_val = StockIndicatorValue(ticker=ticker, indicator_id=ind_id)
+                        db.add(ind_val)
+                    ind_val.value = val
+
+            # Seed default profile mappings if none exist for this stock
+            existing_mappings = db.query(StockProfileMapping).filter(StockProfileMapping.ticker == ticker).first()
+            if not existing_mappings:
+                for profile_id in ["konservatif", "moderat", "agresif"]:
+                    db.add(StockProfileMapping(ticker=ticker, profile_id=profile_id))
         
         db.commit()
         print("Sinkronisasi BERHASIL! Seluruh Sektor kini telah diterjemahkan ke Bahasa Indonesia.")
