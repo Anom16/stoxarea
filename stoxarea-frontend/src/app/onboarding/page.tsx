@@ -114,8 +114,9 @@ export default function OnboardingPage() {
       const res = await api.post('/auth/submit-profiling', payload)
 
       
-      const profile = res.data.risk_profile
-      setResultProfile(profile)
+      const profile = res.data.risk_profile || 'moderat'
+      const normalized = profile.charAt(0).toUpperCase() + profile.slice(1)
+      setResultProfile(normalized)
     } catch (err: any) {
       const detail = err?.response?.data?.detail
       if (typeof detail === 'string') {

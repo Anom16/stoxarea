@@ -88,7 +88,7 @@ def update_profile(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
         
-    user.risk_profile = risk_profile
+    user.risk_profile = risk_profile.lower().strip() if risk_profile else "moderat"
     db.commit()
     db.refresh(user)
     return user

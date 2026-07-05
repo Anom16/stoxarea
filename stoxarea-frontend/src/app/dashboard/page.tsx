@@ -31,10 +31,12 @@ interface SectorRow {
   top_movers: { ticker: string; ai_score_percent: string }[]
 }
 
-const PROFILE_COLORS: Record<string, string> = {
-  Konservatif: '#10b981',
-  Moderat:     '#3b82f6',
-  Agresif:     '#f59e0b',
+const getProfileColor = (p: string) => {
+  const norm = p.toLowerCase()
+  if (norm.startsWith('konservatif')) return '#10b981'
+  if (norm.startsWith('moderat')) return '#3b82f6'
+  if (norm.startsWith('agresif')) return '#f59e0b'
+  return '#e040fb'
 }
 
 export default function DashboardPage() {
@@ -72,7 +74,16 @@ export default function DashboardPage() {
       .then(r => {
         const name = r.data.full_name?.trim() || r.data.email?.split('@')[0] || 'Pengguna'
         setUsername(name)
-        setProfile(r.data.risk_profile || '—')
+        const rawProfile = r.data.risk_profile
+        if (rawProfile) {
+          const capitalized = rawProfile
+            .split('_')
+            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
+          setProfile(capitalized)
+        } else {
+          setProfile('—')
+        }
       })
       .catch(() => { localStorage.removeItem('access_token'); window.location.href = '/auth/login' })
 
@@ -533,7 +544,7 @@ export default function DashboardPage() {
             <h1 style={{ fontSize: 26, fontWeight: 800, marginBottom: 4 }}>Halo, {username}! 👋</h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
               Profil Risiko Anda:{' '}
-              <strong style={{ color: PROFILE_COLORS[profile] || 'var(--accent)' }}>{profile}</strong>
+              <strong style={{ color: getProfileColor(profile) }}>{profile}</strong>
               {' '}— AI STOXAREA menganalisis emiten yang paling sesuai dengan profil Anda secara matematis.
             </p>
           </div>
@@ -637,15 +648,15 @@ export default function DashboardPage() {
                       </div>
                     )}
 
-                    <div style={{ padding: '10px 12px', background: 'rgba(255,255,255,0.03)', borderRadius: 8, borderLeft: `3px solid ${PROFILE_COLORS[profile] || 'var(--accent)'}`, marginBottom: 16 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: PROFILE_COLORS[profile] || 'var(--accent)', textTransform: 'uppercase', marginBottom: 4 }}>
+                    <div style={{ padding: '10px 12px', background: 'rgba(255,255,255,0.03)', borderRadius: 8, borderLeft: `3px solid ${getProfileColor(profile)}`, marginBottom: 16 }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: getProfileColor(profile), textTransform: 'uppercase', marginBottom: 4 }}>
                         Kenapa Jadi Top Pick?
                       </div>
                       <div style={{ fontSize: 12, lineHeight: 1.4, color: 'var(--text-secondary)' }}>
-                        {profile === 'Agresif'      && `Sangat disarankan karena skor Momentum AI (${r.ai_score_percent}) yang sangat dominan, cocok untuk mengejar kenaikan cepat.`}
-                        {profile === 'Moderat'      && `Menawarkan keseimbangan yang baik antara tren kenaikan harga dan stabilitas laba (ROE ${r.roe}%).`}
-                        {profile === 'Konservatif'  && `Prioritas pada keamanan finansial dengan tingkat hutang yang rendah (DER ${r.der}) dan profitabilitas yang sehat.`}
-                        {profile === '—'            && `Emiten dengan skor SAW tertinggi berdasarkan data fundamental dan teknikal terkini.`}
+                        {profile.toLowerCase().startsWith('agresif')      && `Sangat disarankan karena skor Momentum AI (${r.ai_score_percent}) yang sangat dominan, cocok untuk mengejar kenaikan cepat.`}
+                        {profile.toLowerCase().startsWith('moderat')      && `Menawarkan keseimbangan yang baik antara tren kenaikan harga dan stabilitas laba (ROE ${r.roe}%).`}
+                        {profile.toLowerCase().startsWith('konservatif')  && `Prioritas pada keamanan finansial dengan tingkat hutang yang rendah (DER ${r.der}) dan profitabilitas yang sehat.`}
+                        {(profile === '—' || !profile)                    && `Emiten dengan skor SAW tertinggi berdasarkan data fundamental dan teknikal terkini.`}
                       </div>
                     </div>
 

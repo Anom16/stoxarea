@@ -182,7 +182,9 @@ export default function SettingsPage() {
       .then(r => {
         setUser(r.data)
         setFullName(r.data.full_name || '')
-        setSelectedProfile(r.data.risk_profile || 'Moderat')
+        const raw = r.data.risk_profile || 'moderat'
+        const normalized = raw.charAt(0).toUpperCase() + raw.slice(1)
+        setSelectedProfile(normalized)
       })
       .catch(() => router.push('/auth/login'))
       .finally(() => setLoading(false))
@@ -241,7 +243,7 @@ export default function SettingsPage() {
   const handleSaveProfile = async () => {
     setSavingProfile(true)
     try {
-      const res = await api.put('/auth/profile', { risk_profile: selectedProfile })
+      const res = await api.put('/auth/profile', { risk_profile: selectedProfile.toLowerCase() })
       setUser(res.data)
       toast.success(
         'Profil Risiko Diperbarui ✅',
