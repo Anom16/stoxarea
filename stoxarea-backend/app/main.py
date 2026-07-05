@@ -75,6 +75,89 @@ reports_dir = Path("reports")
 reports_dir.mkdir(exist_ok=True)
 app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
+def seed_database_if_empty(db):
+    from app.models.indicator import Indicator, ProfileIndicatorWeight
+    from app.models.risk_profile import RiskProfile
+
+    # 1. Seed Indicators
+    try:
+        if db.query(Indicator).count() == 0:
+            logger.info("[Seed] Seeding default indicators...")
+            indicators = [
+                Indicator(id='ai_score', name='AI Momentum Score', type='benefit', description='Skor probabilitas momentum kenaikan harga dari model AI XGBoost'),
+                Indicator(id='roe', name='ROE (Return on Equity)', type='benefit', description='Tingkat pengembalian ekuitas untuk mengukur efisiensi laba emiten'),
+                Indicator(id='der', name='DER (Debt to Equity Ratio)', type='cost', description='Rasio hutang terhadap ekuitas untuk menilai solvabilitas emiten'),
+                Indicator(id='pbv', name='PBV (Price to Book Value)', type='cost', description='Rasio harga saham terhadap nilai buku untuk mengukur valuasi emiten')
+            ]
+            for ind in indicators:
+                db.add(ind)
+            db.commit()
+    except Exception as ex:
+        logger.error(f"[Seed] Failed seeding indicators: {ex}")
+        db.rollback()
+
+    # 2. Seed Risk Profiles
+    try:
+        if db.query(RiskProfile).count() == 0:
+            logger.info("[Seed] Seeding default risk profiles...")
+            profiles = [
+                RiskProfile(
+                    id='konservatif',
+                    name='Konservatif',
+                    description='Fokus pada keamanan modal dengan emiten berfundamental kuat.',
+                    min_score_threshold=0,
+                    max_score_threshold=11
+                ),
+                RiskProfile(
+                    id='moderat',
+                    name='Moderat',
+                    description='Menyeimbangkan pertumbuhan momentum AI dengan stabilitas fundamental.',
+                    min_score_threshold=12,
+                    max_score_threshold=18
+                ),
+                RiskProfile(
+                    id='agresif',
+                    name='Agresif',
+                    description='Memaksimalkan pengembalian dengan memanfaatkan rekomendasi kecerdasan AI.',
+                    min_score_threshold=19,
+                    max_score_threshold=25
+                )
+            ]
+            for p in profiles:
+                db.add(p)
+            db.commit()
+    except Exception as ex:
+        logger.error(f"[Seed] Failed seeding risk profiles: {ex}")
+        db.rollback()
+
+    # 3. Seed Profile Indicator Weights
+    try:
+        if db.query(ProfileIndicatorWeight).count() == 0:
+            logger.info("[Seed] Seeding default profile indicator weights...")
+            weights = [
+                # Konservatif
+                ProfileIndicatorWeight(profile_id='konservatif', indicator_id='ai_score', weight=0.10),
+                ProfileIndicatorWeight(profile_id='konservatif', indicator_id='roe', weight=0.45),
+                ProfileIndicatorWeight(profile_id='konservatif', indicator_id='der', weight=0.35),
+                ProfileIndicatorWeight(profile_id='konservatif', indicator_id='pbv', weight=0.10),
+                # Moderat
+                ProfileIndicatorWeight(profile_id='moderat', indicator_id='ai_score', weight=0.35),
+                ProfileIndicatorWeight(profile_id='moderat', indicator_id='roe', weight=0.30),
+                ProfileIndicatorWeight(profile_id='moderat', indicator_id='der', weight=0.15),
+                ProfileIndicatorWeight(profile_id='moderat', indicator_id='pbv', weight=0.20),
+                # Agresif
+                ProfileIndicatorWeight(profile_id='agresif', indicator_id='ai_score', weight=0.60),
+                ProfileIndicatorWeight(profile_id='agresif', indicator_id='roe', weight=0.10),
+                ProfileIndicatorWeight(profile_id='agresif', indicator_id='der', weight=0.10),
+                ProfileIndicatorWeight(profile_id='agresif', indicator_id='pbv', weight=0.20)
+            ]
+            for w in weights:
+                db.add(w)
+            db.commit()
+    except Exception as ex:
+        logger.error(f"[Seed] Failed seeding indicator weights: {ex}")
+        db.rollback()
+
 @app.on_event("startup")
 def on_startup():
     # Retry database connection and table creation (handles Supabase cold starts/pauses)
@@ -86,6 +169,14 @@ def on_startup():
             logger.info(f"Membangun tabel database (jika belum ada) - Percobaan {attempt}/{max_retries}...")
             Base.metadata.create_all(bind=engine)
             logger.info("Database berhasil terhubung dan tabel diverifikasi/dibuat.")
+            
+            # Seeding data bawaan jika kosong
+            from app.core.database import SessionLocal as _SessionLocal
+            db_session = _SessionLocal()
+            try:
+                seed_database_if_empty(db_session)
+            finally:
+                db_session.close()
             break
         except Exception as e:
             logger.error(f"Koneksi database gagal pada percobaan {attempt}/{max_retries}: {e}")
