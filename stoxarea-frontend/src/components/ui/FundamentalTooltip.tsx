@@ -394,22 +394,6 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
   const id = metricKey
   const open = activeId === id
 
-  const [zoomScale, setZoomScale] = useState<number>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('tooltip_zoom')
-      if (saved) return parseFloat(saved)
-    }
-    return 1.1 // Default zoom level: 110%
-  })
-
-  const [boxWidth, setBoxWidth] = useState<number>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('tooltip_width')
-      if (saved) return parseInt(saved)
-    }
-    return 480 // Default width: 480px on desktop
-  })
-
   const info = METRIC_INFO[metricKey]
   if (!info) return null
 
@@ -464,144 +448,43 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: typeof window !== 'undefined' && window.innerWidth < 500 ? '90vw' : boxWidth,
+              width: typeof window !== 'undefined' && window.innerWidth < 540 ? '90vw' : 500,
               maxHeight: '90vh',
               overflowY: 'auto',
               background: '#1e293b',
               border: '1px solid rgba(59,130,246,0.4)',
               borderRadius: 14,
-              padding: 20,
+              padding: 24,
               zIndex: 99999,
               boxShadow: '0 25px 60px rgba(0,0,0,0.8)',
               transition: 'all 0.15s',
             }}
           >
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <div style={{ fontSize: 13 * zoomScale, fontWeight: 800, color: '#fff', lineHeight: 1.3, marginRight: 12 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.3 }}>
                 {info.fullName}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                {/* Width Control: W- / W+ */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: 'rgba(255,255,255,0.03)', borderRadius: 6, padding: '2px 4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      const next = Math.max(340, boxWidth - 40)
-                      setBoxWidth(next)
-                      localStorage.setItem('tooltip_width', next.toString())
-                    }}
-                    title="Perkecil Lebar Kotak"
-                    style={{
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      color: '#94a3b8',
-                      borderRadius: 4,
-                      padding: '2px 5px',
-                      fontSize: 8,
-                      cursor: 'pointer',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    W-
-                  </button>
-                  <span style={{ fontSize: 8, color: '#64748b', fontWeight: 'bold', minWidth: 28, textAlign: 'center' }}>
-                    {boxWidth}
-                  </span>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      const next = Math.min(680, boxWidth + 40)
-                      setBoxWidth(next)
-                      localStorage.setItem('tooltip_width', next.toString())
-                    }}
-                    title="Perbesar Lebar Kotak"
-                    style={{
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      color: '#94a3b8',
-                      borderRadius: 4,
-                      padding: '2px 5px',
-                      fontSize: 8,
-                      cursor: 'pointer',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    W+
-                  </button>
-                </div>
-
-                {/* Zoom Control: A- / A+ */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: 'rgba(255,255,255,0.03)', borderRadius: 6, padding: '2px 4px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      const next = Math.max(0.9, zoomScale - 0.1)
-                      setZoomScale(next)
-                      localStorage.setItem('tooltip_zoom', next.toString())
-                    }}
-                    title="Perkecil Teks"
-                    style={{
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      color: '#94a3b8',
-                      borderRadius: 4,
-                      padding: '2px 5px',
-                      fontSize: 8,
-                      cursor: 'pointer',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    A-
-                  </button>
-                  <span style={{ fontSize: 8, color: '#64748b', fontWeight: 'bold', minWidth: 26, textAlign: 'center' }}>
-                    {Math.round(zoomScale * 100)}%
-                  </span>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      const next = Math.min(1.5, zoomScale + 0.1)
-                      setZoomScale(next)
-                      localStorage.setItem('tooltip_zoom', next.toString())
-                    }}
-                    title="Perbesar Teks"
-                    style={{
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      color: '#94a3b8',
-                      borderRadius: 4,
-                      padding: '2px 5px',
-                      fontSize: 8,
-                      cursor: 'pointer',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    A+
-                  </button>
-                </div>
-                
-                {/* Close Button */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); setActiveId(null) }}
-                  style={{ 
-                    background: 'transparent', 
-                    border: 'none', 
-                    color: '#94a3b8', 
-                    cursor: 'pointer', 
-                    fontSize: 18, 
-                    lineHeight: 1, 
-                    padding: 0, 
-                    marginLeft: 4,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  ×
-                </button>
-              </div>
+              <button
+                onClick={(e) => { e.stopPropagation(); setActiveId(null) }}
+                style={{ 
+                  background: 'transparent', 
+                  border: 'none', 
+                  color: '#94a3b8', 
+                  cursor: 'pointer', 
+                  fontSize: 22, 
+                  lineHeight: 1, 
+                  padding: 0, 
+                  marginLeft: 12,
+                  fontWeight: 'bold',
+                }}
+              >
+                ×
+              </button>
             </div>
 
             {/* Deskripsi */}
-            <p style={{ fontSize: 11.5 * zoomScale, color: '#94a3b8', lineHeight: 1.6, margin: '0 0 12px' }}>
+            <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.6, margin: '0 0 16px' }}>
               {info.description}
             </p>
 
@@ -610,28 +493,28 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
               <div style={{
                 background: `${interp.color}15`,
                 border: `1px solid ${interp.color}40`,
-                borderRadius: 8, padding: '8px 10px', marginBottom: 12,
+                borderRadius: 8, padding: '10px 12px', marginBottom: 16,
               }}>
-                <div style={{ fontSize: 10 * zoomScale, color: '#94a3b8', marginBottom: 3 }}>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4 }}>
                   Nilai {label || metricKey.toUpperCase()} saham ini:
                 </div>
-                <div style={{ fontSize: 12 * zoomScale, color: interp.color, fontWeight: 700 }}>
+                <div style={{ fontSize: 13, color: interp.color, fontWeight: 700 }}>
                   {interp.text}
                 </div>
               </div>
             )}
 
             {/* Panduan Baca */}
-            <div style={{ marginBottom: 10 }}>
-              <div style={{ fontSize: 10 * zoomScale, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
                 Panduan Baca
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {info.howToRead.map((r, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <div style={{ width: 6, height: 6, borderRadius: '50%', background: r.color, flexShrink: 0 }} />
-                    <span style={{ fontSize: 11 * zoomScale, color: r.color, fontWeight: 600, minWidth: 60 }}>{r.range}</span>
-                    <span style={{ fontSize: 11 * zoomScale, color: '#94a3b8' }}>{r.label}</span>
+                    <span style={{ fontSize: 12, color: r.color, fontWeight: 600, minWidth: 70 }}>{r.range}</span>
+                    <span style={{ fontSize: 12, color: '#94a3b8' }}>{r.label}</span>
                   </div>
                 ))}
               </div>
@@ -641,12 +524,12 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
             <div style={{
               background: 'rgba(16,185,129,0.08)',
               border: '1px solid rgba(16,185,129,0.2)',
-              borderRadius: 8, padding: '8px 10px',
+              borderRadius: 8, padding: '10px 12px',
             }}>
-              <div style={{ fontSize: 10 * zoomScale, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
+              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
                 Peran dalam SPK
               </div>
-              <div style={{ fontSize: 11.5 * zoomScale, color: '#10b981', lineHeight: 1.5 }}>
+              <div style={{ fontSize: 13, color: '#10b981', lineHeight: 1.5 }}>
                 {info.spkRole}
               </div>
             </div>
