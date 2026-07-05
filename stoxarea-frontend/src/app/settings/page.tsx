@@ -40,19 +40,35 @@ const FAQ_ITEMS = [
     items: [
       {
         q: 'Apa itu AI Score dan bagaimana cara kerjanya?',
-        a: 'AI Score (0–100%) adalah skor momentum teknikal yang dihasilkan oleh algoritma Machine Learning XGBoost. Model ini menganalisis indikator teknikal historis (RSI, MACD, Volume, dll) untuk memproyeksikan kekuatan tren pergerakan harga saham ke depan.'
+        a: '**AI Score (0–100%)** adalah skor momentum teknikal yang dihasilkan oleh algoritma Machine Learning XGBoost.\n\n' +
+          '**Cara kerjanya:**\n' +
+          '• Model ini dilatih dengan data historis pergerakan harga saham.\n' +
+          '• Menganalisis 11 indikator teknikal, termasuk RSI, MACD, Volume, dan Moving Average.\n' +
+          '• Menghasilkan probabilitas kekuatan tren harga ke depan.\n\n' +
+          '**Mengapa penting?**\n' +
+          'AI Score membantu Anda mengukur potensi momentum sebuah saham berdasarkan data objektif, bukan rumor atau berita viral.'
       },
       {
         q: 'Apa itu Match Score?',
-        a: 'Match Score adalah skor kecocokan akhir antara profil saham dengan profil risiko investasi Anda. Skor ini dihitung oleh metode SAW (Simple Additive Weighting) yang memadukan AI Score dengan data fundamental (ROE, DER, PBV) secara berbobot sesuai preferensi risiko Anda.'
+        a: '**Match Score (0–100%)** adalah skor kecocokan personal antara saham dengan profil risiko Anda.\n\n' +
+          '**Cara kerjanya:**\n' +
+          '• Dihitung oleh metode SAW (Simple Additive Weighting).\n' +
+          '• Memadukan AI Score (momentum teknikal) dengan data fundamental (ROE, DER, PBV).\n' +
+          '• Setiap kriteria diberi bobot berbeda tergantung profil risiko Anda (Konservatif, Moderat, atau Agresif).\n\n' +
+          '**Mengapa penting?**\n' +
+          'Match Score memastikan rekomendasi saham sesuai dengan karakter investasi Anda. Pengguna konservatif akan melihat saham dengan fundamental kuat di urutan atas, sementara pengguna agresif akan melihat saham dengan momentum tinggi.'
       },
       {
         q: 'Mengapa rekomendasi saya berbeda dengan pengguna lain?',
-        a: 'Rekomendasi dipersonalisasi berdasarkan profil risiko (Konservatif, Moderat, atau Agresif) masing-masing pengguna. Metode SAW memberikan bobot berbeda pada setiap kriteria tergantung profil, sehingga urutan rekomendasi saham akan berbeda antar pengguna.'
+        a: 'Rekomendasi StoxArea bersifat personal, bukan generik. Perbedaan terjadi karena metode SAW memberikan bobot berbeda pada setiap kriteria (AI Score, ROE, DER, PBV) tergantung profil risiko Anda. Dua pengguna dengan profil berbeda akan melihat urutan rekomendasi yang berbeda meskipun melihat sektor yang sama.'
       },
       {
         q: 'Apakah rekomendasi StoxArea dapat dijadikan dasar keputusan investasi?',
-        a: 'Tidak. Seluruh output StoxArea — termasuk AI Score, Match Score, dan AI Watchlist — adalah hasil kalkulasi matematis algoritmik, bukan saran investasi. StoxArea tidak terdaftar sebagai Penasihat Investasi di OJK. Selalu lakukan riset mandiri sebelum berinvestasi.'
+        a: '**Tidak.** Seluruh output StoxArea — termasuk AI Score, Match Score, dan AI Watchlist — adalah hasil kalkulasi matematis algoritmik, bukan saran investasi.\n\n' +
+          '**Batasan penting:**\n' +
+          '• StoxArea tidak terdaftar sebagai Penasihat Investasi di OJK.\n' +
+          '• Sistem tidak memprediksi harga saham secara pasti, melainkan mengukur probabilitas tren berdasarkan data historis.\n' +
+          '• Selalu lakukan riset mandiri dan pertimbangkan kondisi keuangan Anda sebelum berinvestasi.'
       },
       {
         q: 'Seberapa sering data rekomendasi diperbarui?',
@@ -86,7 +102,12 @@ const FAQ_ITEMS = [
       },
       {
         q: 'Apakah data pribadi saya aman di StoxArea?',
-        a: 'Data pribadi Anda (email, nama, dan profil risiko) disimpan di database PostgreSQL yang dihosting di Supabase dengan enkripsi standar industri. Password disimpan dalam bentuk hash menggunakan algoritma bcrypt. StoxArea tidak menyimpan informasi keuangan atau rekening bank Anda.'
+        a: '**Ya, data Anda aman.** Kami menerapkan standar keamanan industri untuk melindungi informasi pribadi Anda.\n\n' +
+          '**Rincian teknis:**\n' +
+          '• Data pribadi (email, nama, profil risiko) disimpan di database PostgreSQL yang dihosting di Supabase.\n' +
+          '• Database dilindungi enkripsi standar industri.\n' +
+          '• Password disimpan dalam bentuk hash menggunakan algoritma bcrypt — tidak ada yang bisa melihat password asli Anda, termasuk administrator.\n' +
+          '• StoxArea tidak menyimpan informasi keuangan atau rekening bank Anda.'
       },
     ]
   },
@@ -120,6 +141,7 @@ export default function SettingsPage() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<Tab>('account')
+  const [mobileView, setMobileView] = useState<'menu' | 'content'>('menu')
   const [openFaq, setOpenFaq] = useState<string | null>(null)
 
   // Tab: Akun
@@ -277,14 +299,17 @@ export default function SettingsPage() {
         <ToastContainer toasts={toasts} onRemove={removeToast} />
 
         <div className="page-body">
-          <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+          <div className="settings-layout">
 
             {/* ── Sidebar Tab ── */}
-            <div className="card" style={{ width: 220, padding: 10, flexShrink: 0 }}>
+            <div className={`card settings-sidebar ${mobileView === 'content' ? 'hidden-mobile' : ''}`}>
               {TABS.map(tab => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    setActiveTab(tab.id)
+                    setMobileView('content')
+                  }}
                   style={{
                     display: 'block', width: '100%', textAlign: 'left',
                     padding: '11px 14px', marginBottom: 4, borderRadius: 8,
@@ -312,7 +337,15 @@ export default function SettingsPage() {
             </div>
 
             {/* ── Konten ── */}
-            <div className="card" style={{ flex: 1, minHeight: 420 }}>
+            <div className={`card settings-content ${mobileView === 'menu' ? 'hidden-mobile' : ''}`}>
+              {/* Tombol kembali untuk mobile */}
+              <button
+                className="settings-back-btn"
+                onClick={() => setMobileView('menu')}
+              >
+                ← Kembali ke Menu Pengaturan
+              </button>
+
               {loading ? (
                 <div style={{ color: 'var(--text-muted)', padding: 20 }}>Memuat data akun...</div>
               ) : (
@@ -360,7 +393,7 @@ export default function SettingsPage() {
                       <hr style={{ margin: '28px 0', borderColor: 'var(--border)' }} />
 
                       <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Data Investasi</h3>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, maxWidth: 440 }}>
+                      <div className="stat-grid">
                         <div style={statBox}>
                           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Profil Risiko</div>
                           <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--accent)' }}>
@@ -559,7 +592,7 @@ export default function SettingsPage() {
                       <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, marginTop: 4 }}>
                         Pilih tampilan halaman utama Dashboard sesuai preferensi Anda.
                       </p>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 28 }}>
+                      <div className="pref-grid">
                         {[
                           {
                             id: 'classic' as const,

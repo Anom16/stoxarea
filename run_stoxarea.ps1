@@ -16,7 +16,7 @@ if (-not (Test-Path $BACKEND)) {
     Write-Host "[ERROR] Folder stoxarea-backend tidak ditemukan!" -ForegroundColor Red
     exit 1
 }
-if (-not (Test-Path $FRONTEND)) {
+if (-not (Test-Path $FRONTEND)) {  
     Write-Host "[ERROR] Folder stoxarea-frontend tidak ditemukan!" -ForegroundColor Red
     exit 1
 }

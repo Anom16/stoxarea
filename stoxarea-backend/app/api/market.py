@@ -20,7 +20,7 @@ def get_stock_history(ticker: str, db: Session = Depends(get_db)):
     Dipisahkan agar pemuatan halaman utama detail emiten tetap cepat.
     """
     ticker_upper = ticker.upper()
-    if not ticker_upper.endswith(".JK"):
+    if not ticker_upper.endswith(".JK") and not ticker_upper.startswith("^") and not "=" in ticker_upper:
         ticker_upper += ".JK"
     return get_historical_financials(ticker_upper, db=db)
 
@@ -76,7 +76,7 @@ def get_technical_chart(
     Digunakan untuk 'Interactive Technical Charts' di Frontend.
     """
     ticker_upper = ticker.upper()
-    if not ticker_upper.endswith(".JK"):
+    if not ticker_upper.endswith(".JK") and not ticker_upper.startswith("^") and not "=" in ticker_upper:
         ticker_upper += ".JK"
     return get_technical_data(ticker_upper, period=period, interval=interval)
 
@@ -98,7 +98,7 @@ def get_fundamental_detail(
     Menggabungkan data dari yfinance (real-time) + database lokal (custom pipeline).
     """
     ticker_upper = ticker.upper()
-    if not ticker_upper.endswith(".JK"):
+    if not ticker_upper.endswith(".JK") and not ticker_upper.startswith("^") and not "=" in ticker_upper:
         ticker_upper += ".JK"
     return get_fundamental_data(ticker_upper, db=db)
 

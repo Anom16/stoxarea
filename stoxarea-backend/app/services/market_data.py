@@ -289,7 +289,7 @@ def get_live_price(ticker: str) -> float:
     """
     try:
         t = ticker.upper()
-        if not t.endswith(".JK"):
+        if not t.endswith(".JK") and not t.startswith("^") and not "=" in t:
             t += ".JK"
             
         with _YF_LOCK:
