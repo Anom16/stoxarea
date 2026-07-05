@@ -16,7 +16,7 @@ class UserLogin(UserBase):
 class UserResponse(UserBase):
     id: int
     full_name: Optional[str] = None
-    risk_profile: Optional[RiskProfileEnum] = None
+    risk_profile: Optional[str] = None
     virtual_balance: float
     is_admin: bool = False
     created_at: datetime

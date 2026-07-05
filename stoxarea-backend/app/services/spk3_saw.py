@@ -17,10 +17,9 @@ import threading
 import logging
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from app.models.user import RiskProfileEnum
 from app.services.spk1_profiling import get_profile_weights
 from app.services.spk2_scoring import get_qualified_stocks_for_saw
-from app.schemas.recommendation import RecommendationResponse, InsightItem
+from app.schemas.recommendation import RecommendationResponse, InsightItem, TransparencyDetail
 
 logger = logging.getLogger(__name__)
 
@@ -36,29 +35,21 @@ logger = logging.getLogger(__name__)
 #
 # Key format: "{profile}::{sector_or_all}"
 # Kenapa per profil, bukan per user?
-#   → Hanya ada 3 profil. 500 user Agresif cukup hitung 1x, sisanya ambil cache.
+#   → Hanya ada beberapa profil. Semua user Agresif cukup hitung 1x, sisanya ambil cache.
 
 _SAW_CACHE: dict = {}
 _SAW_CACHE_TTL = 600        # 10 menit — cukup untuk 1 siklus data pasar
 
 # FIX #6: Ganti satu lock global dengan per-key lock untuk mencegah thundering herd.
-#
-# BUG LAMA: Satu _SAW_CACHE_LOCK dipakai untuk cek DAN simpan, tapi kalkulasi berat
-# berjalan di LUAR lock. Jika 100 request datang bersamaan untuk key yang sama,
-# semua 100 mendapat cache miss dan menjalankan kalkulasi paralel (thundering herd).
-#
-# FIX: Gunakan dict of per-key locks (_SAW_KEY_LOCKS).
-# Hanya 1 goroutine yang bisa menghitung untuk key tertentu pada satu waktu.
-# Goroutine lain yang menunggu lock akan langsung mendapat hasil dari cache
-# setelah goroutine pertama selesai menyimpan.
 _SAW_CACHE_LOCK = threading.Lock()          # untuk operasi pada dict _SAW_CACHE & _SAW_KEY_LOCKS
 _SAW_KEY_LOCKS: dict = {}                   # { cache_key: threading.Lock() }
 
 
-def _make_cache_key(profile: RiskProfileEnum, sector: Optional[str]) -> str:
+def _make_cache_key(profile: str, sector: Optional[str]) -> str:
     """Membuat cache key unik dari kombinasi profil + sektor."""
     sector_key = sector.lower().strip() if sector else "all"
-    return f"{profile.value.lower()}::{sector_key}"
+    profile_key = profile.lower().strip() if profile else "moderat"
+    return f"{profile_key}::{sector_key}"
 
 
 def invalidate_saw_cache() -> int:
@@ -103,34 +94,16 @@ def get_cache_status() -> dict:
 
 # ─── Fungsi Utama SAW ─────────────────────────────────────────────────────────
 
+from app.models.indicator import Indicator, StockIndicatorValue, StockProfileMapping, ProfileIndicatorWeight
+
 def calculate_saw_recommendations(
     db: Session,
-    profile: RiskProfileEnum,
+    profile: str,
     target_sector: Optional[str] = None
 ) -> List[RecommendationResponse]:
     """
     Menjalankan SPK Lapis 3 (Simple Additive Weighting) dengan cache per profil.
-
-    Alur:
-        1. Cek cache — jika ada dan belum expired, langsung return
-        2. Ambil bobot profil dari SPK 1
-        3. Ambil data bersih dari SPK 2
-        4. Normalisasi SAW
-        5. Hitung skor akhir, simpan ke cache, return
     """
-
-    # ── 1. Cek Cache dengan Double-Checked Locking ───────────────────────────
-    # FIX #6: Implementasi per-key lock untuk mencegah thundering herd.
-    #
-    # Alur:
-    #   a. Cek cache tanpa lock (fast path) — jika HIT, langsung return
-    #   b. Ambil/buat per-key lock untuk cache_key ini
-    #   c. Acquire per-key lock (hanya 1 thread yang bisa masuk per key)
-    #   d. Cek cache LAGI di dalam lock (double-check) — mungkin thread lain
-    #      sudah mengisi cache saat kita menunggu lock
-    #   e. Jika masih MISS, hitung SAW dan simpan ke cache
-    #   f. Release per-key lock → thread lain yang menunggu akan langsung
-    #      mendapat hasil dari cache (langkah d)
 
     cache_key = _make_cache_key(profile, target_sector)
     now = time.time()
@@ -147,7 +120,7 @@ def calculate_saw_recommendations(
             _SAW_KEY_LOCKS[cache_key] = threading.Lock()
         key_lock = _SAW_KEY_LOCKS[cache_key]
 
-    # c. Acquire per-key lock — hanya 1 thread per cache_key yang masuk ke sini
+    # c. Acquire per-key lock
     with key_lock:
         # d. Double-check: mungkin thread sebelumnya sudah mengisi cache
         now = time.time()
@@ -159,75 +132,117 @@ def calculate_saw_recommendations(
         # Cache miss yang sesungguhnya — hitung dari awal
         logger.info(f"[SAW Cache] MISS — key='{cache_key}', menghitung SAW...")
 
-        # ── 2. Bobot dari profil risiko user (hasil SPK 1) ───────────────────
-        weights = get_profile_weights(profile)
+        # ── 1. Cek saham yang dikaitkan dengan profil risiko ini ──────────────
+        p_id = profile.lower().strip() if profile else "moderat"
+        mapped_tickers = [m.ticker for m in db.query(StockProfileMapping).filter(StockProfileMapping.profile_id == p_id).all()]
+        if not mapped_tickers:
+            logger.warning(f"[SAW] Profil '{p_id}' tidak memiliki emiten terikat. Return kosong.")
+            return []
 
-        # ── 3. Ambil data bersih dari SPK 2 ──────────────────────────────────
+        # ── 2. Ambil kriteria indikator aktif dari database ──────────────────
+        active_indicators = db.query(Indicator).all()
+        indicator_map = {ind.id: ind for ind in active_indicators}
+
+        # ── 3. Bobot kriteria dinamis untuk profil ini ───────────────────────
+        weights = get_profile_weights(db, p_id)
+        # Filter bobot hanya untuk indikator yang aktif
+        weights = {k: v for k, v in weights.items() if k in indicator_map}
+        weighted_indicators = [ind_id for ind_id, w in weights.items() if w > 0]
+        
+        if not weighted_indicators:
+            logger.warning(f"[SAW] Profil '{p_id}' tidak memiliki bobot indikator > 0. Gunakan default flat.")
+            weights = {ind.id: 1.0 / len(active_indicators) for ind in active_indicators}
+            weighted_indicators = list(weights.keys())
+
+        # ── 4. Ambil data bersih dari SPK 2 ──────────────────────────────────
         stocks = get_qualified_stocks_for_saw(db, target_sector)
+        # Filter hanya saham yang dikaitkan dengan profil ini
+        stocks = [s for s in stocks if s["ticker"] in mapped_tickers]
         if not stocks:
             return []
 
-        # ── 4. Hitung Referensi Normalisasi ──────────────────────────────────
+        # ── 5. Ambil data nilai indikator saham dari database ────────────────
+        values_query = db.query(StockIndicatorValue).filter(
+            StockIndicatorValue.ticker.in_([s["ticker"] for s in stocks])
+        ).all()
 
-        max_ai = max(s["ai_score"] for s in stocks) or 1.0
+        stock_vals = {s["ticker"]: {} for s in stocks}
+        for val in values_query:
+            stock_vals[val.ticker][val.indicator_id] = val.value
 
-        # ROE (Benefit) — guard untuk semua ROE negatif
-        all_roe = [s["roe_clean"] for s in stocks]
-        roe_min_actual = min(all_roe)
-        if roe_min_actual < 0:
-            roe_shift = abs(roe_min_actual)
-            roe_shifted = {s["ticker"]: s["roe_clean"] + roe_shift for s in stocks}
-        else:
-            roe_shifted = {s["ticker"]: s["roe_clean"] for s in stocks}
+        # Pastikan ai_score selalu diambil dari data inferensi real-time SPK 2
+        for s in stocks:
+            stock_vals[s["ticker"]]["ai_score"] = s["ai_score"]
 
-        max_roe_shifted = max(roe_shifted.values()) or 1.0
+        # ── 6. Normalisasi SAW Dinamis per Indikator ─────────────────────────
+        normalized = {s["ticker"]: {} for s in stocks}
 
-        # DER & PBV (Cost)
-        min_der = min(
-            (s["der_clean"] for s in stocks if s["der_clean"] > 0),
-            default=0.1
-        )
-        min_pbv = min(
-            (s["pbv_clean"] for s in stocks if s["pbv_clean"] > 0),
-            default=0.2
-        )
+        for ind_id in weighted_indicators:
+            ind = indicator_map[ind_id]
+            # Ambil nilai mentah emiten untuk indikator ini
+            raw_vals = [stock_vals[s["ticker"]].get(ind_id, 0.0) for s in stocks]
 
-        # ── 5. Kalkulasi Normalisasi SAW & Skor Akhir ────────────────────────
+            if ind.type == 'benefit':
+                min_actual = min(raw_vals, default=0.0)
+                if min_actual < 0:
+                    # Geser nilai negatif jika ada
+                    shift = abs(min_actual)
+                    shifted = [v + shift for v in raw_vals]
+                    max_shifted = max(shifted, default=1.0) or 1.0
+                    for s in stocks:
+                        normalized[s["ticker"]][ind_id] = (stock_vals[s["ticker"]].get(ind_id, 0.0) + shift) / max_shifted
+                else:
+                    max_val = max(raw_vals, default=1.0) or 1.0
+                    for s in stocks:
+                        normalized[s["ticker"]][ind_id] = stock_vals[s["ticker"]].get(ind_id, 0.0) / max_val
+            else:
+                # Cost type: semakin kecil nilai semakin baik
+                min_val = min((v for v in raw_vals if v > 0), default=0.1)
+                for s in stocks:
+                    val = stock_vals[s["ticker"]].get(ind_id, 0.0)
+                    if val <= 0.1:
+                        normalized[s["ticker"]][ind_id] = 1.0
+                    else:
+                        normalized[s["ticker"]][ind_id] = min_val / val
+
+            # Clamp normalized ke rentang [0.0, 1.0]
+            for s in stocks:
+                val = normalized[s["ticker"]].get(ind_id, 0.0)
+                normalized[s["ticker"]][ind_id] = min(1.0, max(0.0, val))
+
+        # ── 7. Hitung Skor SAW Akhir ─────────────────────────────────────────
         results = []
         for s in stocks:
+            ticker = s["ticker"]
+            final_score = 0.0
+            formula_parts = []
 
-            n_ai  = s["ai_score"] / max_ai if max_ai > 0 else 0.0
-            n_roe = roe_shifted[s["ticker"]] / max_roe_shifted if max_roe_shifted > 0 else 0.0
+            for ind_id in weighted_indicators:
+                n_val = normalized[ticker][ind_id]
+                w_val = weights[ind_id]
+                final_score += (n_val * w_val)
+                formula_parts.append(f"({n_val:.2f} * {w_val:.2f})")
 
-            if s["der_clean"] <= 0.1:
-                n_der = 1.0
-            else:
-                n_der = min_der / s["der_clean"]
-
-            n_pbv = 0.0 if s["pbv_clean"] <= 0 else (min_pbv / s["pbv_clean"])
-
-            # Clamp ke [0, 1]
-            n_ai  = min(1.0, max(0.0, n_ai))
-            n_roe = min(1.0, max(0.0, n_roe))
-            n_der = min(1.0, max(0.0, n_der))
-            n_pbv = min(1.0, max(0.0, n_pbv))
-
-            final_score = (
-                (n_ai  * weights["ai_score"]) +
-                (n_roe * weights["roe"])      +
-                (n_der * weights["der"])      +
-                (n_pbv * weights["pbv"])
-            )
+            formula_str = "Match Score = " + " + ".join(formula_parts) + f" = {final_score:.4f} ({final_score * 100:.1f}%)"
 
             insights = [InsightItem(**i) for i in s["insights"]]
 
-            roe_display = round(s["roe_raw"], 2) if s["roe_raw"] is not None else 0.0
-            der_display = round(s["der_raw"], 2) if s["der_raw"] is not None else 0.0
-            pbv_display = round(s["pbv_raw"], 2) if s["pbv_raw"] is not None else 0.0
+            # Default fundamental fallback display
+            roe_display = round(stock_vals[ticker].get("roe", 0.0), 2)
+            der_display = round(stock_vals[ticker].get("der", 0.0), 2)
+            pbv_display = round(stock_vals[ticker].get("pbv", 0.0), 2)
+
+            # Transparansi Detail Kalkulasi SAW
+            transparency_data = TransparencyDetail(
+                weights={ind_id: round(weights[ind_id], 4) for ind_id in weighted_indicators},
+                raw_values={ind_id: round(stock_vals[ticker].get(ind_id, 0.0), 4) for ind_id in weighted_indicators},
+                normalized_values={ind_id: round(normalized[ticker][ind_id], 4) for ind_id in weighted_indicators},
+                formula=formula_str
+            )
 
             results.append(
                 RecommendationResponse(
-                    ticker=s["ticker"],
+                    ticker=ticker,
                     sector=s["sector"],
                     match_score=round(final_score, 4),
                     match_score_percent=f"{final_score * 100:.1f}%",
@@ -236,13 +251,14 @@ def calculate_saw_recommendations(
                     roe=roe_display,
                     der=der_display,
                     pbv=pbv_display,
+                    transparency=transparency_data
                 )
             )
 
         # Urutkan berdasarkan Match Score tertinggi
         results.sort(key=lambda x: x.match_score, reverse=True)
 
-        # ── 6. Simpan ke Cache (masih di dalam key_lock) ─────────────────────
+        # ── 8. Simpan ke Cache ───────────────────────────────────────────────
         with _SAW_CACHE_LOCK:
             _SAW_CACHE[cache_key] = {
                 "data":   results,

@@ -6,7 +6,7 @@ from pathlib import Path
 
 from app.core.database import engine, Base
 from app.core.config import settings
-from app.api import auth, recommendation, market, portfolio, admin_ml, admin_users
+from app.api import auth, recommendation, market, portfolio, admin_ml, admin_users, admin_risk_profiles, admin_indicators
 from apscheduler.schedulers.background import BackgroundScheduler
 from ml.pipeline.scheduler import run_daily_pipeline, run_weekly_retrain
 
@@ -67,6 +67,8 @@ app.include_router(market.router)
 app.include_router(portfolio.router)
 app.include_router(admin_ml.router)
 app.include_router(admin_users.router)
+app.include_router(admin_risk_profiles.router)
+app.include_router(admin_indicators.router)
 
 # Static files untuk reports (plot evaluasi model)
 reports_dir = Path("reports")

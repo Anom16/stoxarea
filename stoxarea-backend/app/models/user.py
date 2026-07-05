@@ -16,7 +16,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
     full_name = Column(String, nullable=True)
-    risk_profile = Column(Enum(RiskProfileEnum), nullable=True)
+    risk_profile = Column(String(50), nullable=True)
     virtual_balance = Column(Float, default=100000000.0)
     is_admin = Column(Boolean, default=False, nullable=False)  # Flag admin
     created_at = Column(DateTime(timezone=True), server_default=func.now())

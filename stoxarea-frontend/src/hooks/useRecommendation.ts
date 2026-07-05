@@ -14,6 +14,7 @@ export interface Recommendation {
   der: number
   pbv: number
   insights: { feature: string; description: string; contribution: number }[]
+  transparency?: any
 }
 
 export interface SectorRow {

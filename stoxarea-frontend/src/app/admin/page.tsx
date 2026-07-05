@@ -57,7 +57,6 @@ function ActionCard({ icon, title, desc, href, color = '#2255AA' }: {
 export default function AdminDashboard() {
   const [user, setUser] = useState<any>(null)
   const [status, setStatus] = useState<SystemStatus | null>(null)
-  const [flags, setFlags] = useState<any[]>([])
 
   useEffect(() => {
     api.get('/auth/me').then(r => setUser(r.data))
@@ -66,8 +65,7 @@ export default function AdminDashboard() {
     Promise.all([
       api.get('/admin/ml/reports/summary').catch(() => null),
       api.get('/admin/ml/cache-status'),
-      api.get('/admin/ml/corporate-actions'),
-    ]).then(([reportRes, cacheRes, flagsRes]) => {
+    ]).then(([reportRes, cacheRes]) => {
       const aiCount = reportRes?.data?.dataset?.total_samples
         ? Math.round(reportRes.data.dataset.total_samples / reportRes.data.parameters.n_estimators)
         : 57
@@ -77,7 +75,6 @@ export default function AdminDashboard() {
         cache_entries: cacheRes.data.total_entries,
         ai_scores_age_hours: 0,
       })
-      setFlags(flagsRes.data.flags || [])
     }).catch(() => {})
   }, [])
 
@@ -97,12 +94,12 @@ export default function AdminDashboard() {
         <StatCard icon="🤖" label="AI Score Aktif" value={status?.ai_scores_count ?? '–'} sub="Emiten dengan prediksi" color="#2196F3" />
         <StatCard icon="✅" label="Emiten Qualified" value={status?.qualified_stocks ?? '–'} sub="is_qualified = True" color="#4CAF50" />
         <StatCard icon="🗄️" label="SAW Cache" value={status?.cache_entries ?? '–'} sub="Cache entries aktif" color="#FF9800" />
-        <StatCard icon="🚨" label="Corporate Action" value={flags.length} sub="Menunggu validasi" color={flags.length > 0 ? '#f44336' : '#4CAF50'} />
       </div>
 
       {/* Quick Actions */}
       <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#888' }}>⚡ AKSI CEPAT</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 12, marginBottom: 28 }}>
+        <ActionCard icon="⚖️" title="Kelola Profil Risiko" desc="Edit bobot dan parameter kuesioner" href="/admin/risk-profiles" color="#E040FB" />
         <ActionCard icon="▶️" title="Jalankan Pipeline Harian" desc="Ingest + Inference (tanpa retrain)" href="/admin/ml-pipeline" color="#2196F3" />
         <ActionCard icon="🔄" title="Full Retrain Mingguan" desc="Retrain XGBoost + semua step" href="/admin/ml-pipeline" color="#9C27B0" />
         <ActionCard icon="🧠" title="Performa Model AI" desc="Lihat metrik evaluasi XGBoost" href="/admin/model-performance" color="#FF9800" />
@@ -124,28 +121,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Corporate Action Flags */}
-      {flags.length > 0 && (
-        <div style={{
-          background: 'rgba(244,67,54,0.08)', border: '1px solid rgba(244,67,54,0.3)',
-          borderRadius: 12, padding: '16px 20px',
-        }}>
-          <div style={{ fontWeight: 700, color: '#f44336', marginBottom: 10 }}>
-            ⚠️ {flags.length} Emiten Memerlukan Validasi Corporate Action
-          </div>
-          {flags.slice(0, 3).map((flag: any, i: number) => (
-            <div key={i} style={{ fontSize: 13, color: '#ccc', marginBottom: 4 }}>
-              • <b>{flag.ticker}</b> — {flag.description || 'Pergerakan harga ekstrem terdeteksi'}
-            </div>
-          ))}
-          <Link href="/admin/corporate-actions" style={{
-            display: 'inline-block', marginTop: 8, fontSize: 12,
-            color: '#f44336', textDecoration: 'underline',
-          }}>
-            Lihat semua →
-          </Link>
-        </div>
-      )}
     </div>
   )
 }

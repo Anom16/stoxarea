@@ -2,13 +2,13 @@
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 
-const RISK_OPTIONS = ['Konservatif', 'Moderat', 'Agresif']
-
 const profileColor = (p: string | null) => {
-  if (p === 'Konservatif') return '#4CAF50'
-  if (p === 'Moderat')     return '#FF9800'
-  if (p === 'Agresif')     return '#f44336'
-  return '#888'
+  if (!p) return '#888'
+  const pl = p.toLowerCase()
+  if (pl === 'konservatif') return '#4CAF50'
+  if (pl === 'moderat')     return '#FF9800'
+  if (pl === 'agresif')     return '#f44336'
+  return '#E040FB'
 }
 
 interface UserData {
@@ -23,6 +23,7 @@ interface UserData {
 
 export default function AdminUsersPage() {
   const [users, setUsers]       = useState<UserData[]>([])
+  const [profiles, setProfiles] = useState<any[]>([])
   const [loading, setLoading]   = useState(true)
   const [search, setSearch]     = useState('')
   const [editId, setEditId]     = useState<number | null>(null)
@@ -32,6 +33,10 @@ export default function AdminUsersPage() {
 
   const load = () => {
     setLoading(true)
+    api.get('/auth/risk-profiles')
+      .then(r => setProfiles(r.data))
+      .catch(() => {})
+
     api.get('/admin/users/')
       .then(r => setUsers(r.data))
       .finally(() => setLoading(false))
@@ -148,7 +153,7 @@ export default function AdminUsersPage() {
                         style={{ background: '#0a0f1a', border: '1px solid #444', borderRadius: 6, padding: '6px 10px', color: '#fff', fontSize: 12 }}
                       >
                         <option value="">-- Belum --</option>
-                        {RISK_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                        {profiles.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                       </select>
                     </td>
                     <td style={{ padding: '10px 14px' }}>

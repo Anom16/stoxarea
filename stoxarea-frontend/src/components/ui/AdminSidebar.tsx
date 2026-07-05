@@ -6,9 +6,9 @@ const adminNav = [
   { href: '/admin',                  label: 'Dashboard Admin',    icon: '⊞' },
   { href: '/admin/users',            label: 'Kelola User',        icon: '👥' },
   { href: '/admin/stocks',           label: 'Daftar Saham',       icon: '📈' },
+  { href: '/admin/risk-profiles',    label: 'Kelola Profil Risiko',icon: '⚖️' },
   { href: '/admin/ml-pipeline',      label: 'Pipeline ML',        icon: '⚙️' },
   { href: '/admin/model-performance',label: 'Performa Model AI',  icon: '🧠' },
-  { href: '/admin/corporate-actions',label: 'Corporate Action',   icon: '🚨' },
   { href: '/admin/cache',            label: 'Cache Monitor',      icon: '🗄️' },
 ]
 

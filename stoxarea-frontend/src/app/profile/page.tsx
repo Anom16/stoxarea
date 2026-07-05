@@ -11,23 +11,49 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [newProfile, setNewProfile] = useState('')
+  const [profiles, setProfiles] = useState<any[]>([])
   const { toasts, removeToast, toast } = useToast()
-
-  useEffect(() => {
-    fetchUser()
-  }, [])
 
   const fetchUser = async () => {
     try {
       const res = await api.get('/auth/me')
       setUser(res.data)
-      setNewProfile(res.data.risk_profile || 'Moderat')
+      setNewProfile(res.data.risk_profile || 'moderat')
     } catch (err) {
       console.error(err)
     } finally {
       setLoading(false)
     }
   }
+
+  const fetchProfiles = async () => {
+    try {
+      const res = await api.get('/auth/risk-profiles')
+      const mapped = res.data.map((p: any) => {
+        let emoji = '⚖️'
+        let color = 'var(--accent)'
+        const pid = p.id.toLowerCase()
+        if (pid === 'konservatif') { emoji = '🛡️'; color = 'var(--blue)' }
+        else if (pid === 'agresif') { emoji = '🚀'; color = '#ef4444' }
+        else if (pid === 'moderat') { emoji = '⚖️'; color = 'var(--accent)' }
+        else { emoji = '📊'; color = '#E040FB' }
+        
+        return {
+          id: p.id,
+          title: `${emoji} ${p.name}`,
+          desc: p.description || `Bobot: AI ${((p.weights?.ai_score || 0)*100).toFixed(0)}%, ROE ${((p.weights?.roe || 0)*100).toFixed(0)}%`,
+          color: color
+        }
+      })
+      setProfiles(mapped)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => {
+    Promise.all([fetchUser(), fetchProfiles()])
+  }, [])
 
   const handleUpdateProfile = async () => {
     setSaving(true)
@@ -45,27 +71,6 @@ export default function ProfilePage() {
       setSaving(false)
     }
   }
-
-  const profiles = [
-    { 
-      id: 'Konservatif', 
-      title: '🛡️ Konservatif', 
-      desc: 'Fokus pada keamanan modal. Cocok untuk Anda yang menghindari risiko besar dan memilih saham stabil (Bluechip).',
-      color: 'var(--blue)'
-    },
-    { 
-      id: 'Moderat', 
-      title: '⚖️ Moderat', 
-      desc: 'Keseimbangan antara risiko dan keuntungan. Cocok untuk investasi jangka menengah dengan pertumbuhan stabil.',
-      color: 'var(--accent)'
-    },
-    { 
-      id: 'Agresif', 
-      title: '🚀 Agresif', 
-      desc: 'Mengejar keuntungan maksimal. Siap menghadapi fluktuasi tinggi demi potensi pertumbuhan eksponensial.',
-      color: '#ef4444'
-    }
-  ]
 
   return (
     <div className="app-shell">

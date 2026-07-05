@@ -52,7 +52,7 @@ def list_all_users(
             "id":              u.id,
             "email":           u.email,
             "full_name":       u.full_name,
-            "risk_profile":    u.risk_profile.value if u.risk_profile else None,
+            "risk_profile":    u.risk_profile if u.risk_profile else None,
             "virtual_balance": u.virtual_balance,
             "is_admin":        u.is_admin,
             "created_at":      u.created_at.isoformat() if u.created_at else None,
@@ -89,7 +89,7 @@ def update_user(
             "id":           user.id,
             "email":        user.email,
             "full_name":    user.full_name,
-            "risk_profile": user.risk_profile.value if user.risk_profile else None,
+            "risk_profile": user.risk_profile if user.risk_profile else None,
             "is_admin":     user.is_admin,
             "virtual_balance": user.virtual_balance,
         }

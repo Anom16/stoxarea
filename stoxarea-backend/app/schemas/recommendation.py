@@ -6,6 +6,12 @@ class InsightItem(BaseModel):
     contribution: float
     description: str
 
+class TransparencyDetail(BaseModel):
+    weights: dict
+    raw_values: dict
+    normalized_values: dict
+    formula: str
+
 class RecommendationResponse(BaseModel):
     ticker: str
     sector: str
@@ -18,3 +24,6 @@ class RecommendationResponse(BaseModel):
     roe: Optional[float] = None
     der: Optional[float] = None
     pbv: Optional[float] = None
+    
+    # Transparansi kalkulasi SAW
+    transparency: Optional[TransparencyDetail] = None

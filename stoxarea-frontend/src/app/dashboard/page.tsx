@@ -19,6 +19,7 @@ interface Recommendation {
   der: number
   pbv: number
   insights: { feature: string; description: string; contribution: number }[]
+  transparency?: any
 }
 
 interface SectorRow {
@@ -43,6 +44,7 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState('—')
   const [username, setUsername] = useState('Pengguna')
   const [error, setError]     = useState('')
+  const [selectedTransparency, setSelectedTransparency] = useState<any>(null)
 
   // Layout switch
   const [dashLayout, setDashLayout] = useState<'classic' | 'modern'>('classic')
@@ -329,7 +331,18 @@ export default function DashboardPage() {
                           </div>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>{r.match_score_percent} Match</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>
+                            {r.match_score_percent} Match
+                            {r.transparency && (
+                              <span 
+                                onClick={(e) => { e.preventDefault(); setSelectedTransparency(r); }}
+                                style={{ marginLeft: 6, cursor: 'pointer', fontSize: 12, opacity: 0.8 }} 
+                                title="Lihat Transparansi Kalkulasi"
+                              >
+                                ℹ️
+                              </span>
+                            )}
+                          </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, justifyContent: 'flex-end' }}>
                             <div className="ai-bar-track" style={{ width: 80 }}>
                               <div className="ai-bar-fill" style={{ width: r.ai_score_percent }} />
@@ -636,10 +649,19 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="pick-actions">
-                      <Link href={`/market/${r.ticker}`} className="btn-outline" style={{ textDecoration: 'none', textAlign: 'center', width: '100%' }}>
+                    <div className="pick-actions" style={{ display: 'flex', gap: 8 }}>
+                      <Link href={`/market/${r.ticker}`} className="btn-outline" style={{ textDecoration: 'none', textAlign: 'center', flex: 1 }}>
                         Detail Analisis
                       </Link>
+                      {r.transparency && (
+                        <button 
+                          className="btn-outline" 
+                          onClick={() => setSelectedTransparency(r)}
+                          style={{ flex: 1, cursor: 'pointer', background: 'rgba(16, 185, 129, 0.05)', borderColor: 'var(--accent)' }}
+                        >
+                          ⚖️ Transparansi
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -671,7 +693,18 @@ export default function DashboardPage() {
                         <td><div className={`rank-num ${rankColor(i)}`}>{i + 1}</div></td>
                         <td><Link href={`/market/${r.ticker}`} style={{ color: 'var(--text-primary)', textDecoration: 'none', fontWeight: 600 }}>{r.ticker.replace('.JK', '')}</Link></td>
                         <td style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{r.sector}</td>
-                        <td><span className="text-accent fw-700">{r.match_score_percent}</span></td>
+                        <td>
+                          <span className="text-accent fw-700">{r.match_score_percent}</span>
+                          {r.transparency && (
+                            <span 
+                              onClick={(e) => { e.preventDefault(); setSelectedTransparency(r); }}
+                              style={{ marginLeft: 6, cursor: 'pointer', fontSize: 11, opacity: 0.7 }}
+                              title="Lihat Transparansi Kalkulasi"
+                            >
+                              ℹ️
+                            </span>
+                          )}
+                        </td>
                         <td>
                           <div className="ai-bar-wrap">
                             <div className="ai-bar-track"><div className="ai-bar-fill" style={{ width: r.ai_score_percent }} /></div>
@@ -750,6 +783,120 @@ export default function DashboardPage() {
           <DisclaimerFooter />
         </div>
       </main>
+
+      {/* ─── MODAL TRANSPARANSI PERHITUNGAN SAW ─── */}
+      {selectedTransparency && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
+          backdropFilter: 'blur(8px)', fontFamily: 'Inter, sans-serif'
+        }}>
+          <div style={{
+            background: '#16213e', border: '1px solid var(--accent)', borderRadius: 16,
+            padding: 28, maxWidth: 540, width: '100%', boxSizing: 'border-box',
+            position: 'relative', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+          }}>
+            <button 
+              onClick={() => setSelectedTransparency(null)}
+              style={{
+                position: 'absolute', top: 16, right: 16, background: 'transparent',
+                border: 'none', color: '#888', fontSize: 20, cursor: 'pointer'
+              }}
+            >
+              ✕
+            </button>
+
+            <h3 style={{ fontSize: 18, fontWeight: 800, margin: '0 0 8px', color: 'white' }}>
+              ⚖️ Transparansi Perhitungan SAW — {selectedTransparency.ticker.replace('.JK', '')}
+            </h3>
+            <p style={{ fontSize: 13, color: '#aaa', margin: '0 0 20px' }}>
+              Bagaimana skor kesesuaian <b>{selectedTransparency.match_score_percent}</b> didapatkan dari Backend?
+            </p>
+
+            {/* Formula / Step 1 */}
+            <div style={{ background: '#0a0f1a', borderRadius: 8, padding: '12px 16px', marginBottom: 20 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 4 }}>
+                Rumus Akhir (Weighted SAW Sum)
+              </div>
+              <div style={{ fontSize: 13, fontFamily: 'monospace', color: '#10b981', lineHeight: 1.5, wordBreak: 'break-all' }}>
+                {selectedTransparency.transparency.formula}
+              </div>
+            </div>
+
+            {/* Table */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, textAlign: 'left', color: '#ccc' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid #333' }}>
+                  <th style={{ padding: '8px 4px', color: '#fff' }}>Kriteria</th>
+                  <th style={{ padding: '8px 4px', color: '#fff' }}>Nilai Asli (Raw)</th>
+                  <th style={{ padding: '8px 4px', color: '#fff' }}>Tipe</th>
+                  <th style={{ padding: '8px 4px', color: '#fff' }}>Normalisasi (n)</th>
+                  <th style={{ padding: '8px 4px', color: '#fff' }}>Bobot (w)</th>
+                  <th style={{ padding: '8px 4px', color: '#fff', textAlign: 'right' }}>Hasil (n × w)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(selectedTransparency.transparency.weights).map((indId) => {
+                  const rawVal = selectedTransparency.transparency.raw_values[indId] ?? 0.0
+                  const normVal = selectedTransparency.transparency.normalized_values[indId] ?? 0.0
+                  const weight = selectedTransparency.transparency.weights[indId] ?? 0.0
+                  const result = normVal * weight
+
+                  // Label and styling heuristics
+                  let displayName = indId.toUpperCase()
+                  let typeLabel = "BENEFIT"
+                  let typeColor = "#4CAF50"
+                  
+                  if (indId === 'ai_score') { displayName = "🤖 AI Score" }
+                  else if (indId === 'roe') { displayName = "📈 ROE" }
+                  else if (indId === 'der') { displayName = "📉 DER"; typeLabel = "COST"; typeColor = "#f44336" }
+                  else if (indId === 'pbv') { displayName = "📊 PBV"; typeLabel = "COST"; typeColor = "#f44336" }
+                  else {
+                    const isCost = indId.toLowerCase().includes('der') || indId.toLowerCase().includes('pbv') || indId.toLowerCase().includes('cost') || indId.toLowerCase().includes('ratio') || indId.toLowerCase().includes('debt')
+                    typeLabel = isCost ? "COST" : "BENEFIT"
+                    typeColor = isCost ? "#f44336" : "#4CAF50"
+                    displayName = indId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+                  }
+
+                  // Display raw value format
+                  let rawStr = rawVal.toFixed(2)
+                  if (indId === 'ai_score') rawStr = (rawVal * 100).toFixed(1) + '%'
+                  else if (indId === 'roe') rawStr = rawVal.toFixed(1) + '%'
+                  else if (indId === 'der' || indId === 'pbv') rawStr = rawVal.toFixed(2) + 'x'
+
+                  return (
+                    <tr key={indId} style={{ borderBottom: '1px solid #222' }}>
+                      <td style={{ padding: '10px 4px', fontWeight: 600 }}>{displayName}</td>
+                      <td style={{ padding: '10px 4px' }}>{rawStr}</td>
+                      <td style={{ padding: '10px 4px', color: typeColor, fontSize: 10, fontWeight: 700 }}>{typeLabel}</td>
+                      <td style={{ padding: '10px 4px' }}>{normVal.toFixed(2)}</td>
+                      <td style={{ padding: '10px 4px' }}>{(weight * 100).toFixed(0)}%</td>
+                      <td style={{ padding: '10px 4px', textAlign: 'right', fontWeight: 700, color: '#fff' }}>
+                        {result.toFixed(3)}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+
+            <div style={{ marginTop: 20, fontSize: 10, color: '#888', lineHeight: 1.4 }}>
+              💡 <b>Catatan:</b> Untuk kriteria <b>Benefit</b> (ROE & AI Score), nilai dinormalisasi dengan membagi nilai emiten dengan nilai maksimal di pasar. Untuk kriteria <b>Cost</b> (DER & PBV), nilai dinormalisasi dengan membagi nilai minimal di pasar dengan nilai emiten.
+            </div>
+
+            <button 
+              onClick={() => setSelectedTransparency(null)}
+              style={{
+                width: '100%', background: 'var(--accent)', color: 'white',
+                border: 'none', borderRadius: 8, padding: '12px', fontSize: 14,
+                fontWeight: 700, cursor: 'pointer', marginTop: 20
+              }}
+            >
+              Tutup Transparansi
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

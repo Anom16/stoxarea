@@ -11,6 +11,7 @@ from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse, QuestionnaireInput, UpdateProfileRequest, UpdatePasswordRequest
 from app.services.spk1_profiling import calculate_risk_profile
 from app.core.questions import QUESTIONNAIRE_DATA
+from app.models.risk_profile import RiskProfile
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["Auth & Profiling"])
@@ -69,7 +70,7 @@ def submit_profiling(answers: QuestionnaireInput, email: str = Depends(get_curre
         raise HTTPException(status_code=404, detail="User not found")
         
     # Hitung profil berdasarkan jawaban kuesioner + VETO
-    profile = calculate_risk_profile(answers)
+    profile = calculate_risk_profile(db, answers)
     
     user.risk_profile = profile
     db.commit()
@@ -140,3 +141,31 @@ def update_password(
     db.commit()
     logger.info(f"Password user {email} berhasil diperbarui.")
     return {"message": "Kata sandi berhasil diperbarui."}
+
+@router.get("/risk-profiles")
+def get_public_risk_profiles(
+    db: Session = Depends(get_db)
+):
+    """Mendapatkan daftar semua profil risiko untuk user biasa."""
+    profiles = db.query(RiskProfile).order_by(RiskProfile.id).all()
+    
+    # Ambil bobot untuk semua profil secara dinamis
+    from app.models.indicator import ProfileIndicatorWeight
+    all_weights = db.query(ProfileIndicatorWeight).all()
+    weights_map = {}
+    for w in all_weights:
+        if w.profile_id not in weights_map:
+            weights_map[w.profile_id] = {}
+        weights_map[w.profile_id][w.indicator_id] = w.weight
+
+    return [
+        {
+            "id": p.id,
+            "name": p.name,
+            "description": p.description,
+            "weights": weights_map.get(p.id, {}),
+            "min_score_threshold": p.min_score_threshold,
+            "max_score_threshold": p.max_score_threshold,
+        }
+        for p in profiles
+    ]
