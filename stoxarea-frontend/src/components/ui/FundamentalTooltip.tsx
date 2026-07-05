@@ -402,6 +402,14 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
     return 1.1 // Default zoom level: 110%
   })
 
+  const [boxWidth, setBoxWidth] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('tooltip_width')
+      if (saved) return parseInt(saved)
+    }
+    return 480 // Default width: 480px on desktop
+  })
+
   const info = METRIC_INFO[metricKey]
   if (!info) return null
 
@@ -455,7 +463,7 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              width: typeof window !== 'undefined' && window.innerWidth < 480 ? '90vw' : Math.min(520, 340 * zoomScale),
+              width: typeof window !== 'undefined' && window.innerWidth < 500 ? '90vw' : boxWidth,
               maxHeight: '90vh',
               overflowY: 'auto',
               background: '#1e293b',
@@ -473,52 +481,103 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
                 {info.fullName}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                {/* Zoom Control */}
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    const next = Math.max(0.9, zoomScale - 0.1)
-                    setZoomScale(next)
-                    localStorage.setItem('tooltip_zoom', next.toString())
-                  }}
-                  title="Perkecil Teks"
-                  style={{
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: '#94a3b8',
-                    borderRadius: 4,
-                    padding: '2px 6px',
-                    fontSize: 9,
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  A-
-                </button>
-                <span style={{ fontSize: 9, color: '#64748b', fontWeight: 'bold' }}>
-                  {Math.round(zoomScale * 100)}%
-                </span>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    const next = Math.min(1.5, zoomScale + 0.1)
-                    setZoomScale(next)
-                    localStorage.setItem('tooltip_zoom', next.toString())
-                  }}
-                  title="Perbesar Teks"
-                  style={{
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: '#94a3b8',
-                    borderRadius: 4,
-                    padding: '2px 6px',
-                    fontSize: 9,
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  A+
-                </button>
+                {/* Width Control: W- / W+ */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: 'rgba(255,255,255,0.03)', borderRadius: 6, padding: '2px 4px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      const next = Math.max(340, boxWidth - 40)
+                      setBoxWidth(next)
+                      localStorage.setItem('tooltip_width', next.toString())
+                    }}
+                    title="Perkecil Lebar Kotak"
+                    style={{
+                      background: 'rgba(255,255,255,0.06)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      color: '#94a3b8',
+                      borderRadius: 4,
+                      padding: '2px 5px',
+                      fontSize: 8,
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    W-
+                  </button>
+                  <span style={{ fontSize: 8, color: '#64748b', fontWeight: 'bold', minWidth: 28, textAlign: 'center' }}>
+                    {boxWidth}
+                  </span>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      const next = Math.min(680, boxWidth + 40)
+                      setBoxWidth(next)
+                      localStorage.setItem('tooltip_width', next.toString())
+                    }}
+                    title="Perbesar Lebar Kotak"
+                    style={{
+                      background: 'rgba(255,255,255,0.06)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      color: '#94a3b8',
+                      borderRadius: 4,
+                      padding: '2px 5px',
+                      fontSize: 8,
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    W+
+                  </button>
+                </div>
+
+                {/* Zoom Control: A- / A+ */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: 'rgba(255,255,255,0.03)', borderRadius: 6, padding: '2px 4px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      const next = Math.max(0.9, zoomScale - 0.1)
+                      setZoomScale(next)
+                      localStorage.setItem('tooltip_zoom', next.toString())
+                    }}
+                    title="Perkecil Teks"
+                    style={{
+                      background: 'rgba(255,255,255,0.06)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      color: '#94a3b8',
+                      borderRadius: 4,
+                      padding: '2px 5px',
+                      fontSize: 8,
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    A-
+                  </button>
+                  <span style={{ fontSize: 8, color: '#64748b', fontWeight: 'bold', minWidth: 26, textAlign: 'center' }}>
+                    {Math.round(zoomScale * 100)}%
+                  </span>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      const next = Math.min(1.5, zoomScale + 0.1)
+                      setZoomScale(next)
+                      localStorage.setItem('tooltip_zoom', next.toString())
+                    }}
+                    title="Perbesar Teks"
+                    style={{
+                      background: 'rgba(255,255,255,0.06)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      color: '#94a3b8',
+                      borderRadius: 4,
+                      padding: '2px 5px',
+                      fontSize: 8,
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    A+
+                  </button>
+                </div>
                 
                 {/* Close Button */}
                 <button
@@ -531,7 +590,7 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
                     fontSize: 18, 
                     lineHeight: 1, 
                     padding: 0, 
-                    marginLeft: 8,
+                    marginLeft: 4,
                     fontWeight: 'bold',
                   }}
                 >
