@@ -15,7 +15,6 @@ from app.models.stock import Stock
 from app.models.portfolio import Portfolio
 from app.models.transaction import Transaction
 from app.models.financials import FinancialHistory
-from app.models.corporate_action import CorporateActionFlag
 
 # this is the Alembic Config object
 config = context.config

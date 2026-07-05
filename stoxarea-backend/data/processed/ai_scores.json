@@ -6,20 +6,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.24295753240585327,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.060886282473802567,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_signal_norm",
                 "contribution": -0.05605560168623924,
-                "description": "Sinyal Tren (MACD) menekan turun probabilitas."
+                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.237229"
     },
     "BBRI.JK": {
         "ai_score": 0.2522,
@@ -28,20 +28,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.16415633261203766,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.059624601155519485,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_signal_norm",
                 "contribution": 0.04771551489830017,
-                "description": "Sinyal Tren (MACD) mendorong naik probabilitas."
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.239303"
     },
     "BMRI.JK": {
         "ai_score": 0.2153,
@@ -50,20 +50,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.21964618563652039,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.06226217374205589,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.05915570631623268,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.239303"
     },
     "BBNI.JK": {
         "ai_score": 0.2266,
@@ -72,20 +72,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.21598736941814423,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.14380714297294617,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.07330791652202606,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.239303"
     },
     "TLKM.JK": {
         "ai_score": 0.2437,
@@ -94,20 +94,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.15632101893424988,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.09141964465379715,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.05276438593864441,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.239303"
     },
     "ASII.JK": {
         "ai_score": 0.2547,
@@ -116,20 +116,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.10957272350788116,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": 0.0889948382973671,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.08554527163505554,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.239303"
     },
     "UNTR.JK": {
         "ai_score": 0.2556,
@@ -138,20 +138,20 @@
             {
                 "feature": "macd_hist_norm",
                 "contribution": 0.2403985857963562,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_position",
                 "contribution": -0.15496042370796204,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
+                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": 0.09690377861261368,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "ADRO.JK": {
         "ai_score": 0.1565,
@@ -160,20 +160,20 @@
             {
                 "feature": "bb_width",
                 "contribution": -0.2844243347644806,
-                "description": "Volatilitas / Squeeze (BB) menekan turun probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.10937285423278809,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.07878383249044418,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "PTBA.JK": {
         "ai_score": 0.2337,
@@ -182,20 +182,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.14461566507816315,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": -0.1381291151046753,
-                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.09010016918182373,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "ITMG.JK": {
         "ai_score": 0.1499,
@@ -204,20 +204,20 @@
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.20748774707317352,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": -0.1463945209980011,
-                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": -0.08283790946006775,
-                "description": "Volatilitas / Squeeze (BB) menekan turun probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "UNVR.JK": {
         "ai_score": 0.2571,
@@ -226,20 +226,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.26884108781814575,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": 0.09341249614953995,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": -0.051302336156368256,
-                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "ICBP.JK": {
         "ai_score": 0.2312,
@@ -248,20 +248,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.16786816716194153,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_position",
                 "contribution": -0.04978703707456589,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
+                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_signal_norm",
                 "contribution": 0.03405024856328964,
-                "description": "Sinyal Tren (MACD) mendorong naik probabilitas."
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "INDF.JK": {
         "ai_score": 0.2167,
@@ -270,20 +270,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.22104822099208832,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.059356290847063065,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": -0.04527915641665459,
-                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "KLBF.JK": {
         "ai_score": 0.2747,
@@ -292,20 +292,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.227455735206604,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.07234735041856766,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": 0.040702421218156815,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "PGAS.JK": {
         "ai_score": 0.2574,
@@ -314,20 +314,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.1743602305650711,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.10474523901939392,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_signal_norm",
                 "contribution": 0.040323514491319656,
-                "description": "Sinyal Tren (MACD) mendorong naik probabilitas."
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "AKRA.JK": {
         "ai_score": 0.1902,
@@ -336,20 +336,20 @@
             {
                 "feature": "bb_width",
                 "contribution": -0.08866428583860397,
-                "description": "Volatilitas / Squeeze (BB) menekan turun probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.08150926977396011,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.053755853325128555,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "TOWR.JK": {
         "ai_score": 0.2616,
@@ -358,20 +358,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.24938535690307617,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.062009118497371674,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.05789738520979881,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "BRPT.JK": {
         "ai_score": 0.2646,
@@ -380,20 +380,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.2799525260925293,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.0882328525185585,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": -0.05403131619095802,
-                "description": "Kekuatan Tren (MACD) menekan turun probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.403169"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "TPIA.JK": {
         "ai_score": 0.1011,
@@ -402,20 +402,20 @@
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.5536086559295654,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": -0.31854870915412903,
-                "description": "Kekuatan Tren (MACD) menekan turun probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": 0.3181212544441223,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "INKP.JK": {
         "ai_score": 0.2294,
@@ -424,20 +424,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.17980916798114777,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.07815471291542053,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.0582321435213089,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "TKIM.JK": {
         "ai_score": 0.2267,
@@ -446,20 +446,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.18596723675727844,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.10950804501771927,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.10061793029308319,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.240159"
     },
     "SMGR.JK": {
         "ai_score": 0.2405,
@@ -468,20 +468,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.1925031989812851,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.10744214057922363,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "log_ret_1d",
                 "contribution": 0.056846752762794495,
-                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+                "description": "Hasil Naik-Turun Harian mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "INTP.JK": {
         "ai_score": 0.1744,
@@ -490,20 +490,20 @@
             {
                 "feature": "bb_width",
                 "contribution": -0.2172616869211197,
-                "description": "Volatilitas / Squeeze (BB) menekan turun probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.09159772843122482,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.07984762638807297,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "HRUM.JK": {
         "ai_score": 0.2275,
@@ -512,20 +512,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.18575982749462128,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.08515118807554245,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.04915063828229904,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "MEDC.JK": {
         "ai_score": 0.2277,
@@ -534,20 +534,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.20108836889266968,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.10184932500123978,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.054797202348709106,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "INDY.JK": {
         "ai_score": 0.2709,
@@ -556,20 +556,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.34777066111564636,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": 0.1524098515510559,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_position",
                 "contribution": -0.09930510818958282,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
+                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "EXCL.JK": {
         "ai_score": 0.2634,
@@ -578,20 +578,20 @@
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.1277138739824295,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": 0.096462182700634,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": 0.08191531151533127,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "ISAT.JK": {
         "ai_score": 0.2799,
@@ -600,20 +600,20 @@
             {
                 "feature": "macd_hist_norm",
                 "contribution": 0.2711601257324219,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": 0.22178372740745544,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_position",
                 "contribution": -0.15245875716209412,
-                "description": "Posisi Harga (Bollinger) menekan turun probabilitas."
+                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "JSMR.JK": {
         "ai_score": 0.2153,
@@ -622,20 +622,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.19626428186893463,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.12127050012350082,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.07011880725622177,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "PTPP.JK": {
         "ai_score": 0.2033,
@@ -644,20 +644,20 @@
             {
                 "feature": "rsi_14",
                 "contribution": -0.2984945774078369,
-                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.16409724950790405,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": 0.1476437896490097,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "BSDE.JK": {
         "ai_score": 0.2601,
@@ -666,20 +666,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.17674358189105988,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.07843825966119766,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": 0.06963726133108139,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "PWON.JK": {
         "ai_score": 0.2738,
@@ -688,20 +688,20 @@
             {
                 "feature": "macd_hist_norm",
                 "contribution": 0.1871618777513504,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": 0.14352558553218842,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.10668371617794037,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.241427"
     },
     "CTRA.JK": {
         "ai_score": 0.2734,
@@ -710,20 +710,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.1139073520898819,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": 0.0826452374458313,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.0811055600643158,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.242672"
     },
     "SMRA.JK": {
         "ai_score": 0.1804,
@@ -732,20 +732,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.23697450757026672,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.06413201987743378,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.05773131549358368,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.242672"
     },
     "ASSA.JK": {
         "ai_score": 0.2585,
@@ -754,20 +754,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.18877056241035461,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.10193753987550735,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.06431210041046143,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.242672"
     },
     "BIRD.JK": {
         "ai_score": 0.2424,
@@ -776,20 +776,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.23499369621276855,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.053938791155815125,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.05183177441358566,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.242672"
     },
     "GIAA.JK": {
         "ai_score": 0.2574,
@@ -798,20 +798,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.14884941279888153,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.06842593103647232,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_signal_norm",
                 "contribution": 0.05488405376672745,
-                "description": "Sinyal Tren (MACD) mendorong naik probabilitas."
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.242672"
     },
     "SMDR.JK": {
         "ai_score": 0.2706,
@@ -820,20 +820,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.11655662208795547,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.0838705524802208,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_signal_norm",
                 "contribution": 0.07030066847801208,
-                "description": "Sinyal Tren (MACD) mendorong naik probabilitas."
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.243171"
     },
     "SCMA.JK": {
         "ai_score": 0.2499,
@@ -842,20 +842,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.23523084819316864,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": -0.05006328970193863,
-                "description": "Kekuatan Tren (MACD) menekan turun probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.04891451075673103,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.243171"
     },
     "EMTK.JK": {
         "ai_score": 0.2502,
@@ -864,20 +864,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.17867010831832886,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.09850739687681198,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.08783667534589767,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.243171"
     },
     "BUKA.JK": {
         "ai_score": 0.1778,
@@ -886,20 +886,20 @@
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.2686859369277954,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": -0.20332777500152588,
-                "description": "Kekuatan Tren (MACD) menekan turun probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": 0.19157570600509644,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.243171"
     },
     "MIKA.JK": {
         "ai_score": 0.2849,
@@ -908,20 +908,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.36266401410102844,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": 0.3016359210014343,
-                "description": "Akselerasi Tren (MACD Hist) mendorong naik probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.0553036592900753,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.243171"
     },
     "HEAL.JK": {
         "ai_score": 0.2706,
@@ -930,20 +930,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.13843947649002075,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.07113297283649445,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.06536789238452911,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "SIDO.JK": {
         "ai_score": 0.2433,
@@ -952,20 +952,20 @@
             {
                 "feature": "macd_norm",
                 "contribution": 0.11532924324274063,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.11058244109153748,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.10949096828699112,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.405254"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "MYOR.JK": {
         "ai_score": 0.2275,
@@ -974,20 +974,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.21859967708587646,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.056512441486120224,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.038631923496723175,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "ULTJ.JK": {
         "ai_score": 0.2461,
@@ -996,20 +996,20 @@
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.09520893543958664,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": 0.09276688098907471,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": 0.08851554989814758,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "ROTI.JK": {
         "ai_score": 0.1995,
@@ -1018,20 +1018,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.2004348635673523,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.07026951760053635,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": -0.06554572284221649,
-                "description": "Tingkat Kejenuhan Pasar (RSI) menekan turun probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "WOOD.JK": {
         "ai_score": 0.2595,
@@ -1040,20 +1040,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.16919875144958496,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.1068255752325058,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.10376951843500137,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "BRIS.JK": {
         "ai_score": 0.2,
@@ -1062,20 +1062,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.23241709172725677,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.0574561171233654,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": -0.04450923204421997,
-                "description": "Trend Menengah (MA50) menekan turun probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "BBTN.JK": {
         "ai_score": 0.2646,
@@ -1084,20 +1084,20 @@
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.17723654210567474,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": 0.16844744980335236,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "log_ret_1d",
                 "contribution": 0.16360463201999664,
-                "description": "Perubahan Harga Harian mendorong naik probabilitas."
+                "description": "Hasil Naik-Turun Harian mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "BJBR.JK": {
         "ai_score": 0.1845,
@@ -1106,20 +1106,20 @@
             {
                 "feature": "macd_signal_norm",
                 "contribution": -0.08070612698793411,
-                "description": "Sinyal Tren (MACD) menekan turun probabilitas."
+                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.07387040555477142,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.0536951906979084,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "BNGA.JK": {
         "ai_score": 0.1724,
@@ -1128,20 +1128,20 @@
             {
                 "feature": "bb_width",
                 "contribution": -0.08933307230472565,
-                "description": "Volatilitas / Squeeze (BB) menekan turun probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.08243879675865173,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.07341764122247696,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "PNBN.JK": {
         "ai_score": 0.2049,
@@ -1150,20 +1150,20 @@
             {
                 "feature": "rsi_14",
                 "contribution": 0.08521128445863724,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_hist_norm",
                 "contribution": -0.054130323231220245,
-                "description": "Akselerasi Tren (MACD Hist) menekan turun probabilitas."
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.04429749399423599,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "ELSA.JK": {
         "ai_score": 0.2871,
@@ -1172,20 +1172,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.12744079530239105,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.10754320025444031,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "log_ret_5d",
                 "contribution": 0.07667818665504456,
-                "description": "Momentum 5 Hari mendorong naik probabilitas."
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "LSIP.JK": {
         "ai_score": 0.2522,
@@ -1194,20 +1194,20 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.22553598880767822,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.05664052441716194,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_signal_norm",
                 "contribution": 0.02907443605363369,
-                "description": "Sinyal Tren (MACD) mendorong naik probabilitas."
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "AALI.JK": {
         "ai_score": 0.2184,
@@ -1216,20 +1216,20 @@
             {
                 "feature": "vol_ma_ratio",
                 "contribution": -0.14452572166919708,
-                "description": "Lonjakan Volume menekan turun probabilitas."
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
             },
             {
                 "feature": "macd_norm",
                 "contribution": 0.11061687022447586,
-                "description": "Kekuatan Tren (MACD) mendorong naik probabilitas."
+                "description": "Kekuatan Tren Pergerakan (MACD) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "bb_width",
                 "contribution": -0.09645895659923553,
-                "description": "Volatilitas / Squeeze (BB) menekan turun probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     },
     "SIMP.JK": {
         "ai_score": 0.2618,
@@ -1238,19 +1238,19 @@
             {
                 "feature": "bb_width",
                 "contribution": 0.14657413959503174,
-                "description": "Volatilitas / Squeeze (BB) mendorong naik probabilitas."
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "rsi_14",
                 "contribution": 0.076288603246212,
-                "description": "Tingkat Kejenuhan Pasar (RSI) mendorong naik probabilitas."
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
             },
             {
                 "feature": "ma_50_dist",
                 "contribution": 0.07493631541728973,
-                "description": "Trend Menengah (MA50) mendorong naik probabilitas."
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
             }
         ],
-        "last_updated": "2026-07-03 18:02:32.407760"
+        "last_updated": "2026-07-05 19:46:16.243678"
     }
 }

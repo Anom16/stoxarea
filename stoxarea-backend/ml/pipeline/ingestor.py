@@ -318,8 +318,7 @@ def run():
         logger.error(str(e))
         return
 
-    # Import guard di sini untuk menghindari circular import
-    from app.services.corporate_action_guard import check_and_flag, is_flagged
+
 
     failed = []
     skipped_flagged = []
@@ -327,11 +326,7 @@ def run():
     for i, ticker in enumerate(tickers):
         logger.info(f"[{i+1}/{len(tickers)}] Update {ticker}")
 
-        # FIX #3: Cek apakah ticker sedang dalam status corporate action flag
-        if is_flagged(ticker):
-            logger.warning(f"[{ticker}] SKIP — sedang dalam status corporate action review.")
-            skipped_flagged.append(ticker)
-            continue
+
 
         # Ambil data OHLCV terbaru — gunakan 1mo agar ada cukup data untuk append
         try:
@@ -350,11 +345,7 @@ def run():
                 prev_close = float(closes[-2])
                 curr_close = float(closes[-1])
 
-                # FIX #3: Deteksi pergerakan ekstrem sebelum simpan data
-                if check_and_flag(ticker, prev_close, curr_close):
-                    logger.warning(f"[{ticker}] Data TIDAK disimpan — menunggu validasi admin.")
-                    skipped_flagged.append(ticker)
-                    continue
+
 
                 # Simpan OHLCV ke file CSV — APPEND ke data yang sudah ada
             ohlcv_path = OUTPUT_DIR / "ohlcv" / f"{ticker}.csv"
