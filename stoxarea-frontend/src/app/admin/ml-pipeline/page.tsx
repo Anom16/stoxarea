@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import api from '@/lib/api'
 
 type PipelineStatus = 'idle' | 'running' | 'success' | 'error'
@@ -70,6 +70,58 @@ export default function MLPipelinePage() {
     setLogs(prev => [...prev, `[${ts}] ${msg}`])
   }
 
+  const isRunning = dailyStatus === 'running' || weeklyStatus === 'running'
+
+  // Fungsi untuk fetching log dan status running terkini dari backend
+  const fetchStatusAndLogs = async () => {
+    try {
+      const token = localStorage.getItem('access_token')
+      const headers = { Authorization: `Bearer ${token}` }
+      
+      const statusRes = await api.get('/admin/ml/status', { headers })
+      const serverRunning = statusRes.data.running
+
+      const logsRes = await api.get('/admin/ml/pipeline-logs', { headers })
+      if (logsRes.data && logsRes.data.logs) {
+        setLogs(logsRes.data.logs)
+      }
+
+      if (!serverRunning) {
+        if (dailyStatus === 'running') setDailyStatus('success')
+        if (weeklyStatus === 'running') setWeeklyStatus('success')
+      }
+    } catch (err) {}
+  }
+
+  // Cek status saat pertama kali load
+  useEffect(() => {
+    const checkInitialStatus = async () => {
+      try {
+        const token = localStorage.getItem('access_token')
+        const headers = { Authorization: `Bearer ${token}` }
+        const statusRes = await api.get('/admin/ml/status', { headers })
+        
+        if (statusRes.data.running) {
+          setDailyStatus('running')
+          // Ambil log awal
+          const logsRes = await api.get('/admin/ml/pipeline-logs', { headers })
+          if (logsRes.data && logsRes.data.logs) {
+            setLogs(logsRes.data.logs)
+          }
+        }
+      } catch (err) {}
+    }
+    checkInitialStatus()
+  }, [])
+
+  // Polling saat pipeline sedang berjalan di background
+  useEffect(() => {
+    if (!isRunning) return
+
+    const interval = setInterval(fetchStatusAndLogs, 3000)
+    return () => clearInterval(interval)
+  }, [isRunning, dailyStatus, weeklyStatus])
+
   const runPipeline = async (type: 'daily' | 'retrain') => {
     const setter = type === 'daily' ? setDailyStatus : setWeeklyStatus
     const endpoint = type === 'daily' ? '/admin/ml/trigger-pipeline' : '/admin/ml/trigger-retrain'
@@ -81,9 +133,8 @@ export default function MLPipelinePage() {
 
     try {
       const res = await api.post(endpoint)
-      setter('success')
       addLog(`✅ ${res.data.message}`)
-      addLog(`ℹ️ Pipeline berjalan di background. Cek log server untuk progress detail.`)
+      addLog(`ℹ️ Menunggu live streaming log dari server...`)
     } catch (err: any) {
       setter('error')
       const msg = err?.response?.data?.detail || err.message
