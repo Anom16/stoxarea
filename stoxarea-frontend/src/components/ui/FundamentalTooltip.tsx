@@ -15,7 +15,7 @@ export function FundamentalTooltipProvider({ children }: { children: React.React
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      if (!target.closest('[data-tooltip-root]')) {
+      if (!target.closest('[data-tooltip-root]') && !target.closest('[data-tooltip-portal]')) {
         setActiveId(null)
       }
     }
@@ -457,6 +457,7 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
           />
           {/* Modal di tengah layar */}
           <div
+            data-tooltip-portal=""
             onClick={(e) => e.stopPropagation()}
             style={{
               position: 'fixed',
