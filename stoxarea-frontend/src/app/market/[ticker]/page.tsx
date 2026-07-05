@@ -341,8 +341,23 @@ export default function StockDetailPage() {
   }
 
   // ── Download XLSX — pure client-side, 0 beban server ──
-  const handleDownloadXLSX = () => {
+  const handleDownloadXLSX = async () => {
     if (!data?.technical) return
+    
+    // Lazy-load history data if not loaded yet
+    let hist = historyData
+    if (!hist) {
+      try {
+        toast.info('Memuat data historis untuk Excel...', 'Mohon tunggu sebentar...', '')
+        const fullTicker = tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'
+        const res = await api.get(`/market/history/${fullTicker}`)
+        hist = res.data
+        setHistoryData(res.data)
+      } catch (e) {
+        console.error('Failed to lazy load history for excel download', e)
+      }
+    }
+
     import('xlsx').then(XLSX => {
       const tech = data.technical
       const f    = data.fundamental
@@ -436,7 +451,37 @@ export default function StockDetailPage() {
       ws2['!cols'] = [{ wch: 22 }, { wch: 28 }]
       XLSX.utils.book_append_sheet(wb, ws2, 'Ringkasan')
 
-      // ── Sheet 3: SHAP Insights ──
+      // ── Sheet 3: Laba Rugi ──
+      const financialsRows = hist?.financials_history?.map((d: any) => ({
+        'Tahun Fiskal': d.year,
+        'Pendapatan (Revenue)': d.revenue != null ? d.revenue : '—',
+        'Laba Bersih (Net Income)': d.net_income != null ? d.net_income : '—',
+      })) || []
+      const wsLabaRugi = XLSX.utils.json_to_sheet(financialsRows)
+      wsLabaRugi['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 25 }]
+      XLSX.utils.book_append_sheet(wb, wsLabaRugi, 'Laba Rugi')
+
+      // ── Sheet 4: Neraca (Balance Sheet) ──
+      const balanceRows = hist?.balance_sheet_history?.map((d: any) => ({
+        'Tahun Fiskal': d.year,
+        'Aset (Assets)': d.assets != null ? d.assets : '—',
+        'Liabilitas (Liabilities)': d.liabilities != null ? d.liabilities : '—',
+        'Ekuitas (Equity)': d.equity != null ? d.equity : '—',
+      })) || []
+      const wsNeraca = XLSX.utils.json_to_sheet(balanceRows)
+      wsNeraca['!cols'] = [{ wch: 15 }, { wch: 22 }, { wch: 22 }, { wch: 22 }]
+      XLSX.utils.book_append_sheet(wb, wsNeraca, 'Neraca')
+
+      // ── Sheet 5: Riwayat Dividen ──
+      const dividendRows = hist?.dividend_history?.map((d: any) => ({
+        'Tanggal Ex-Dividend': d.date,
+        'Jumlah Dividen (per Lembar)': d.amount != null ? d.amount : '—',
+      })) || []
+      const wsDividen = XLSX.utils.json_to_sheet(dividendRows)
+      wsDividen['!cols'] = [{ wch: 20 }, { wch: 28 }]
+      XLSX.utils.book_append_sheet(wb, wsDividen, 'Riwayat Dividen')
+
+      // ── Sheet 6: SHAP Insights ──
       if (ai?.insights?.length) {
         const shapRows = (ai.insights as any[]).map((ins: any, i: number) => ({
           'Rank':        i + 1,
@@ -451,15 +496,38 @@ export default function StockDetailPage() {
         XLSX.utils.book_append_sheet(wb, ws3, 'SHAP Insights')
       }
 
+      const numSheets = ai?.insights?.length ? 6 : 5
       const filename = `${ticker}_${chartPeriod}_${new Date().toISOString().slice(0, 10)}.xlsx`
       XLSX.writeFile(wb, filename)
 
       toast.success(
         'Excel Berhasil Diunduh 📥',
-        `${ticker} · ${tech.dates.length} baris · 3 sheet`,
+        `${ticker} · ${tech.dates.length} baris · ${numSheets} sheet`,
         `File: ${filename}`
       )
     })
+  }
+
+  // ── Download PDF Laporan Lengkap ──
+  const handleDownloadPDF = async () => {
+    try {
+      toast.info('Memproses PDF Laporan 📄', 'Mohon tunggu sebentar...', '')
+      const fullTicker = tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'
+      const response = await api.get(`/market/report/${fullTicker}/pdf`, { responseType: 'blob' })
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `StoxArea_Laporan_${tickerStr.replace('.JK', '')}.pdf`)
+      document.body.appendChild(link)
+      link.click()
+      link.parentNode?.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      toast.success('Unduh Berhasil 📄', 'Laporan PDF emiten berhasil diunduh.', '')
+    } catch (e) {
+      console.error(e)
+      toast.error('Gagal Mengunduh PDF', 'Terjadi kesalahan saat memproses laporan PDF.', '')
+    }
   }
 
   return (
@@ -636,6 +704,24 @@ export default function StockDetailPage() {
                         >
                           ⬇ Excel
                         </button>
+
+                        {/* Download PDF */}
+                        <button
+                          onClick={handleDownloadPDF}
+                          title="Download laporan lengkap sebagai PDF"
+                          style={{
+                            padding: '5px 12px', borderRadius: 6,
+                            border: '1px solid rgba(59,130,246,0.4)',
+                            background: 'rgba(59,130,246,0.08)',
+                            color: '#3b82f6', fontSize: 11, fontWeight: 700,
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
+                            transition: 'all 0.15s',
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.2)' }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.08)' }}
+                        >
+                          📄 PDF
+                        </button>
                       </div>
                     </div>
 
@@ -706,14 +792,14 @@ export default function StockDetailPage() {
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Harga &amp; Pasar</div>
                     <div className="ticker-card-grid">
                       {[
-                        { label: 'Market Cap',  val: formatMoney(f.price?.market_cap),  key: 'market_cap',  raw: null },
-                        { label: 'Open',        val: f.price?.open ? `Rp ${f.price.open.toLocaleString('id-ID')}` : '—', key: 'open', raw: null },
-                        { label: 'Day High',    val: f.price?.day_high ? `Rp ${f.price.day_high.toLocaleString('id-ID')}` : '—', key: 'day_high', raw: null, color: '#10b981' },
-                        { label: 'Day Low',     val: f.price?.day_low  ? `Rp ${f.price.day_low.toLocaleString('id-ID')}`  : '—', key: 'day_low',  raw: null, color: '#ef4444' },
-                        { label: '52W High',    val: f.price?.week_52_high ? `Rp ${f.price.week_52_high.toLocaleString('id-ID')}` : '—', key: 'week_52_high', raw: null, color: '#10b981' },
-                        { label: '52W Low',     val: f.price?.week_52_low  ? `Rp ${f.price.week_52_low.toLocaleString('id-ID')}`  : '—', key: 'week_52_low',  raw: null, color: '#ef4444' },
-                        { label: 'Volume',      val: formatMoney(f.price?.volume),     key: 'volume',     raw: null },
-                        { label: 'Avg Volume',  val: formatMoney(f.price?.avg_volume), key: 'avg_volume', raw: null },
+                        { label: 'Nilai Pasar (Market Cap)',  val: formatMoney(f.price?.market_cap),  key: 'market_cap',  raw: null },
+                        { label: 'Harga Pembuka (Open)',        val: f.price?.open ? `Rp ${f.price.open.toLocaleString('id-ID')}` : '—', key: 'open', raw: null },
+                        { label: 'Harga Tertinggi Hari Ini',    val: f.price?.day_high ? `Rp ${f.price.day_high.toLocaleString('id-ID')}` : '—', key: 'day_high', raw: null, color: '#10b981' },
+                        { label: 'Harga Terendah Hari Ini',     val: f.price?.day_low  ? `Rp ${f.price.day_low.toLocaleString('id-ID')}`  : '—', key: 'day_low',  raw: null, color: '#ef4444' },
+                        { label: 'Harga Tertinggi 1 Tahun',    val: f.price?.week_52_high ? `Rp ${f.price.week_52_high.toLocaleString('id-ID')}` : '—', key: 'week_52_high', raw: null, color: '#10b981' },
+                        { label: 'Harga Terendah 1 Tahun',     val: f.price?.week_52_low  ? `Rp ${f.price.week_52_low.toLocaleString('id-ID')}`  : '—', key: 'week_52_low',  raw: null, color: '#ef4444' },
+                        { label: 'Volume Transaksi',      val: formatMoney(f.price?.volume),     key: 'volume',     raw: null },
+                        { label: 'Rata-rata Volume',  val: formatMoney(f.price?.avg_volume), key: 'avg_volume', raw: null },
                       ].map((item, i) => (
                         <div key={i} className="stat-card" style={{ padding: 12 }}>
                           <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>
@@ -725,49 +811,49 @@ export default function StockDetailPage() {
                       ))}
                     </div>
 
-                    {/* ── Valuasi ── */}
-                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Valuasi</div>
+                    {/* ── Valuasi & Pergerakan ── */}
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Valuasi &amp; Gejolak Pergerakan</div>
                     <div className="ticker-card-grid">
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>PBV <FundamentalTooltip metricKey="pbv" value={f.valuation?.pbv} label="PBV" /></div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Kewajaran Harga (PBV) <FundamentalTooltip metricKey="pbv" value={f.valuation?.pbv} label="Kewajaran Harga (PBV)" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.valuation?.pbv != null ? `${f.valuation.pbv}x` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Beta <FundamentalTooltip metricKey="beta" value={f.price?.beta} label="Beta" /></div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Gejolak Harga vs IHSG (Beta) <FundamentalTooltip metricKey="beta" value={f.price?.beta} label="Gejolak Harga (Beta)" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.price?.beta ?? '—'}</div>
                       </div>
                     </div>
 
-                    {/* ── Profitabilitas ── */}
-                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Profitabilitas</div>
+                    {/* ── Profitabilitas & Kesehatan ── */}
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Kinerja Keuntungan &amp; Kesehatan Keuangan</div>
                     <div className="ticker-card-grid">
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>ROE <FundamentalTooltip metricKey="roe" value={f.profitability?.roe} label="ROE" /></div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Untung dari Modal (ROE) <FundamentalTooltip metricKey="roe" value={f.profitability?.roe} label="Untung dari Modal (ROE)" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.roe != null ? `${(f.profitability.roe * 100).toFixed(2)}%` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>ROA <FundamentalTooltip metricKey="roa" value={f.profitability?.roa} label="ROA" /></div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Untung dari Aset (ROA) <FundamentalTooltip metricKey="roa" value={f.profitability?.roa} label="Untung dari Aset (ROA)" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.roa != null ? `${(f.profitability.roa * 100).toFixed(2)}%` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Net Margin <FundamentalTooltip metricKey="net_margin" value={f.profitability?.net_margin} label="Net Margin" /></div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Persentase Untung Bersih (Net Margin) <FundamentalTooltip metricKey="net_margin" value={f.profitability?.net_margin} label="Persentase Untung Bersih (Net Margin)" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.net_margin != null ? `${(f.profitability.net_margin * 100).toFixed(2)}%` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>DER <FundamentalTooltip metricKey="der" value={f.health?.der} label="DER" /></div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Tingkat Utang vs Modal (DER) <FundamentalTooltip metricKey="der" value={f.health?.der} label="Tingkat Utang vs Modal (DER)" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.health?.der ?? '—'}</div>
                       </div>
                     </div>
 
                     {/* ── Dividen ── */}
-                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Dividen</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Pembagian Keuntungan (Dividen)</div>
                     <div className="ticker-card-grid-nobottom">
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Div. Yield <FundamentalTooltip metricKey="div_yield" value={f.dividend?.yield_pct} label="Dividend Yield" /></div>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Persentase Hasil Dividen (Yield) <FundamentalTooltip metricKey="div_yield" value={f.dividend?.yield_pct} label="Persentase Hasil Dividen (Yield)" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.dividend?.yield_pct != null ? `${(f.dividend.yield_pct * 100).toFixed(2)}%` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>Payout Ratio</div>
+                        <div className="stat-label" style={{ fontSize: 10 }}>Porsi Laba untuk Dividen (Payout Ratio)</div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.dividend?.payout_ratio != null ? `${(f.dividend.payout_ratio * 100).toFixed(1)}%` : '—'}</div>
                       </div>
                     </div>

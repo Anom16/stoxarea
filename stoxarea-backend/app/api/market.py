@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy.orm import Session
 from typing import Optional
 from app.core.database import get_db
@@ -114,3 +114,32 @@ def get_sector_overview(db: Session = Depends(get_db)):
     Digunakan untuk Radar Cerdas Sektoral / Market Heatmap di Frontend.
     """
     return get_sector_summary(db)
+
+
+@router.get("/report/{ticker}/pdf")
+def get_stock_report_pdf(
+    ticker: str,
+    db: Session = Depends(get_db)
+):
+    """
+    [NEW] Mengunduh laporan fundamental, laporan keuangan, dan dividen emiten sebagai PDF.
+    """
+    ticker_upper = ticker.upper()
+    if not ticker_upper.endswith(".JK") and not ticker_upper.startswith("^") and not "=" in ticker_upper:
+        ticker_upper += ".JK"
+        
+    # 1. Fetch data
+    fund = get_fundamental_data(ticker_upper, db=db)
+    hist = get_historical_financials(ticker_upper, db=db)
+    ai = get_ai_score_by_ticker(ticker_upper) or {}
+    
+    # 2. Generate PDF
+    from app.services.stock_pdf import generate_stock_report_pdf
+    pdf_bytes = generate_stock_report_pdf(ticker_upper, fund, hist, ai)
+    
+    filename = f"StoxArea_Laporan_{ticker_upper.replace('.JK', '')}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )

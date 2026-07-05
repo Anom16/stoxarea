@@ -6,6 +6,7 @@ import Sidebar from '@/components/ui/Sidebar'
 import Topbar from '@/components/ui/Topbar'
 import DisclaimerFooter from '@/components/ui/DisclaimerFooter'
 import api from '@/lib/api'
+import { AreaChart, Area, ResponsiveContainer } from 'recharts'
 
 interface Recommendation {
   ticker: string
@@ -50,6 +51,8 @@ export default function DashboardPage() {
   const [activeMoverTab, setActiveMoverTab]         = useState<'gainers' | 'losers' | 'active'>('gainers')
   const [momentumStocks, setMomentumStocks]         = useState<any[]>([])
   const [activeSector, setActiveSector]             = useState<string>('')
+  const [ihsgData, setIhsgData]                     = useState<any>(null)
+  const [ihsgLoading, setIhsgLoading]               = useState<boolean>(true)
   const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'sectors'>('overview')
 
   // ── Fetch user + data ────────────────────────────────────────────────────
@@ -74,6 +77,15 @@ export default function DashboardPage() {
     api.get('/recommendation/top-picks', { headers })
       .then(r => setRecs(r.data))
       .catch(() => setError('Gagal memuat data analisis. Pastikan server backend berjalan.'))
+
+    api.get('/market/technical/^JKSE?period=1mo')
+      .then(r => {
+        if (r.data && !r.data.error) {
+          setIhsgData(r.data)
+        }
+      })
+      .catch(() => {})
+      .finally(() => setIhsgLoading(false))
 
     api.get('/market/sectors')
       .then(r => {
@@ -148,19 +160,96 @@ export default function DashboardPage() {
             {/* Overview Deck: IHSG + Portfolio */}
             <div className="modern-deck-grid">
               {/* IHSG Card */}
-              <div className="card">
-                <span style={{ fontSize: 10, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
-                  Indeks Harga Saham Gabungan
-                </span>
-                <h2 style={{ fontSize: 20, fontWeight: 800, marginTop: 6 }}>IHSG</h2>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginTop: 8 }}>
-                  <span style={{ fontSize: 26, fontWeight: 700 }}>7.120,45</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)' }}>▲ +0.42%</span>
+              <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'stretch' }}>
+                <div>
+                  <span style={{ fontSize: 10, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+                    Indeks Harga Saham Gabungan
+                  </span>
+                  <h2 style={{ fontSize: 20, fontWeight: 800, marginTop: 6, marginBottom: 0 }}>IHSG</h2>
+                  {ihsgData ? (
+                    <>
+                      {(() => {
+                        const closeList = ihsgData.candles.close
+                        const lastPrice = closeList[closeList.length - 1]
+                        const prevPrice = closeList[closeList.length - 2] || lastPrice
+                        const pctChange = ((lastPrice - prevPrice) / prevPrice) * 100
+                        const isUp = pctChange >= 0
+                        return (
+                          <>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginTop: 8 }}>
+                              <span style={{ fontSize: 26, fontWeight: 700 }}>
+                                {lastPrice.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              </span>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: isUp ? 'var(--accent)' : '#ef4444' }}>
+                                {isUp ? '▲' : '▼'} {isUp ? '+' : ''}{pctChange.toFixed(2)}%
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', gap: 20, marginTop: 12, fontSize: 11, color: 'var(--text-secondary)' }}>
+                              <div>
+                                <div style={{ color: 'var(--text-muted)' }}>High</div>
+                                <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>
+                                  {ihsgData.candles.high[ihsgData.candles.high.length - 1]?.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </div>
+                              </div>
+                              <div>
+                                <div style={{ color: 'var(--text-muted)' }}>Low</div>
+                                <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>
+                                  {ihsgData.candles.low[ihsgData.candles.low.length - 1]?.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </div>
+                              </div>
+                              <div>
+                                <div style={{ color: 'var(--text-muted)' }}>Prev Close</div>
+                                <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>
+                                  {prevPrice.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )
+                      })()}
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginTop: 8 }}>
+                         <span style={{ fontSize: 26, fontWeight: 700 }}>7.120,45</span>
+                         <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)' }}>▲ +0.42%</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: 20, marginTop: 12, fontSize: 11, color: 'var(--text-secondary)' }}>
+                         <div><div style={{ color: 'var(--text-muted)' }}>High</div><div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>7.145,20</div></div>
+                         <div><div style={{ color: 'var(--text-muted)' }}>Low</div><div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>7.095,50</div></div>
+                         <div><div style={{ color: 'var(--text-muted)' }}>Prev Close</div><div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>7.090,65</div></div>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div style={{ display: 'flex', gap: 20, marginTop: 12, fontSize: 11, color: 'var(--text-secondary)' }}>
-                  <div><div style={{ color: 'var(--text-muted)' }}>High</div><div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>7.145,20</div></div>
-                  <div><div style={{ color: 'var(--text-muted)' }}>Low</div><div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>7.095,50</div></div>
-                  <div><div style={{ color: 'var(--text-muted)' }}>Prev Close</div><div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>7.090,65</div></div>
+
+                {/* Sparkline chart - White line */}
+                <div style={{ width: 140, height: 65, alignSelf: 'center', marginRight: 5 }}>
+                  {ihsgData && ihsgData.candles && ihsgData.candles.close.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={ihsgData.candles.close.map((v: number) => ({ v }))}>
+                        <defs>
+                          <linearGradient id="ihsg-spark-grad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#ffffff" stopOpacity={0.25}/>
+                            <stop offset="95%" stopColor="#ffffff" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <Area 
+                          type="monotone" 
+                          dataKey="v" 
+                          stroke="#ffffff" 
+                          fillOpacity={1} 
+                          fill="url(#ihsg-spark-grad)" 
+                          strokeWidth={1.5}
+                          dot={false} 
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-muted)', fontSize: 10 }}>
+                      {ihsgLoading ? 'Memuat grafik...' : 'Tidak ada data'}
+                    </div>
+                  )}
                 </div>
               </div>
 
