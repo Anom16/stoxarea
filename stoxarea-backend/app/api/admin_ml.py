@@ -232,3 +232,31 @@ def resolve_corporate_action(
         raise HTTPException(status_code=404, detail=result["message"])
 
     return result
+
+
+@router.get("/pipeline-logs")
+def get_pipeline_logs(_: User = Depends(_get_admin_user)):
+    """
+    Mengambil isi log aktivitas pipeline terbaru.
+    """
+    log_path = Path("logs/pipeline.log")
+    if not log_path.exists():
+        return {"logs": ["[INFO] Belum ada log aktivitas pipeline."]}
+    
+    try:
+        with open(log_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        # Ambil 500 baris terakhir
+        lines = lines[-500:]
+        return {"logs": [line.strip() for line in lines]}
+    except Exception as e:
+        return {"logs": [f"[ERROR] Gagal membaca log: {str(e)}"]}
+
+
+@router.get("/status")
+def get_pipeline_status(_: User = Depends(_get_admin_user)):
+    """
+    Mengecek apakah pipeline ML sedang berjalan.
+    """
+    global PIPELINE_RUNNING
+    return {"running": PIPELINE_RUNNING}

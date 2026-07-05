@@ -18,6 +18,20 @@ from app.services.spk3_saw import invalidate_saw_cache
 
 logger = logging.getLogger(__name__)
 
+class PipelineLogHandler(logging.Handler):
+    def __init__(self, filepath: Path):
+        super().__init__()
+        self.filepath = filepath
+        self.formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            with open(self.filepath, "a", encoding="utf-8") as f:
+                f.write(msg + "\n")
+        except Exception:
+            self.handleError(record)
+
 _PIPELINE_LOCK = threading.Lock()
 _PIPELINE_LOCK_FILE = Path("logs/pipeline.lock")
 
@@ -98,6 +112,20 @@ def run_daily_pipeline(force: bool = False):
         return
     
     pipeline_start_time = time.time()
+    
+    # Setup custom log handler to capture all logs to file
+    log_dir = Path("logs")
+    log_dir.mkdir(exist_ok=True)
+    pipeline_log_path = log_dir / "pipeline.log"
+    
+    # Reset log file
+    with open(pipeline_log_path, "w", encoding="utf-8") as f:
+        f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] [INFO] 🚀 Memulai Pipeline ML Harian (Force={force})...\n")
+
+    handler = PipelineLogHandler(pipeline_log_path)
+    handler.setLevel(logging.INFO)
+    root_logger = logging.getLogger()
+    root_logger.addHandler(handler)
     
     try:
         logger.info("="*70)
@@ -215,6 +243,9 @@ def run_daily_pipeline(force: bool = False):
         logger.error("❌ PIPELINE GAGAL! Terjadi kesalahan kritis yang tidak terduga.")
         logger.error(traceback.format_exc())
     finally:
+        # Remove custom handler
+        root_logger = logging.getLogger()
+        root_logger.removeHandler(handler)
         # Release lock
         _PIPELINE_LOCK.release()
         logger.info(f"[Pipeline] Lock dirilis. Siap untuk eksekusi berikutnya.")
@@ -248,6 +279,20 @@ def run_weekly_retrain():
         return
 
     retrain_start = time.time()
+
+    # Setup custom log handler to capture all logs to file
+    log_dir = Path("logs")
+    log_dir.mkdir(exist_ok=True)
+    pipeline_log_path = log_dir / "pipeline.log"
+    
+    # Reset log file
+    with open(pipeline_log_path, "w", encoding="utf-8") as f:
+        f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] [INFO] 🚀 Memulai Weekly Retrain...\n")
+
+    handler = PipelineLogHandler(pipeline_log_path)
+    handler.setLevel(logging.INFO)
+    root_logger = logging.getLogger()
+    root_logger.addHandler(handler)
 
     try:
         logger.info("=" * 70)
@@ -346,6 +391,10 @@ def run_weekly_retrain():
         logger.error(f"❌ WEEKLY RETRAIN GAGAL KRITIS: {e}")
         logger.error(traceback.format_exc())
     finally:
+        # Remove custom handler
+        root_logger = logging.getLogger()
+        root_logger.removeHandler(handler)
+        # Release lock
         _PIPELINE_LOCK.release()
 
 
