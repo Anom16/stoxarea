@@ -34,15 +34,21 @@ const LastUpdatedBadge = ({ label, sub }: { label: string; sub?: string }) => (
 )
 
 const FEATURE_LABELS: Record<string, string> = {
-  rsi_14: 'Momentum RSI',
-  ma_50_dist: 'Tren MA50',
-  vol_ma_ratio: 'Volume Ratio',
-  roe: 'Profitabilitas (ROE)',
-  der: 'Hutang (DER)',
-  pbv: 'Valuasi (PBV)',
-  close: 'Harga Terakhir',
-  bb_width: 'Volatilitas (Bollinger)',
-  log_ret_1d: 'Return Harian',
+  rsi_14: 'Kekuatan Jenuh Beli/Jual (RSI)',
+  ma_20_dist: 'Posisi Harga vs Rata-rata 20 Hari (MA-20)',
+  ma_50_dist: 'Posisi Harga vs Rata-rata 50 Hari (MA-50)',
+  vol_ma_ratio: 'Lonjakan Volume Transaksi',
+  roe: 'Keuntungan dari Modal (ROE)',
+  der: 'Tingkat Utang vs Modal (DER)',
+  pbv: 'Kewajaran Harga (PBV)',
+  close: 'Harga Saham Saat Ini',
+  bb_width: 'Gejolak Rentang Harga (Bollinger Bands)',
+  bb_position: 'Posisi Harga vs Bollinger Bands',
+  macd_norm: 'Kekuatan Tren Pergerakan (MACD)',
+  macd_signal_norm: 'Sinyal Pemicu Tren (MACD Signal)',
+  macd_hist_norm: 'Selisih Kekuatan Tren (MACD Histogram)',
+  log_ret_1d: 'Hasil Naik-Turun Harian',
+  log_ret_5d: 'Tren Pergerakan 5 Hari Terakhir',
 }
 
 // ── Collapsible Card — standalone component (di luar StockDetailPage) ──
@@ -1014,15 +1020,15 @@ export default function StockDetailPage() {
                   const fmtF = (v: any, d = 4) => v != null ? Number(v).toFixed(d) : '—'
 
                   const techItems = [
-                    { key: 'rsi',  label: 'RSI (14)',      val: fmt(rsi),      raw: rsi,   color: '#3b82f6' },
-                    { key: 'macd', label: 'MACD',          val: fmtF(macd),    raw: macd,  color: '#10b981' },
-                    { key: 'macd', label: 'MACD Signal',   val: fmtF(macdSig), raw: macdSig, color: '#f59e0b' },
-                    { key: 'macd', label: 'MACD Histogram',val: fmtF(macdHist),raw: macdHist,color: '#9333ea' },
-                    { key: 'ma20', label: 'MA-20',         val: `Rp ${fmt(ma20)}`, raw: null, color: '#2196F3' },
-                    { key: 'ma50', label: 'MA-50',         val: `Rp ${fmt(ma50)}`, raw: null, color: '#FF9800' },
-                    { key: 'bb',   label: 'BB Upper',      val: `Rp ${fmt(bbUp)}`, raw: null, color: '#ef4444' },
-                    { key: 'bb',   label: 'BB Mid (MA20)', val: `Rp ${fmt(bbMid)}`,raw: null, color: '#888' },
-                    { key: 'bb',   label: 'BB Lower',      val: `Rp ${fmt(bbLow)}`,raw: null, color: '#10b981' },
+                    { key: 'rsi',  label: 'Kekuatan Tren Jenuh Beli/Jual (RSI)',      val: fmt(rsi),      raw: rsi,   color: '#3b82f6' },
+                    { key: 'macd', label: 'Tren Pergerakan Harga (MACD)',          val: fmtF(macd),    raw: macd,  color: '#10b981' },
+                    { key: 'macd', label: 'Sinyal Pemicu Tren (MACD Signal)',   val: fmtF(macdSig), raw: macdSig, color: '#f59e0b' },
+                    { key: 'macd', label: 'Selisih Tren (MACD Histogram)',val: fmtF(macdHist),raw: macdHist,color: '#9333ea' },
+                    { key: 'ma20', label: 'Harga Rata-rata 20 Hari (MA-20)',         val: `Rp ${fmt(ma20)}`, raw: null, color: '#2196F3' },
+                    { key: 'ma50', label: 'Harga Rata-rata 50 Hari (MA-50)',         val: `Rp ${fmt(ma50)}`, raw: null, color: '#FF9800' },
+                    { key: 'bb',   label: 'Batas Atas Rentang Harga (Bollinger Upper)',      val: `Rp ${fmt(bbUp)}`, raw: null, color: '#ef4444' },
+                    { key: 'bb',   label: 'Batas Tengah Rentang Harga (Bollinger Mid)', val: `Rp ${fmt(bbMid)}`,raw: null, color: '#888' },
+                    { key: 'bb',   label: 'Batas Bawah Rentang Harga (Bollinger Lower)',      val: `Rp ${fmt(bbLow)}`,raw: null, color: '#10b981' },
                   ]
 
                   return (

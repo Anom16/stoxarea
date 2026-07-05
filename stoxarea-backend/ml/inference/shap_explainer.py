@@ -44,24 +44,24 @@ FEATURES = [
 
 # Mapping fitur ke nama yang lebih mudah dipahami user (Human Readable)
 FEATURE_NAMES = {
-    "log_ret_1d":       "Perubahan Harga Harian",
-    "log_ret_5d":       "Momentum 5 Hari",
-    "ma_20_dist":       "Jarak ke Harga Rata-rata (MA20)",
-    "ma_50_dist":       "Trend Menengah (MA50)",
-    "bb_width":         "Volatilitas / Squeeze (BB)",
-    "bb_position":      "Posisi Harga (Bollinger)",
-    "rsi_14":           "Tingkat Kejenuhan Pasar (RSI)",
-    "macd_norm":        "Kekuatan Tren (MACD)",
-    "macd_signal_norm": "Sinyal Tren (MACD)",
-    "macd_hist_norm":   "Akselerasi Tren (MACD Hist)",
-    "vol_ma_ratio":     "Lonjakan Volume",
+    "log_ret_1d":       "Hasil Naik-Turun Harian",
+    "log_ret_5d":       "Tren Pergerakan 5 Hari Terakhir",
+    "ma_20_dist":       "Posisi Harga vs Rata-rata 20 Hari (MA-20)",
+    "ma_50_dist":       "Posisi Harga vs Rata-rata 50 Hari (MA-50)",
+    "bb_width":         "Gejolak Rentang Harga (Bollinger Bands)",
+    "bb_position":      "Posisi Harga di Batas Atas/Bawah (Bollinger)",
+    "rsi_14":           "Kekuatan Jenuh Beli/Jual (RSI)",
+    "macd_norm":        "Kekuatan Tren Pergerakan (MACD)",
+    "macd_signal_norm": "Sinyal Pemicu Tren (MACD Signal)",
+    "macd_hist_norm":   "Selisih Kekuatan Tren (MACD Histogram)",
+    "vol_ma_ratio":     "Lonjakan Volume Transaksi",
 }
 
 def format_insight(feature_name: str, shap_val: float) -> str:
     """Mengubah SHAP value menjadi kalimat insight sederhana."""
-    direction = "mendorong naik" if shap_val > 0 else "menekan turun"
+    direction = "mendukung potensi kenaikan harga" if shap_val > 0 else "menekan potensi kenaikan harga"
     human_name = FEATURE_NAMES.get(feature_name, feature_name)
-    return f"{human_name} {direction} probabilitas."
+    return f"{human_name} {direction} saham."
 
 def run():
     if not INPUT_PATH.exists() or not MODEL_PATH.exists():
