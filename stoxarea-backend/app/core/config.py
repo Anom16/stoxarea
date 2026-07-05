@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     
     # API
     ALLOWED_ORIGINS: str = Field(
-        default="http://localhost:3000",
+        default="http://localhost:3000,https://stoxarea-frontend.vercel.app,https://stoxarea-frontend-*.vercel.app",
         env="ALLOWED_ORIGINS",
         description="Comma-separated CORS allowed origins"
     )
