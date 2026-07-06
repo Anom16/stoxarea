@@ -35,10 +35,6 @@ export default function Topbar({ username: initialUsername, riskProfile: initial
         {title && <p style={{ fontSize: 14, fontWeight: 'bold', color: 'var(--text-primary)', marginBottom: 4 }}>{title}</p>}
         <p>Profil Risiko Anda: <strong style={{ color: 'var(--accent)' }}>{riskProfile}</strong></p>
       </div>
-
-      <div className="profile-avatar" title={username}>
-        {username.charAt(0).toUpperCase()}
-      </div>
     </header>
   )
 }
