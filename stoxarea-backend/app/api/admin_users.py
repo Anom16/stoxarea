@@ -9,7 +9,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 from app.core.database import get_db
-from app.core.security import require_admin
+from app.core.security import require_admin, get_password_hash
 from app.models.user import User
 from app.models.stock import Stock
 
@@ -38,7 +38,52 @@ class UpdateUserRequest(BaseModel):
     virtual_balance: Optional[float] = None
 
 
+class CreateUserRequest(BaseModel):
+    email: str
+    password: str
+    full_name: Optional[str] = None
+    risk_profile: Optional[str] = None
+    is_admin: bool = False
+    virtual_balance: float = 100000000.0
+
+
 # ── User Endpoints ────────────────────────────────────────────────────────────
+
+@router.post("/", response_model=dict)
+def create_user(
+    body: CreateUserRequest,
+    _: str = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """Membuat user baru secara manual oleh Admin."""
+    existing_user = db.query(User).filter(User.email == body.email.strip()).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email sudah terdaftar.")
+    
+    hashed_password = get_password_hash(body.password)
+    new_user = User(
+        email=body.email.strip(),
+        password_hash=hashed_password,
+        full_name=body.full_name,
+        risk_profile=body.risk_profile.lower().strip() if body.risk_profile else None,
+        virtual_balance=body.virtual_balance,
+        is_admin=body.is_admin
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {
+        "message": f"User {new_user.email} berhasil dibuat.",
+        "user": {
+            "id":           new_user.id,
+            "email":        new_user.email,
+            "full_name":    new_user.full_name,
+            "risk_profile": new_user.risk_profile,
+            "is_admin":     new_user.is_admin,
+            "virtual_balance": new_user.virtual_balance,
+        }
+    }
+
 
 @router.get("/", response_model=List[dict])
 def list_all_users(

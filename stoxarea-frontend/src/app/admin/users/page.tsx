@@ -31,6 +31,55 @@ export default function AdminUsersPage() {
   const [msg, setMsg]           = useState('')
   const [msgType, setMsgType]   = useState<'ok' | 'err'>('ok')
 
+  // Add User Form State
+  const [isAdding, setIsAdding]                   = useState(false)
+  const [addEmail, setAddEmail]                   = useState('')
+  const [addPassword, setAddPassword]             = useState('')
+  const [addFullName, setAddFullName]             = useState('')
+  const [addRiskProfile, setAddRiskProfile]       = useState('')
+  const [addIsAdmin, setAddIsAdmin]               = useState(false)
+  const [addVirtualBalance, setAddVirtualBalance] = useState(100000000)
+
+  const resetAddForm = () => {
+    setAddEmail('')
+    setAddPassword('')
+    setAddFullName('')
+    setAddRiskProfile('')
+    setAddIsAdmin(false)
+    setAddVirtualBalance(100000000)
+    setIsAdding(false)
+  }
+
+  const handleAddUser = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!addEmail.trim() || !addPassword) {
+      showMsg('❌ Email dan Password wajib diisi', 'err')
+      return
+    }
+    if (addPassword.length < 6) {
+      showMsg('❌ Password minimal 6 karakter', 'err')
+      return
+    }
+
+    try {
+      const payload = {
+        email: addEmail.trim(),
+        password: addPassword,
+        full_name: addFullName.trim() || null,
+        risk_profile: addRiskProfile || null,
+        is_admin: addIsAdmin,
+        virtual_balance: addVirtualBalance
+      }
+
+      const res = await api.post('/admin/users/', payload)
+      showMsg(`✅ ${res.data.message}`)
+      resetAddForm()
+      load()
+    } catch (err: any) {
+      showMsg(`❌ ${err?.response?.data?.detail || err.message}`, 'err')
+    }
+  }
+
   const load = () => {
     setLoading(true)
     api.get('/auth/risk-profiles')
@@ -107,8 +156,8 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {/* Search */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'center' }}>
+      {/* Search & Actions */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
         <input
           value={search} onChange={e => setSearch(e.target.value)}
           placeholder="🔍 Cari email atau nama..."
@@ -117,7 +166,82 @@ export default function AdminUsersPage() {
         <button onClick={load} style={{ background: '#2255AA', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 16px', fontSize: 13, cursor: 'pointer' }}>
           🔄 Refresh
         </button>
+        <button onClick={() => setIsAdding(v => !v)} style={{ background: '#4CAF50', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 16px', fontSize: 13, cursor: 'pointer', fontWeight: 'bold', marginLeft: 'auto' }}>
+          {isAdding ? '✕ Tutup Form' : '➕ Tambah User'}
+        </button>
       </div>
+
+      {/* Form Tambah User */}
+      {isAdding && (
+        <div style={{
+          background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)',
+          borderRadius: 12, padding: 24, marginBottom: 20
+        }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 16px 0' }}>➕ Tambah Pengguna Baru</h3>
+          <form onSubmit={handleAddUser} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+            <div>
+              <label style={labelStyle}>Alamat Email</label>
+              <input
+                type="email" required value={addEmail} onChange={e => setAddEmail(e.target.value)}
+                placeholder="misal: user@gmail.com"
+                style={formInputStyle}
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Kata Sandi</label>
+              <input
+                type="password" required value={addPassword} onChange={e => setAddPassword(e.target.value)}
+                placeholder="Minimal 6 karakter"
+                style={formInputStyle}
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Nama Lengkap</label>
+              <input
+                type="text" value={addFullName} onChange={e => setAddFullName(e.target.value)}
+                placeholder="misal: Budi Santoso"
+                style={formInputStyle}
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Profil Risiko</label>
+              <select
+                value={addRiskProfile} onChange={e => setAddRiskProfile(e.target.value)}
+                style={formInputStyle}
+              >
+                <option value="">-- Belum --</option>
+                {profiles.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Saldo Virtual (IDR)</label>
+              <input
+                type="number" value={addVirtualBalance} onChange={e => setAddVirtualBalance(parseFloat(e.target.value) || 0)}
+                placeholder="100000000"
+                style={formInputStyle}
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Peran (Role)</label>
+              <select
+                value={addIsAdmin ? 'true' : 'false'} onChange={e => setAddIsAdmin(e.target.value === 'true')}
+                style={formInputStyle}
+              >
+                <option value="false">User</option>
+                <option value="true">Admin</option>
+              </select>
+            </div>
+            <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 10 }}>
+              <button type="submit" style={{ background: '#4CAF50', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: 13, fontWeight: 'bold', cursor: 'pointer' }}>
+                💾 Simpan User
+              </button>
+              <button type="button" onClick={resetAddForm} style={{ background: '#555', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: 13, cursor: 'pointer' }}>
+                Batal
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {loading && <p style={{ color: '#888' }}>Memuat...</p>}
 
@@ -232,4 +356,12 @@ export default function AdminUsersPage() {
       </div>
     </div>
   )
+}
+
+const labelStyle: React.CSSProperties = {
+  display: 'block', fontSize: 11, color: '#888', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6
+}
+
+const formInputStyle: React.CSSProperties = {
+  width: '100%', background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '9px 12px', color: '#fff', fontSize: 13, boxSizing: 'border-box'
 }

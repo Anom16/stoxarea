@@ -154,6 +154,7 @@ export default function SettingsPage() {
   const [confirmPass, setConfirmPass] = useState('')
   const [showPass, setShowPass] = useState(false)
   const [savingPass, setSavingPass] = useState(false)
+  const currPassRef = useRef<HTMLInputElement>(null)
 
   // Tab: Profil Risiko
   const [selectedProfile, setSelectedProfile] = useState('')
@@ -450,18 +451,25 @@ export default function SettingsPage() {
 
                       <div style={{ maxWidth: 440 }}>
                         <label style={labelStyle}>Kata Sandi Saat Ini</label>
-                        <div style={{ position: 'relative' }}>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                           <input
+                            ref={currPassRef}
                             type={showPass ? 'text' : 'password'}
                             value={currPass}
                             onChange={e => setCurrPass(e.target.value)}
-                            placeholder="••••••••"
-                            style={inputStyle}
+                            placeholder="Masukkan kata sandi saat ini"
+                            style={{ ...inputStyle, flex: 1 }}
                           />
                           <button
                             type="button"
-                            onClick={(e) => { e.preventDefault(); setShowPass(v => !v); }}
-                            style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: 13 }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (currPassRef.current) {
+                                setCurrPass(currPassRef.current.value);
+                              }
+                              setShowPass(v => !v);
+                            }}
+                            style={{ ...btnOutline, padding: '10px 14px', whiteSpace: 'nowrap' }}
                           >
                             {showPass ? '🙈 Sembunyikan' : '👁 Tampilkan'}
                           </button>
