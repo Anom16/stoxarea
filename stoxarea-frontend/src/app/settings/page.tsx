@@ -459,7 +459,8 @@ export default function SettingsPage() {
                             style={inputStyle}
                           />
                           <button
-                            onClick={() => setShowPass(v => !v)}
+                            type="button"
+                            onClick={(e) => { e.preventDefault(); setShowPass(v => !v); }}
                             style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: 13 }}
                           >
                             {showPass ? '🙈 Sembunyikan' : '👁 Tampilkan'}
