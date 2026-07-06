@@ -270,10 +270,9 @@ export default function SettingsPage() {
   }
 
   const handleSavePreferences = () => {
-    localStorage.setItem('app_lang', lang)
     toast.success(
       'Preferensi Disimpan ✅',
-      `Tema: ${theme === 'dark' ? 'Gelap' : 'Terang'} · Dashboard: ${dashboardLayout === 'classic' ? 'Klasik' : 'Modern'} · Bahasa: ${lang === 'id' ? 'Indonesia' : 'English'}`
+      `Tema: ${theme === 'dark' ? 'Gelap' : 'Terang'} · Tampilan: ${dashboardLayout === 'classic' ? 'Klasik' : 'Modern'}`
     )
   }
 
@@ -662,32 +661,6 @@ export default function SettingsPage() {
                           </div>
                         ))}
                       </div>
-
-                      {/* Bahasa */}
-                      <label style={labelStyle}>Bahasa Aplikasi</label>
-                      <select
-                        value={lang}
-                        onChange={e => setLang(e.target.value as 'id' | 'en')}
-                        style={{ ...inputStyle, maxWidth: 260, marginTop: 8, marginBottom: 24, cursor: 'pointer' }}
-                      >
-                        <option value="id">🇮🇩 Bahasa Indonesia</option>
-                        <option value="en">🇺🇸 English (US)</option>
-                      </select>
-
-                      <hr style={{ margin: '4px 0 24px', borderColor: 'var(--border)' }} />
-
-                      {/* Notifikasi */}
-                      <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Notifikasi</h3>
-                      {[
-                        'Terima rekap pasar harian (setiap hari kerja pukul 17.00)',
-                        'Peringatan saat pergerakan harga ekstrem (>5% dalam sehari)',
-                        'Notifikasi saat rekomendasi AI diperbarui',
-                      ].map((label, i) => (
-                        <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', marginBottom: 14 }}>
-                          <input type="checkbox" defaultChecked={i < 2} style={{ width: 16, height: 16, accentColor: 'var(--accent)' }} />
-                          <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{label}</span>
-                        </label>
-                      ))}
 
                       <button onClick={handleSavePreferences} style={{ ...btnPrimary, marginTop: 8 }}>
                         Simpan Preferensi
