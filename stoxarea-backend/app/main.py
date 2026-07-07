@@ -6,7 +6,7 @@ from pathlib import Path
 
 from app.core.database import engine, Base
 from app.core.config import settings
-from app.api import auth, recommendation, market, portfolio, admin_ml, admin_users, admin_risk_profiles, admin_indicators
+from app.api import auth, recommendation, market, portfolio, admin_ml, admin_users, admin_risk_profiles, admin_indicators, admin_questions
 from apscheduler.schedulers.background import BackgroundScheduler
 from ml.pipeline.scheduler import run_daily_pipeline, run_weekly_retrain
 
@@ -69,6 +69,7 @@ app.include_router(admin_ml.router)
 app.include_router(admin_users.router)
 app.include_router(admin_risk_profiles.router)
 app.include_router(admin_indicators.router)
+app.include_router(admin_questions.router)
 
 # Static files untuk reports (plot evaluasi model)
 reports_dir = Path("reports")
@@ -78,6 +79,10 @@ app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 def seed_database_if_empty(db):
     from app.models.indicator import Indicator, ProfileIndicatorWeight
     from app.models.risk_profile import RiskProfile
+    from app.core.seeding import seed_questionnaire
+
+    # 0. Seed Onboarding Questionnaire
+    seed_questionnaire(db)
 
     # 1. Seed Indicators
     try:

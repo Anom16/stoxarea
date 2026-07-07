@@ -59,9 +59,32 @@ def get_me(email: str = Depends(get_current_user_email), db: Session = Depends(g
     return user
 
 @router.get("/questionnaire")
-def get_questionnaire():
-    """Mengembalikan daftar 10 pertanyaan SPK Lapis 1 untuk di-render oleh Frontend."""
-    return {"data": QUESTIONNAIRE_DATA}
+def get_questionnaire(db: Session = Depends(get_db)):
+    """Mengembalikan daftar pertanyaan SPK Lapis 1 dari Database untuk di-render oleh Frontend."""
+    from app.models.question import Question
+    questions = db.query(Question).all()
+    
+    def get_num(q_id: str):
+        try:
+            return int(q_id[1:])
+        except:
+            return 999
+            
+    questions_sorted = sorted(questions, key=lambda x: get_num(x.id))
+    
+    data = []
+    for q in questions_sorted:
+        options_sorted = sorted(q.options, key=lambda o: o.value)
+        data.append({
+            "id": q.id,
+            "category": q.category,
+            "question": q.question,
+            "options": [
+                {"value": o.value, "text": o.text}
+                for o in options_sorted
+            ]
+        })
+    return {"data": data}
 
 @router.post("/submit-profiling", response_model=UserResponse)
 def submit_profiling(answers: QuestionnaireInput, email: str = Depends(get_current_user_email), db: Session = Depends(get_db)):
