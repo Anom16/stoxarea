@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import NextTopLoader from 'nextjs-toploader'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import ClientTutorialProvider from '@/components/ui/ClientTutorialProvider'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -41,7 +42,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ` }} />
         <NextTopLoader color="#10b981" showSpinner={false} height={3} />
         <ErrorBoundary>
-          {children}
+          <ClientTutorialProvider>
+            {children}
+          </ClientTutorialProvider>
         </ErrorBoundary>
       </body>
     </html>
