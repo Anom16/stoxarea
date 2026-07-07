@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import TutorialModal from '@/components/ui/TutorialModal'
 
 /**
@@ -9,15 +10,22 @@ import TutorialModal from '@/components/ui/TutorialModal'
  */
 export default function ClientTutorialProvider({ children }: { children: React.ReactNode }) {
   const [showTutorial, setShowTutorial] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     // Auto-trigger untuk user baru (belum pernah lihat tutorial)
-    const done = localStorage.getItem('stoxarea_tour_done')
-    if (!done) {
-      const t = setTimeout(() => setShowTutorial(true), 1000)
-      return () => clearTimeout(t)
+    // Hanya muncul jika user sudah login (memiliki access_token) dan tidak berada di halaman login/register/landing
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('access_token')
+      const done = localStorage.getItem('stoxarea_tour_done')
+      const isAuthPage = pathname?.startsWith('/auth') || pathname === '/'
+
+      if (token && !done && !isAuthPage) {
+        const t = setTimeout(() => setShowTutorial(true), 1200)
+        return () => clearTimeout(t)
+      }
     }
-  }, [])
+  }, [pathname])
 
   // Expose fungsi buka tutorial ke seluruh app via custom event
   useEffect(() => {
