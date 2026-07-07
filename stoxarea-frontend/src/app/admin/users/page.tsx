@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
-import CatLoading from '@/components/ui/CatLoading'
 
 const profileColor = (p: string | null) => {
   if (!p) return '#888'
@@ -244,7 +243,7 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {loading && <CatLoading text="Kucing AI sedang mengambil daftar pengguna... 🐾" />}
+      {loading && <p style={{ color: '#888' }}>Memuat...</p>}
 
       {/* Tabel */}
       <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>

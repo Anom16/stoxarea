@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/api'
-import CatLoading from '@/components/ui/CatLoading'
 
 // Mapping profil risiko ke warna dan deskripsi untuk halaman verifikasi
 const PROFILE_INFO: Record<string, { color: string; emoji: string; desc: string }> = {
@@ -133,9 +132,10 @@ export default function OnboardingPage() {
     }
   }
 
+  // ── Loading State ──────────────────────────────────────────────────────────
   if (loading) return (
     <div style={styles.fullPage}>
-      <CatLoading text="Kucing AI sedang menyusun lembar kuesioner Anda... 🐾" />
+      <div style={{ color: 'white', fontSize: 16 }}>Memuat Kuesioner...</div>
     </div>
   )
 

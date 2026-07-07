@@ -37,7 +37,6 @@ interface MetricInfo {
   howToRead: { label: string; color: string; range: string }[]
   spkRole: string
   getInterpretation: (value: number | null) => { text: string; color: string } | null
-  catTip: string
 }
 
 export const METRIC_INFO: Record<string, MetricInfo> = {
@@ -60,7 +59,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (pct >= 0)  return { text: `${pct.toFixed(1)}% — Kurang. Profitabilitas rendah.`, color: '#ef4444' }
       return { text: `${pct.toFixed(1)}% — Negatif. Perusahaan sedang merugi.`, color: '#ef4444' }
     },
-    catTip: 'ROE tinggi menandakan perusahaan lihai mengolah modal menjadi keuntungan. Kucing saja suka kalau diberi mainan yang bisa menghasilkan banyak makanan ekstra! 🍖',
   },
   der: {
     fullName: 'Debt to Equity Ratio (DER)',
@@ -80,7 +78,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (v < 2)    return { text: `${v.toFixed(2)}x — Waspada. Utang cukup besar.`, color: '#f59e0b' }
       return { text: `${v.toFixed(2)}x — Berisiko tinggi. Leverage sangat besar.`, color: '#ef4444' }
     },
-    catTip: 'Utang yang terlalu banyak (DER tinggi) itu berat, ibarat kucing membawa beban berat saat memanjat pagar. Lebih sehat dan lincah jika utangnya kecil! 🐾',
   },
   pbv: {
     fullName: 'Price to Book Value (PBV)',
@@ -100,7 +97,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (v < 4)   return { text: `${v.toFixed(2)}x — Premium. Investor percaya pertumbuhan tinggi.`, color: '#f59e0b' }
       return { text: `${v.toFixed(2)}x — Sangat mahal. Hati-hati risiko overvalued.`, color: '#ef4444' }
     },
-    catTip: 'PBV di bawah 1 itu ibarat menemukan ikan segar lezat yang dijual sangat murah di pasar ikan. Tapi pastikan ikannya tidak busuk ya! 🐟',
   },
   per: {
     fullName: 'Price to Earnings Ratio (PER)',
@@ -121,7 +117,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (v < 30)  return { text: `${v.toFixed(1)}x — Agak mahal.`, color: '#f59e0b' }
       return { text: `${v.toFixed(1)}x — Mahal. Ekspektasi pertumbuhan tinggi sudah terprice.`, color: '#ef4444' }
     },
-    catTip: 'PER yang terlalu mahal berarti kita membayar premium untuk laba mereka. Lebih baik sabar menunggu momen diskon agar tidak boncos! 🏷️',
   },
   beta: {
     fullName: 'Beta',
@@ -132,7 +127,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       { range: '1–1.5',   label: 'Agresif',          color: '#f59e0b' },
       { range: '> 1.5',   label: 'Sangat Volatil',   color: '#ef4444' },
     ],
-    spkRole: 'Informasi risiko. Digunakan untuk memahami volatilitas saham, terutama relevan untuk profil Profil Risiko Konservatif yang menghindari saham berisiko.',
+    spkRole: 'Informasi risiko. Digunakan untuk memahami volatilitas saham, terutama relevan untuk profil Konservatif yang menghindari saham berisiko.',
     getInterpretation: (v) => {
       if (v === null) return null
       if (v < 0)    return { text: `${v.toFixed(2)} — Bergerak berlawanan dengan IHSG (langka).`, color: '#9333ea' }
@@ -141,7 +136,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (v < 1.5)  return { text: `${v.toFixed(2)} — Lebih volatil dari IHSG.`, color: '#f59e0b' }
       return { text: `${v.toFixed(2)} — Sangat volatil. High risk, high return.`, color: '#ef4444' }
     },
-    catTip: 'Beta tinggi melompat liar seperti anak kucing mengejar sinar laser! Beta rendah kalem seperti kucing senior yang suka tidur siang nyenyak. 🐈💤',
   },
   div_yield: {
     fullName: 'Dividend Yield',
@@ -163,7 +157,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (pct > 1)    return { text: `${pct.toFixed(2)}% — Yield cukup.`, color: '#f59e0b' }
       return { text: `${pct.toFixed(2)}% — Yield sangat rendah.`, color: '#94a3b8' }
     },
-    catTip: 'Dividen yield adalah jatah ikan gratis berkala dari emiten. Kucing mana sih yang tidak mengeong kegirangan dikasih ikan gratis secara rutin? 🐟😋',
   },
   roa: {
     fullName: 'Return on Assets (ROA)',
@@ -184,7 +177,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (pct >= 0)  return { text: `${pct.toFixed(1)}% — Efisiensi aset rendah.`, color: '#ef4444' }
       return { text: `${pct.toFixed(1)}% — Negatif, perusahaan merugi.`, color: '#ef4444' }
     },
-    catTip: 'ROA mengukur seberapa tangkas perusahaan melompat memanfaatkan seluruh sarana dan aset yang ada untuk menangkap laba. Makin tinggi makin lincah! 🐅',
   },
   net_margin: {
     fullName: 'Net Profit Margin',
@@ -205,7 +197,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (pct >= 0)  return { text: `${pct.toFixed(1)}% — Margin sangat tipis.`, color: '#ef4444' }
       return { text: `${pct.toFixed(1)}% — Margin negatif (rugi).`, color: '#ef4444' }
     },
-    catTip: 'Margin yang tebal ibarat kucing yang punya cadangan lemak tebal saat musim hujan tiba. Tetap aman dan hangat meski cuaca di luar ekstrem! ❄️🐱',
   },
 
   // ── Harga & Pasar ─────────────────────────────────────────────────────────
@@ -219,7 +210,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Informasi skala perusahaan. Saham big cap umumnya lebih stabil dan likuid.',
     getInterpretation: () => null,
-    catTip: 'Market Cap menunjukkan seberapa raksasa ukuran singa bursa ini. Saham Big Cap itu lamban tapi mantap, Small Cap lincah melompat tapi gampang jatuh! 🦁',
   },
   open: {
     fullName: 'Harga Pembukaan (Open)',
@@ -231,7 +221,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Informasi harga intraday. Berguna untuk mengukur sentimen awal sesi perdagangan.',
     getInterpretation: () => null,
-    catTip: 'Harga Open seperti mata kucing yang baru terbuka lebar di pagi hari. Menunjukkan kejutan awal sentimen transaksi harian! ☀️👀',
   },
   day_high: {
     fullName: 'Harga Tertinggi Hari Ini (Day High)',
@@ -242,7 +231,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Informasi volatilitas harian. Jarak antara Day High dan Day Low menunjukkan range pergerakan harga.',
     getInterpretation: () => null,
-    catTip: 'Day High adalah dahan pohon tertinggi yang berhasil digapai lompatan harga hari ini. Hati-hati terpeleset jatuh ya! 🌳🐾',
   },
   day_low: {
     fullName: 'Harga Terendah Hari Ini (Day Low)',
@@ -253,7 +241,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Bersama Day High, membentuk range harian yang menggambarkan volatilitas intraday.',
     getInterpretation: () => null,
-    catTip: 'Day Low adalah lantai dasar tempat harga mendarat hari ini. Semoga mendarat dengan mulus berdiri tegak khas kucing! 🐈💨',
   },
   week_52_high: {
     fullName: '52 Week High (Tertinggi 52 Minggu)',
@@ -265,7 +252,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Level teknikal penting. Saham yang menembus 52W High sering menjadi sinyal momentum kuat.',
     getInterpretation: () => null,
-    catTip: 'Harga mendekati atap puncak tertinggi 1 tahun! Tembok ini sering kali sangat tebal dan butuh dorongan beli ekstra untuk jebol. 🏠🆙',
   },
   week_52_low: {
     fullName: '52 Week Low (Terendah 52 Minggu)',
@@ -277,7 +263,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Level support 52 minggu. Saham yang memantul dari 52W Low bisa menjadi peluang beli bagi value investor.',
     getInterpretation: () => null,
-    catTip: 'Harga di lantai terbawah 52 minggu. Ini bisa jadi kasur tidur empuk di mana harga siap-siap bangun dan memantul ke atas! 🛌📈',
   },
   volume: {
     fullName: 'Volume Perdagangan Harian',
@@ -289,7 +274,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Konfirmasi tren. Volume tinggi saat harga naik = sinyal bullish kuat.',
     getInterpretation: () => null,
-    catTip: 'Volume menunjukkan keramaian gerombolan ikan di kolam. Makin ramai gerombolannya, pergerakan harga makin mantap diikuti! 🐟🐟🐟',
   },
   avg_volume: {
     fullName: 'Rata-rata Volume (Average Volume)',
@@ -301,7 +285,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Ukuran likuiditas. Saham dengan avg volume tinggi lebih mudah dibeli/dijual tanpa menggerakkan harga.',
     getInterpretation: () => null,
-    catTip: 'Indikator kemudahan bertransaksi tanpa macet. Cari kolam yang aliran ikannya kencang agar Anda mudah masuk dan keluar kapan saja! 🌊🐱',
   },
   payout_ratio: {
     fullName: 'Payout Ratio',
@@ -321,7 +304,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (pct > 30)  return { text: `${pct.toFixed(1)}% — Sehat. Keseimbangan baik antara dividen dan reinvestasi.`, color: '#10b981' }
       return { text: `${pct.toFixed(1)}% — Konservatif. Sebagian besar laba diinvestasikan kembali.`, color: '#3b82f6' }
     },
-    catTip: 'Payout Ratio sebaiknya berkisar 30-60%. Pembagian jatah makanan yang terlalu rakus bikin perusahaan kekurangan gizi untuk ekspansi! 🍖💸',
   },
 
   // ── Teknikal ─────────────────────────────────────────────────────────────
@@ -344,7 +326,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (v >= 30) return { text: `RSI ${v.toFixed(1)} — Bearish. Momentum turun.`, color: '#ef4444' }
       return { text: `RSI ${v.toFixed(1)} — Oversold. Harga mungkin akan rebound.`, color: '#10b981' }
     },
-    catTip: 'RSI >70 berarti sudah kekenyangan makan (overbought) saatnya siap-siap tidur/turun. <30 berarti kelaparan (oversold) dan siap berburu naik! 🍽️🐈',
   },
   macd: {
     fullName: 'MACD (Moving Average Convergence Divergence)',
@@ -361,7 +342,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       if (v > 0) return { text: `MACD positif (${v.toFixed(4)}) — Tren naik mendominasi.`, color: '#10b981' }
       return { text: `MACD negatif (${v.toFixed(4)}) — Tren turun mendominasi.`, color: '#ef4444' }
     },
-    catTip: 'Histogram MACD menunjukkan arah tiupan angin tren. Warna hijau melambai tinggi ke atas, warna merah meluncur ke bawah! 🎏💨',
   },
   ma20: {
     fullName: 'Moving Average 20 Hari (MA20)',
@@ -373,7 +353,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Jarak harga terhadap MA20 adalah salah satu dari 11 fitur input model XGBoost.',
     getInterpretation: () => null,
-    catTip: 'MA20 adalah sabuk pengaman jangka pendek. Selama posisi harga bertahan merayap di atas garis ini, tren pendakian masih aman! 🧗‍♂️🐾',
   },
   ma50: {
     fullName: 'Moving Average 50 Hari (MA50)',
@@ -385,7 +364,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Jarak harga terhadap MA50 adalah salah satu dari 11 fitur input model XGBoost.',
     getInterpretation: () => null,
-    catTip: 'MA50 adalah jembatan tren menengah. Menjaga harga tidak amblas jatuh terlalu jauh ke bawah jurang bearish! 🌉🐱',
   },
   bb: {
     fullName: 'Bollinger Bands (BB)',
@@ -398,7 +376,6 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'BB Width dan BB Position adalah 2 dari 11 fitur input model XGBoost.',
     getInterpretation: () => null,
-    catTip: 'Pita Bollinger Bands menyempit (squeeze) menunjukkan konsolidasi harga. Siap-siap, kucing sedang merunduk bersiap melompat menyergap target! 🐾🎯',
   },
 }
 
@@ -556,31 +533,10 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
                 {info.spkRole}
               </div>
             </div>
-
-            {/* Tips StoxCat (Kucing Cerdas) */}
-            <div style={{
-              marginTop: 16,
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.05)',
-              borderRadius: 10,
-              padding: '12px 14px',
-              display: 'flex',
-              gap: 12,
-              alignItems: 'flex-start'
-            }}>
-              <span style={{ fontSize: 24, userSelect: 'none', transform: 'scaleX(-1)', display: 'inline-block' }}>😸</span>
-              <div>
-                <div style={{ fontSize: 10, color: 'var(--accent, #4CAF50)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
-                  Tips StoxCat
-                </div>
-                <div style={{ fontSize: 12.5, color: '#ccc', lineHeight: 1.5, fontStyle: 'italic' }}>
-                  "{info.catTip}"
-                </div>
-              </div>
-            </div>
           </div>
-        </>
-      , document.body)}
+        </>,
+        document.body
+      )}
     </div>
   )
 }
