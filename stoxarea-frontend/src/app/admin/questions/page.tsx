@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
+import CatLoading from '@/components/ui/CatLoading'
 
 interface OptionData {
   value: number
@@ -324,7 +325,7 @@ export default function AdminQuestionsPage() {
       )}
 
       {loading ? (
-        <p style={{ color: '#888', fontSize: 14 }}>Memuat pertanyaan...</p>
+        <CatLoading text="Kucing AI sedang membaca data kuesioner... 🐾" />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {questions.map((q) => {
