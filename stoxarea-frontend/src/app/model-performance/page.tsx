@@ -69,7 +69,7 @@ function MetricBadge({ label, value, unit = '%', color = '#2255AA' }: {
 }) {
   return (
     <div style={{
-      background: 'var(--card-bg, #16213e)',
+      background: 'var(--bg-card)',
       border: '1px solid var(--border, #1a1a2e)',
       borderRadius: 12, padding: '16px 20px',
       display: 'flex', flexDirection: 'column', gap: 4, minWidth: 130,
@@ -92,7 +92,7 @@ function PlotCard({ title, plotName, desc }: { title: string; plotName: string; 
 
   return (
     <div style={{
-      background: 'var(--card-bg, #16213e)',
+      background: 'var(--bg-card)',
       border: '1px solid var(--border, #1a1a2e)',
       borderRadius: 12, padding: 20,
     }}>
@@ -143,7 +143,7 @@ export default function ModelPerformancePage() {
   const wf = summary?.walkforward_mean
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg, #0d1117)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-primary)' }}>
       <Sidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Topbar />
@@ -168,7 +168,7 @@ export default function ModelPerformancePage() {
             <>
               {/* ── Info Model ── */}
               <div style={{
-                background: 'var(--card-bg, #16213e)', border: '1px solid var(--border, #1a1a2e)',
+                background: 'var(--bg-card)', border: '1px solid var(--border, #1a1a2e)',
                 borderRadius: 12, padding: '14px 20px', marginBottom: 24,
                 display: 'flex', gap: 32, flexWrap: 'wrap', fontSize: 13,
               }}>
@@ -200,7 +200,7 @@ export default function ModelPerformancePage() {
 
               {/* ── Tabel Walk-Forward Per Fold ── */}
               <div style={{
-                background: 'var(--card-bg, #16213e)', border: '1px solid var(--border, #1a1a2e)',
+                background: 'var(--bg-card)', border: '1px solid var(--border, #1a1a2e)',
                 borderRadius: 12, padding: 20, marginBottom: 24, overflowX: 'auto',
               }}>
                 <div style={{ fontWeight: 700, marginBottom: 12 }}>📋 Detail per Fold</div>
@@ -232,7 +232,7 @@ export default function ModelPerformancePage() {
               {/* ── Confusion Matrix Data ── */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
                 <div style={{
-                  background: 'var(--card-bg, #16213e)', border: '1px solid var(--border, #1a1a2e)',
+                  background: 'var(--bg-card)', border: '1px solid var(--border, #1a1a2e)',
                   borderRadius: 12, padding: 20,
                 }}>
                   <div style={{ fontWeight: 700, marginBottom: 12 }}>🔲 Confusion Matrix</div>
@@ -258,7 +258,7 @@ export default function ModelPerformancePage() {
 
                 {/* ── Parameter Model ── */}
                 <div style={{
-                  background: 'var(--card-bg, #16213e)', border: '1px solid var(--border, #1a1a2e)',
+                  background: 'var(--bg-card)', border: '1px solid var(--border, #1a1a2e)',
                   borderRadius: 12, padding: 20,
                 }}>
                   <div style={{ fontWeight: 700, marginBottom: 12 }}>⚙️ Parameter Model</div>

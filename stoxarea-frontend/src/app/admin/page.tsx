@@ -15,7 +15,7 @@ function StatCard({ icon, label, value, sub, color = '#2255AA' }: {
 }) {
   return (
     <div style={{
-      background: 'var(--card-bg, #16213e)',
+      background: 'var(--bg-card)',
       border: `1px solid ${color}33`,
       borderRadius: 12, padding: '20px 24px',
       display: 'flex', flexDirection: 'column', gap: 6,
@@ -34,7 +34,7 @@ function ActionCard({ icon, title, desc, href, color = '#2255AA' }: {
   return (
     <Link href={href} style={{ textDecoration: 'none' }}>
       <div style={{
-        background: 'var(--card-bg, #16213e)',
+        background: 'var(--bg-card)',
         border: `1px solid ${color}44`,
         borderRadius: 12, padding: '18px 20px',
         cursor: 'pointer', transition: 'all 0.2s',
@@ -84,7 +84,7 @@ export default function AdminDashboard() {
       <div style={{ marginBottom: 28 }}>
         <h1 style={{ fontSize: 24, fontWeight: 800, margin: 0 }}>🛡️ Dashboard Admin</h1>
         <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>
-          Selamat datang, <b style={{ color: '#fff' }}>{user?.email}</b>
+          Selamat datang, <b style={{ color: 'var(--text-primary)' }}>{user?.email}</b>
         </p>
       </div>
 
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
 
       {/* Jadwal */}
       <div style={{
-        background: 'var(--card-bg, #16213e)', border: '1px solid var(--border, #1a1a2e)',
+        background: 'var(--bg-card)', border: '1px solid var(--border, #1a1a2e)',
         borderRadius: 12, padding: '16px 20px', marginBottom: 24,
       }}>
         <div style={{ fontWeight: 700, marginBottom: 10 }}>📅 Jadwal Pipeline Otomatis</div>

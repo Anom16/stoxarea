@@ -212,7 +212,7 @@ export default function AdminQuestionsPage() {
       {/* Form Tambah Pertanyaan */}
       {isAdding && (
         <div style={{
-          background: 'var(--card-bg, #16213e)', border: '1px solid var(--border, #2a2e3d)',
+          background: 'var(--bg-card)', border: '1px solid var(--border, #2a2e3d)',
           borderRadius: 12, padding: 24, marginBottom: 24
         }}>
           <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 16px 0' }}>➕ Tambah Pertanyaan Baru</h3>
@@ -335,7 +335,7 @@ export default function AdminQuestionsPage() {
               <div 
                 key={q.id} 
                 style={{ 
-                  background: 'var(--card-bg, #16213e)', 
+                  background: 'var(--bg-card)', 
                   border: isEditing ? '1px solid var(--accent, #4CAF50)' : '1px solid var(--border, #2a2e3d)', 
                   borderRadius: 12, 
                   padding: 20,
@@ -513,13 +513,13 @@ const labelStyle: React.CSSProperties = {
 }
 
 const textareaStyle: React.CSSProperties = {
-  width: '100%', background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '10px 14px', color: '#fff', fontSize: 13, boxSizing: 'border-box', outline: 'none', resize: 'vertical', fontFamily: 'inherit'
+  width: '100%', background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box', outline: 'none', resize: 'vertical', fontFamily: 'inherit'
 }
 
 const inputStyle: React.CSSProperties = {
-  background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '10px 14px', color: '#fff', fontSize: 13, boxSizing: 'border-box', outline: 'none'
+  background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box', outline: 'none'
 }
 
 const selectStyle: React.CSSProperties = {
-  width: '100%', background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '10px 14px', color: '#fff', fontSize: 13, boxSizing: 'border-box', outline: 'none', cursor: 'pointer'
+  width: '100%', background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box', outline: 'none', cursor: 'pointer'
 }

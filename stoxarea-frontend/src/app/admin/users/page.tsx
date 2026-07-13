@@ -161,7 +161,7 @@ export default function AdminUsersPage() {
         <input
           value={search} onChange={e => setSearch(e.target.value)}
           placeholder="🔍 Cari email atau nama..."
-          style={{ background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '10px 14px', color: '#fff', fontSize: 13, width: 280 }}
+          style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, width: 280 }}
         />
         <button onClick={load} style={{ background: '#2255AA', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 16px', fontSize: 13, cursor: 'pointer' }}>
           🔄 Refresh
@@ -174,7 +174,7 @@ export default function AdminUsersPage() {
       {/* Form Tambah User */}
       {isAdding && (
         <div style={{
-          background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)',
+          background: 'var(--bg-card)', border: '1px solid var(--border)',
           borderRadius: 12, padding: 24, marginBottom: 20
         }}>
           <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 16px 0' }}>➕ Tambah Pengguna Baru</h3>
@@ -246,7 +246,7 @@ export default function AdminUsersPage() {
       {loading && <p style={{ color: '#888' }}>Memuat...</p>}
 
       {/* Tabel */}
-      <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid var(--border)' }}>
@@ -267,14 +267,14 @@ export default function AdminUsersPage() {
                       <input
                         value={editData.full_name ?? u.full_name ?? ''}
                         onChange={e => setEditData({ ...editData, full_name: e.target.value })}
-                        style={{ background: '#0a0f1a', border: '1px solid #444', borderRadius: 6, padding: '6px 10px', color: '#fff', fontSize: 12, width: 120 }}
+                        style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 10px', color: 'var(--text-primary)', fontSize: 12, width: 120 }}
                       />
                     </td>
                     <td style={{ padding: '10px 14px' }}>
                       <select
                         value={editData.risk_profile ?? u.risk_profile ?? ''}
                         onChange={e => setEditData({ ...editData, risk_profile: e.target.value })}
-                        style={{ background: '#0a0f1a', border: '1px solid #444', borderRadius: 6, padding: '6px 10px', color: '#fff', fontSize: 12 }}
+                        style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 10px', color: 'var(--text-primary)', fontSize: 12 }}
                       >
                         <option value="">-- Belum --</option>
                         {profiles.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -285,14 +285,14 @@ export default function AdminUsersPage() {
                         type="number"
                         value={editData.virtual_balance ?? u.virtual_balance}
                         onChange={e => setEditData({ ...editData, virtual_balance: parseFloat(e.target.value) })}
-                        style={{ background: '#0a0f1a', border: '1px solid #444', borderRadius: 6, padding: '6px 10px', color: '#fff', fontSize: 12, width: 120 }}
+                        style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 10px', color: 'var(--text-primary)', fontSize: 12, width: 120 }}
                       />
                     </td>
                     <td style={{ padding: '10px 14px' }}>
                       <select
                         value={editData.is_admin !== undefined ? String(editData.is_admin) : String(u.is_admin)}
                         onChange={e => setEditData({ ...editData, is_admin: e.target.value === 'true' })}
-                        style={{ background: '#0a0f1a', border: '1px solid #444', borderRadius: 6, padding: '6px 10px', color: '#fff', fontSize: 12 }}
+                        style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 10px', color: 'var(--text-primary)', fontSize: 12 }}
                       >
                         <option value="false">User</option>
                         <option value="true">Admin</option>
@@ -363,5 +363,5 @@ const labelStyle: React.CSSProperties = {
 }
 
 const formInputStyle: React.CSSProperties = {
-  width: '100%', background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '9px 12px', color: '#fff', fontSize: 13, boxSizing: 'border-box'
+  width: '100%', background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box'
 }

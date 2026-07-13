@@ -100,26 +100,26 @@ export default function CacheMonitorPage() {
 
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 24 }}>
-        <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
           <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>TOTAL ENTRIES</div>
           <div style={{ fontSize: 32, fontWeight: 800, color: '#2196F3' }}>{total}</div>
         </div>
-        <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
           <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>AKTIF</div>
           <div style={{ fontSize: 32, fontWeight: 800, color: '#4CAF50' }}>{entries.filter(e => !e.expired).length}</div>
         </div>
-        <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
           <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>KADALUARSA</div>
           <div style={{ fontSize: 32, fontWeight: 800, color: '#f44336' }}>{entries.filter(e => e.expired).length}</div>
         </div>
-        <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '16px 20px' }}>
           <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>TTL MAX</div>
           <div style={{ fontSize: 32, fontWeight: 800, color: '#FF9800' }}>10m</div>
         </div>
       </div>
 
       {/* Cache Entries Table */}
-      <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, padding: 20 }}>
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: 20 }}>
         <div style={{ fontWeight: 700, marginBottom: 16 }}>📋 Cache Entries</div>
 
         {loading && <p style={{ color: '#888', fontSize: 13 }}>Memuat...</p>}

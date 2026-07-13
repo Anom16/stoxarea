@@ -168,7 +168,7 @@ export default function AdminRiskProfilesPage() {
             const isDefault = ['konservatif', 'moderat', 'agresif'].includes(p.id.toLowerCase())
             return (
               <div key={p.id} style={{
-                background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)',
+                background: 'var(--bg-card)', border: '1px solid var(--border)',
                 borderRadius: 12, padding: 20, display: 'flex', flexDirection: 'column', gap: 8
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -194,51 +194,51 @@ export default function AdminRiskProfilesPage() {
 
       {/* FORM TAMBAH / EDIT PROFIL */}
       {(isAdding || isEditing) && (
-        <form onSubmit={handleSaveProfile} style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, padding: 28 }}>
+        <form onSubmit={handleSaveProfile} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: 28 }}>
           <h2 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 20px' }}>
             {isAdding ? '➕ Tambah Profil Risiko Baru' : '✏️ Edit Profil Risiko'}
           </h2>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <label style={{ fontSize: 12, color: '#aaa', display: 'block', marginBottom: 6 }}>ID Profil (Huruf kecil, angka, underscore)</label>
+              <label style={{ fontSize: 12, color: 'var(--text-secondary, #aaa)', display: 'block', marginBottom: 6 }}>ID Profil (Huruf kecil, angka, underscore)</label>
               <input
                 type="text" value={id} onChange={e => setId(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                 placeholder="misal: agresif_fundamental"
                 required
                 disabled={isEditing}
-                style={{ width: '100%', background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '10px 14px', color: '#fff', fontSize: 13, boxSizing: 'border-box' }}
+                style={{ width: '100%', background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box' }}
               />
             </div>
 
             <div>
-              <label style={{ fontSize: 12, color: '#aaa', display: 'block', marginBottom: 6 }}>Nama Profil (Tampilan UI)</label>
+              <label style={{ fontSize: 12, color: 'var(--text-secondary, #aaa)', display: 'block', marginBottom: 6 }}>Nama Profil (Tampilan UI)</label>
               <input
                 type="text" value={name} onChange={e => setName(e.target.value)}
                 placeholder="misal: Agresif Fundamental"
                 required
-                style={{ width: '100%', background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '10px 14px', color: '#fff', fontSize: 13, boxSizing: 'border-box' }}
+                style={{ width: '100%', background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box' }}
               />
             </div>
 
             <div>
-              <label style={{ fontSize: 12, color: '#aaa', display: 'block', marginBottom: 6 }}>Deskripsi</label>
+              <label style={{ fontSize: 12, color: 'var(--text-secondary, #aaa)', display: 'block', marginBottom: 6 }}>Deskripsi</label>
               <textarea
                 value={description} onChange={e => setDescription(e.target.value)}
                 placeholder="Deskripsi profil risiko..."
                 rows={3}
-                style={{ width: '100%', background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '10px 14px', color: '#fff', fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit' }}
+                style={{ width: '100%', background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit' }}
               />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, background: '#0a0f1a', padding: 16, borderRadius: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, background: 'var(--bg-secondary)', padding: 16, borderRadius: 10, border: '1px solid var(--border)' }}>
               <div>
                 <label style={{ fontSize: 11, color: '#888', display: 'block', marginBottom: 6 }}>Skor Minimal Onboarding</label>
                 <input
                   type="number" value={minScore} onChange={e => setMinScore(parseInt(e.target.value) || 0)}
                   min={0} max={30}
                   required
-                  style={{ width: '100%', background: '#16213e', border: '1px solid #333', borderRadius: 8, padding: '8px 12px', color: '#fff', fontSize: 13, boxSizing: 'border-box' }}
+                  style={{ width: '100%', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 12px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box' }}
                 />
               </div>
               <div>
@@ -247,7 +247,7 @@ export default function AdminRiskProfilesPage() {
                   type="number" value={maxScore} onChange={e => setMaxScore(parseInt(e.target.value) || 0)}
                   min={0} max={30}
                   required
-                  style={{ width: '100%', background: '#16213e', border: '1px solid #333', borderRadius: 8, padding: '8px 12px', color: '#fff', fontSize: 13, boxSizing: 'border-box' }}
+                  style={{ width: '100%', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 12px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box' }}
                 />
               </div>
             </div>

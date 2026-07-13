@@ -9,7 +9,7 @@ function MetricCard({ label, value, unit = '%', color = '#2255AA' }: {
 }) {
   return (
     <div style={{
-      background: 'var(--card-bg, #16213e)', border: '1px solid var(--border, #1a1a2e)',
+      background: 'var(--bg-card)', border: '1px solid var(--border, #1a1a2e)',
       borderRadius: 12, padding: '16px 20px', minWidth: 130,
     }}>
       <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>{label}</div>
@@ -23,7 +23,7 @@ function PlotImage({ title, filename, desc }: { title: string; filename: string;
   const [loaded, setLoaded] = useState(false)
   return (
     <div style={{
-      background: 'var(--card-bg, #16213e)', border: '1px solid var(--border, #1a1a2e)',
+      background: 'var(--bg-card)', border: '1px solid var(--border, #1a1a2e)',
       borderRadius: 12, padding: 20,
     }}>
       <div style={{ fontWeight: 700, marginBottom: 4 }}>{title}</div>
@@ -94,7 +94,7 @@ export default function AdminModelPerformancePage() {
         <>
           {/* Info */}
           <div style={{
-            background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)',
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
             borderRadius: 12, padding: '12px 20px', marginBottom: 24,
             display: 'flex', gap: 28, flexWrap: 'wrap', fontSize: 13,
           }}>
@@ -125,7 +125,7 @@ export default function AdminModelPerformancePage() {
           </div>
 
           {/* Tabel Fold */}
-          <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, marginBottom: 24, overflowX: 'auto' }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, marginBottom: 24, overflowX: 'auto' }}>
             <div style={{ fontWeight: 700, marginBottom: 12 }}>📋 Detail per Fold</div>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>

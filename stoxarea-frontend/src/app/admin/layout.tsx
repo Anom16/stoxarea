@@ -22,8 +22,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [router])
 
   if (checking) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0d1117' }}>
-      <div style={{ textAlign: 'center', color: '#888' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'var(--bg-primary)' }}>
+      <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
         <div style={{ fontSize: 32, marginBottom: 12 }}>🛡️</div>
         <p>Memverifikasi akses admin...</p>
       </div>
@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   )
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg, #0d1117)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-primary)' }}>
       <AdminSidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Topbar />

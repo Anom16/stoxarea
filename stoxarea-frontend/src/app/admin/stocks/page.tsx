@@ -92,11 +92,11 @@ export default function AdminStocksPage() {
         <input
           value={search} onChange={e => setSearch(e.target.value)}
           placeholder="🔍 Cari ticker atau nama..."
-          style={{ background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '9px 14px', color: '#fff', fontSize: 13, width: 220 }}
+          style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 14px', color: 'var(--text-primary)', fontSize: 13, width: 220 }}
         />
         <select
           value={sector} onChange={e => setSector(e.target.value)}
-          style={{ background: '#0a0f1a', border: '1px solid #333', borderRadius: 8, padding: '9px 12px', color: '#fff', fontSize: 13 }}
+          style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', color: 'var(--text-primary)', fontSize: 13 }}
         >
           <option value="">Semua Sektor</option>
           {sectors.map(s => <option key={s!} value={s!}>{s}</option>)}
@@ -105,8 +105,8 @@ export default function AdminStocksPage() {
           {(['all', 'qualified', 'disqualified'] as const).map(f => (
             <button key={f} onClick={() => setFilter(f)} style={{
               background: filter === f ? '#2255AA' : 'transparent',
-              color: filter === f ? '#fff' : '#888',
-              border: '1px solid #333', borderRadius: 8,
+              color: filter === f ? '#fff' : 'var(--text-secondary, #888)',
+              border: '1px solid var(--border)', borderRadius: 8,
               padding: '8px 14px', fontSize: 12, cursor: 'pointer',
             }}>
               {f === 'all' ? 'Semua' : f === 'qualified' ? '✅ Qualified' : '❌ Disqualified'}
@@ -123,7 +123,7 @@ export default function AdminStocksPage() {
       </div>
 
       {/* Tabel */}
-      <div style={{ background: 'var(--card-bg, #16213e)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'auto' }}>
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid var(--border)' }}>

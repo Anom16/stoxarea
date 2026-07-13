@@ -20,7 +20,7 @@ function PipelineCard({
 
   return (
     <div style={{
-      background: 'var(--card-bg, #16213e)',
+      background: 'var(--bg-card)',
       border: `1px solid ${status === 'running' ? buttonColor : 'var(--border, #1a1a2e)'}`,
       borderRadius: 12, padding: 24,
     }}>
@@ -177,7 +177,7 @@ export default function MLPipelinePage() {
 
       {/* Jadwal Info */}
       <div style={{
-        background: 'var(--card-bg, #16213e)', border: '1px solid var(--border, #1a1a2e)',
+        background: 'var(--bg-card)', border: '1px solid var(--border, #1a1a2e)',
         borderRadius: 12, padding: '16px 20px', marginBottom: 24,
       }}>
         <div style={{ fontWeight: 700, marginBottom: 10 }}>📅 Jadwal Otomatis</div>
