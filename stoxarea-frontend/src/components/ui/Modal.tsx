@@ -95,17 +95,17 @@ export default function TransactionModal({
         maxWidth: 460,
         maxHeight: '90vh',
         overflowY: 'auto',
-        background: 'var(--bg-card, #161d2e)',
+        background: 'var(--bg-secondary)',
         border: `1px solid ${isBuy ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)'}`,
         borderRadius: 16,
-        boxShadow: `0 24px 64px rgba(0, 0, 0, 0.6), 0 0 40px ${isBuy ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)'}`,
+        boxShadow: `0 24px 64px rgba(0, 0, 0, 0.4), 0 0 40px ${isBuy ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)'}`,
         animation: 'slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
       }}>
         
         {/* Header */}
         <div style={{
           padding: '18px 24px',
-          borderBottom: '1px solid var(--border, #1f2d45)',
+          borderBottom: '1px solid var(--border)',
           background: isBuy 
             ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.01))' 
             : 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.01))',
@@ -157,11 +157,11 @@ export default function TransactionModal({
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'flex-start',
-            background: 'var(--bg-primary, #0a0e1a)',
+            background: 'var(--bg-primary)',
             padding: '12px 16px',
             borderRadius: 10,
             marginBottom: 20,
-            border: '1px solid var(--border, #1f2d45)'
+            border: '1px solid var(--border)'
           }}>
             <div>
               <div style={{ fontSize: 10, color: 'var(--text-muted, #475569)', textTransform: 'uppercase', fontWeight: 600 }}>Nama Perusahaan</div>
@@ -180,27 +180,27 @@ export default function TransactionModal({
           {/* Account virtual balances */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
             <div style={{
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid var(--border, #1f2d45)',
+              background: 'var(--bg-primary)',
+              border: '1px solid var(--border)',
               borderRadius: 10,
               padding: '10px 14px'
             }}>
-              <div style={{ fontSize: 9, color: 'var(--text-muted, #475569)', textTransform: 'uppercase', fontWeight: 600 }}>💵 Saldo Kas</div>
-              <div style={{ fontSize: 14, fontWeight: 800, marginTop: 2 }}>
+              <div style={{ fontSize: 9, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>💵 Saldo Kas</div>
+              <div style={{ fontSize: 14, fontWeight: 800, marginTop: 2, color: 'var(--text-primary)' }}>
                 Rp {balance.toLocaleString('id-ID')}
               </div>
             </div>
             <div style={{
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid var(--border, #1f2d45)',
+              background: 'var(--bg-primary)',
+              border: '1px solid var(--border)',
               borderRadius: 10,
               padding: '10px 14px'
             }}>
-              <div style={{ fontSize: 9, color: 'var(--text-muted, #475569)', textTransform: 'uppercase', fontWeight: 600 }}>📦 Kepemilikan</div>
-              <div style={{ fontSize: 14, fontWeight: 800, marginTop: 2 }}>
+              <div style={{ fontSize: 9, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>📦 Kepemilikan</div>
+              <div style={{ fontSize: 14, fontWeight: 800, marginTop: 2, color: 'var(--text-primary)' }}>
                 {holdingQty > 0 ? `${(holdingQty / 100).toFixed(0)} Lot` : '0 Lot'}
               </div>
-              <div style={{ fontSize: 9, color: 'var(--text-secondary, #94a3b8)', marginTop: 1 }}>
+              <div style={{ fontSize: 9, color: 'var(--text-secondary)', marginTop: 1 }}>
                 ({holdingQty.toLocaleString('id-ID')} lembar)
               </div>
             </div>
@@ -224,9 +224,9 @@ export default function TransactionModal({
                   width: 44,
                   height: 44,
                   borderRadius: 10,
-                  border: '1px solid var(--border, #1f2d45)',
-                  background: 'var(--bg-hover, #1e2940)',
-                  color: 'var(--text-primary, #f1f5f9)',
+                  border: '1px solid var(--border)',
+                  background: 'var(--bg-primary)',
+                  color: 'var(--text-primary)',
                   fontSize: 20,
                   fontWeight: 700,
                   cursor: 'pointer',
@@ -247,9 +247,9 @@ export default function TransactionModal({
                   flex: 1,
                   height: 44,
                   borderRadius: 10,
-                  border: '1px solid var(--border, #1f2d45)',
-                  background: 'var(--bg-primary, #0a0e1a)',
-                  color: 'var(--text-primary, #f1f5f9)',
+                  border: '1px solid var(--border)',
+                  background: 'var(--bg-primary)',
+                  color: 'var(--text-primary)',
                   fontSize: 16,
                   fontWeight: 800,
                   textAlign: 'center',
@@ -264,9 +264,9 @@ export default function TransactionModal({
                   width: 44,
                   height: 44,
                   borderRadius: 10,
-                  border: '1px solid var(--border, #1f2d45)',
-                  background: 'var(--bg-hover, #1e2940)',
-                  color: 'var(--text-primary, #f1f5f9)',
+                  border: '1px solid var(--border)',
+                  background: 'var(--bg-primary)',
+                  color: 'var(--text-primary)',
                   fontSize: 20,
                   fontWeight: 700,
                   cursor: 'pointer',
@@ -288,9 +288,9 @@ export default function TransactionModal({
                   style={{
                     padding: '5px 10px',
                     borderRadius: 6,
-                    border: '1px solid var(--border, #1f2d45)',
-                    background: lots === val ? 'var(--bg-hover, #1e2940)' : 'transparent',
-                    color: lots === val ? 'var(--accent, #10b981)' : 'var(--text-secondary, #94a3b8)',
+                    border: '1px solid var(--border)',
+                    background: lots === val ? 'var(--bg-primary)' : 'transparent',
+                    color: lots === val ? 'var(--accent)' : 'var(--text-secondary)',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -324,50 +324,50 @@ export default function TransactionModal({
 
           {/* Checkout / Invoice Breakdown */}
           <div style={{ 
-            background: 'var(--bg-primary, #0a0e1a)',
-            border: '1px solid var(--border, #1f2d45)',
+            background: 'var(--bg-primary)',
+            border: '1px solid var(--border)',
             borderRadius: 12,
             padding: 16,
             marginBottom: 20
           }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary, #94a3b8)', textTransform: 'uppercase', marginBottom: 12 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: 12 }}>
               Rincian Pembayaran
             </div>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 8, color: 'var(--text-secondary, #94a3b8)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 8, color: 'var(--text-secondary)' }}>
               <span>Nilai Saham ({qtyShares.toLocaleString('id-ID')} lbr)</span>
-              <span style={{ fontWeight: 600, color: 'var(--text-primary, #f1f5f9)' }}>
+              <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
                 Rp {grossValue.toLocaleString('id-ID')}
               </span>
             </div>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 12, color: 'var(--text-secondary, #94a3b8)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 12, color: 'var(--text-secondary)' }}>
               <span>Biaya Transaksi ({(feeRate * 100).toFixed(2)}%)</span>
-              <span style={{ fontWeight: 600, color: 'var(--text-primary, #f1f5f9)' }}>
+              <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
                 Rp {feeAmount.toLocaleString('id-ID')}
               </span>
             </div>
 
-            <div style={{ borderTop: '1px solid var(--border, #1f2d45)', margin: '12px 0 8px' }} />
+            <div style={{ borderTop: '1px solid var(--border)', margin: '12px 0 8px' }} />
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary, #f1f5f9)' }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
                 {isBuy ? 'Total Pembayaran' : 'Total Diterima'}
               </span>
               <span style={{ 
                 fontSize: 18, 
                 fontWeight: 800, 
-                color: isBuy ? 'var(--accent, #10b981)' : 'var(--yellow, #f59e0b)' 
+                color: isBuy ? 'var(--accent)' : 'var(--yellow, #f59e0b)' 
               }}>
                 Rp {netValue.toLocaleString('id-ID')}
               </span>
             </div>
 
-            <div style={{ borderTop: '1px solid var(--border, #1f2d45)', margin: '8px 0 8px' }} />
+            <div style={{ borderTop: '1px solid var(--border)', margin: '8px 0 8px' }} />
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted, #475569)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted)' }}>
               <span>Estimasi Sisa Saldo:</span>
-              <span style={{ fontWeight: 600, color: isInsufficient ? 'var(--red, #ef4444)' : 'var(--text-secondary, #94a3b8)' }}>
+              <span style={{ fontWeight: 600, color: isInsufficient ? 'var(--red, #ef4444)' : 'var(--text-secondary)' }}>
                 Rp {(isBuy ? Math.max(0, balance - netValue) : (balance + netValue)).toLocaleString('id-ID')}
               </span>
             </div>
@@ -406,15 +406,15 @@ export default function TransactionModal({
                 flex: 1,
                 padding: '12px',
                 borderRadius: 10,
-                border: '1px solid var(--border, #1f2d45)',
+                border: '1px solid var(--border)',
                 background: 'transparent',
-                color: 'var(--text-secondary, #94a3b8)',
+                color: 'var(--text-secondary)',
                 fontWeight: 700,
                 fontSize: 14,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-primary)' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
             >
               Batal
@@ -429,9 +429,9 @@ export default function TransactionModal({
                 borderRadius: 10,
                 border: 'none',
                 background: isInsufficient 
-                  ? 'var(--border, #1f2d45)' 
-                  : isBuy ? 'var(--accent, #10b981)' : 'var(--red, #ef4444)',
-                color: isInsufficient ? 'var(--text-muted, #475569)' : '#fff',
+                  ? 'var(--border)' 
+                  : isBuy ? 'var(--accent)' : 'var(--red, #ef4444)',
+                color: isInsufficient ? 'var(--text-muted)' : '#fff',
                 fontWeight: 800,
                 fontSize: 14,
                 cursor: isInsufficient || processing ? 'not-allowed' : 'pointer',
@@ -443,12 +443,12 @@ export default function TransactionModal({
               }}
               onMouseEnter={e => {
                 if (!isInsufficient && !processing) {
-                  e.currentTarget.style.background = isBuy ? 'var(--accent-dim, #059669)' : '#dc2626'
+                  e.currentTarget.style.background = isBuy ? 'var(--accent-dim)' : '#dc2626'
                 }
               }}
               onMouseLeave={e => {
                 if (!isInsufficient && !processing) {
-                  e.currentTarget.style.background = isBuy ? 'var(--accent, #10b981)' : 'var(--red, #ef4444)'
+                  e.currentTarget.style.background = isBuy ? 'var(--accent)' : 'var(--red, #ef4444)'
                 }
               }}
             >

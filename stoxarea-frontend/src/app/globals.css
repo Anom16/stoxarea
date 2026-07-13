@@ -7,6 +7,8 @@
   --bg-secondary:  #060913;
   --bg-sidebar:    #060913;
   --bg-sidebar-rgba: rgba(6, 9, 19, 0.85);
+  --bg-card:       #161d2e;
+  --bg-hover:      #1e2940;
   --border:        rgba(255, 255, 255, 0.08);
   --border-bright: rgba(255, 255, 255, 0.15);
   --accent:        #10b981;
@@ -28,6 +30,8 @@ body.light-mode {
   --bg-secondary:  #ffffff;
   --bg-sidebar:    #f1f5f9;
   --bg-sidebar-rgba: rgba(241, 245, 249, 0.9);
+  --bg-card:       #ffffff;
+  --bg-hover:      #f1f5f9;
   --border:        #e2e8f0;
   --border-bright: #cbd5e1;
   --text-primary:  #0f172a;

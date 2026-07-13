@@ -15,7 +15,17 @@ export default function RegisterPage() {
   const router = useRouter()
   const { toasts, removeToast, toast } = useToast()
   const [mounted, setMounted] = useState(false)
-  useEffect(() => { setMounted(true) }, [])
+  const [isLight, setIsLight] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    // Baca state light mode dari body
+    const check = () => setIsLight(document.body.classList.contains('light-mode'))
+    check()
+    const observer = new MutationObserver(check)
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,11 +59,23 @@ export default function RegisterPage() {
     }
   }
 
+  // Warna dinamis sesuai mode
+  const bg        = isLight ? '#f8fafc' : '#0f172a'
+  const cardBg    = isLight ? '#ffffff' : '#1e293b'
+  const cardBorder= isLight ? '#e2e8f0' : '#334155'
+  const textPrim  = isLight ? '#0f172a' : '#ffffff'
+  const textMuted = isLight ? '#64748b' : '#94a3b8'
+  const inputBg   = isLight ? '#f8fafc' : '#0f172a'
+  const inputBorder= isLight ? '#cbd5e1' : '#334155'
+  const accent    = isLight ? '#059669' : '#10b981'
+
   return (
     <div style={{
-      minHeight: '100vh', background: '#0f172a',
+      minHeight: '100vh',
+      background: bg,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontFamily: 'Inter, sans-serif'
+      fontFamily: 'Inter, sans-serif',
+      transition: 'background 0.3s ease',
     }}>
       {mounted && <ToastContainer toasts={toasts} onRemove={removeToast} />}
       <div style={{ width: '100%', maxWidth: 400, padding: 24 }}>
@@ -64,23 +86,28 @@ export default function RegisterPage() {
             width: 80, height: 80, margin: '0 auto 16px',
             display: 'block', objectFit: 'contain'
           }} />
-          <h1 style={{ fontSize: 32, fontWeight: 800, color: 'white', margin: 0 }}>
-            Stox<span style={{ color: '#10b981' }}>Area</span>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: textPrim, margin: 0 }}>
+            Stox<span style={{ color: accent }}>Area</span>
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: 14, marginTop: 8 }}>
+          <p style={{ color: textMuted, fontSize: 14, marginTop: 8 }}>
             Terminal Riset Saham Berbasis AI
           </p>
         </div>
 
         {/* Form Card */}
         <div style={{
-          background: '#1e293b', padding: 32, borderRadius: 16,
-          border: '1px solid #334155', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'
+          background: cardBg,
+          padding: 32, borderRadius: 16,
+          border: `1px solid ${cardBorder}`,
+          boxShadow: isLight
+            ? '0 4px 24px rgba(0,0,0,0.08)'
+            : '0 20px 25px -5px rgba(0, 0, 0, 0.5)',
+          transition: 'background 0.3s ease, border-color 0.3s ease',
         }}>
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: 'white', marginBottom: 8 }}>Daftar Akun Baru</h2>
-          <p style={{ color: '#94a3b8', fontSize: 14, marginBottom: 24 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: textPrim, marginBottom: 8 }}>Daftar Akun Baru</h2>
+          <p style={{ color: textMuted, fontSize: 14, marginBottom: 24 }}>
             Sudah punya akun? {' '}
-            <Link href="/auth/login" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 600 }}>Masuk di sini</Link>
+            <Link href="/auth/login" style={{ color: accent, textDecoration: 'none', fontWeight: 600 }}>Masuk di sini</Link>
           </p>
 
           {error && (
@@ -91,21 +118,25 @@ export default function RegisterPage() {
 
           <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <label style={{ color: 'white', fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Nama Lengkap</label>
+              <label style={{ color: textPrim, fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Nama Lengkap</label>
               <input 
                 placeholder="Nama Anda"
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
                 required
                 style={{
-                  width: '100%', background: '#0f172a', border: '1px solid #334155',
-                  borderRadius: 8, padding: '12px 16px', color: 'white',
-                  fontSize: 14, outline: 'none', boxSizing: 'border-box'
+                  width: '100%',
+                  background: inputBg,
+                  border: `1px solid ${inputBorder}`,
+                  borderRadius: 8, padding: '12px 16px',
+                  color: textPrim,
+                  fontSize: 14, outline: 'none', boxSizing: 'border-box',
+                  transition: 'background 0.3s ease, border-color 0.3s ease',
                 }}
               />
             </div>
             <div>
-              <label style={{ color: 'white', fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Email</label>
+              <label style={{ color: textPrim, fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Email</label>
               <input 
                 type="email"
                 placeholder="nama@email.com"
@@ -113,14 +144,18 @@ export default function RegisterPage() {
                 onChange={e => setEmail(e.target.value)}
                 required
                 style={{
-                  width: '100%', background: '#0f172a', border: '1px solid #334155',
-                  borderRadius: 8, padding: '12px 16px', color: 'white',
-                  fontSize: 14, outline: 'none', boxSizing: 'border-box'
+                  width: '100%',
+                  background: inputBg,
+                  border: `1px solid ${inputBorder}`,
+                  borderRadius: 8, padding: '12px 16px',
+                  color: textPrim,
+                  fontSize: 14, outline: 'none', boxSizing: 'border-box',
+                  transition: 'background 0.3s ease, border-color 0.3s ease',
                 }}
               />
             </div>
             <div>
-              <label style={{ color: 'white', fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Password</label>
+              <label style={{ color: textPrim, fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Password</label>
               <input 
                 type="password"
                 placeholder="••••••••"
@@ -128,9 +163,13 @@ export default function RegisterPage() {
                 onChange={e => setPassword(e.target.value)}
                 required
                 style={{
-                  width: '100%', background: '#0f172a', border: '1px solid #334155',
-                  borderRadius: 8, padding: '12px 16px', color: 'white',
-                  fontSize: 14, outline: 'none', boxSizing: 'border-box'
+                  width: '100%',
+                  background: inputBg,
+                  border: `1px solid ${inputBorder}`,
+                  borderRadius: 8, padding: '12px 16px',
+                  color: textPrim,
+                  fontSize: 14, outline: 'none', boxSizing: 'border-box',
+                  transition: 'background 0.3s ease, border-color 0.3s ease',
                 }}
               />
             </div>
@@ -139,12 +178,13 @@ export default function RegisterPage() {
               type="submit"
               disabled={loading}
               style={{
-                background: '#10b981', color: 'white', border: 'none',
+                background: accent, color: 'white', border: 'none',
                 borderRadius: 8, padding: '14px', fontSize: 16, fontWeight: 700,
-                cursor: 'pointer', marginTop: 12, transition: 'background 0.2s'
+                cursor: 'pointer', marginTop: 12, transition: 'background 0.2s',
+                width: '100%',
               }}
-              onMouseOver={(e) => (e.currentTarget.style.background = '#059669')}
-              onMouseOut={(e) => (e.currentTarget.style.background = '#10b981')}
+              onMouseOver={(e) => (e.currentTarget.style.background = isLight ? '#047857' : '#059669')}
+              onMouseOut={(e) => (e.currentTarget.style.background = accent)}
             >
               {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
             </button>
