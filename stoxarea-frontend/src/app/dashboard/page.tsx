@@ -88,7 +88,7 @@ export default function DashboardPage() {
       .catch(() => { localStorage.removeItem('access_token'); window.location.href = '/auth/login' })
 
     api.get('/recommendation/top-picks', { headers })
-      .then(r => setRecs(r.data))
+      .then(r => { if (Array.isArray(r.data)) setRecs(r.data) })
       .catch(() => setError('Gagal memuat data analisis. Pastikan server backend berjalan.'))
 
     api.get('/market/technical/^JKSE?period=1mo')
@@ -102,9 +102,11 @@ export default function DashboardPage() {
 
     api.get('/market/sectors')
       .then(r => {
-        setSectors(r.data)
-        const firstValid = r.data.find((s: any) => s.total_stocks > 0)
-        if (firstValid) setActiveSector(firstValid.sector)
+        if (Array.isArray(r.data)) {
+          setSectors(r.data)
+          const firstValid = r.data.find((s: any) => s.total_stocks > 0)
+          if (firstValid) setActiveSector(firstValid.sector)
+        }
       })
       .finally(() => setLoading(false))
   }, [])
@@ -112,7 +114,7 @@ export default function DashboardPage() {
   // Fetch momentum stocks (used by modern layout)
   useEffect(() => {
     api.get('/market/momentum')
-      .then(res => setMomentumStocks(res.data))
+      .then(res => { if (Array.isArray(res.data)) setMomentumStocks(res.data) })
       .catch(() => {})
   }, [])
 

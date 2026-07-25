@@ -153,6 +153,21 @@ export default function VirtualTradingPage() {
     }
   }
 
+  // Format helper Juta / Miliar
+  const formatJuta = (val: number) => {
+    const absVal = Math.abs(val)
+    if (absVal >= 1_000_000_000) {
+      return `${(val / 1_000_000_000).toFixed(2)} Miliar`
+    }
+    if (absVal >= 1_000_000) {
+      return `${(val / 1_000_000).toFixed(2)} Juta`
+    }
+    if (absVal >= 1_000) {
+      return `${(val / 1_000).toFixed(1)} Ribu`
+    }
+    return `${val}`
+  }
+
   // Portfolio calculations
   const totalEquity = portfolio.reduce((a, i) => a + i.qty * (i.current_price || 0), 0)
   const totalCost   = portfolio.reduce((a, i) => a + i.qty * i.avg_price, 0)
@@ -194,29 +209,35 @@ export default function VirtualTradingPage() {
               <span className="stat-value" style={{ color: 'var(--blue)' }}>
                 Rp {totalValue.toLocaleString('id-ID')}
               </span>
-              <span className="stat-sub">Kas + Portofolio</span>
+              <span className="stat-sub" style={{ fontWeight: 600, color: 'var(--blue)' }}>
+                ~{formatJuta(totalValue)} (Kas + Saham)
+              </span>
             </div>
             <div className="stat-card">
               <span className="stat-label">Saldo Kas (Cash)</span>
               <span className="stat-value" style={{ color: 'var(--accent)' }}>
                 Rp {balance.toLocaleString('id-ID')}
               </span>
-              <span className="stat-sub">Dana untuk beli saham</span>
+              <span className="stat-sub" style={{ fontWeight: 600, color: 'var(--accent)' }}>
+                ~{formatJuta(balance)} siap dipakai
+              </span>
             </div>
             <div className="stat-card">
-              <span className="stat-label">Nilai Portofolio</span>
+              <span className="stat-label">Total Uang di Saham (Portofolio)</span>
               <span className="stat-value">
                 Rp {totalEquity.toLocaleString('id-ID')}
               </span>
-              <span className="stat-sub">{portfolio.length} emiten aktif</span>
+              <span className="stat-sub" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+                ~{formatJuta(totalEquity)} ({portfolio.length} emiten)
+              </span>
             </div>
             <div className="stat-card">
-              <span className="stat-label">Gain / Loss</span>
+              <span className="stat-label">Gain / Loss Total</span>
               <span className="stat-value" style={{ color: totalPL >= 0 ? 'var(--accent)' : 'var(--red)' }}>
                 {totalPL >= 0 ? '+' : ''}{totalPLPct.toFixed(2)}%
               </span>
-              <span className="stat-sub" style={{ color: totalPL >= 0 ? 'var(--accent)' : 'var(--red)' }}>
-                {totalPL >= 0 ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')}
+              <span className="stat-sub" style={{ fontWeight: 700, color: totalPL >= 0 ? 'var(--accent)' : 'var(--red)' }}>
+                {totalPL >= 0 ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')} ({totalPL >= 0 ? '+' : ''}{formatJuta(totalPL)})
               </span>
             </div>
           </div>
@@ -256,42 +277,68 @@ export default function VirtualTradingPage() {
                         <table className="clean-table">
                           <thead>
                             <tr>
-                              <th>Emiten</th>
-                              <th style={{ textAlign: 'right' }}>Kepemilikan</th>
-                              <th style={{ textAlign: 'right' }}>Avg. Beli</th>
-                              <th style={{ textAlign: 'right' }}>Harga Kini</th>
-                              <th style={{ textAlign: 'right' }}>Gain / Loss</th>
+                              <th>Emiten & Lot</th>
+                              <th style={{ textAlign: 'right' }}>Total Uang Beli (Modal)</th>
+                              <th style={{ textAlign: 'right' }}>Nilai Uang Sekarang</th>
+                              <th style={{ textAlign: 'right' }}>Keuntungan Total</th>
                               <th style={{ textAlign: 'center' }}>Aksi</th>
                             </tr>
                           </thead>
                           <tbody>
                             {portfolio.map((s) => {
                               const cp = s.current_price || s.avg_price
+                              const currentValue = cp * s.qty
+                              const totalInvested = s.avg_price * s.qty
                               const pl = cp - s.avg_price
+                              const totalPL = pl * s.qty
                               const plPct = (pl / s.avg_price) * 100
                               const isProfit = pl >= 0
                               return (
                                 <tr key={s.ticker}>
                                   <td>
-                                    <div style={{ fontWeight: 700 }}>{s.ticker.replace('.JK', '')}</div>
-                                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty} lembar</div>
+                                    <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)' }}>{s.ticker.replace('.JK', '')}</div>
+                                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)', marginTop: 2 }}>
+                                      {s.qty / 100} Lot <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 400 }}>({s.qty.toLocaleString('id-ID')} lbr)</span>
+                                    </div>
                                   </td>
-                                  <td style={{ textAlign: 'right', fontWeight: 600 }}>
-                                    {s.qty / 100} Lot
+                                  {/* TOTAL UANG BELI / MODAL */}
+                                  <td style={{ textAlign: 'right' }}>
+                                    <div style={{ fontWeight: 800, fontSize: 14, color: 'var(--text-primary)' }}>
+                                      Rp {totalInvested.toLocaleString('id-ID')}
+                                    </div>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: '#f59e0b', marginTop: 2 }}>
+                                      ({formatJuta(totalInvested)})
+                                    </div>
+                                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                                      Avg: Rp {s.avg_price.toLocaleString('id-ID')} /lbr
+                                    </div>
                                   </td>
-                                  <td style={{ textAlign: 'right' }}>Rp {s.avg_price.toLocaleString('id-ID')}</td>
-                                  <td style={{ textAlign: 'right', color: 'var(--accent)', fontWeight: 600 }}>Rp {cp.toLocaleString('id-ID')}</td>
-                                  <td style={{ textAlign: 'right', fontWeight: 700, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
-                                    {isProfit ? '+' : ''}{plPct.toFixed(2)}%
-                                    <div style={{ fontSize: 10, fontWeight: 400, color: 'var(--text-muted)', marginTop: 2 }}>
-                                      {isProfit ? '+' : ''}Rp {(pl * s.qty).toLocaleString('id-ID')}
+                                  {/* NILAI UANG SEKARANG */}
+                                  <td style={{ textAlign: 'right' }}>
+                                    <div style={{ fontWeight: 800, fontSize: 14, color: 'var(--blue)' }}>
+                                      Rp {currentValue.toLocaleString('id-ID')}
+                                    </div>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--blue)', marginTop: 2 }}>
+                                      ({formatJuta(currentValue)})
+                                    </div>
+                                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                                      Kini: Rp {cp.toLocaleString('id-ID')} /lbr
+                                    </div>
+                                  </td>
+                                  {/* TOTAL KEUNTUNGAN */}
+                                  <td style={{ textAlign: 'right' }}>
+                                    <div style={{ fontSize: 15, fontWeight: 800, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                                      {isProfit ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')}
+                                    </div>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: isProfit ? 'var(--accent)' : 'var(--red)', marginTop: 2 }}>
+                                      {isProfit ? '+' : ''}{formatJuta(totalPL)} ({isProfit ? '+' : ''}{plPct.toFixed(2)}%)
                                     </div>
                                   </td>
                                   <td style={{ textAlign: 'center' }}>
                                     <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-                                      <button className="btn-outline" style={{ padding: '4px 10px', fontSize: 11, color: 'var(--accent)', borderColor: 'rgba(16,185,129,0.2)' }}
+                                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: 12, fontWeight: 700, color: 'var(--accent)', borderColor: 'rgba(16,185,129,0.3)' }}
                                         onClick={() => handleQuickTrade(s.ticker, 'buy', cp)}>+ Beli</button>
-                                      <button className="btn-outline" style={{ padding: '4px 10px', fontSize: 11, color: 'var(--red)', borderColor: 'rgba(239,68,68,0.2)' }}
+                                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: 12, fontWeight: 700, color: 'var(--red)', borderColor: 'rgba(239,68,68,0.3)' }}
                                         onClick={() => handleQuickTrade(s.ticker, 'sell', cp)}>− Jual</button>
                                     </div>
                                   </td>
@@ -306,7 +353,10 @@ export default function VirtualTradingPage() {
                       <div className="market-card-mobile">
                         {portfolio.map((s) => {
                           const cp = s.current_price || s.avg_price
+                          const currentValue = cp * s.qty
+                          const totalInvested = s.avg_price * s.qty
                           const pl = cp - s.avg_price
+                          const totalPL = pl * s.qty
                           const plPct = (pl / s.avg_price) * 100
                           const isProfit = pl >= 0
                           return (
@@ -314,19 +364,37 @@ export default function VirtualTradingPage() {
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                                 <div>
                                   <div style={{ fontSize: 16, fontWeight: 800 }}>{s.ticker.replace('.JK', '')}</div>
-                                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.qty / 100} Lot ({s.qty} lbr)</div>
+                                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', marginTop: 2 }}>
+                                    {s.qty / 100} Lot ({s.qty.toLocaleString('id-ID')} lbr)
+                                  </div>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
                                   <div style={{ fontSize: 14, fontWeight: 800, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
-                                    {isProfit ? '+' : ''}{plPct.toFixed(2)}%
+                                    {isProfit ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')}
                                   </div>
-                                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                                    Rp {(pl * s.qty).toLocaleString('id-ID')}
+                                  <div style={{ fontSize: 11, fontWeight: 700, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                                    {isProfit ? '+' : ''}{formatJuta(totalPL)} ({isProfit ? '+' : ''}{plPct.toFixed(2)}%)
                                   </div>
                                 </div>
                               </div>
+
+                              <div style={{ display: 'flex', justifyContent: 'space-between', background: 'rgba(255,255,255,0.03)', padding: '10px 12px', borderRadius: 8, marginTop: 8 }}>
+                                <div>
+                                  <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>UANG BELI (MODAL)</div>
+                                  <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', marginTop: 2 }}>
+                                    Rp {totalInvested.toLocaleString('id-ID')} <span style={{ color: '#f59e0b' }}>({formatJuta(totalInvested)})</span>
+                                  </div>
+                                </div>
+                                <div style={{ textAlign: 'right' }}>
+                                  <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>NILAI UANG SEKARANG</div>
+                                  <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--blue)', marginTop: 2 }}>
+                                    Rp {currentValue.toLocaleString('id-ID')} <span>({formatJuta(currentValue)})</span>
+                                  </div>
+                                </div>
+                              </div>
+
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
-                                <div style={{ display: 'flex', gap: 12, fontSize: 12, color: 'var(--text-secondary)' }}>
+                                <div style={{ display: 'flex', gap: 12, fontSize: 11, color: 'var(--text-secondary)' }}>
                                   <div>Avg: Rp {s.avg_price.toLocaleString('id-ID')}</div>
                                   <div>Kini: Rp {cp.toLocaleString('id-ID')}</div>
                                 </div>
