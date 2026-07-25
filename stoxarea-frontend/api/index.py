@@ -1,7 +1,11 @@
 import sys
 import os
 from pathlib import Path
-from fastapi import FastAPI
+
+# Add current api directory to sys.path so 'app' package is found directly
+api_dir = Path(__file__).resolve().parent
+if str(api_dir) not in sys.path:
+    sys.path.insert(0, str(api_dir))
 
 # Force Environment Variables for Supabase
 os.environ["DATABASE_URL"] = os.environ.get(
@@ -14,17 +18,11 @@ os.environ["SECRET_KEY"] = os.environ.get(
 )
 os.environ["ALLOWED_ORIGINS"] = "*"
 
-# Add stoxarea-backend to python sys.path
-current_dir = Path(__file__).resolve().parent
-backend_path = current_dir.parent.parent / "stoxarea-backend"
-if str(backend_path) not in sys.path:
-    sys.path.insert(0, str(backend_path))
-
 from app.main import app as backend_app
+from fastapi import FastAPI
 
-# Create Master Gateway FastAPI app
 app = FastAPI(title="StoxArea Serverless Gateway")
 
-# Mount backend_app under /api so requests to /api/auth/login automatically strip /api and match /auth/login
+# Mount backend_app under /api and /
 app.mount("/api", backend_app)
 app.mount("/", backend_app)
