@@ -1,0 +1,1256 @@
+{
+    "BBCA.JK": {
+        "ai_score": 0.2379,
+        "ai_score_percent": "23.8%",
+        "insights": [
+            {
+                "feature": "rsi_14",
+                "contribution": 0.06210320442914963,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.05801825970411301,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.04069099202752113,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.557639"
+    },
+    "BBRI.JK": {
+        "ai_score": 0.2194,
+        "ai_score_percent": "21.9%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.0986216589808464,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.06668727844953537,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_norm",
+                "contribution": -0.05236181244254112,
+                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.557639"
+    },
+    "BMRI.JK": {
+        "ai_score": 0.2717,
+        "ai_score_percent": "27.2%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.18125568330287933,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.06254003196954727,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.039613693952560425,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.557639"
+    },
+    "BBNI.JK": {
+        "ai_score": 0.2785,
+        "ai_score_percent": "27.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.22977547347545624,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.10185188055038452,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.058718204498291016,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.557639"
+    },
+    "TLKM.JK": {
+        "ai_score": 0.2559,
+        "ai_score_percent": "25.6%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.1920291930437088,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.08191957324743271,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.0683385506272316,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.557639"
+    },
+    "ASII.JK": {
+        "ai_score": 0.2344,
+        "ai_score_percent": "23.4%",
+        "insights": [
+            {
+                "feature": "rsi_14",
+                "contribution": 0.07143007218837738,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.06851746141910553,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.052093327045440674,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.559395"
+    },
+    "UNTR.JK": {
+        "ai_score": 0.2618,
+        "ai_score_percent": "26.2%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2740670442581177,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.25569599866867065,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.09668344259262085,
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.559395"
+    },
+    "ADRO.JK": {
+        "ai_score": 0.2251,
+        "ai_score_percent": "22.5%",
+        "insights": [
+            {
+                "feature": "bb_position",
+                "contribution": -0.07645870000123978,
+                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.06900456547737122,
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": -0.06094571202993393,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.559395"
+    },
+    "PTBA.JK": {
+        "ai_score": 0.2164,
+        "ai_score_percent": "21.6%",
+        "insights": [
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.055716317147016525,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.054437000304460526,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_norm",
+                "contribution": -0.02884184755384922,
+                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.559395"
+    },
+    "ITMG.JK": {
+        "ai_score": 0.2064,
+        "ai_score_percent": "20.6%",
+        "insights": [
+            {
+                "feature": "bb_position",
+                "contribution": -0.11220504343509674,
+                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.08777406811714172,
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.0732371136546135,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.559395"
+    },
+    "UNVR.JK": {
+        "ai_score": 0.2174,
+        "ai_score_percent": "21.7%",
+        "insights": [
+            {
+                "feature": "log_ret_1d",
+                "contribution": 0.0623011477291584,
+                "description": "Hasil Naik-Turun Harian mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.06007473170757294,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": -0.05576455965638161,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.559846"
+    },
+    "ICBP.JK": {
+        "ai_score": 0.1735,
+        "ai_score_percent": "17.4%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.06604607403278351,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": -0.05458137020468712,
+                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.048368390649557114,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.559846"
+    },
+    "INDF.JK": {
+        "ai_score": 0.1814,
+        "ai_score_percent": "18.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.12196999788284302,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": -0.0598103329539299,
+                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.04667815938591957,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.559846"
+    },
+    "KLBF.JK": {
+        "ai_score": 0.195,
+        "ai_score_percent": "19.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.1335650533437729,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.0511116161942482,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_20_dist",
+                "contribution": -0.0413895845413208,
+                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.559846"
+    },
+    "PGAS.JK": {
+        "ai_score": 0.2871,
+        "ai_score_percent": "28.7%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.21416422724723816,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.09544621407985687,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.056576766073703766,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "AKRA.JK": {
+        "ai_score": 0.2559,
+        "ai_score_percent": "25.6%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.0758451372385025,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.06561494618654251,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.04276473447680473,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "TOWR.JK": {
+        "ai_score": 0.2128,
+        "ai_score_percent": "21.3%",
+        "insights": [
+            {
+                "feature": "rsi_14",
+                "contribution": 0.06311696022748947,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.0487639419734478,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.046021219342947006,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "BRPT.JK": {
+        "ai_score": 0.2631,
+        "ai_score_percent": "26.3%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2632472813129425,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.17966243624687195,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.08344164490699768,
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "TPIA.JK": {
+        "ai_score": 0.1583,
+        "ai_score_percent": "15.8%",
+        "insights": [
+            {
+                "feature": "ma_20_dist",
+                "contribution": -0.39931145310401917,
+                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.2832421660423279,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_norm",
+                "contribution": -0.26923394203186035,
+                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "INKP.JK": {
+        "ai_score": 0.2653,
+        "ai_score_percent": "26.5%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.1401936411857605,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.09831389039754868,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.06965672969818115,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "TKIM.JK": {
+        "ai_score": 0.2614,
+        "ai_score_percent": "26.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.18540729582309723,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.13736751675605774,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.05868217721581459,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "SMGR.JK": {
+        "ai_score": 0.272,
+        "ai_score_percent": "27.2%",
+        "insights": [
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.14802026748657227,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.1306001991033554,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.09513967484235764,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "INTP.JK": {
+        "ai_score": 0.2705,
+        "ai_score_percent": "27.0%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.2564535439014435,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.19214984774589539,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.12286540865898132,
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "HRUM.JK": {
+        "ai_score": 0.2409,
+        "ai_score_percent": "24.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2246093600988388,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.09655675292015076,
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.06325014680624008,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "MEDC.JK": {
+        "ai_score": 0.2781,
+        "ai_score_percent": "27.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.24392235279083252,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.22129148244857788,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.11248098313808441,
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "INDY.JK": {
+        "ai_score": 0.2846,
+        "ai_score_percent": "28.5%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2682739496231079,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.10297758132219315,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.09425853192806244,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "EXCL.JK": {
+        "ai_score": 0.2486,
+        "ai_score_percent": "24.9%",
+        "insights": [
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.12293433398008347,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.06645183265209198,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.0661897137761116,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "ISAT.JK": {
+        "ai_score": 0.2559,
+        "ai_score_percent": "25.6%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.12452022731304169,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.07143043726682663,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.03685397282242775,
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "JSMR.JK": {
+        "ai_score": 0.2136,
+        "ai_score_percent": "21.4%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2180788516998291,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.0890447199344635,
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.0587141215801239,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.560307"
+    },
+    "PTPP.JK": {
+        "ai_score": 0.2781,
+        "ai_score_percent": "27.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2736249268054962,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.22747550904750824,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.1268153339624405,
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "BSDE.JK": {
+        "ai_score": 0.266,
+        "ai_score_percent": "26.6%",
+        "insights": [
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.19584046304225922,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.14324724674224854,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.07310009002685547,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "PWON.JK": {
+        "ai_score": 0.2494,
+        "ai_score_percent": "24.9%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.21715262532234192,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.08873962610960007,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.06442566961050034,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "CTRA.JK": {
+        "ai_score": 0.2722,
+        "ai_score_percent": "27.2%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.19860707223415375,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.12780961394309998,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.11743263155221939,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "SMRA.JK": {
+        "ai_score": 0.2184,
+        "ai_score_percent": "21.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.11451057344675064,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": -0.06418223679065704,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.051071710884571075,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "ASSA.JK": {
+        "ai_score": 0.2328,
+        "ai_score_percent": "23.3%",
+        "insights": [
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.1001458689570427,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.057901155203580856,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.05715198814868927,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "BIRD.JK": {
+        "ai_score": 0.1774,
+        "ai_score_percent": "17.7%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.12590336799621582,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.07794488966464996,
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.05659882724285126,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "GIAA.JK": {
+        "ai_score": 0.2672,
+        "ai_score_percent": "26.7%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.16196610033512115,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.05311078578233719,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.05202210694551468,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "SMDR.JK": {
+        "ai_score": 0.2328,
+        "ai_score_percent": "23.3%",
+        "insights": [
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.07831402122974396,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.05800948292016983,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.05662613734602928,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "SCMA.JK": {
+        "ai_score": 0.2431,
+        "ai_score_percent": "24.3%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.06713724881410599,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.05229876562952995,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_20_dist",
+                "contribution": -0.0383416973054409,
+                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "EMTK.JK": {
+        "ai_score": 0.2767,
+        "ai_score_percent": "27.7%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.22850990295410156,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.18297311663627625,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.1394985318183899,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "BUKA.JK": {
+        "ai_score": 0.2502,
+        "ai_score_percent": "25.0%",
+        "insights": [
+            {
+                "feature": "ma_50_dist",
+                "contribution": 0.16774366796016693,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.11679922789335251,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.08457311242818832,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "MIKA.JK": {
+        "ai_score": 0.2315,
+        "ai_score_percent": "23.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2019256055355072,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": -0.05056224763393402,
+                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.041885148733854294,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.562325"
+    },
+    "HEAL.JK": {
+        "ai_score": 0.278,
+        "ai_score_percent": "27.8%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.24566853046417236,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": 0.17504462599754333,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.061581190675497055,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564046"
+    },
+    "SIDO.JK": {
+        "ai_score": 0.212,
+        "ai_score_percent": "21.2%",
+        "insights": [
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.0881810337305069,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": -0.08009372651576996,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.07504414767026901,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564046"
+    },
+    "MYOR.JK": {
+        "ai_score": 0.1898,
+        "ai_score_percent": "19.0%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.2303575575351715,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "vol_ma_ratio",
+                "contribution": -0.12686404585838318,
+                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": -0.08539722114801407,
+                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564046"
+    },
+    "ULTJ.JK": {
+        "ai_score": 0.1958,
+        "ai_score_percent": "19.6%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.21291987597942352,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.0703856348991394,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.030675213783979416,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564046"
+    },
+    "ROTI.JK": {
+        "ai_score": 0.188,
+        "ai_score_percent": "18.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.09949018061161041,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": -0.04917778819799423,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": -0.047985758632421494,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564046"
+    },
+    "WOOD.JK": {
+        "ai_score": 0.3183,
+        "ai_score_percent": "31.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.19069065153598785,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_20_dist",
+                "contribution": 0.1785738617181778,
+                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.07960733771324158,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564046"
+    },
+    "BRIS.JK": {
+        "ai_score": 0.21,
+        "ai_score_percent": "21.0%",
+        "insights": [
+            {
+                "feature": "rsi_14",
+                "contribution": 0.06434997171163559,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_50_dist",
+                "contribution": -0.05967571958899498,
+                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "ma_20_dist",
+                "contribution": -0.046189289540052414,
+                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564046"
+    },
+    "BBTN.JK": {
+        "ai_score": 0.277,
+        "ai_score_percent": "27.7%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.23644477128982544,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.08425918966531754,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.06678075343370438,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564992"
+    },
+    "BJBR.JK": {
+        "ai_score": 0.172,
+        "ai_score_percent": "17.2%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.19060048460960388,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": -0.11154326796531677,
+                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.07214637845754623,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564992"
+    },
+    "BNGA.JK": {
+        "ai_score": 0.1895,
+        "ai_score_percent": "18.9%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.27401840686798096,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.10045477747917175,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_position",
+                "contribution": -0.027881605550646782,
+                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564992"
+    },
+    "PNBN.JK": {
+        "ai_score": 0.1676,
+        "ai_score_percent": "16.8%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.5738784670829773,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.10659209638834,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": -0.0329887792468071,
+                "description": "Tren Pergerakan 5 Hari Terakhir menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564992"
+    },
+    "ELSA.JK": {
+        "ai_score": 0.2807,
+        "ai_score_percent": "28.1%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": 0.26153120398521423,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "log_ret_5d",
+                "contribution": 0.14970709383487701,
+                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.100071020424366,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564992"
+    },
+    "LSIP.JK": {
+        "ai_score": 0.2344,
+        "ai_score_percent": "23.4%",
+        "insights": [
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.18023236095905304,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_position",
+                "contribution": -0.06485694646835327,
+                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "bb_width",
+                "contribution": -0.04792772978544235,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564992"
+    },
+    "AALI.JK": {
+        "ai_score": 0.1856,
+        "ai_score_percent": "18.6%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.28185969591140747,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.14433757960796356,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_signal_norm",
+                "contribution": 0.07385964691638947,
+                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564992"
+    },
+    "SIMP.JK": {
+        "ai_score": 0.1872,
+        "ai_score_percent": "18.7%",
+        "insights": [
+            {
+                "feature": "bb_width",
+                "contribution": -0.2853582799434662,
+                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
+            },
+            {
+                "feature": "macd_hist_norm",
+                "contribution": 0.11763262748718262,
+                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
+            },
+            {
+                "feature": "rsi_14",
+                "contribution": 0.07558760046958923,
+                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
+            }
+        ],
+        "last_updated": "2026-07-13 20:26:43.564992"
+    }
+}
