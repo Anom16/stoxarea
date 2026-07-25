@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import api from '@/lib/api'
 
-const BASE = process.env.NEXT_PUBLIC_API_URL || 'https://stoxarea-production.up.railway.app'
+const BASE = process.env.NEXT_PUBLIC_API_URL || '/api'
 
 function MetricCard({ label, value, unit = '%', color = '#2255AA' }: {
   label: string; value: number; unit?: string; color?: string
