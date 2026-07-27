@@ -47,6 +47,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [profile, setProfile] = useState('—')
   const [username, setUsername] = useState('Pengguna')
+  const [virtualBalance, setVirtualBalance] = useState<number>(100000000)
   const [error, setError]     = useState('')
   const [selectedTransparency, setSelectedTransparency] = useState<any>(null)
 
@@ -80,6 +81,9 @@ export default function DashboardPage() {
       .then(r => {
         const name = r.data.full_name?.trim() || r.data.email?.split('@')[0] || 'Pengguna'
         setUsername(name)
+        if (typeof r.data.virtual_balance === 'number') {
+          setVirtualBalance(r.data.virtual_balance)
+        }
         const rawProfile = r.data.risk_profile
         if (rawProfile) {
           const capitalized = rawProfile
@@ -290,14 +294,18 @@ export default function DashboardPage() {
                   Portofolio Virtual
                 </span>
                 <h2 style={{ fontSize: 20, fontWeight: 800, marginTop: 6 }}>Ringkasan Akun</h2>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
                   <div>
-                    <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Total Nilai Portofolio</div>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--blue)', marginTop: 4 }}>Rp 100.000.000</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Sisa Saldo Kas</div>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--blue)', marginTop: 4 }}>
+                      Rp {virtualBalance.toLocaleString('id-ID')}
+                    </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Total Return (ROI)</div>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--accent)', marginTop: 4 }}>▲ +0.00%</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Status Akun</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)', marginTop: 4 }}>
+                      Aktif
+                    </div>
                   </div>
                 </div>
                 <Link href="/virtual-trading" className="btn-primary" style={{ display: 'block', padding: '8px 16px', fontSize: 12, textAlign: 'center', textDecoration: 'none', marginTop: 14 }}>
