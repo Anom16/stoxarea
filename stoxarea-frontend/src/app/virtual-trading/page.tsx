@@ -277,10 +277,11 @@ export default function VirtualTradingPage() {
                         <table className="clean-table">
                           <thead>
                             <tr>
-                              <th>Emiten & Lot</th>
-                              <th style={{ textAlign: 'right' }}>Total Uang Beli (Modal)</th>
-                              <th style={{ textAlign: 'right' }}>Nilai Uang Sekarang</th>
-                              <th style={{ textAlign: 'right' }}>Keuntungan Total</th>
+                              <th>Emiten</th>
+                              <th style={{ textAlign: 'right' }}>Kepemilikan</th>
+                              <th style={{ textAlign: 'right' }}>Avg. Beli</th>
+                              <th style={{ textAlign: 'right' }}>Harga Kini</th>
+                              <th style={{ textAlign: 'right' }}>Gain / Loss</th>
                               <th style={{ textAlign: 'center' }}>Aksi</th>
                             </tr>
                           </thead>
@@ -297,41 +298,38 @@ export default function VirtualTradingPage() {
                                 <tr key={s.ticker}>
                                   <td>
                                     <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)' }}>{s.ticker.replace('.JK', '')}</div>
-                                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)', marginTop: 2 }}>
-                                      {s.qty / 100} Lot <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 400 }}>({s.qty.toLocaleString('id-ID')} lbr)</span>
-                                    </div>
+                                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty.toLocaleString('id-ID')} lembar</div>
                                   </td>
-                                  {/* TOTAL UANG BELI / MODAL */}
+                                  {/* KEPEMILIKAN & TOTAL UANG */}
                                   <td style={{ textAlign: 'right' }}>
-                                    <div style={{ fontWeight: 800, fontSize: 14, color: 'var(--text-primary)' }}>
-                                      Rp {totalInvested.toLocaleString('id-ID')}
-                                    </div>
-                                    <div style={{ fontSize: 12, fontWeight: 700, color: '#f59e0b', marginTop: 2 }}>
-                                      ({formatJuta(totalInvested)})
-                                    </div>
-                                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-                                      Avg: Rp {s.avg_price.toLocaleString('id-ID')} /lbr
-                                    </div>
-                                  </td>
-                                  {/* NILAI UANG SEKARANG */}
-                                  <td style={{ textAlign: 'right' }}>
-                                    <div style={{ fontWeight: 800, fontSize: 14, color: 'var(--blue)' }}>
-                                      Rp {currentValue.toLocaleString('id-ID')}
+                                    <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)' }}>
+                                      {s.qty / 100} Lot
                                     </div>
                                     <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--blue)', marginTop: 2 }}>
-                                      ({formatJuta(currentValue)})
+                                      Rp {currentValue.toLocaleString('id-ID')}
                                     </div>
-                                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-                                      Kini: Rp {cp.toLocaleString('id-ID')} /lbr
+                                    <div style={{ fontSize: 11, fontWeight: 700, color: '#f59e0b', marginTop: 1 }}>
+                                      (~{formatJuta(currentValue)})
                                     </div>
                                   </td>
-                                  {/* TOTAL KEUNTUNGAN */}
+                                  {/* AVG BELI */}
+                                  <td style={{ textAlign: 'right' }}>
+                                    <div style={{ fontSize: 14, fontWeight: 700 }}>Rp {s.avg_price.toLocaleString('id-ID')}</div>
+                                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                                      Modal: Rp {totalInvested.toLocaleString('id-ID')} (~{formatJuta(totalInvested)})
+                                    </div>
+                                  </td>
+                                  {/* HARGA KINI */}
+                                  <td style={{ textAlign: 'right', color: 'var(--accent)', fontWeight: 700, fontSize: 14 }}>
+                                    Rp {cp.toLocaleString('id-ID')}
+                                  </td>
+                                  {/* GAIN / LOSS */}
                                   <td style={{ textAlign: 'right' }}>
                                     <div style={{ fontSize: 15, fontWeight: 800, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
-                                      {isProfit ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')}
+                                      {isProfit ? '+' : ''}{plPct.toFixed(2)}%
                                     </div>
                                     <div style={{ fontSize: 12, fontWeight: 700, color: isProfit ? 'var(--accent)' : 'var(--red)', marginTop: 2 }}>
-                                      {isProfit ? '+' : ''}{formatJuta(totalPL)} ({isProfit ? '+' : ''}{plPct.toFixed(2)}%)
+                                      {isProfit ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')} ({isProfit ? '+' : ''}{formatJuta(totalPL)})
                                     </div>
                                   </td>
                                   <td style={{ textAlign: 'center' }}>
