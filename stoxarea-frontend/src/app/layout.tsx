@@ -23,18 +23,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             if (theme === 'light') {
               document.body.classList.add('light-mode');
             }
-            // Bersihkan Service Worker lama di Vercel/Local agar PWA selalu pakai versi terbaru
+            // Hapus dan matikan seluruh PWA Service Worker secara permanen di browser user
             if ('serviceWorker' in navigator) {
-              var lastClean = localStorage.getItem('sw_clean_timestamp');
-              var now = Date.now();
-              if (!lastClean || (now - parseInt(lastClean)) > 3600000) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                  for (var i = 0; i < registrations.length; i++) {
-                    registrations[i].unregister();
-                  }
-                  localStorage.setItem('sw_clean_timestamp', now.toString());
-                });
-              }
+              navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (var i = 0; i < registrations.length; i++) {
+                  registrations[i].unregister();
+                }
+              });
             }
           })()
         ` }} />
