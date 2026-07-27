@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Sidebar from '@/components/ui/Sidebar'
 import Topbar from '@/components/ui/Topbar'
@@ -40,6 +41,7 @@ const getProfileColor = (p: string) => {
 }
 
 export default function DashboardPage() {
+  const router = useRouter()
   const [recs, setRecs]       = useState<Recommendation[]>([])
   const [sectors, setSectors] = useState<SectorRow[]>([])
   const [loading, setLoading] = useState(true)
@@ -63,7 +65,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
     if (!token) { 
-      window.location.href = '/auth/login'
+      router.replace('/auth/login')
       return 
     }
 
@@ -87,7 +89,7 @@ export default function DashboardPage() {
           setProfile(capitalized)
         } else if (!r.data.is_admin) {
           // User biasa yang belum mengisi profil risiko otomatis dialihkan ke /onboarding
-          window.location.href = '/onboarding'
+          router.replace('/onboarding')
           return
         } else {
           setProfile('—')
@@ -95,7 +97,7 @@ export default function DashboardPage() {
       })
       .catch(() => {
         localStorage.removeItem('access_token')
-        window.location.href = '/auth/login'
+        router.replace('/auth/login')
       })
 
     // Fetch recommendations, technicals, sectors in parallel safely

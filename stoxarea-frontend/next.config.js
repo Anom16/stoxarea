@@ -7,15 +7,6 @@ const withPWA = require('@ducanh2912/next-pwa').default({
 
 const nextConfig = {
   reactStrictMode: true,
-  async redirects() {
-    return [
-      {
-        source: '/dashBoard',
-        destination: '/dashboard',
-        permanent: true,
-      },
-    ]
-  },
 }
 
 module.exports = withPWA(nextConfig)
