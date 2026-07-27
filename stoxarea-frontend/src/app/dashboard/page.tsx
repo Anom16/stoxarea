@@ -116,7 +116,7 @@ export default function DashboardPage() {
         const firstValid = sectorsRes.value.data.find((s: any) => s.total_stocks > 0)
         if (firstValid) setActiveSector(firstValid.sector)
       }
-    ]).finally(() => {
+    }).finally(() => {
       setLoading(false)
     })
   }, [])
