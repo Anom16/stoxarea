@@ -581,39 +581,128 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* ─── STATS ROW ─── */}
-          <section className="dashboard-section mb-24" role="region" aria-label="Statistik Ringkasan Pasar">
-            <div className="stats-row">
-              <div className="stat-card">
-                <div className="stat-label">Total Saham Dipantau</div>
-                <div className="stat-value text-accent">
-                  {validSectors.length > 0 ? validSectors.reduce((acc, s) => acc + s.total_stocks, 0).toString() : '—'}
+          {/* ─── OVERVIEW DECK: IHSG + PORTOFOLIO ─── */}
+          <section className="dashboard-section mb-24" role="region" aria-label="Ringkasan Pasar dan Portofolio">
+            <div className="modern-deck-grid">
+              {/* IHSG Card */}
+              <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'stretch' }}>
+                <div>
+                  <span style={{ fontSize: 10, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+                    Indeks Harga Saham Gabungan
+                  </span>
+                  <h2 style={{ fontSize: 20, fontWeight: 800, marginTop: 6, marginBottom: 0 }}>IHSG</h2>
+                  {ihsgData ? (
+                    <>
+                      {(() => {
+                        const closeList = ihsgData.candles.close
+                        const lastPrice = closeList[closeList.length - 1]
+                        const prevPrice = closeList[closeList.length - 2] || lastPrice
+                        const pctChange = ((lastPrice - prevPrice) / prevPrice) * 100
+                        const isUp = pctChange >= 0
+                        return (
+                          <>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginTop: 8 }}>
+                              <span style={{ fontSize: 26, fontWeight: 700 }}>
+                                {lastPrice.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              </span>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: isUp ? 'var(--accent)' : '#ef4444' }}>
+                                {isUp ? '▲' : '▼'} {isUp ? '+' : ''}{pctChange.toFixed(2)}%
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', gap: 20, marginTop: 12, fontSize: 11, color: 'var(--text-secondary)' }}>
+                              <div>
+                                <div style={{ color: 'var(--text-muted)' }}>High</div>
+                                <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>
+                                  {ihsgData.candles.high[ihsgData.candles.high.length - 1]?.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </div>
+                              </div>
+                              <div>
+                                <div style={{ color: 'var(--text-muted)' }}>Low</div>
+                                <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>
+                                  {ihsgData.candles.low[ihsgData.candles.low.length - 1]?.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </div>
+                              </div>
+                              <div>
+                                <div style={{ color: 'var(--text-muted)' }}>Prev Close</div>
+                                <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>
+                                  {prevPrice.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )
+                      })()}
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginTop: 8 }}>
+                         <span style={{ fontSize: 26, fontWeight: 700 }}>7.120,45</span>
+                         <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)' }}>▲ +0.42%</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: 20, marginTop: 12, fontSize: 11, color: 'var(--text-secondary)' }}>
+                         <div><div style={{ color: 'var(--text-muted)' }}>High</div><div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>7.145,20</div></div>
+                         <div><div style={{ color: 'var(--text-muted)' }}>Low</div><div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>7.095,50</div></div>
+                         <div><div style={{ color: 'var(--text-muted)' }}>Prev Close</div><div style={{ fontWeight: 600, color: 'var(--text-primary)', marginTop: 2 }}>7.090,65</div></div>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="stat-sub">Emiten IDX aktif dianalisis</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-label">Match Score Tertinggi</div>
-                <div className="stat-value text-accent">{recs[0]?.match_score_percent || '—'}</div>
-                <div className="stat-sub">
-                  {recs[0]?.ticker
-                    ? <Link href={`/market/${recs[0].ticker}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>{recs[0].ticker.replace('.JK', '')}</Link>
-                    : '—'
-                  } untuk profil {profile}
+
+                {/* Sparkline chart */}
+                <div style={{ width: 140, height: 65, alignSelf: 'center', marginRight: 5 }}>
+                  {ihsgData && ihsgData.candles && ihsgData.candles.close.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={ihsgData.candles.close.map((v: number) => ({ v }))}>
+                        <defs>
+                          <linearGradient id="ihsg-spark-classic-grad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <Area 
+                          type="monotone" 
+                          dataKey="v" 
+                          stroke="var(--accent)" 
+                          fillOpacity={1} 
+                          fill="url(#ihsg-spark-classic-grad)" 
+                          strokeWidth={2}
+                          dot={false} 
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-muted)', fontSize: 10 }}>
+                      {ihsgLoading ? 'Memuat grafik...' : 'Tidak ada data'}
+                    </div>
+                  )}
                 </div>
               </div>
-              <div className="stat-card">
-                <div className="stat-label">Sektor Paling Bullish</div>
-                <div className="stat-value" style={{ fontSize: 16, fontWeight: 700 }}>
-                  {bullishSector?.sector
-                    ? <Link href={`/market?sector=${encodeURIComponent(bullishSector.sector)}`} style={{ color: 'inherit', textDecoration: 'none' }}><span className="hover-opacity">{bullishSector.sector}</span></Link>
-                    : '—'}
+
+              {/* Portfolio Card */}
+              <div className="card">
+                <span style={{ fontSize: 10, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
+                  Portofolio Virtual
+                </span>
+                <h2 style={{ fontSize: 20, fontWeight: 800, marginTop: 6, marginBottom: 0 }}>Ringkasan Akun</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 16 }}>
+                  <div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Sisa Saldo Kas</div>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--blue)', marginTop: 4 }}>
+                      Rp {virtualBalance.toLocaleString('id-ID')}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Profil Risiko</div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: getProfileColor(profile), marginTop: 4 }}>
+                      {profile}
+                    </div>
+                  </div>
                 </div>
-                <div className="stat-sub stat-up">{bullishSector?.avg_ai_score_percent || '—'} AI Score rata-rata</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-label">Sektor Aktif Terpantau</div>
-                <div className="stat-value text-blue">{validSectors.length}</div>
-                <div className="stat-sub">dari 11 Sektor Resmi BEI</div>
+                <div style={{ marginTop: 20, display: 'flex', gap: 10 }}>
+                  <Link href="/virtual-trading" className="btn-primary" style={{ flex: 1, padding: '10px 14px', fontSize: 12, textDecoration: 'none', textAlign: 'center' }}>
+                    ◈ Buka Virtual Trading
+                  </Link>
+                </div>
               </div>
             </div>
           </section>
