@@ -775,17 +775,21 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="pick-actions" style={{ display: 'flex', gap: 8 }}>
-                      <Link href={`/market/${r.ticker}`} className="btn-outline" style={{ textDecoration: 'none', textAlign: 'center', flex: 1 }}>
+                    <div className="pick-actions" style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 12 }}>
+                      <Link 
+                        href={`/market/${r.ticker}`} 
+                        className="btn-primary" 
+                        style={{ textDecoration: 'none', textAlign: 'center', padding: '7px 10px', fontSize: 11, width: '100%', borderRadius: 8, justifyContent: 'center' }}
+                      >
                         Detail Analisis
                       </Link>
                       {r.transparency && (
                         <button 
                           className="btn-outline" 
                           onClick={() => setSelectedTransparency(r)}
-                          style={{ flex: 1, cursor: 'pointer', background: 'rgba(16, 185, 129, 0.05)', borderColor: 'var(--accent)' }}
+                          style={{ padding: '6px 10px', fontSize: 11, cursor: 'pointer', background: 'rgba(0, 102, 255, 0.05)', borderColor: 'var(--accent)', color: 'var(--accent)', width: '100%', borderRadius: 8, fontWeight: 700, justifyContent: 'center' }}
                         >
-                          ⚖️ Transparansi
+                          ⚖️ Transparansi SAW
                         </button>
                       )}
                     </div>

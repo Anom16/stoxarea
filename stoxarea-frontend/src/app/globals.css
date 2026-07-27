@@ -350,14 +350,37 @@ body, .sidebar, .topbar, .nav-item, .logo-text, .nav-label, .card {
   margin-top: 6px;
 }
 
-/* Top Picks Grid (Classic Dashboard AI Watchlist - 5 in 1 row) */
-.top-picks-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-  width: 100%;
+/* Top Picks Grid Desktop Layout (5 Columns) */
+@media (min-width: 1024px) {
+  .top-picks-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+    width: 100%;
+  }
 }
+
+/* Mobile & PWA Layout (Horizontal Touch Carousel - Clean & Isolated) */
+@media (max-width: 1023px) {
+  .top-picks-grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 14px;
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+    width: 100%;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .top-picks-grid::-webkit-scrollbar { display: none; }
+  .pick-card {
+    min-width: 250px;
+    max-width: 270px;
+    flex-shrink: 0;
+  }
+}
+
 .pick-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
