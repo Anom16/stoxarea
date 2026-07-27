@@ -48,5 +48,5 @@ def get_profile_weights(db: Session, profile_id: str) -> dict:
     if weights:
         return {w.indicator_id: w.weight for w in weights}
     
-    # Fallback default
-    return {"ai_score": 0.25, "roe": 0.25, "der": 0.25, "pbv": 0.25}
+    # Fallback default (5 indikator sama rata)
+    return {"ai_score": 0.20, "roe": 0.20, "der": 0.20, "pbv": 0.20, "per": 0.20}

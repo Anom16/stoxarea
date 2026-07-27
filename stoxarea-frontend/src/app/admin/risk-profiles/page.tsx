@@ -11,12 +11,13 @@ interface RiskProfileData {
   weights: Record<string, number>
 }
 
-// 4 Indikator bawaan backend
+// 5 Indikator bawaan backend
 const DEFAULT_INDICATORS = [
   { id: 'ai_score', name: '🤖 AI Momentum Score', type: 'benefit' },
   { id: 'roe', name: '📈 ROE Profitabilitas', type: 'benefit' },
   { id: 'der', name: '📉 DER Solvabilitas', type: 'cost' },
-  { id: 'pbv', name: '📊 PBV Valuasi', type: 'cost' }
+  { id: 'pbv', name: '📊 PBV Valuasi Aset', type: 'cost' },
+  { id: 'per', name: '🏷️ PER Valuasi Laba', type: 'cost' }
 ]
 
 export default function AdminRiskProfilesPage() {
@@ -32,10 +33,11 @@ export default function AdminRiskProfilesPage() {
   const [minScore, setMinScore] = useState(0)
   const [maxScore, setMaxScore] = useState(30)
   const [formWeights, setFormWeights] = useState<Record<string, number>>({
-    ai_score: 0.25,
-    roe: 0.25,
-    der: 0.25,
-    pbv: 0.25
+    ai_score: 0.20,
+    roe: 0.20,
+    der: 0.20,
+    pbv: 0.20,
+    per: 0.20
   })
 
   const [msg, setMsg] = useState('')
@@ -67,10 +69,10 @@ export default function AdminRiskProfilesPage() {
     setMinScore(p.min_score_threshold)
     setMaxScore(p.max_score_threshold)
     
-    // Inisialisasi bobot untuk 4 indikator default
+    // Inisialisasi bobot untuk 5 indikator default
     const initialWeights: Record<string, number> = {}
     DEFAULT_INDICATORS.forEach(ind => {
-      initialWeights[ind.id] = p.weights?.[ind.id] ?? 0.25
+      initialWeights[ind.id] = p.weights?.[ind.id] ?? 0.20
     })
     setFormWeights(initialWeights)
     
@@ -85,10 +87,11 @@ export default function AdminRiskProfilesPage() {
     setMinScore(0)
     setMaxScore(30)
     setFormWeights({
-      ai_score: 0.25,
-      roe: 0.25,
-      der: 0.25,
-      pbv: 0.25
+      ai_score: 0.20,
+      roe: 0.20,
+      der: 0.20,
+      pbv: 0.20,
+      per: 0.20
     })
     setIsAdding(true)
     setIsEditing(false)

@@ -86,17 +86,18 @@ def seed_database_if_empty(db):
 
     # 1. Seed Indicators
     try:
-        if db.query(Indicator).count() == 0:
-            logger.info("[Seed] Seeding default indicators...")
-            indicators = [
-                Indicator(id='ai_score', name='AI Momentum Score', type='benefit', description='Skor probabilitas momentum kenaikan harga dari model AI XGBoost'),
-                Indicator(id='roe', name='ROE (Return on Equity)', type='benefit', description='Tingkat pengembalian ekuitas untuk mengukur efisiensi laba emiten'),
-                Indicator(id='der', name='DER (Debt to Equity Ratio)', type='cost', description='Rasio hutang terhadap ekuitas untuk menilai solvabilitas emiten'),
-                Indicator(id='pbv', name='PBV (Price to Book Value)', type='cost', description='Rasio harga saham terhadap nilai buku untuk mengukur valuasi emiten')
-            ]
-            for ind in indicators:
+        existing_indicators = {ind.id for ind in db.query(Indicator).all()}
+        default_indicators = [
+            Indicator(id='ai_score', name='AI Momentum Score', type='benefit', description='Skor probabilitas momentum kenaikan harga dari model AI XGBoost'),
+            Indicator(id='roe', name='ROE (Return on Equity)', type='benefit', description='Tingkat pengembalian ekuitas untuk mengukur efisiensi laba emiten'),
+            Indicator(id='der', name='DER (Debt to Equity Ratio)', type='cost', description='Rasio hutang terhadap ekuitas untuk menilai solvabilitas emiten'),
+            Indicator(id='pbv', name='PBV (Price to Book Value)', type='cost', description='Rasio harga saham terhadap nilai buku untuk mengukur valuasi emiten'),
+            Indicator(id='per', name='PER (Price to Earnings Ratio)', type='cost', description='Rasio harga saham terhadap laba bersih per lembar (valuasi laba emiten)')
+        ]
+        for ind in default_indicators:
+            if ind.id not in existing_indicators:
                 db.add(ind)
-            db.commit()
+        db.commit()
     except Exception as ex:
         logger.error(f"[Seed] Failed seeding indicators: {ex}")
         db.rollback()
@@ -137,28 +138,41 @@ def seed_database_if_empty(db):
 
     # 3. Seed Profile Indicator Weights
     try:
-        if db.query(ProfileIndicatorWeight).count() == 0:
-            logger.info("[Seed] Seeding default profile indicator weights...")
-            weights = [
-                # Konservatif
-                ProfileIndicatorWeight(profile_id='konservatif', indicator_id='ai_score', weight=0.10),
-                ProfileIndicatorWeight(profile_id='konservatif', indicator_id='roe', weight=0.45),
-                ProfileIndicatorWeight(profile_id='konservatif', indicator_id='der', weight=0.35),
-                ProfileIndicatorWeight(profile_id='konservatif', indicator_id='pbv', weight=0.10),
-                # Moderat
-                ProfileIndicatorWeight(profile_id='moderat', indicator_id='ai_score', weight=0.35),
-                ProfileIndicatorWeight(profile_id='moderat', indicator_id='roe', weight=0.30),
-                ProfileIndicatorWeight(profile_id='moderat', indicator_id='der', weight=0.15),
-                ProfileIndicatorWeight(profile_id='moderat', indicator_id='pbv', weight=0.20),
-                # Agresif
-                ProfileIndicatorWeight(profile_id='agresif', indicator_id='ai_score', weight=0.60),
-                ProfileIndicatorWeight(profile_id='agresif', indicator_id='roe', weight=0.10),
-                ProfileIndicatorWeight(profile_id='agresif', indicator_id='der', weight=0.10),
-                ProfileIndicatorWeight(profile_id='agresif', indicator_id='pbv', weight=0.20)
-            ]
-            for w in weights:
+        existing_weights = {(w.profile_id, w.indicator_id) for w in db.query(ProfileIndicatorWeight).all()}
+        default_weights = [
+            # Konservatif (Total = 1.0)
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='ai_score', weight=0.10),
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='roe', weight=0.35),
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='der', weight=0.30),
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='pbv', weight=0.10),
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='per', weight=0.15),
+            # Moderat (Total = 1.0)
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='ai_score', weight=0.30),
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='roe', weight=0.25),
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='der', weight=0.15),
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='pbv', weight=0.15),
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='per', weight=0.15),
+            # Agresif (Total = 1.0)
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='ai_score', weight=0.50),
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='roe', weight=0.10),
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='der', weight=0.10),
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='pbv', weight=0.15),
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='per', weight=0.15)
+        ]
+        
+        # Upsert PER weight or add missing default weights
+        for w in default_weights:
+            if (w.profile_id, w.indicator_id) not in existing_weights:
                 db.add(w)
-            db.commit()
+            else:
+                # Update existing weight if we are adding per or updating default distribution
+                existing_w = db.query(ProfileIndicatorWeight).filter(
+                    ProfileIndicatorWeight.profile_id == w.profile_id,
+                    ProfileIndicatorWeight.indicator_id == w.indicator_id
+                ).first()
+                if existing_w:
+                    existing_w.weight = w.weight
+        db.commit()
     except Exception as ex:
         logger.error(f"[Seed] Failed seeding indicator weights: {ex}")
         db.rollback()
