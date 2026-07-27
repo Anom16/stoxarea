@@ -350,33 +350,38 @@ body, .sidebar, .topbar, .nav-item, .logo-text, .nav-label, .card {
   margin-top: 6px;
 }
 
-/* Top Picks Grid (Classic Dashboard AI Watchlist) */
+/* Top Picks Grid (Classic Dashboard AI Watchlist - 5 in 1 row) */
 .top-picks-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
   margin-bottom: 24px;
+  width: 100%;
 }
 .pick-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 22px;
+  padding: 16px;
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 0;
 }
 .pick-ticker {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--text-primary);
 }
 .pick-name {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-secondary);
   margin-top: 2px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .pick-sector {
   font-weight: 700;
@@ -385,32 +390,33 @@ body, .sidebar, .topbar, .nav-item, .logo-text, .nav-label, .card {
 .match-badge {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background: rgba(0, 102, 255, 0.06);
   border: 1px solid rgba(0, 102, 255, 0.15);
-  padding: 10px 14px;
+  padding: 8px 10px;
   border-radius: var(--radius-md);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 .match-pct {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--accent);
 }
 .match-label {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-secondary);
+  line-height: 1.2;
 }
 .pick-metrics {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
   background: #f8fafc;
   border: 1px solid var(--border);
-  padding: 12px 8px;
+  padding: 8px 6px;
   border-radius: var(--radius-md);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   text-align: center;
 }
 .metric-label {
