@@ -177,6 +177,24 @@ def seed_database_if_empty(db):
         logger.error(f"[Seed] Failed seeding indicator weights: {ex}")
         db.rollback()
 
+    # 4. Seed Default Test Users if empty
+    try:
+        from app.models.user import User, RiskProfileEnum
+        from app.core.security import get_password_hash
+        if db.query(User).count() == 0:
+            logger.info("[Seed] Seeding default test users...")
+            default_users = [
+                User(email="admin@gmail.com", password_hash=get_password_hash("admin"), risk_profile=RiskProfileEnum.agresif, is_admin=True, full_name="Admin StoxArea"),
+                User(email="moderat@gmail.com", password_hash=get_password_hash("admin"), risk_profile=RiskProfileEnum.moderat, is_admin=False, full_name="User Moderat"),
+                User(email="agresif@gmail.com", password_hash=get_password_hash("admin"), risk_profile=RiskProfileEnum.agresif, is_admin=False, full_name="User Agresif")
+            ]
+            for u in default_users:
+                db.add(u)
+            db.commit()
+    except Exception as ex:
+        logger.error(f"[Seed] Failed seeding default users: {ex}")
+        db.rollback()
+
 @app.on_event("startup")
 def on_startup():
     # Retry database connection and table creation (handles Supabase cold starts/pauses)
