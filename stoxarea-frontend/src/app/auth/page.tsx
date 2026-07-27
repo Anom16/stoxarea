@@ -6,7 +6,7 @@ export default function AuthPage() {
   const router = useRouter()
   
   useEffect(() => {
-    router.push('/auth/login')
+    router.replace('/auth/login')
   }, [router])
 
   return (
