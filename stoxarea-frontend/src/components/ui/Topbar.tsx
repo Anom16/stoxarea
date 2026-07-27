@@ -1,4 +1,5 @@
 'use client'
+
 import { useState, useEffect } from 'react'
 import api from '@/lib/api'
 
@@ -31,9 +32,21 @@ export default function Topbar({ username: initialUsername, riskProfile: initial
   return (
     <header className="topbar">
       <div className="topbar-greeting">
-        <h2>Halo, {username}! 👋</h2>
-        {title && <p style={{ fontSize: 14, fontWeight: 'bold', color: 'var(--text-primary)', marginBottom: 4 }}>{title}</p>}
-        <p>Profil Risiko Anda: <strong style={{ color: 'var(--accent)' }}>{riskProfile}</strong></p>
+        <h2>Selamat datang kembali, {username}! 👋</h2>
+        <p style={{ marginTop: 2 }}>
+          {title ? title : 'Jangan lupa pantau rekomendasi AI dan portofolio Anda hari ini 😎'}
+          {riskProfile && riskProfile !== '—' && (
+            <span style={{ marginLeft: 8, background: '#f1f5f9', color: 'var(--accent)', padding: '2px 8px', borderRadius: 12, fontWeight: 700, fontSize: 11 }}>
+              Profil: {riskProfile}
+            </span>
+          )}
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="profile-avatar">
+          {username.substring(0, 1).toUpperCase()}
+        </div>
       </div>
     </header>
   )
