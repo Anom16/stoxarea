@@ -72,7 +72,7 @@ export default function LoginPage() {
         
         {/* Logo Section */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <img src="/icons/icon-192x192.png" alt="StoxArea Logo" style={{
+          <img src="/icons/icon-512x512.png" alt="StoxArea Logo" style={{
             width: 80, height: 80, margin: '0 auto 16px',
             display: 'block', objectFit: 'contain'
           }} />

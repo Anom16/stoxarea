@@ -485,14 +485,14 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
             {/* Interpretasi nilai saham ini */}
             {interp && (
               <div style={{
-                background: `${interp.color}15`,
-                border: `1px solid ${interp.color}40`,
+                background: '#f8fafc',
+                border: '1px solid var(--border)',
                 borderRadius: 8, padding: '10px 12px', marginBottom: 16,
               }}>
-                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>
                   Nilai {label || metricKey.toUpperCase()} saham ini:
                 </div>
-                <div style={{ fontSize: 13, color: interp.color, fontWeight: 700 }}>
+                <div style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700 }}>
                   {interp.text}
                 </div>
               </div>
@@ -500,15 +500,15 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
 
             {/* Panduan Baca */}
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
                 Panduan Baca
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {info.howToRead.map((r, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: r.color, flexShrink: 0 }} />
-                    <span style={{ fontSize: 12, color: r.color, fontWeight: 600, minWidth: 70 }}>{r.range}</span>
-                    <span style={{ fontSize: 12, color: '#94a3b8' }}>{r.label}</span>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 }} />
+                    <span style={{ fontSize: 12, color: 'var(--text-primary)', fontWeight: 600, minWidth: 70 }}>{r.range}</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{r.label}</span>
                   </div>
                 ))}
               </div>
@@ -516,14 +516,14 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
 
             {/* Peran di SPK */}
             <div style={{
-              background: 'rgba(16,185,129,0.08)',
-              border: '1px solid rgba(16,185,129,0.2)',
+              background: 'rgba(0, 102, 255, 0.05)',
+              border: '1px solid rgba(0, 102, 255, 0.15)',
               borderRadius: 8, padding: '10px 12px',
             }}>
-              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
                 Peran dalam SPK
               </div>
-              <div style={{ fontSize: 13, color: '#10b981', lineHeight: 1.5 }}>
+              <div style={{ fontSize: 13, color: 'var(--accent)', lineHeight: 1.5, fontWeight: 600 }}>
                 {info.spkRole}
               </div>
             </div>

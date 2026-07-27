@@ -161,7 +161,7 @@ export default function SettingsPage() {
   const [savingProfile, setSavingProfile] = useState(false)
 
   // Tab: Preferensi
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [dashboardLayout, setDashboardLayout] = useState<'classic' | 'modern'>('classic')
   const [lang, setLang] = useState<'id' | 'en'>('id')
 
@@ -169,11 +169,9 @@ export default function SettingsPage() {
     const token = localStorage.getItem('access_token')
     if (!token) { router.push('/auth/login'); return }
 
-    const savedTheme = localStorage.getItem('app_theme') as 'dark' | 'light'
-    if (savedTheme) {
-      setTheme(savedTheme)
-      document.body.classList.toggle('light-mode', savedTheme === 'light')
-    }
+    const savedTheme = (localStorage.getItem('app_theme') as 'light' | 'dark') || 'light'
+    setTheme(savedTheme)
+    document.body.classList.toggle('dark-mode', savedTheme === 'dark')
     const savedLang = localStorage.getItem('app_lang') as 'id' | 'en'
     if (savedLang) setLang(savedLang)
     const savedDashLayout = localStorage.getItem('dashboard_layout') as 'classic' | 'modern'
@@ -259,10 +257,10 @@ export default function SettingsPage() {
   }
 
   // ── Handler: Preferensi Tampilan ──────────────────────────────────────
-  const handleThemeChange = (t: 'dark' | 'light') => {
+  const handleThemeChange = (t: 'light' | 'dark') => {
     setTheme(t)
     localStorage.setItem('app_theme', t)
-    document.body.classList.toggle('light-mode', t === 'light')
+    document.body.classList.toggle('dark-mode', t === 'dark')
   }
 
   const handleDashLayoutChange = (layout: 'classic' | 'modern') => {
@@ -349,7 +347,14 @@ export default function SettingsPage() {
               </button>
 
               {loading ? (
-                <div style={{ color: 'var(--text-muted)', padding: 20 }}>Memuat data akun...</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px 0' }}>
+                  <img 
+                    src="/icons/loading.gif" 
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/icons/icon-192x192.png' }}
+                    alt="Loading..." 
+                    style={{ width: 64, height: 64, objectFit: 'contain' }} 
+                  />
+                </div>
               ) : (
                 <>
 

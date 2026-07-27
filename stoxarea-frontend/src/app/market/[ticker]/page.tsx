@@ -188,9 +188,13 @@ export default function StockDetailPage() {
   }, [activeTab, tickerStr, historyData])
 
   if (loading) return (
-    <div className="flex-center" style={{ height: '100vh', flexDirection: 'column', gap: 16 }}>
-      <div className="logo-mark">S</div>
-      <p className="text-secondary">Menganalisis {tickerStr}...</p>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg-primary)' }}>
+      <img 
+        src="/icons/loading.gif" 
+        onError={(e) => { (e.target as HTMLImageElement).src = '/icons/icon-192x192.png' }}
+        alt="Loading..." 
+        style={{ width: 80, height: 80, objectFit: 'contain' }} 
+      />
     </div>
   )
 

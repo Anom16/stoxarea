@@ -259,8 +259,13 @@ export default function VirtualTradingPage() {
               {activeTab === 'portfolio' && (
                 <div>
                   {loading ? (
-                    <div className="clean-list">
-                      {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 60, marginBottom: 8 }} />)}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px 0' }}>
+                      <img 
+                        src="/icons/loading.gif" 
+                        onError={(e) => { (e.target as HTMLImageElement).src = '/icons/icon-192x192.png' }}
+                        alt="Loading..." 
+                        style={{ width: 64, height: 64, objectFit: 'contain' }} 
+                      />
                     </div>
                   ) : portfolio.length === 0 ? (
                     <div className="empty-state" style={{ padding: '60px 0' }}>

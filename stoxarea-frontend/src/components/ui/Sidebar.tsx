@@ -43,20 +43,11 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <div style={{
-          width: 38,
-          height: 38,
-          borderRadius: 10,
-          background: 'linear-gradient(135deg, var(--accent), #38bdf8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontWeight: 800,
-          fontSize: 20
-        }}>
-          S
-        </div>
+        <img 
+          src="/icons/icon-192x192.png" 
+          alt="StoxArea Logo" 
+          style={{ width: 38, height: 38, borderRadius: 10, objectFit: 'contain' }} 
+        />
         <span className="logo-text">Stox<span style={{ color: 'var(--accent)' }}>Area</span></span>
       </div>
 

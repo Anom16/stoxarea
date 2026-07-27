@@ -165,9 +165,13 @@ export default function DashboardPage() {
         <main className="main-content">
           <Topbar />
           <div className="page-body">
-            <div className="flex-center" style={{ height: '60vh', flexDirection: 'column', gap: 16 }}>
-              <div className="logo-mark" style={{ width: 48, height: 48, fontSize: 20 }}>S</div>
-              <p style={{ color: 'var(--text-secondary)' }}>Memuat data pasar...</p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '70vh' }}>
+              <img 
+                src="/icons/loading.gif" 
+                onError={(e) => { (e.target as HTMLImageElement).src = '/icons/icon-192x192.png' }}
+                alt="Loading..." 
+                style={{ width: 80, height: 80, objectFit: 'contain' }} 
+              />
             </div>
           </div>
         </main>
@@ -809,8 +813,8 @@ export default function DashboardPage() {
 
           {/* ─── RANKING TABLE + RADAR SEKTOR ─── */}
           <section className="dashboard-section mb-24" role="region" aria-label="Ranking dan Radar Sektor Pasar">
-            <div className="ranking-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
-              <div className="card">
+            <div className="ranking-grid-2col">
+              <div className="card" style={{ overflowX: 'auto' }}>
                 <div className="section-title" style={{ fontSize: 16, marginBottom: 4 }}>📊 Ranking SPK Keseluruhan</div>
                 <div className="section-sub" style={{ marginBottom: 16 }}>15 emiten paling sesuai berdasarkan Skor SAW</div>
                 <table className="ranking-table">
@@ -847,7 +851,7 @@ export default function DashboardPage() {
                 </table>
               </div>
 
-              <div className="card">
+              <div className="card" style={{ overflowX: 'auto' }}>
                 <div className="section-title" style={{ fontSize: 16, marginBottom: 4 }}>🌐 Radar Sektor BEI</div>
                 <div className="section-sub" style={{ marginBottom: 16 }}>Sentimen AI per Sektor (Bullish/Netral/Bearish)</div>
                 <table className="ranking-table">
@@ -884,27 +888,40 @@ export default function DashboardPage() {
           <section className="dashboard-section mb-24" role="region" aria-label="Top Movers Per Sektor Saham">
             <div className="section-title">🚀 Top Mover Per Sektor</div>
             <div className="section-sub" style={{ marginBottom: 16 }}>Saham dengan Momentum AI Tertinggi di Masing-masing Sektor</div>
-            <div className="sector-grid" style={{ marginBottom: 24 }}>
+            <div className="sector-mover-grid">
               {validSectors.map(s => (
-                <div key={s.sector} className="sector-card">
-                  <div className="sector-card-top">
-                    <div>
+                <div key={s.sector} className="sector-mover-card">
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                       <Link href={`/market?sector=${encodeURIComponent(s.sector)}`} style={{ color: 'inherit', textDecoration: 'none' }}>
-                        <div className="sector-name hover-opacity">{s.sector}</div>
+                        <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }} className="hover-opacity">
+                          {s.sector}
+                        </div>
                       </Link>
-                      <div className="sector-count">{s.total_stocks} saham dipantau</div>
+                      <span className="badge-sector" style={{ fontSize: 10 }}>
+                        {s.sentiment || 'Bullish'}
+                      </span>
                     </div>
-                    <span className={`sentiment-badge ${(s.sentiment || '').toLowerCase()}`} style={{ fontSize: 11 }}>{s.sentiment}</span>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 12 }}>
+                      {s.total_stocks} saham dipantau
+                    </div>
                   </div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 6 }}>Top Movers:</div>
-                  {s.top_movers.map((m, i) => (
-                    <div key={m.ticker} className="flex-between" style={{ marginBottom: 4 }}>
-                      <Link href={`/market/${m.ticker}`} style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', textDecoration: 'none' }}>
-                        {i + 1}. {m.ticker.replace('.JK', '')}
-                      </Link>
-                      <span className="text-accent fs-12">{m.ai_score_percent}</span>
+
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: 4 }}>
+                      Top Movers AI:
                     </div>
-                  ))}
+                    {s.top_movers.map((m, i) => (
+                      <div key={m.ticker} className="mover-stock-item">
+                        <Link href={`/market/${m.ticker}`} style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', textDecoration: 'none' }}>
+                          {i + 1}. {m.ticker.replace('.JK', '')}
+                        </Link>
+                        <span style={{ fontWeight: 800, color: 'var(--accent)', fontSize: 12 }}>
+                          {m.ai_score_percent}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>

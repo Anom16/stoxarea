@@ -19,9 +19,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
-            var theme = localStorage.getItem('app_theme') || 'dark';
-            if (theme === 'light') {
-              document.body.classList.add('light-mode');
+            var theme = localStorage.getItem('app_theme') || 'light';
+            if (theme === 'dark') {
+              document.body.classList.add('dark-mode');
             }
             // Hapus dan matikan seluruh PWA Service Worker secara permanen di browser user
             if ('serviceWorker' in navigator) {
