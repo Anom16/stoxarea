@@ -85,6 +85,10 @@ export default function DashboardPage() {
             .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ')
           setProfile(capitalized)
+        } else if (!r.data.is_admin) {
+          // User biasa yang belum mengisi profil risiko otomatis dialihkan ke /onboarding
+          window.location.href = '/onboarding'
+          return
         } else {
           setProfile('—')
         }
