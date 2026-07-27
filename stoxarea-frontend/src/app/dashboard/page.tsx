@@ -61,8 +61,11 @@ export default function DashboardPage() {
 
   // ── Fetch user + data ────────────────────────────────────────────────────
   useEffect(() => {
-    const token = localStorage.getItem('access_token')
-    if (!token) { window.location.href = '/auth/login'; return }
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
+    if (!token) { 
+      window.location.href = '/auth/login'
+      return 
+    }
 
     // Read saved layout preference
     const savedLayout = localStorage.getItem('dashboard_layout') as 'classic' | 'modern'
@@ -70,6 +73,7 @@ export default function DashboardPage() {
 
     const headers = { Authorization: `Bearer ${token}` }
 
+    // Fetch user info
     api.get('/auth/me', { headers })
       .then(r => {
         const name = r.data.full_name?.trim() || r.data.email?.split('@')[0] || 'Pengguna'
@@ -85,30 +89,36 @@ export default function DashboardPage() {
           setProfile('—')
         }
       })
-      .catch(() => { localStorage.removeItem('access_token'); window.location.href = '/auth/login' })
-
-    api.get('/recommendation/top-picks', { headers })
-      .then(r => { if (Array.isArray(r.data)) setRecs(r.data) })
-      .catch(() => setError('Gagal memuat data analisis. Pastikan server backend berjalan.'))
-
-    api.get('/market/technical/^JKSE?period=1mo')
-      .then(r => {
-        if (r.data && !r.data.error) {
-          setIhsgData(r.data)
-        }
+      .catch(() => {
+        localStorage.removeItem('access_token')
+        window.location.href = '/auth/login'
       })
-      .catch(() => {})
-      .finally(() => setIhsgLoading(false))
 
-    api.get('/market/sectors')
-      .then(r => {
-        if (Array.isArray(r.data)) {
-          setSectors(r.data)
-          const firstValid = r.data.find((s: any) => s.total_stocks > 0)
-          if (firstValid) setActiveSector(firstValid.sector)
-        }
-      })
-      .finally(() => setLoading(false))
+    // Fetch recommendations, technicals, sectors in parallel safely
+    Promise.allSettled([
+      api.get('/recommendation/top-picks', { headers }),
+      api.get('/market/technical/^JKSE?period=1mo'),
+      api.get('/market/sectors')
+    ]).then(([recsRes, ihsgRes, sectorsRes]) => {
+      if (recsRes.status === 'fulfilled' && Array.isArray(recsRes.value.data)) {
+        setRecs(recsRes.value.data)
+      } else if (recsRes.status === 'rejected') {
+        setError('Gagal memuat data analisis. Pastikan server backend berjalan.')
+      }
+
+      if (ihsgRes.status === 'fulfilled' && ihsgRes.value.data && !ihsgRes.value.data.error) {
+        setIhsgData(ihsgRes.value.data)
+      }
+      setIhsgLoading(false)
+
+      if (sectorsRes.status === 'fulfilled' && Array.isArray(sectorsRes.value.data)) {
+        setSectors(sectorsRes.value.data)
+        const firstValid = sectorsRes.value.data.find((s: any) => s.total_stocks > 0)
+        if (firstValid) setActiveSector(firstValid.sector)
+      }
+    ]).finally(() => {
+      setLoading(false)
+    })
   }, [])
 
   // Fetch momentum stocks (used by modern layout)

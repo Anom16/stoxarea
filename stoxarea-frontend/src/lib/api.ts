@@ -16,4 +16,20 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error)
 })
 
+// Interceptor Tangani 401 (Token Expired / Tidak Valid)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('access_token')
+        if (!window.location.pathname.startsWith('/auth')) {
+          window.location.href = '/auth/login'
+        }
+      }
+    }
+    return Promise.reject(error)
+  }
+)
+
 export default api
