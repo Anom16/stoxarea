@@ -65,14 +65,17 @@ export default function AdminDashboard() {
     Promise.all([
       api.get('/admin/ml/reports/summary').catch(() => null),
       api.get('/admin/ml/cache-status'),
-    ]).then(([reportRes, cacheRes]) => {
+      api.get('/admin/users/stocks/list').catch(() => null),
+    ]).then(([reportRes, cacheRes, stocksRes]) => {
       const aiCount = reportRes?.data?.dataset?.total_samples
         ? Math.round(reportRes.data.dataset.total_samples / reportRes.data.parameters.n_estimators)
         : 57
+      const stocksList = Array.isArray(stocksRes?.data) ? stocksRes.data : []
+      const qualifiedCount = stocksList.length > 0 ? stocksList.filter((s: any) => s.is_qualified).length : 0
       setStatus({
         ai_scores_count: aiCount,
-        qualified_stocks: 112,
-        cache_entries: cacheRes.data.total_entries,
+        qualified_stocks: qualifiedCount,
+        cache_entries: cacheRes?.data?.total_entries ?? 0,
         ai_scores_age_hours: 0,
       })
     }).catch(() => {})

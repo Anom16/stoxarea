@@ -211,13 +211,7 @@ function MarketExplorerContent() {
         <Topbar />
         <div className="page-body">
           
-          {/* Header */}
-          <div style={{ marginBottom: 20 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 800, margin: 0 }}>Jelajah Pasar & Terminal Riset</h1>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4, marginBottom: 0 }}>
-              Terminal riset pasar terpadu: Eksplorasi Sektoral, Daftar Pantau Watchlist, & Komparasi Saham Head-to-Head.
-            </p>
-          </div>
+
 
           {/* Integrated Top Workspace Tab Bar */}
           <div style={{
@@ -463,43 +457,113 @@ function MarketExplorerContent() {
                     </table>
                   </div>
 
-                  {/* Mobile List View */}
+                  {/* Mobile List View (1-Line Horizontal Fit Fit Width 100%) */}
                   <div className="market-card-mobile" style={{ marginTop: 16 }}>
                     {sortedAndFilteredStocks.slice(0, visibleCount).map((s) => {
                       const cleanT = s.ticker.replace('.JK', '')
                       const inWatch = isWatchlisted(cleanT)
 
                       return (
-                        <div key={s.ticker} style={{ padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                              <button
-                                onClick={() => toggleWatchlist(cleanT)}
-                                style={{ background: 'none', border: 'none', fontSize: 20, color: inWatch ? '#f59e0b' : 'var(--text-muted)', cursor: 'pointer' }}
-                              >
-                                {inWatch ? '⭐' : '☆'}
-                              </button>
-                              <div>
-                                <Link href={`/market/${s.ticker}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                  <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>
-                                    {cleanT}
-                                  </div>
-                                  {s.name && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>}
-                                </Link>
-                              </div>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>
-                                Rp {s.current_price?.toLocaleString('id-ID') || '0'}
-                              </div>
-                              <button
-                                onClick={() => handleOpenTradeModal(s.ticker, s.current_price || 0)}
-                                style={{ background: 'var(--accent)', color: 'white', border: 'none', borderRadius: 4, padding: '4px 10px', fontSize: 11, fontWeight: 700, marginTop: 4, cursor: 'pointer' }}
-                              >
-                                Beli
-                              </button>
+                        <div key={s.ticker} style={{
+                          padding: '10px 12px',
+                          borderBottom: '1px solid var(--border)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: 6,
+                          background: 'var(--bg-secondary)',
+                          borderRadius: 10,
+                          marginBottom: 8,
+                          boxShadow: 'var(--shadow-card)',
+                          width: '100%',
+                          boxSizing: 'border-box'
+                        }}>
+                          {/* 1. Fav Star + Ticker + Badge Sektor */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0, flexShrink: 1 }}>
+                            <button
+                              onClick={() => toggleWatchlist(cleanT)}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                fontSize: 16,
+                                color: inWatch ? '#f59e0b' : 'var(--text-muted)',
+                                cursor: 'pointer',
+                                padding: 0,
+                                flexShrink: 0
+                              }}
+                              title={inWatch ? 'Hapus dari Watchlist' : 'Tambah ke Watchlist'}
+                            >
+                              {inWatch ? '⭐' : '☆'}
+                            </button>
+                            <Link href={`/market/${s.ticker}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}>
+                              <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1 }}>
+                                {cleanT}
+                              </span>
+                              <span style={{ fontSize: 9, padding: '1px 5px', background: 'rgba(59,130,246,0.1)', color: 'var(--blue)', borderRadius: 4, fontWeight: 700, marginTop: 2, width: 'fit-content' }}>
+                                {s.sector?.slice(0, 7) || 'BEI'}
+                              </span>
+                            </Link>
+                          </div>
+
+                          {/* 2. AI Score */}
+                          <div style={{ textAlign: 'center', flexShrink: 0 }}>
+                            <div style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 700 }}>AI</div>
+                            <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--blue)' }}>
+                              {s.ai_score_percent || '—'}
                             </div>
                           </div>
+
+                          {/* 3. Mini Sparkline Chart */}
+                          <div style={{ width: 48, height: 26, flexShrink: 0 }}>
+                            {s.sparkline && s.sparkline.length > 0 ? (
+                              <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={s.sparkline.map((v) => ({ v }))}>
+                                  <defs>
+                                    <linearGradient id={`grad-m-${s.ticker}`} x1="0" y1="0" x2="0" y2="1">
+                                      <stop offset="5%" stopColor={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} stopOpacity={0.3}/>
+                                      <stop offset="95%" stopColor={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} stopOpacity={0}/>
+                                    </linearGradient>
+                                  </defs>
+                                  <Area 
+                                    type="monotone" 
+                                    dataKey="v" 
+                                    stroke={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} 
+                                    fillOpacity={1} 
+                                    fill={`url(#grad-m-${s.ticker})`} 
+                                    strokeWidth={1.5}
+                                    dot={false} 
+                                  />
+                                </AreaChart>
+                              </ResponsiveContainer>
+                            ) : (
+                              <div style={{ fontSize: 9, color: 'var(--text-muted)', textAlign: 'center', paddingTop: 6 }}>—</div>
+                            )}
+                          </div>
+
+                          {/* 4. Harga */}
+                          <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                            <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)' }}>
+                              Rp {s.current_price?.toLocaleString('id-ID') || '0'}
+                            </div>
+                          </div>
+
+                          {/* 5. Tombol Beli */}
+                          <button
+                            onClick={() => handleOpenTradeModal(s.ticker, s.current_price || 0)}
+                            style={{
+                              background: 'var(--accent)',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: 6,
+                              padding: '6px 10px',
+                              fontSize: 11,
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              flexShrink: 0
+                            }}
+                          >
+                            Beli
+                          </button>
                         </div>
                       )
                     })}

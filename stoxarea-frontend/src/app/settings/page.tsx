@@ -164,6 +164,9 @@ export default function SettingsPage() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [dashboardLayout, setDashboardLayout] = useState<'classic' | 'modern'>('classic')
   const [lang, setLang] = useState<'id' | 'en'>('id')
+  const [notifyAiSignals, setNotifyAiSignals] = useState(true)
+  const [notifyPortfolioAlert, setNotifyPortfolioAlert] = useState(true)
+  const [showSparklines, setShowSparklines] = useState(true)
 
   useEffect(() => {
     const token = localStorage.getItem('access_token')
@@ -299,46 +302,92 @@ export default function SettingsPage() {
         <ToastContainer toasts={toasts} onRemove={removeToast} />
 
         <div className="page-body">
+          {/* Breadcrumb & Subtitle */}
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>
+              StoxArea / <span style={{ color: 'var(--text-primary)' }}>Pengaturan</span>
+            </div>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0 }}>
+              Kelola akun dan preferensi aplikasi kamu.
+            </p>
+          </div>
+
           <div className="settings-layout">
 
-            {/* ── Sidebar Tab ── */}
-            <div className={`card settings-sidebar ${mobileView === 'content' ? 'hidden-mobile' : ''}`}>
-              {TABS.map(tab => (
+            {/* ── LEFT COLUMN ── */}
+            <div className={`settings-left-col ${mobileView === 'content' ? 'hidden-mobile' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Profile Badge Card */}
+              <div className="card" style={{ padding: 24, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{
+                  width: 72, height: 72, borderRadius: 22,
+                  background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                  color: '#fff', fontSize: 30, fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 8px 20px rgba(59,130,246,0.3)',
+                  marginBottom: 12
+                }}>
+                  {(user?.full_name || fullName || 'A').substring(0, 1).toUpperCase()}
+                </div>
+                <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)' }}>
+                  {user?.full_name || fullName || 'Anom Pangestu'}
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                  {user?.email || 'anom01@gmail.com'}
+                </div>
+                <div style={{
+                  background: 'rgba(16,185,129,0.1)', color: '#10b981',
+                  border: '1px solid rgba(16,185,129,0.25)',
+                  padding: '3px 10px', borderRadius: 12, fontSize: 11,
+                  fontWeight: 700, marginTop: 10, display: 'inline-flex',
+                  alignItems: 'center', gap: 4
+                }}>
+                  ● Aktif
+                </div>
+              </div>
+
+              {/* Sidebar Menu Nav Card */}
+              <div className="card" style={{ padding: 10 }}>
+                {TABS.map(tab => {
+                  const isActive = activeTab === tab.id
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => {
+                        setActiveTab(tab.id)
+                        setMobileView('content')
+                      }}
+                      style={{
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        width: '100%', padding: '12px 14px', marginBottom: 4, borderRadius: 10,
+                        border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                        background: isActive ? 'rgba(37,99,235,0.08)' : 'transparent',
+                        color: isActive ? '#2563eb' : 'var(--text-secondary)',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      <span>{tab.label}</span>
+                      {isActive && <span style={{ fontSize: 12 }}>›</span>}
+                    </button>
+                  )
+                })}
+                <hr style={{ margin: '8px 0', borderColor: 'var(--border)' }} />
                 <button
-                  key={tab.id}
-                  onClick={() => {
-                    setActiveTab(tab.id)
-                    setMobileView('content')
-                  }}
+                  onClick={handleLogout}
                   style={{
-                    display: 'block', width: '100%', textAlign: 'left',
-                    padding: '11px 14px', marginBottom: 4, borderRadius: 8,
-                    border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600,
-                    background: activeTab === tab.id ? 'var(--accent)' : 'transparent',
-                    color: activeTab === tab.id ? '#fff' : 'var(--text-secondary)',
-                    transition: 'all 0.15s',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    width: '100%', padding: '12px 14px', borderRadius: 10, border: 'none',
+                    cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                    background: 'transparent', color: '#ef4444', transition: 'all 0.15s ease'
                   }}
                 >
-                  {tab.label}
+                  <span>🚪 Keluar</span>
                 </button>
-              ))}
-              <hr style={{ margin: '12px 0', borderColor: 'var(--border)' }} />
-              <button
-                onClick={handleLogout}
-                style={{
-                  display: 'block', width: '100%', textAlign: 'left',
-                  padding: '11px 14px', borderRadius: 8, border: 'none',
-                  cursor: 'pointer', fontSize: 13, fontWeight: 600,
-                  background: 'transparent', color: '#ef4444', transition: 'all 0.15s',
-                }}
-              >
-                🚪 Keluar (Logout)
-              </button>
+              </div>
             </div>
 
-            {/* ── Konten ── */}
-            <div className={`card settings-content ${mobileView === 'menu' ? 'hidden-mobile' : ''}`}>
-              {/* Tombol kembali untuk mobile */}
+            {/* ── RIGHT COLUMN CONTENT ── */}
+            <div className={`settings-content-col ${mobileView === 'menu' ? 'hidden-mobile' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              {/* Mobile Back Button */}
               <button
                 className="settings-back-btn"
                 onClick={() => setMobileView('menu')}
@@ -357,391 +406,584 @@ export default function SettingsPage() {
                 </div>
               ) : (
                 <>
-
-                  {/* ── TAB: AKUN SAYA ── */}
+                  {/* ── TAB 1: AKUN SAYA ── */}
                   {activeTab === 'account' && (
-                    <div>
-                      <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>Informasi Pribadi</h3>
-                      <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 24 }}>
-                        Perubahan nama akan langsung tersimpan ke database.
-                      </p>
-
-                      <div style={{ maxWidth: 440 }}>
-                        <label style={labelStyle}>Nama Lengkap</label>
-                        <input
-                          type="text"
-                          value={fullName}
-                          onChange={e => setFullName(e.target.value)}
-                          placeholder="Masukkan nama lengkap Anda"
-                          style={inputStyle}
-                          onKeyDown={e => e.key === 'Enter' && handleSaveName()}
-                        />
-
-                        <label style={{ ...labelStyle, marginTop: 16 }}>Alamat Email</label>
-                        <input
-                          type="email"
-                          value={user?.email || ''}
-                          disabled
-                          style={{ ...inputStyle, opacity: 0.5, cursor: 'not-allowed' }}
-                        />
-                        <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>
-                          Email tidak dapat diubah karena digunakan sebagai identitas login.
+                    <>
+                      {/* Card 1: Informasi Pribadi */}
+                      <div className="card" style={{ padding: 24 }}>
+                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>Informasi Pribadi</h3>
+                        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+                          Perubahan nama akan langsung tersimpan.
                         </p>
 
-                        <button
-                          onClick={handleSaveName}
-                          disabled={savingName}
-                          style={{ ...btnPrimary, marginTop: 24 }}
-                        >
-                          {savingName ? 'Menyimpan...' : 'Simpan Nama'}
-                        </button>
-                      </div>
-
-                      <hr style={{ margin: '28px 0', borderColor: 'var(--border)' }} />
-
-                      <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Data Investasi</h3>
-                      <div className="stat-grid">
-                        <div style={statBox}>
-                          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Profil Risiko</div>
-                          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--accent)' }}>
-                            {user?.risk_profile || '—'}
-                          </div>
-                        </div>
-                        <div style={statBox}>
-                          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Saldo Virtual</div>
-                          <div style={{ fontSize: 15, fontWeight: 800, color: '#10b981' }}>
-                            Rp {user?.virtual_balance?.toLocaleString('id-ID') || '0'}
-                          </div>
-                        </div>
-                        <div style={statBox}>
-                          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Bergabung Sejak</div>
-                          <div style={{ fontSize: 14, fontWeight: 600 }}>
-                            {user?.created_at
-                              ? new Date(user.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
-                              : '—'}
-                          </div>
-                        </div>
-                        <div style={statBox}>
-                          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Status Akun</div>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: '#10b981' }}>● Aktif</div>
-                        </div>
-                      </div>
-
-                      <hr style={{ margin: '28px 0', borderColor: 'var(--border)' }} />
-
-                      <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Panduan Aplikasi</h3>
-                      <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 14 }}>
-                        Tampilkan kembali tutorial langkah demi langkah penggunaan StoxArea.
-                      </p>
-                      <button
-                        onClick={() => {
-                          localStorage.removeItem('stoxarea_tour_done')
-                          window.dispatchEvent(new Event('stoxarea:open-tutorial'))
-                        }}
-                        style={{ ...btnOutline, display: 'flex', alignItems: 'center', gap: 8 }}
-                      >
-                        🎓 Lihat Tutorial Aplikasi
-                      </button>
-                    </div>
-                  )}
-
-
-                  {/* ── TAB: KEAMANAN ── */}
-                  {activeTab === 'security' && (
-                    <div>
-                      <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>Ubah Kata Sandi</h3>
-                      <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 24 }}>
-                        Kata sandi baru minimal 8 karakter dan harus berbeda dari yang lama.
-                      </p>
-
-                      <div style={{ maxWidth: 440 }}>
-                        <label style={labelStyle}>Kata Sandi Saat Ini</label>
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <div style={{ width: '100%' }}>
+                          <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 6 }}>
+                            NAMA LENGKAP
+                          </label>
                           <input
-                            ref={currPassRef}
-                            type={showPass ? 'text' : 'password'}
-                            value={currPass}
-                            onChange={e => setCurrPass(e.target.value)}
-                            placeholder="Masukkan kata sandi saat ini"
-                            style={{ ...inputStyle, flex: 1 }}
-                          />
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (currPassRef.current) {
-                                setCurrPass(currPassRef.current.value);
-                              }
-                              setShowPass(v => !v);
+                            type="text"
+                            value={fullName}
+                            onChange={e => setFullName(e.target.value)}
+                            placeholder="Masukkan nama lengkap Anda"
+                            style={{
+                              width: '100%', padding: '12px 16px', borderRadius: 12,
+                              border: '1px solid var(--border)', background: 'var(--bg-primary)',
+                              fontSize: 14, fontWeight: 600, color: 'var(--text-primary)',
+                              boxSizing: 'border-box', outline: 'none'
                             }}
-                            style={{ ...btnOutline, padding: '10px 14px', whiteSpace: 'nowrap' }}
+                            onKeyDown={e => e.key === 'Enter' && handleSaveName()}
+                          />
+
+                          <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 6, marginTop: 18 }}>
+                            ALAMAT EMAIL
+                          </label>
+                          <div style={{ position: 'relative' }}>
+                            <input
+                              type="email"
+                              value={user?.email || ''}
+                              disabled
+                              style={{
+                                width: '100%', padding: '12px 16px', borderRadius: 12,
+                                border: '1px solid var(--border)', background: 'rgba(241,245,249,0.5)',
+                                fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)',
+                                cursor: 'not-allowed', boxSizing: 'border-box'
+                              }}
+                            />
+                            <span style={{
+                              position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+                              background: '#e2e8f0', color: '#64748b', padding: '2px 8px', borderRadius: 8,
+                              fontSize: 10, fontWeight: 700
+                            }}>
+                              Terkunci
+                            </span>
+                          </div>
+                          <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6 }}>
+                            Email digunakan sebagai identitas login dan tidak bisa diubah.
+                          </p>
+
+                          <button
+                            onClick={handleSaveName}
+                            disabled={savingName}
+                            style={{
+                              background: '#2563eb', color: '#fff', border: 'none',
+                              borderRadius: 10, padding: '12px 24px', fontSize: 13,
+                              fontWeight: 700, cursor: 'pointer', marginTop: 20,
+                              boxShadow: '0 4px 14px rgba(37,99,235,0.3)',
+                              transition: 'all 0.2s ease'
+                            }}
                           >
-                            {showPass ? '🙈 Sembunyikan' : '👁 Tampilkan'}
+                            {savingName ? 'Menyimpan...' : 'Simpan Perubahan'}
                           </button>
                         </div>
-
-                        <label style={{ ...labelStyle, marginTop: 16 }}>Kata Sandi Baru</label>
-                        <input
-                          type={showPass ? 'text' : 'password'}
-                          value={newPass}
-                          onChange={e => setNewPass(e.target.value)}
-                          placeholder="Min. 8 karakter"
-                          style={inputStyle}
-                        />
-                        {newPass.length > 0 && (
-                          <div style={{ marginTop: 6, display: 'flex', gap: 6 }}>
-                            {['Panjang ≥8', 'Huruf besar', 'Angka'].map((req, i) => {
-                              const ok = i === 0 ? newPass.length >= 8 : i === 1 ? /[A-Z]/.test(newPass) : /\d/.test(newPass)
-                              return (
-                                <span key={i} style={{ fontSize: 10, padding: '2px 7px', borderRadius: 4, fontWeight: 700, background: ok ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.05)', color: ok ? '#10b981' : 'var(--text-muted)' }}>
-                                  {ok ? '✓' : '○'} {req}
-                                </span>
-                              )
-                            })}
-                          </div>
-                        )}
-
-                        <label style={{ ...labelStyle, marginTop: 16 }}>Konfirmasi Kata Sandi Baru</label>
-                        <input
-                          type={showPass ? 'text' : 'password'}
-                          value={confirmPass}
-                          onChange={e => setConfirmPass(e.target.value)}
-                          placeholder="Ulangi kata sandi baru"
-                          style={{ ...inputStyle, borderColor: confirmPass && confirmPass !== newPass ? '#ef4444' : undefined }}
-                        />
-                        {confirmPass && confirmPass !== newPass && (
-                          <p style={{ fontSize: 11, color: '#ef4444', marginTop: 4 }}>Kata sandi tidak cocok.</p>
-                        )}
-
-                        <button
-                          onClick={handleUpdatePassword}
-                          disabled={savingPass}
-                          style={{ ...btnPrimary, marginTop: 24 }}
-                        >
-                          {savingPass ? 'Memperbarui...' : '🔒 Perbarui Kata Sandi'}
-                        </button>
                       </div>
 
-                      <hr style={{ margin: '28px 0', borderColor: 'var(--border)' }} />
-                      <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Autentikasi Dua Faktor (2FA)</h3>
-                      <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 16 }}>
-                        Tambahkan lapisan keamanan ekstra dengan kode OTP saat login. Fitur ini sedang dalam pengembangan.
-                      </p>
-                      <button
-                        onClick={() => toast.warning('Segera Hadir 🚧', 'Fitur 2FA sedang dalam pengembangan.')}
-                        style={{ ...btnOutline }}
-                      >
-                        Aktifkan 2FA (Coming Soon)
-                      </button>
-                    </div>
+                      {/* Card 2: Data Investasi */}
+                      <div className="card" style={{ padding: 24 }}>
+                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 16, color: 'var(--text-primary)' }}>Data Investasi</h3>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14 }}>
+                          {/* Profil Risiko */}
+                          <div style={{ background: '#fff7ed', border: '1px solid #ffedd5', borderRadius: 12, padding: '14px 16px' }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: '#9a3412', marginBottom: 4 }}>Profil Risiko</div>
+                            <div style={{ fontSize: 16, fontWeight: 800, color: '#c2410c' }}>
+                              {user?.risk_profile ? user.risk_profile.charAt(0).toUpperCase() + user.risk_profile.slice(1) : 'Moderat'}
+                            </div>
+                          </div>
+                          {/* Saldo Virtual */}
+                          <div style={{ background: '#f0fdf4', border: '1px solid #dcfce7', borderRadius: 12, padding: '14px 16px' }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: '#166534', marginBottom: 4 }}>Saldo Virtual</div>
+                            <div style={{ fontSize: 16, fontWeight: 800, color: '#15803d' }}>
+                              Rp {user?.virtual_balance?.toLocaleString('id-ID') || '100.000.000'}
+                            </div>
+                          </div>
+                          {/* Bergabung Sejak */}
+                          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '14px 16px' }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: '#475569', marginBottom: 4 }}>Bergabung Sejak</div>
+                            <div style={{ fontSize: 14, fontWeight: 800, color: '#1e293b' }}>
+                              {user?.created_at
+                                ? new Date(user.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                                : '09 Jun 2026'}
+                            </div>
+                          </div>
+                          {/* Status Akun */}
+                          <div style={{ background: '#f0fdf4', border: '1px solid #dcfce7', borderRadius: 12, padding: '14px 16px' }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: '#166534', marginBottom: 4 }}>Status Akun</div>
+                            <div style={{ fontSize: 15, fontWeight: 800, color: '#15803d' }}>Aktif</div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
                   )}
 
-                  {/* ── TAB: PROFIL RISIKO ── */}
+
+                  {/* ── TAB 2: KEAMANAN ── */}
+                  {activeTab === 'security' && (
+                    <>
+                      {/* Card 1: Ubah Kata Sandi */}
+                      <div className="card" style={{ padding: 24 }}>
+                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>Ubah Kata Sandi</h3>
+                        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+                          Gunakan minimal 8 karakter dengan kombinasi huruf dan angka.
+                        </p>
+
+                        <div style={{ width: '100%' }}>
+                          <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 6 }}>
+                            KATA SANDI SAAT INI
+                          </label>
+                          <div style={{ position: 'relative' }}>
+                            <input
+                              ref={currPassRef}
+                              type={showPass ? 'text' : 'password'}
+                              value={currPass}
+                              onChange={e => setCurrPass(e.target.value)}
+                              placeholder="••••••••"
+                              style={{
+                                width: '100%', padding: '12px 40px 12px 16px', borderRadius: 12,
+                                border: '1px solid var(--border)', background: 'var(--bg-primary)',
+                                fontSize: 14, fontWeight: 600, color: 'var(--text-primary)',
+                                boxSizing: 'border-box', outline: 'none'
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setShowPass(v => !v);
+                              }}
+                              style={{
+                                position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+                                background: 'transparent', border: 'none', cursor: 'pointer',
+                                fontSize: 16, color: 'var(--text-muted)'
+                              }}
+                              title={showPass ? 'Sembunyikan' : 'Tampilkan'}
+                            >
+                              {showPass ? '🙈' : '👁️'}
+                            </button>
+                          </div>
+
+                          <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 6, marginTop: 18 }}>
+                            KATA SANDI BARU
+                          </label>
+                          <input
+                            type={showPass ? 'text' : 'password'}
+                            value={newPass}
+                            onChange={e => setNewPass(e.target.value)}
+                            placeholder="••••••••"
+                            style={{
+                              width: '100%', padding: '12px 16px', borderRadius: 12,
+                              border: '1px solid var(--border)', background: 'var(--bg-primary)',
+                              fontSize: 14, fontWeight: 600, color: 'var(--text-primary)',
+                              boxSizing: 'border-box', outline: 'none'
+                            }}
+                          />
+
+                          <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 6, marginTop: 18 }}>
+                            KONFIRMASI SANDI BARU
+                          </label>
+                          <input
+                            type={showPass ? 'text' : 'password'}
+                            value={confirmPass}
+                            onChange={e => setConfirmPass(e.target.value)}
+                            placeholder="••••••••"
+                            style={{
+                              width: '100%', padding: '12px 16px', borderRadius: 12,
+                              border: confirmPass && confirmPass !== newPass ? '1px solid #ef4444' : '1px solid var(--border)',
+                              background: 'var(--bg-primary)', fontSize: 14, fontWeight: 600,
+                              color: 'var(--text-primary)', boxSizing: 'border-box', outline: 'none'
+                            }}
+                          />
+
+                          <button
+                            onClick={handleUpdatePassword}
+                            disabled={savingPass}
+                            style={{
+                              background: '#2563eb', color: '#fff', border: 'none',
+                              borderRadius: 10, padding: '12px 24px', fontSize: 13,
+                              fontWeight: 700, cursor: 'pointer', marginTop: 20,
+                              boxShadow: '0 4px 14px rgba(37,99,235,0.3)',
+                              display: 'inline-flex', alignItems: 'center', gap: 6
+                            }}
+                          >
+                            <span>🔒</span> {savingPass ? 'Memperbarui...' : 'Perbarui Kata Sandi'}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Card 2: Autentikasi Dua Faktor */}
+                      <div className="card" style={{ padding: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                          <div style={{
+                            width: 36, height: 36, borderRadius: 10,
+                            background: 'rgba(16,185,129,0.1)', color: '#10b981',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: 18
+                          }}>
+                            🛡️
+                          </div>
+                          <div>
+                            <h3 style={{ fontSize: 16, fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>Autentikasi Dua Faktor</h3>
+                            <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0' }}>Lapisan keamanan tambahan untuk akun kamu.</p>
+                          </div>
+                        </div>
+
+                        <div style={{
+                          background: 'var(--bg-primary)', borderRadius: 12,
+                          border: '1px solid var(--border)', padding: '14px 16px',
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                          marginTop: 16, marginBottom: 16
+                        }}>
+                          <div>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>2FA via Authenticator App</div>
+                            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Google Authenticator / Authy</div>
+                          </div>
+                          <span style={{
+                            background: '#fff7ed', color: '#c2410c',
+                            border: '1px solid #ffedd5', padding: '3px 10px',
+                            borderRadius: 12, fontSize: 11, fontWeight: 700
+                          }}>
+                            Belum aktif
+                          </span>
+                        </div>
+
+                        <button
+                          onClick={() => toast.warning('Segera Hadir 🚧', 'Fitur 2FA sedang dalam pengembangan.')}
+                          style={{
+                            width: '100%', background: 'transparent', color: '#2563eb',
+                            border: '1px solid rgba(37,99,235,0.4)', borderRadius: 10,
+                            padding: '12px', fontSize: 13, fontWeight: 700,
+                            cursor: 'pointer', textAlign: 'center'
+                          }}
+                        >
+                          Aktifkan 2FA
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                  {/* ── TAB 3: PROFIL RISIKO ── */}
                   {activeTab === 'risk' && (
-                    <div>
-                      <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>Profil Risiko Investasi</h3>
-                      <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 24 }}>
-                        Profil ini menentukan bobot kriteria dalam algoritma rekomendasi SAW. Ubah sesuai kondisi finansial Anda saat ini.
+                    <div className="card" style={{ padding: 24 }}>
+                      <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>Profil Risiko Investasi</h3>
+                      <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+                        Pilih profil yang sesuai dengan toleransi risiko kamu.
                       </p>
 
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 480, marginBottom: 24 }}>
-                        {PROFILE_OPTIONS.map(p => {
-                          const isActive = selectedProfile === p.id
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, width: '100%' }}>
+                        {[
+                          {
+                            id: 'Konservatif',
+                            icon: '🛡️',
+                            badge: 'Rendah',
+                            badgeColor: '#166534',
+                            badgeBg: '#f0fdf4',
+                            badgeBorder: '#dcfce7',
+                            desc: 'Prioritas keamanan modal. Cocok untuk investor pemula yang menghindari risiko tinggi.',
+                            returnText: 'Estimasi return: 4–8% / tahun',
+                          },
+                          {
+                            id: 'Moderat',
+                            icon: '⚖️',
+                            badge: 'Sedang',
+                            badgeColor: '#9a3412',
+                            badgeBg: '#fff7ed',
+                            badgeBorder: '#ffedd5',
+                            desc: 'Keseimbangan antara pertumbuhan dan keamanan. Cocok untuk investor menengah.',
+                            returnText: 'Estimasi return: 8–15% / tahun',
+                          },
+                          {
+                            id: 'Agresif',
+                            icon: '🚀',
+                            badge: 'Tinggi',
+                            badgeColor: '#991b1b',
+                            badgeBg: '#fef2f2',
+                            badgeBorder: '#fee2e2',
+                            desc: 'Fokus pada pertumbuhan maksimal. Toleransi tinggi terhadap fluktuasi pasar.',
+                            returnText: 'Estimasi return: 15–30%+ / tahun',
+                          },
+                        ].map(p => {
+                          const isActive = selectedProfile.toLowerCase() === p.id.toLowerCase()
                           return (
                             <div
                               key={p.id}
-                              onClick={() => setSelectedProfile(p.id)}
+                              onClick={() => {
+                                setSelectedProfile(p.id)
+                                api.put('/auth/profile', { risk_profile: p.id.toLowerCase() })
+                                  .then(res => {
+                                    setUser(res.data)
+                                    toast.success('Profil Risiko Diperbarui ✅', `Profil Anda: ${p.id}`)
+                                  })
+                                  .catch(() => {})
+                              }}
                               style={{
-                                padding: '16px 18px', borderRadius: 12, cursor: 'pointer',
-                                border: isActive ? `2px solid ${p.color}` : '1px solid var(--border)',
-                                background: isActive ? `${p.color}12` : 'rgba(255,255,255,0.02)',
-                                transition: 'all 0.2s', position: 'relative',
+                                padding: '18px 20px', borderRadius: 14, cursor: 'pointer',
+                                border: isActive ? '2px solid #2563eb' : '1px solid var(--border)',
+                                background: isActive ? '#f0f7ff' : 'var(--bg-primary)',
+                                transition: 'all 0.2s ease', position: 'relative',
+                                boxShadow: isActive ? '0 4px 12px rgba(37,99,235,0.15)' : 'none'
                               }}
                             >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-                                <span style={{ fontSize: 20 }}>{p.emoji}</span>
-                                <span style={{ fontWeight: 800, fontSize: 15, color: isActive ? p.color : 'var(--text-primary)' }}>
-                                  {p.id}
-                                </span>
-                                {isActive && (
-                                  <span style={{ marginLeft: 'auto', fontSize: 12, fontWeight: 700, color: p.color }}>✓ Aktif</span>
-                                )}
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                  <span style={{ fontSize: 20 }}>{p.icon}</span>
+                                  <span style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>
+                                    {p.id}
+                                  </span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                  <span style={{
+                                    background: p.badgeBg, color: p.badgeColor,
+                                    border: `1px solid ${p.badgeBorder}`, padding: '2px 10px',
+                                    borderRadius: 10, fontSize: 11, fontWeight: 700
+                                  }}>
+                                    {p.badge}
+                                  </span>
+                                  {isActive && (
+                                    <span style={{
+                                      width: 20, height: 20, borderRadius: '50%',
+                                      background: '#2563eb', color: '#fff', fontSize: 11,
+                                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                      fontWeight: 800
+                                    }}>
+                                      ✓
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                              <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: 0, paddingLeft: 30 }}>{p.desc}</p>
+                              <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: '0 0 8px 30px', lineHeight: 1.5 }}>
+                                {p.desc}
+                              </p>
+                              <div style={{ fontSize: 12, fontWeight: 700, color: '#2563eb', paddingLeft: 30 }}>
+                                {p.returnText}
+                              </div>
                             </div>
                           )
                         })}
-                      </div>
-
-                      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                        <button
-                          onClick={handleSaveProfile}
-                          disabled={savingProfile || selectedProfile === user?.risk_profile}
-                          style={{ ...btnPrimary, opacity: selectedProfile === user?.risk_profile ? 0.5 : 1 }}
-                        >
-                          {savingProfile ? 'Menyimpan...' : 'Simpan Profil Risiko'}
-                        </button>
-                        {selectedProfile === user?.risk_profile && (
-                          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Ini sudah profil aktif Anda.</span>
-                        )}
-                      </div>
-
-                      <div style={{ marginTop: 24, padding: '14px 16px', background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 10 }}>
-                        <p style={{ fontSize: 12, color: '#f59e0b', margin: 0 }}>
-                          💡 Ingin profil yang lebih akurat? <a href="/onboarding" style={{ color: '#f59e0b', fontWeight: 700 }}>Isi ulang kuesioner profil risiko →</a>
-                        </p>
                       </div>
                     </div>
                   )}
 
-                  {/* ── TAB: PREFERENSI ── */}
+                  {/* ── TAB 4: PREFERENSI ── */}
                   {activeTab === 'preferences' && (
-                    <div>
-                      <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>Preferensi Tampilan</h3>
-                      <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 24 }}>
-                        Pengaturan ini disimpan di browser Anda (localStorage).
-                      </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {/* Card 1: Tampilan Visual */}
+                      <div className="card" style={{ padding: 24 }}>
+                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>🎨 Tampilan Visual</h3>
+                        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+                          Atur tema warna dan tata letak halaman utama aplikasi.
+                        </p>
 
-                      {/* Tampilan Dashboard */}
-                      <label style={labelStyle}>Tampilan Dashboard</label>
-                      <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, marginTop: 4 }}>
-                        Pilih tampilan halaman utama Dashboard sesuai preferensi Anda.
-                      </p>
-                      <div className="pref-grid">
-                        {[
-                          {
-                            id: 'classic' as const,
-                            emoji: '📊',
-                            name: 'Klasik',
-                            desc: 'Stats ringkasan, kartu top pick emiten, tabel Ranking SPK & Radar Sektor, Top Mover per sektor.',
-                            color: '#10b981',
-                          },
-                          {
-                            id: 'modern' as const,
-                            emoji: '🖥️',
-                            name: 'Modern',
-                            desc: 'Widget IHSG, ringkasan portofolio virtual, tab Ringkasan Pasar & Analisis Sektoral interaktif.',
-                            color: '#3b82f6',
-                          },
-                        ].map(opt => {
-                          const isActive = dashboardLayout === opt.id
-                          return (
-                            <div
-                              key={opt.id}
-                              onClick={() => handleDashLayoutChange(opt.id)}
-                              style={{
-                                padding: '16px 18px',
-                                borderRadius: 12,
-                                cursor: 'pointer',
-                                border: isActive ? `2px solid ${opt.color}` : '1px solid var(--border)',
-                                background: isActive ? `${opt.color}12` : 'rgba(255,255,255,0.02)',
-                                transition: 'all 0.2s',
-                              }}
-                            >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                                <span style={{ fontSize: 22 }}>{opt.emoji}</span>
-                                <span style={{ fontWeight: 800, fontSize: 15, color: isActive ? opt.color : 'var(--text-primary)' }}>
-                                  {opt.name}
-                                </span>
-                                {isActive && (
-                                  <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 700, color: opt.color }}>✓ Aktif</span>
-                                )}
-                              </div>
-                              <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>{opt.desc}</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+                          {/* Tema Tampilan */}
+                          <div>
+                            <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 10 }}>
+                              TEMA TAMPILAN
+                            </label>
+                            <div style={{ display: 'flex', gap: 8 }}>
+                              {(['dark', 'light'] as const).map(t => (
+                                <div
+                                  key={t}
+                                  onClick={() => handleThemeChange(t)}
+                                  style={{
+                                    flex: 1, padding: '12px', borderRadius: 10, cursor: 'pointer',
+                                    border: theme === t ? '2px solid #2563eb' : '1px solid var(--border)',
+                                    background: theme === t ? '#eff6ff' : 'var(--bg-primary)',
+                                    fontWeight: 700, fontSize: 12, transition: 'all 0.15s ease',
+                                    color: theme === t ? '#2563eb' : 'var(--text-secondary)',
+                                    textAlign: 'center'
+                                  }}
+                                >
+                                  {t === 'dark' ? '🌙 Gelap' : '☀️ Terang'}
+                                </div>
+                              ))}
                             </div>
-                          )
-                        })}
+                          </div>
+
+                          {/* Layout Dashboard */}
+                          <div>
+                            <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 10 }}>
+                              LAYOUT DASHBOARD
+                            </label>
+                            <div style={{ display: 'flex', gap: 8 }}>
+                              {[
+                                { id: 'classic' as const, name: '📊 Klasik' },
+                                { id: 'modern' as const, name: '🖥️ Modern' },
+                              ].map(opt => (
+                                <div
+                                  key={opt.id}
+                                  onClick={() => handleDashLayoutChange(opt.id)}
+                                  style={{
+                                    flex: 1, padding: '12px', borderRadius: 10, cursor: 'pointer',
+                                    border: dashboardLayout === opt.id ? '2px solid #2563eb' : '1px solid var(--border)',
+                                    background: dashboardLayout === opt.id ? '#eff6ff' : 'var(--bg-primary)',
+                                    fontWeight: 700, fontSize: 12, transition: 'all 0.15s ease',
+                                    color: dashboardLayout === opt.id ? '#2563eb' : 'var(--text-secondary)',
+                                    textAlign: 'center'
+                                  }}
+                                >
+                                  {opt.name}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
-                      <hr style={{ margin: '0 0 24px', borderColor: 'var(--border)' }} />
+                      {/* Card 2: Notifikasi & Sinyal AI */}
+                      <div className="card" style={{ padding: 24 }}>
+                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>🔔 Notifikasi & Sinyal AI</h3>
+                        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+                          Atur pemberitahuan rekomendasi dan peringatan portofolio.
+                        </p>
 
-                      {/* Tema */}
-                      <label style={labelStyle}>Tema Tampilan</label>
-                      <div style={{ display: 'flex', gap: 12, marginBottom: 24, marginTop: 8 }}>
-                        {(['dark', 'light'] as const).map(t => (
-                          <div
-                            key={t}
-                            onClick={() => handleThemeChange(t)}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                          {/* Item 1 */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-primary)', padding: '12px 16px', borderRadius: 12, border: '1px solid var(--border)' }}>
+                            <div>
+                              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Sinyal AI Top Picks Harian (17:00 WIB)</div>
+                              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Pengingat saat model Machine Learning selesai di-update</div>
+                            </div>
+                            <input 
+                              type="checkbox" 
+                              checked={notifyAiSignals} 
+                              onChange={e => setNotifyAiSignals(e.target.checked)}
+                              style={{ width: 18, height: 18, accentColor: '#2563eb', cursor: 'pointer' }}
+                            />
+                          </div>
+
+                          {/* Item 2 */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-primary)', padding: '12px 16px', borderRadius: 12, border: '1px solid var(--border)' }}>
+                            <div>
+                              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Waspada Pergerakan Portofolio (&gt;3%)</div>
+                              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Pemberitahuan saat saham simpanan mengalami lonjakan/penurunan</div>
+                            </div>
+                            <input 
+                              type="checkbox" 
+                              checked={notifyPortfolioAlert} 
+                              onChange={e => setNotifyPortfolioAlert(e.target.checked)}
+                              style={{ width: 18, height: 18, accentColor: '#2563eb', cursor: 'pointer' }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card 3: Preferensi Data & Panduan */}
+                      <div className="card" style={{ padding: 24 }}>
+                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>📊 Display Data & Panduan</h3>
+                        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+                          Pengaturan tambahan untuk grafik dan tur edukasi aplikasi.
+                        </p>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-primary)', padding: '12px 16px', borderRadius: 12, border: '1px solid var(--border)' }}>
+                            <div>
+                              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Tampilkan Mini Sparkline Chart 7-Hari</div>
+                              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Menampilkan tren grafik mini di daftar pasar & portofolio</div>
+                            </div>
+                            <input 
+                              type="checkbox" 
+                              checked={showSparklines} 
+                              onChange={e => setShowSparklines(e.target.checked)}
+                              style={{ width: 18, height: 18, accentColor: '#2563eb', cursor: 'pointer' }}
+                            />
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                          <button
+                            onClick={() => {
+                              localStorage.removeItem('stoxarea_tour_done')
+                              window.dispatchEvent(new Event('stoxarea:open-tutorial'))
+                              toast.info('Tutorial Dibuka 🎓', 'Petunjuk panduan aplikasi sedang ditampilkan...')
+                            }}
                             style={{
-                              padding: '14px 24px', borderRadius: 10, cursor: 'pointer',
-                              border: theme === t ? '2px solid var(--accent)' : '1px solid var(--border)',
-                              background: theme === t ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.02)',
-                              fontWeight: 700, fontSize: 14, transition: 'all 0.15s',
-                              color: theme === t ? 'var(--accent)' : 'var(--text-secondary)',
+                              background: 'transparent', color: '#2563eb',
+                              border: '1px solid rgba(37,99,235,0.4)', borderRadius: 10,
+                              padding: '10px 18px', fontSize: 12, fontWeight: 700,
+                              cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6
                             }}
                           >
-                            {t === 'dark' ? '🌙 Mode Gelap' : '☀️ Mode Terang'}
-                            {theme === t && <span style={{ marginLeft: 8 }}>✓</span>}
+                            <span>🎓</span> Lihat Tutorial Aplikasi
+                          </button>
+
+                          <button 
+                            onClick={handleSavePreferences} 
+                            style={{
+                              background: '#2563eb', color: '#fff', border: 'none',
+                              borderRadius: 10, padding: '10px 24px', fontSize: 13,
+                              fontWeight: 700, cursor: 'pointer',
+                              boxShadow: '0 4px 14px rgba(37,99,235,0.3)'
+                            }}
+                          >
+                            Simpan Preferensi
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── TAB 5: FAQ (PERTANYAAN UMUM) ── */}
+                  {activeTab === 'faq' && (
+                    <div className="card" style={{ padding: 24 }}>
+                      <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>Pertanyaan Umum</h3>
+                      <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+                        Temukan jawaban dari pertanyaan yang sering ditanyakan.
+                      </p>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 20, width: '100%', marginBottom: 24 }}>
+                        {FAQ_ITEMS.map((group) => (
+                          <div key={group.category}>
+                            <div style={{
+                              fontSize: 11, fontWeight: 800, color: 'var(--text-muted)',
+                              textTransform: 'uppercase', letterSpacing: 0.8,
+                              marginBottom: 10, paddingBottom: 6,
+                              borderBottom: '1px solid var(--border)'
+                            }}>
+                              {group.category}
+                            </div>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                              {group.items.map((item, idx) => {
+                                const key = `${group.category}-${idx}`
+                                const isOpen = openFaq === key
+                                return (
+                                  <div key={key} style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+                                    <button
+                                      onClick={() => setOpenFaq(isOpen ? null : key)}
+                                      style={{
+                                        width: '100%', display: 'flex', justifyContent: 'space-between',
+                                        alignItems: 'center', padding: '14px 16px',
+                                        background: 'transparent', border: 'none',
+                                        cursor: 'pointer', textAlign: 'left',
+                                        fontSize: 14, fontWeight: 700, color: isOpen ? '#2563eb' : 'var(--text-primary)',
+                                        gap: 12
+                                      }}
+                                    >
+                                      <span>{item.q}</span>
+                                      <span style={{ fontSize: 12, color: 'var(--text-muted)', transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s', flexShrink: 0 }}>
+                                        ▼
+                                      </span>
+                                    </button>
+                                    {isOpen && (
+                                      <div style={{ padding: '0 16px 14px', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, borderTop: '1px dashed var(--border)', paddingTop: 12, whiteSpace: 'pre-line' }}>
+                                        {item.a}
+                                      </div>
+                                    )}
+                                  </div>
+                                )
+                              })}
+                            </div>
                           </div>
                         ))}
                       </div>
 
-                      <button onClick={handleSavePreferences} style={{ ...btnPrimary, marginTop: 8 }}>
-                        Simpan Preferensi
-                      </button>
-                    </div>
-                  )}
-
-                  {/* ── TAB: FAQ ── */}
-                  {activeTab === 'faq' && (
-                    <div>
-                      <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 4 }}>Pertanyaan yang Sering Diajukan</h3>
-                      <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 28 }}>Klik pertanyaan untuk melihat jawabannya.</p>
-
-                      {FAQ_ITEMS.map((group) => (
-                        <div key={group.category} style={{ marginBottom: 28 }}>
-                          <div style={{
-                            fontSize: 11, fontWeight: 700, color: 'var(--text-muted)',
-                            textTransform: 'uppercase', letterSpacing: 0.8,
-                            marginBottom: 10, paddingBottom: 6,
-                            borderBottom: '1px solid var(--border)'
-                          }}>
-                            {group.category}
-                          </div>
-
-                          {group.items.map((item, idx) => {
-                            const key = `${group.category}-${idx}`
-                            const isOpen = openFaq === key
-                            return (
-                              <div key={key} style={{ borderBottom: '1px solid var(--border)' }}>
-                                <button
-                                  onClick={() => setOpenFaq(isOpen ? null : key)}
-                                  style={{
-                                    width: '100%', display: 'flex', justifyContent: 'space-between',
-                                    alignItems: 'center', padding: '14px 0',
-                                    background: 'transparent', border: 'none',
-                                    cursor: 'pointer', textAlign: 'left', gap: 12,
-                                  }}
-                                >
-                                  <span style={{
-                                    fontSize: 14, fontWeight: 600,
-                                    color: isOpen ? 'var(--accent)' : 'var(--text-primary)',
-                                    transition: 'color 0.15s',
-                                  }}>
-                                    {item.q}
-                                  </span>
-                                  <span style={{
-                                    fontSize: 18, color: 'var(--text-muted)',
-                                    transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                                    transition: 'transform 0.2s',
-                                    flexShrink: 0,
-                                  }}>▾</span>
-                                </button>
-                                {isOpen && (
-                                  <div style={{
-                                    padding: '0 0 16px 0',
-                                    fontSize: 13, color: 'var(--text-secondary)',
-                                    lineHeight: 1.8,
-                                    animation: 'fadeIn 0.2s ease',
-                                  }}>
-                                    {item.a}
-                                  </div>
-                                )}
-                              </div>
-                            )
-                          })}
+                      {/* Support Contact Box */}
+                      <div style={{ background: '#eff6ff', border: '1px solid #dbeafe', borderRadius: 14, padding: '16px 20px', width: '100%', boxSizing: 'border-box' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#1d4ed8', fontWeight: 800, fontSize: 14, marginBottom: 4 }}>
+                          <span>ⓘ</span> Masih ada pertanyaan?
                         </div>
-                      ))}
+                        <div style={{ fontSize: 12, color: '#1e40af' }}>
+                          Hubungi tim support kami melalui email <a href="mailto:anompangestu16@gmail.com" style={{ color: '#2563eb', fontWeight: 700, textDecoration: 'none' }}>anompangestu16@gmail.com</a>
+                        </div>
+                      </div>
                     </div>
                   )}
 

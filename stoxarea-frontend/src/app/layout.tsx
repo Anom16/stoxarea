@@ -4,12 +4,13 @@ import './globals.css'
 import NextTopLoader from 'nextjs-toploader'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ClientTutorialProvider from '@/components/ui/ClientTutorialProvider'
+import DisclaimerBanner from '@/components/ui/DisclaimerBanner'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: 'STOXAREA — ashichii',
-  description: 'Platform Sistem Pendukung Keputusan Investasi Saham IDX dengan AI XGBoost dan Metode SAW',
+  title: 'STOXAREA — Platform Analitik & Edukasi Saham IDX',
+  description: 'Platform Sistem Pendukung Keputusan Kuantitatif Saham IDX berbasis XGBoost dan SAW untuk Edukasi Investasi',
   manifest: '/manifest.json',
 }
 
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })()
         ` }} />
         <NextTopLoader color="#10b981" showSpinner={false} height={3} />
+        <DisclaimerBanner />
         <ErrorBoundary>
           <ClientTutorialProvider>
             {children}

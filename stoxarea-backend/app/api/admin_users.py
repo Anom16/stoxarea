@@ -203,6 +203,8 @@ def list_all_stocks(
     ]
 
 
+from app.services.spk3_saw import invalidate_saw_cache
+
 @router.patch("/stocks/{ticker}/toggle-qualified")
 def toggle_stock_qualified(
     ticker: str,
@@ -216,9 +218,14 @@ def toggle_stock_qualified(
 
     stock.is_qualified = not stock.is_qualified
     db.commit()
+    
+    # Invalidate SAW Cache secara otomatis agar perubahan kualifikasi langsung aktif
+    cleared_count = invalidate_saw_cache()
+    
     status = "diaktifkan" if stock.is_qualified else "dinonaktifkan"
     return {
-        "message":      f"{ticker} berhasil {status} dari rekomendasi.",
+        "message":      f"{ticker} berhasil {status} dari rekomendasi. ({cleared_count} cache entries dibersihkan)",
         "ticker":       ticker,
         "is_qualified": stock.is_qualified,
+        "cache_cleared": cleared_count
     }

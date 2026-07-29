@@ -62,6 +62,10 @@ export default function DashboardPage() {
   const [ihsgLoading, setIhsgLoading]               = useState<boolean>(true)
   const [activeDashboardTab, setActiveDashboardTab] = useState<'overview' | 'sectors'>('overview')
 
+  // Mobile Dashboard Filter States (Compact View)
+  const [showAllRanking, setShowAllRanking]         = useState<boolean>(false)
+  const [selectedSectorFilter, setSelectedSectorFilter] = useState<string>('ALL')
+
   // ── Fetch user + data ────────────────────────────────────────────────────
   useEffect(() => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
@@ -199,7 +203,7 @@ export default function DashboardPage() {
             {/* Overview Deck: IHSG + Portfolio */}
             <div className="modern-deck-grid">
               {/* IHSG Card */}
-              <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'stretch' }}>
+              <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'stretch', flexWrap: 'wrap', gap: 12 }}>
                 <div>
                   <span style={{ fontSize: 10, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
                     Indeks Harga Saham Gabungan
@@ -589,7 +593,7 @@ export default function DashboardPage() {
           <section className="dashboard-section mb-24" role="region" aria-label="Ringkasan Pasar dan Portofolio">
             <div className="modern-deck-grid">
               {/* IHSG Card */}
-              <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'stretch' }}>
+              <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'stretch', flexWrap: 'wrap', gap: 12 }}>
                 <div>
                   <span style={{ fontSize: 10, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600 }}>
                     Indeks Harga Saham Gabungan
@@ -822,7 +826,7 @@ export default function DashboardPage() {
                     <tr><th>#</th><th>Ticker</th><th>Sektor</th><th>Match %</th><th>AI Score</th></tr>
                   </thead>
                   <tbody>
-                    {recs.slice(0, 15).map((r, i) => (
+                    {(showAllRanking ? recs.slice(0, 15) : recs.slice(0, 5)).map((r, i) => (
                       <tr key={r.ticker}>
                         <td><div className={`rank-num ${rankColor(i)}`}>{i + 1}</div></td>
                         <td><Link href={`/market/${r.ticker}`} style={{ color: 'var(--text-primary)', textDecoration: 'none', fontWeight: 600 }}>{r.ticker.replace('.JK', '')}</Link></td>
@@ -849,6 +853,25 @@ export default function DashboardPage() {
                     ))}
                   </tbody>
                 </table>
+                {recs.length > 5 && (
+                  <button 
+                    onClick={() => setShowAllRanking(!showAllRanking)}
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      marginTop: 12,
+                      background: 'rgba(255,255,255,0.03)',
+                      border: '1px dashed var(--border)',
+                      borderRadius: 8,
+                      color: 'var(--accent)',
+                      fontWeight: 700,
+                      fontSize: 12,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {showAllRanking ? '▲ Tampilkan 5 Teratas Saja' : '▼ Lihat 10 Saham Lainnya...'}
+                  </button>
+                )}
               </div>
 
               <div className="card" style={{ overflowX: 'auto' }}>
@@ -888,8 +911,28 @@ export default function DashboardPage() {
           <section className="dashboard-section mb-24" role="region" aria-label="Top Movers Per Sektor Saham">
             <div className="section-title">🚀 Top Mover Per Sektor</div>
             <div className="section-sub" style={{ marginBottom: 16 }}>Saham dengan Momentum AI Tertinggi di Masing-masing Sektor</div>
-            <div className="sector-mover-grid">
+            
+            {/* Horizontal Sector Selector Pills (Mobile Friendly) */}
+            <div className="pills-container" style={{ marginBottom: 16 }}>
+              <button 
+                onClick={() => setSelectedSectorFilter('ALL')} 
+                className={`pill-btn ${selectedSectorFilter === 'ALL' ? 'active' : ''}`}
+              >
+                Semua Sektor ({validSectors.length})
+              </button>
               {validSectors.map(s => (
+                <button 
+                  key={s.sector} 
+                  onClick={() => setSelectedSectorFilter(s.sector)} 
+                  className={`pill-btn ${selectedSectorFilter === s.sector ? 'active' : ''}`}
+                >
+                  {s.sector}
+                </button>
+              ))}
+            </div>
+
+            <div className="sector-mover-grid">
+              {(selectedSectorFilter === 'ALL' ? validSectors : validSectors.filter(s => s.sector === selectedSectorFilter)).map(s => (
                 <div key={s.sector} className="sector-mover-card">
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
@@ -935,13 +978,15 @@ export default function DashboardPage() {
       {selectedTransparency && (
         <div style={{
           position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
-          backdropFilter: 'blur(8px)', fontFamily: 'Inter, sans-serif'
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000,
+          backdropFilter: 'blur(8px)', fontFamily: 'Inter, sans-serif',
+          padding: '16px',
         }}>
           <div style={{
             background: '#16213e', border: '1px solid var(--accent)', borderRadius: 16,
-            padding: 28, maxWidth: 540, width: '100%', boxSizing: 'border-box',
-            position: 'relative', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+            padding: 'clamp(16px, 4vw, 28px)', maxWidth: 540, width: '100%', boxSizing: 'border-box',
+            position: 'relative', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            maxHeight: '90vh', overflowY: 'auto',
           }}>
             <button 
               onClick={() => setSelectedTransparency(null)}
@@ -971,7 +1016,8 @@ export default function DashboardPage() {
             </div>
 
             {/* Table */}
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, textAlign: 'left', color: '#ccc' }}>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', margin: '0 -4px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, textAlign: 'left', color: '#ccc', minWidth: 420 }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid #333' }}>
                   <th style={{ padding: '8px 4px', color: '#fff' }}>Kriteria</th>
@@ -1026,6 +1072,7 @@ export default function DashboardPage() {
                 })}
               </tbody>
             </table>
+            </div>
 
             <div style={{ marginTop: 20, fontSize: 10, color: '#888', lineHeight: 1.4 }}>
               💡 <b>Catatan:</b> Untuk kriteria <b>Benefit</b> (ROE & AI Score), nilai dinormalisasi dengan membagi nilai emiten dengan nilai maksimal di pasar. Untuk kriteria <b>Cost</b> (DER & PBV), nilai dinormalisasi dengan membagi nilai minimal di pasar dengan nilai emiten.

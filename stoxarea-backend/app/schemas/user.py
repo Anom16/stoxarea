@@ -50,6 +50,8 @@ class UpdatePasswordRequest(BaseModel):
             raise ValueError("Kata sandi baru minimal 8 karakter.")
         return v
 
+from typing import Optional, Dict
+
 # Schema untuk Input Kuesioner Profiling (SPK Lapis 1)
 class QuestionnaireInput(BaseModel):
     k1_target_keuntungan: int
@@ -57,3 +59,4 @@ class QuestionnaireInput(BaseModel):
     k3_toleransi_risiko: int
     k4_sensitivitas_harga: int
     k5_kapasitas_finansial: int
+    extra_answers: Optional[Dict[str, int]] = None

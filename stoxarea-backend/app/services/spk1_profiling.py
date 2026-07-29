@@ -13,13 +13,15 @@ def calculate_risk_profile(db: Session, answers: QuestionnaireInput) -> str:
     if apply_veto_logic(answers):
         return "konservatif"
 
-    # Total skor dari ke-5 kriteria
+    # Total skor dari ke-5 kriteria utama + pertanyaan kustom tambahan
+    extra_sum = sum(answers.extra_answers.values()) if answers.extra_answers else 0
     total_score = (
         answers.k1_target_keuntungan +
         answers.k2_kualitas_perusahaan +
         answers.k3_toleransi_risiko +
         answers.k4_sensitivitas_harga +
-        answers.k5_kapasitas_finansial
+        answers.k5_kapasitas_finansial +
+        extra_sum
     )
 
     # Ambil profil dari database yang sesuai dengan score threshold
@@ -38,15 +40,22 @@ def get_profile_weights(db: Session, profile_id: str) -> dict:
     Menghasilkan vektor bobot kriteria untuk rumus SAW (SPK Lapis 3)
     berdasarkan profil risiko user dari database.
     """
-    # Bersihkan input/id profile
     p_id = profile_id.lower().strip() if profile_id else "moderat"
     
-    weights = db.query(ProfileIndicatorWeight).filter(
-        ProfileIndicatorWeight.profile_id == p_id
-    ).all()
-    
-    if weights:
-        return {w.indicator_id: w.weight for w in weights}
-    
-    # Fallback default (5 indikator sama rata)
-    return {"ai_score": 0.20, "roe": 0.20, "der": 0.20, "pbv": 0.20, "per": 0.20}
+    defaults = {
+        "konservatif": {"ai_score": 0.10, "roe": 0.35, "der": 0.30, "pbv": 0.10, "per": 0.15},
+        "moderat":     {"ai_score": 0.30, "roe": 0.25, "der": 0.15, "pbv": 0.15, "per": 0.15},
+        "agresif":     {"ai_score": 0.50, "roe": 0.10, "der": 0.10, "pbv": 0.15, "per": 0.15},
+    }
+
+    try:
+        weights = db.query(ProfileIndicatorWeight).filter(
+            ProfileIndicatorWeight.profile_id == p_id
+        ).all()
+        
+        if weights and hasattr(weights[0], "indicator_id") and isinstance(weights[0].indicator_id, str):
+            return {w.indicator_id: float(w.weight) for w in weights}
+    except Exception:
+        pass
+        
+    return defaults.get(p_id, defaults["moderat"])

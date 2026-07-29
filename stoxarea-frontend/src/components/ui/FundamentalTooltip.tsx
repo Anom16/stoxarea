@@ -207,71 +207,104 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       { range: 'Open < Penutupan Kemarin', label: 'Tekanan Jual Tinggi (Bearish)',     color: '#ef4444' },
     ],
     spkRole: 'Indikator Sentimen Awal Sesi.',
-    getInterpretation: () => null,
+    getInterpretation: (v) => {
+      if (v === null) return { text: 'Harga pembukaan pasar sesi ini. Menunjukkan patokan harga pertama transaksi.', color: '#3b82f6' }
+      if (v > 0) return { text: `Harga saat ini +${v.toFixed(2)}% di atas harga pembukaan. Kekuatan pembeli mendominasi perdagangan.`, color: '#10b981' }
+      if (v === 0) return { text: `Harga saat ini konsisten sama dengan harga pembukaan (Netral).`, color: '#f59e0b' }
+      return { text: `Harga saat ini ${v.toFixed(2)}% di bawah harga pembukaan. Tekanan jual mendominasi sesi perdagangan.`, color: '#ef4444' }
+    },
   },
   day_high: {
     fullName: 'Harga Tertinggi Hari Ini (Day High)',
     description: 'Titik harga tertinggi yang berhasil disentuh oleh saham sepanjang hari ini.',
     howToRead: [
-      { range: 'Mendekati Harga Atas', label: 'Daya Beli Sangat Kuat', color: '#10b981' },
-      { range: 'Jauh di Bawah Puncak', label: 'Daya Beli Melemah',    color: '#ef4444' },
+      { range: 'Mendekati Day High', label: 'Daya Beli Sangat Kuat', color: '#10b981' },
+      { range: 'Jauh di Bawah Peak',  label: 'Daya Beli Melemah',    color: '#ef4444' },
     ],
     spkRole: 'Pengukur Batas Atas Harian.',
-    getInterpretation: () => null,
+    getInterpretation: (v) => {
+      if (v === null) return { text: 'Batas harga tertinggi yang berhasil dicapai hari ini.', color: '#3b82f6' }
+      if (v >= -1.0) return { text: `Harga saat ini sangat dekat dengan puncak tertinggi hari ini. Antusiasme pembeli sangat tinggi!`, color: '#10b981' }
+      return { text: `Harga saat ini melandai ${v.toFixed(2)}% dari titik tertinggi hari ini.`, color: '#f59e0b' }
+    },
   },
   day_low: {
     fullName: 'Harga Terendah Hari Ini (Day Low)',
     description: 'Titik harga terendah yang dialami saham selama perdagangan hari ini.',
     howToRead: [
-      { range: 'Harga Memantul dari Low', label: 'Penjualan Mulai Mereda', color: '#10b981' },
-      { range: 'Tertahan di Harga Low',   label: 'Tekanan Jual Masih Berat', color: '#ef4444' },
+      { range: 'Memantul dari Low', label: 'Penjualan Mereda / Rebound', color: '#10b981' },
+      { range: 'Mendekati Low',     label: 'Tekanan Jual Masih Berat', color: '#ef4444' },
     ],
     spkRole: 'Pengukur Batas Bawah Harian.',
-    getInterpretation: () => null,
+    getInterpretation: (v) => {
+      if (v === null) return { text: 'Batas lantai harga terendah yang dialami hari ini.', color: '#3b82f6' }
+      if (v > 2.0) return { text: `Harga telah memantul +${v.toFixed(2)}% dari lantai terendah hari ini. Tekanan jual mulai mereda.`, color: '#10b981' }
+      return { text: `Harga berada dekat dengan lantai terendah hari ini. Masih ada tekanan jual.`, color: '#ef4444' }
+    },
   },
   week_52_high: {
     fullName: 'Harga Tertinggi 1 Tahun (52W High)',
-    description: 'Harga tertinggi yang pernah dicapai saham ini dalam rentang waktu 1 tahun terakhir. Menjadi benteng pertahanan atas (Resistensi).',
+    description: 'Harga tertinggi yang pernah dicapai saham ini dalam rentang waktu 1 tahun terakhir (Resistensi Utama).',
     howToRead: [
-      { range: 'Tembus Rebound Baru',  label: 'Sinyal Tren Naik Baru (Breakout)', color: '#10b981' },
-      { range: 'Mendekati Puncak',     label: 'Mulai Rawan Penjualan / Koreksi',   color: '#f59e0b' },
-      { range: 'Jauh di Bawah Puncak', label: 'Masih Tertekan',                   color: '#ef4444' },
+      { range: 'Dekat Peak (< 10%)', label: 'Sinyal Tren Naik (Breakout)', color: '#10b981' },
+      { range: 'Wajar (10–30%)',    label: 'Konsolidasi Normal',            color: '#f59e0b' },
+      { range: 'Jauh (> 30%)',        label: 'Tertekan / Diskon Dalam',       color: '#ef4444' },
     ],
     spkRole: 'Acuan Momentum Jangka Panjang.',
-    getInterpretation: () => null,
+    getInterpretation: (v) => {
+      if (v === null) return { text: 'Tolak ukur batas atas tertinggi harga saham dalam 1 tahun terakhir.', color: '#3b82f6' }
+      if (v >= -10.0) return { text: `Harga sangat dekat (${v.toFixed(1)}%) dengan rekor tertinggi 1 tahun. Potensi penguatan tren (Breakout)!`, color: '#10b981' }
+      if (v >= -30.0) return { text: `Harga berada ${Math.abs(v).toFixed(1)}% di bawah puncak 1 tahun terakhir.`, color: '#f59e0b' }
+      return { text: `Harga berada ${Math.abs(v).toFixed(1)}% di bawah puncak 1 tahun (Tertekan / Diskon).`, color: '#ef4444' }
+    },
   },
   week_52_low: {
     fullName: 'Harga Terendah 1 Tahun (52W Low)',
-    description: 'Harga terendah yang pernah dicapai saham dalam 1 tahun terakhir. Menjadi lantai penopang bawah (Support).',
+    description: 'Harga terendah yang pernah dicapai saham dalam 1 tahun terakhir (Lantai Support Utama).',
     howToRead: [
-      { range: 'Sudah Memantul Jauh', label: 'Sudah Mulai Pulih (Recovery)', color: '#10b981' },
-      { range: 'Mendekati Lantai',    label: 'Potensi Area Beli Murah',      color: '#f59e0b' },
-      { range: 'Tembus Ke Bawah',     label: 'Tren Turun Berlanjut',          color: '#ef4444' },
+      { range: 'Memantul jauh (> 30%)', label: 'Sudah Pulih (Recovery)', color: '#10b981' },
+      { range: 'Area Beli (10–30%)',     label: 'Potensi Beli Murah',      color: '#f59e0b' },
+      { range: 'Dekat dasar (< 10%)',   label: 'Risiko Penurunan',         color: '#ef4444' },
     ],
     spkRole: 'Acuan Batas Dasar Jangka Panjang.',
-    getInterpretation: () => null,
+    getInterpretation: (v) => {
+      if (v === null) return { text: 'Tolak ukur batas lantai terendah harga saham dalam 1 tahun terakhir.', color: '#3b82f6' }
+      if (v > 30.0) return { text: `Harga sudah pulih memantul +${v.toFixed(1)}% dari titik terendah 1 tahun terakhir.`, color: '#10b981' }
+      if (v >= 10.0) return { text: `Harga berjarak +${v.toFixed(1)}% di atas dasar terendah 1 tahun (Area Beli Wajar).`, color: '#f59e0b' }
+      return { text: `Harga sangat dekat (+${v.toFixed(1)}%) dari lantai terendah 1 tahun. Waspadai risiko penurunan berlanjut.`, color: '#ef4444' }
+    },
   },
   volume: {
     fullName: 'Volume Transaksi Harian',
     description: 'Jumlah lembar saham yang berhasil diperjualbelikan hari ini. Volume ramai menandakan minat pasar yang tinggi.',
     howToRead: [
-      { range: 'Volume di Atas Rata-rata', label: 'Ramai & Didukung Pasar', color: '#10b981' },
-      { range: 'Volume Rata-rata',         label: 'Transaksi Normal',       color: '#f59e0b' },
-      { range: 'Volume Sepi',              label: 'Sepi Pembeli (Kurang Likuid)', color: '#ef4444' },
+      { range: 'Volume Ramai', label: 'Didukung Minat Pasar Tinggi', color: '#10b981' },
+      { range: 'Volume Normal', label: 'Transaksi Stabil',           color: '#f59e0b' },
+      { range: 'Volume Sepi',   label: 'Sepi Pembeli (Kurang Likuid)',color: '#ef4444' },
     ],
     spkRole: 'Konfirmasi Kekuatan Tren Harga.',
-    getInterpretation: () => null,
+    getInterpretation: (v) => {
+      if (v === null) return { text: 'Menunjukkan seberapa aktif transaksi jual-beli saham pada hari ini.', color: '#3b82f6' }
+      if (v > 1.2) return { text: `Volume hari ini di atas rata-rata (+${((v - 1) * 100).toFixed(0)}%). Pergerakan harga didukung minat pasar yang kuat.`, color: '#10b981' }
+      if (v >= 0.8) return { text: `Volume transaksi berada pada tingkat rata-rata normal.`, color: '#f59e0b' }
+      return { text: `Volume transaksi tergolong sepi hari ini di bawah rata-rata.`, color: '#ef4444' }
+    },
   },
   avg_volume: {
     fullName: 'Rata-rata Transaksi (Avg Volume)',
     description: 'Rata-rata kerapian transaksi harian saham. Memastikan Anda bisa menjual/membeli saham dengan mudah kapan saja.',
     howToRead: [
-      { range: '> 1 Juta lembar/hari', label: 'Sangat Mudah Diperdagangkan (Likuid)', color: '#10b981' },
-      { range: '500rb–1 Juta/hari',    label: 'Cukup Mudah Diperdagangkan',            color: '#f59e0b' },
-      { range: '< 500rb/hari',         label: 'Agak Sulit Dijual Cepat (Kurang Likuid)', color: '#ef4444' },
+      { range: 'Ramai (> 1 Juta)', label: 'Sangat Mudah Diperdagangkan (Likuid)', color: '#10b981' },
+      { range: 'Sedang (500rb–1Jt)',label: 'Cukup Mudah Diperdagangkan',            color: '#f59e0b' },
+      { range: 'Sepi (< 500rb)',    label: 'Agak Sulit Dijual Cepat',                color: '#ef4444' },
     ],
     spkRole: 'Pengukur Kemudahan Transaksi.',
-    getInterpretation: () => null,
+    getInterpretation: (v) => {
+      if (v === null) return { text: 'Mengukurlikuiditas dan kemudahan mengeksekusi order jual/beli tanpa mempengaruhi harga secara drastis.', color: '#3b82f6' }
+      if (v >= 1000000) return { text: `Rata-rata volume sangat ramai (${(v/1000000).toFixed(1)}Jt lembar/hari). Sangat likuid dan mudah ditransaksikan.`, color: '#10b981' }
+      if (v >= 500000) return { text: `Rata-rata volume tergolong sedang (${(v/1000).toFixed(0)}rb lembar/hari). Transaksi cukup lancar.`, color: '#f59e0b' }
+      return { text: `Rata-rata volume tergolong kecil. Perhatikan risiko likuiditas saat hendak menjual dalam jumlah besar.`, color: '#ef4444' }
+    },
   },
   payout_ratio: {
     fullName: 'Dividend Payout Ratio — Proporsi Hasil Laba',
@@ -485,14 +518,14 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
             {/* Interpretasi nilai saham ini */}
             {interp && (
               <div style={{
-                background: '#f8fafc',
-                border: '1px solid var(--border)',
-                borderRadius: 8, padding: '10px 12px', marginBottom: 16,
+                background: `${interp.color}18`,
+                border: `1px solid ${interp.color}50`,
+                borderRadius: 10, padding: '12px 14px', marginBottom: 16,
               }}>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>
-                  Nilai {label || metricKey.toUpperCase()} saham ini:
+                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4, fontWeight: 600 }}>
+                  Interpretasi Nilai ({label || metricKey.toUpperCase()}):
                 </div>
-                <div style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700 }}>
+                <div style={{ fontSize: 13, color: interp.color, fontWeight: 700, lineHeight: 1.5 }}>
                   {interp.text}
                 </div>
               </div>
@@ -500,15 +533,23 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
 
             {/* Panduan Baca */}
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
-                Panduan Baca
+              <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+                Panduan Indikator (Kategori Warna)
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {info.howToRead.map((r, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', flexShrink: 0 }} />
-                    <span style={{ fontSize: 12, color: 'var(--text-primary)', fontWeight: 600, minWidth: 70 }}>{r.range}</span>
-                    <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{r.label}</span>
+                  <div key={i} style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 10, 
+                    background: `${r.color}15`, 
+                    padding: '8px 12px', 
+                    borderRadius: 8, 
+                    border: `1px solid ${r.color}40` 
+                  }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: r.color, flexShrink: 0, boxShadow: `0 0 8px ${r.color}` }} />
+                    <span style={{ fontSize: 12, color: '#f8fafc', fontWeight: 700, minWidth: 90 }}>{r.range}</span>
+                    <span style={{ fontSize: 12, color: r.color, fontWeight: 700 }}>{r.label}</span>
                   </div>
                 ))}
               </div>

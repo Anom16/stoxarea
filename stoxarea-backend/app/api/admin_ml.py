@@ -125,10 +125,40 @@ def check_cache_status(
 
 # ── Model Performance Endpoints ───────────────────────────────────────────────
 
+from datetime import datetime
+from ml.training.evaluate import run as run_evaluation_script
+
+def _background_evaluate_runner():
+    global PIPELINE_RUNNING
+    try:
+        run_evaluation_script()
+    finally:
+        with pipeline_lock:
+            PIPELINE_RUNNING = False
+
+@router.post("/trigger-evaluate")
+def trigger_evaluation_manually(
+    background_tasks: BackgroundTasks,
+    _: User = Depends(_get_admin_user)
+):
+    """
+    Trigger ulang evaluasi model XGBoost secara manual.
+    Memperbarui file reports/evaluation_summary.json dan seluruh grafik PNG.
+    """
+    global PIPELINE_RUNNING
+    with pipeline_lock:
+        if PIPELINE_RUNNING:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                detail="Pipeline/Evaluasi sedang berjalan. Harap tunggu.")
+        PIPELINE_RUNNING = True
+    background_tasks.add_task(_background_evaluate_runner)
+    return {"message": "Evaluasi model berhasil di-trigger dan sedang memperbarui laporan di background."}
+
+
 @router.get("/reports/summary")
 def get_model_summary():
     """
-    Mengembalikan hasil evaluasi model XGBoost dalam format JSON.
+    Mengembalikan hasil evaluasi model XGBoost dalam format JSON beserta timestamp mtime.
     Digunakan oleh frontend untuk menampilkan metrik performa.
     Tidak butuh login — data ini bersifat informatif/publik.
     """
@@ -139,7 +169,12 @@ def get_model_summary():
             detail="Laporan evaluasi belum tersedia. Jalankan python -m ml.training.evaluate terlebih dahulu."
         )
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+    
+    # Ambil mtime file
+    mtime = datetime.fromtimestamp(path.stat().st_mtime)
+    data["last_updated"] = mtime.strftime("%d-%m-%Y %H:%M WIB")
+    return data
 
 
 @router.get("/reports/{plot_name}")

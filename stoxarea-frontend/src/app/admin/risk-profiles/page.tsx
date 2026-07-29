@@ -11,8 +11,13 @@ interface RiskProfileData {
   weights: Record<string, number>
 }
 
-// 5 Indikator bawaan backend
-const DEFAULT_INDICATORS = [
+interface IndicatorItem {
+  id: string
+  name: string
+  type: string
+}
+
+const DEFAULT_INDICATORS: IndicatorItem[] = [
   { id: 'ai_score', name: '🤖 AI Momentum Score', type: 'benefit' },
   { id: 'roe', name: '📈 ROE Profitabilitas', type: 'benefit' },
   { id: 'der', name: '📉 DER Solvabilitas', type: 'cost' },
@@ -22,6 +27,7 @@ const DEFAULT_INDICATORS = [
 
 export default function AdminRiskProfilesPage() {
   const [profiles, setProfiles] = useState<RiskProfileData[]>([])
+  const [indicatorsList, setIndicatorsList] = useState<IndicatorItem[]>(DEFAULT_INDICATORS)
   const [loading, setLoading] = useState(true)
   
   // Form State - Add / Edit Profile
@@ -46,8 +52,18 @@ export default function AdminRiskProfilesPage() {
   const loadData = async () => {
     setLoading(true)
     try {
-      const res = await api.get('/admin/risk-profiles/')
-      setProfiles(res.data)
+      const [pRes, iRes] = await Promise.all([
+        api.get('/admin/risk-profiles/'),
+        api.get('/admin/indicators/').catch(() => null)
+      ])
+      setProfiles(pRes.data)
+      if (iRes?.data && Array.isArray(iRes.data) && iRes.data.length > 0) {
+        setIndicatorsList(iRes.data.map((ind: any) => ({
+          id: ind.id,
+          name: ind.name || ind.id,
+          type: ind.type || 'benefit'
+        })))
+      }
     } catch (e: any) {
       showMsg(e.response?.data?.detail || 'Gagal memuat profil', 'err')
     } finally {
@@ -69,10 +85,13 @@ export default function AdminRiskProfilesPage() {
     setMinScore(p.min_score_threshold)
     setMaxScore(p.max_score_threshold)
     
-    // Inisialisasi bobot untuk 5 indikator default
+    // Inisialisasi bobot untuk semua indikator aktif
     const initialWeights: Record<string, number> = {}
-    DEFAULT_INDICATORS.forEach(ind => {
-      initialWeights[ind.id] = p.weights?.[ind.id] ?? 0.20
+    const count = indicatorsList.length || 1
+    const equalWeight = parseFloat((1.0 / count).toFixed(2))
+    
+    indicatorsList.forEach(ind => {
+      initialWeights[ind.id] = p.weights?.[ind.id] ?? equalWeight
     })
     setFormWeights(initialWeights)
     
@@ -86,13 +105,15 @@ export default function AdminRiskProfilesPage() {
     setDescription('')
     setMinScore(0)
     setMaxScore(30)
-    setFormWeights({
-      ai_score: 0.20,
-      roe: 0.20,
-      der: 0.20,
-      pbv: 0.20,
-      per: 0.20
+    
+    const initialWeights: Record<string, number> = {}
+    const count = indicatorsList.length || 1
+    const equalWeight = parseFloat((1.0 / count).toFixed(2))
+    indicatorsList.forEach(ind => {
+      initialWeights[ind.id] = equalWeight
     })
+    setFormWeights(initialWeights)
+    
     setIsAdding(true)
     setIsEditing(false)
   }
@@ -265,7 +286,7 @@ export default function AdminRiskProfilesPage() {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                {DEFAULT_INDICATORS.map(ind => (
+                {indicatorsList.map(ind => (
                   <div key={ind.id}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
                       <span>{ind.name}</span>

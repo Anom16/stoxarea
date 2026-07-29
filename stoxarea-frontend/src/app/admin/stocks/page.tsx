@@ -57,6 +57,9 @@ export default function AdminStocksPage() {
   // Daftar sektor unik
   const sectors = Array.from(new Set(stocks.map(s => s.sector).filter(Boolean))).sort()
 
+  const [page, setPage] = useState(1)
+  const pageSize = 15
+
   const filtered = stocks.filter(s => {
     const matchSearch = s.ticker.toLowerCase().includes(search.toLowerCase()) ||
       (s.name || '').toLowerCase().includes(search.toLowerCase())
@@ -64,6 +67,9 @@ export default function AdminStocksPage() {
     const matchFilter = filter === 'all' ? true : filter === 'qualified' ? s.is_qualified : !s.is_qualified
     return matchSearch && matchSector && matchFilter
   })
+
+  const totalPages = Math.ceil(filtered.length / pageSize) || 1
+  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize)
 
   const qualifiedCount = stocks.filter(s => s.is_qualified).length
 
@@ -137,7 +143,7 @@ export default function AdminStocksPage() {
               <tr><td colSpan={9} style={{ padding: 24, textAlign: 'center', color: '#888' }}>Memuat data...</td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={9} style={{ padding: 24, textAlign: 'center', color: '#888' }}>Tidak ada saham yang cocok</td></tr>
-            ) : filtered.map(s => (
+            ) : paginated.map(s => (
               <tr key={s.ticker} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', opacity: s.is_qualified ? 1 : 0.5 }}>
                 <td style={{ padding: '10px 14px', fontWeight: 800, fontFamily: 'monospace', color: '#64B5F6' }}>{s.ticker.replace('.JK', '')}</td>
                 <td style={{ padding: '10px 14px', color: '#ccc', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name || '—'}</td>
@@ -188,6 +194,32 @@ export default function AdminStocksPage() {
             ))}
           </tbody>
         </table>
+
+        {/* Pagination Footer */}
+        {filtered.length > pageSize && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: 'rgba(255,255,255,0.02)', borderTop: '1px solid var(--border)', fontSize: 12, color: '#888' }}>
+            <div>
+              Menampilkan {Math.min(filtered.length, (page - 1) * pageSize + 1)}–{Math.min(filtered.length, page * pageSize)} dari {filtered.length} saham
+            </div>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                style={{ background: 'var(--bg-primary)', color: page <= 1 ? '#555' : '#fff', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 12, cursor: page <= 1 ? 'not-allowed' : 'pointer' }}
+              >
+                ← Prev
+              </button>
+              <span>Halaman <b>{page}</b> dari <b>{totalPages}</b></span>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                style={{ background: 'var(--bg-primary)', color: page >= totalPages ? '#555' : '#fff', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 12, cursor: page >= totalPages ? 'not-allowed' : 'pointer' }}
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Info */}

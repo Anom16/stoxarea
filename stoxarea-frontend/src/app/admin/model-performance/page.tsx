@@ -18,9 +18,11 @@ function MetricCard({ label, value, unit = '%', color = '#2255AA' }: {
   )
 }
 
-function PlotImage({ title, filename, desc }: { title: string; filename: string; desc: string }) {
+function PlotImage({ title, filename, desc, cacheKey }: { title: string; filename: string; desc: string; cacheKey?: string }) {
   const [err, setErr] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const imgSrc = `${BASE}/reports/${filename}?t=${cacheKey || Date.now()}`
+  
   return (
     <div style={{
       background: 'var(--bg-card)', border: '1px solid var(--border, #1a1a2e)',
@@ -36,7 +38,7 @@ function PlotImage({ title, filename, desc }: { title: string; filename: string;
         <div style={{ position: 'relative', minHeight: 180 }}>
           {!loaded && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 13 }}>Memuat...</div>}
           <img
-            src={`${BASE}/reports/${filename}`}
+            src={imgSrc}
             alt={title}
             onLoad={() => setLoaded(true)}
             onError={() => setErr(true)}
@@ -53,10 +55,13 @@ export default function AdminModelPerformancePage() {
   const [loading, setLoading] = useState(true)
   const [running, setRunning] = useState(false)
   const [msg, setMsg] = useState('')
+  const [lastFetch, setLastFetch] = useState<number>(Date.now())
 
   const load = () => {
     setLoading(true)
-    api.get('/admin/ml/reports/summary')
+    const now = Date.now()
+    setLastFetch(now)
+    api.get(`/admin/ml/reports/summary?t=${now}`)
       .then(r => setData(r.data))
       .catch(() => setData(null))
       .finally(() => setLoading(false))
@@ -67,20 +72,54 @@ export default function AdminModelPerformancePage() {
   const m = data?.metrics_final_model
   const wf = data?.walkforward_mean
 
+  const triggerEvaluation = async () => {
+    setRunning(true)
+    setMsg('')
+    try {
+      const r = await api.post('/admin/ml/trigger-evaluate')
+      setMsg(`✅ ${r.data.message}`)
+      setTimeout(load, 5000)
+    } catch (e: any) {
+      setMsg(`❌ ${e?.response?.data?.detail || e.message}`)
+    } finally {
+      setRunning(false)
+    }
+  }
+
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>🧠 Performa Model XGBoost</h1>
-          <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>Evaluasi AI Score — probabilitas kenaikan saham ≥3% dalam 5 hari</p>
+          <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>
+            Evaluasi AI Score — probabilitas kenaikan saham ≥3% dalam 5 hari
+            <span style={{ marginLeft: 10, background: 'rgba(33,150,243,0.15)', color: '#2196F3', padding: '3px 10px', borderRadius: 6, fontSize: 11, fontWeight: 700, display: 'inline-block' }}>
+              📅 Terakhir Evaluasi: {data?.last_updated || 'Baru Saja / Aktif'}
+            </span>
+          </p>
         </div>
-        <button
-          onClick={load}
-          style={{ background: '#2255AA', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: 'pointer' }}
-        >
-          🔄 Refresh
-        </button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            onClick={triggerEvaluation}
+            disabled={running}
+            style={{ background: running ? '#333' : '#9C27B0', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: running ? 'not-allowed' : 'pointer', fontWeight: 600 }}
+          >
+            {running ? '⏳ Memproses Evaluasi...' : '⚡ Jalankan Evaluasi Ulang'}
+          </button>
+          <button
+            onClick={load}
+            style={{ background: '#2255AA', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: 'pointer' }}
+          >
+            🔄 Refresh
+          </button>
+        </div>
       </div>
+
+      {msg && (
+        <div style={{ background: msg.startsWith('✅') ? 'rgba(76,175,80,0.1)' : 'rgba(244,67,54,0.1)', border: `1px solid ${msg.startsWith('✅') ? '#4CAF50' : '#f44'}`, borderRadius: 8, padding: '10px 16px', marginBottom: 16, fontSize: 13, color: msg.startsWith('✅') ? '#4CAF50' : '#f44' }}>
+          {msg}
+        </div>
+      )}
 
       {loading && <p style={{ color: '#888' }}>Memuat data...</p>}
 
@@ -155,10 +194,10 @@ export default function AdminModelPerformancePage() {
           {/* Plots */}
           <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: '#888' }}>📉 VISUALISASI</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 20 }}>
-            <PlotImage title="Confusion Matrix" filename="confusion_matrix.png" desc="Distribusi prediksi benar dan salah" />
-            <PlotImage title="ROC Curve" filename="roc_curve.png" desc={`AUC-ROC = ${m?.auc_roc ?? '-'}`} />
-            <PlotImage title="Feature Importance" filename="feature_importance.png" desc="Kontribusi setiap indikator teknikal" />
-            <PlotImage title="Walk-Forward Validation" filename="walkforward_results.png" desc="Performa model per fold" />
+            <PlotImage title="Confusion Matrix" filename="confusion_matrix.png" desc="Distribusi prediksi benar dan salah" cacheKey={String(lastFetch)} />
+            <PlotImage title="ROC Curve" filename="roc_curve.png" desc={`AUC-ROC = ${m?.auc_roc ?? '-'}`} cacheKey={String(lastFetch)} />
+            <PlotImage title="Feature Importance" filename="feature_importance.png" desc="Kontribusi setiap indikator teknikal" cacheKey={String(lastFetch)} />
+            <PlotImage title="Walk-Forward Validation" filename="walkforward_results.png" desc="Performa model per fold" cacheKey={String(lastFetch)} />
           </div>
         </>
       )}

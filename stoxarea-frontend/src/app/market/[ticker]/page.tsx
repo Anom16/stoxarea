@@ -801,22 +801,31 @@ export default function StockDetailPage() {
                     {/* ── Harga & Pasar ── */}
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Harga &amp; Pasar</div>
                     <div className="ticker-card-grid">
-                      {[
-                        { label: 'Nilai Pasar (Market Cap)',  val: formatMoney(f.price?.market_cap),  key: 'market_cap',  raw: null },
-                        { label: 'Harga Pembuka (Open)',        val: f.price?.open ? `Rp ${f.price.open.toLocaleString('id-ID')}` : '—', key: 'open', raw: null },
-                        { label: 'Harga Tertinggi Hari Ini',    val: f.price?.day_high ? `Rp ${f.price.day_high.toLocaleString('id-ID')}` : '—', key: 'day_high', raw: null, color: '#10b981' },
-                        { label: 'Harga Terendah Hari Ini',     val: f.price?.day_low  ? `Rp ${f.price.day_low.toLocaleString('id-ID')}`  : '—', key: 'day_low',  raw: null, color: '#ef4444' },
-                        { label: 'Harga Tertinggi 1 Tahun',    val: f.price?.week_52_high ? `Rp ${f.price.week_52_high.toLocaleString('id-ID')}` : '—', key: 'week_52_high', raw: null, color: '#10b981' },
-                        { label: 'Harga Terendah 1 Tahun',     val: f.price?.week_52_low  ? `Rp ${f.price.week_52_low.toLocaleString('id-ID')}`  : '—', key: 'week_52_low',  raw: null, color: '#ef4444' },
-                        { label: 'Volume Transaksi',      val: formatMoney(f.price?.volume),     key: 'volume',     raw: null },
-                        { label: 'Rata-rata Volume',  val: formatMoney(f.price?.avg_volume), key: 'avg_volume', raw: null },
-                      ].map((item, i) => (
+                      {(() => {
+                        const openDist = (f.price?.open && currentPrice) ? ((currentPrice - f.price.open) / f.price.open) * 100 : null
+                        const highDist = (f.price?.day_high && currentPrice) ? ((currentPrice - f.price.day_high) / f.price.day_high) * 100 : null
+                        const lowDist = (f.price?.day_low && currentPrice) ? ((currentPrice - f.price.day_low) / f.price.day_low) * 100 : null
+                        const w52hDist = (f.price?.week_52_high && currentPrice) ? ((currentPrice - f.price.week_52_high) / f.price.week_52_high) * 100 : null
+                        const w52lDist = (f.price?.week_52_low && currentPrice) ? ((currentPrice - f.price.week_52_low) / f.price.week_52_low) * 100 : null
+                        const volRatio = (f.price?.volume && f.price?.avg_volume && f.price.avg_volume > 0) ? f.price.volume / f.price.avg_volume : null
+
+                        return [
+                          { label: 'Nilai Pasar (Market Cap)',  val: formatMoney(f.price?.market_cap),  key: 'market_cap',  raw: f.price?.market_cap ?? null },
+                          { label: 'Harga Pembuka (Open)',        val: f.price?.open ? `Rp ${f.price.open.toLocaleString('id-ID')}` : '—', key: 'open', raw: openDist },
+                          { label: 'Harga Tertinggi Hari Ini',    val: f.price?.day_high ? `Rp ${f.price.day_high.toLocaleString('id-ID')}` : '—', key: 'day_high', raw: highDist },
+                          { label: 'Harga Terendah Hari Ini',     val: f.price?.day_low  ? `Rp ${f.price.day_low.toLocaleString('id-ID')}`  : '—', key: 'day_low',  raw: lowDist },
+                          { label: 'Harga Tertinggi 1 Tahun',    val: f.price?.week_52_high ? `Rp ${f.price.week_52_high.toLocaleString('id-ID')}` : '—', key: 'week_52_high', raw: w52hDist },
+                          { label: 'Harga Terendah 1 Tahun',     val: f.price?.week_52_low  ? `Rp ${f.price.week_52_low.toLocaleString('id-ID')}`  : '—', key: 'week_52_low',  raw: w52lDist },
+                          { label: 'Volume Transaksi',      val: formatMoney(f.price?.volume),     key: 'volume',     raw: volRatio },
+                          { label: 'Rata-rata Volume',  val: formatMoney(f.price?.avg_volume), key: 'avg_volume', raw: f.price?.avg_volume ?? null },
+                        ]
+                      })().map((item, i) => (
                         <div key={i} className="stat-card" style={{ padding: 12 }}>
                           <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>
                             {item.label}
                             <FundamentalTooltip metricKey={item.key} value={item.raw} label={item.label} />
                           </div>
-                          <div className="stat-value" style={{ fontSize: 15, color: (item as any).color || undefined }}>{item.val}</div>
+                          <div className="stat-value" style={{ fontSize: 15, color: 'var(--text-primary)' }}>{item.val}</div>
                         </div>
                       ))}
                     </div>
@@ -1023,27 +1032,31 @@ export default function StockDetailPage() {
                   const fmt = (v: any) => v != null ? Number(v).toLocaleString('id-ID', { maximumFractionDigits: 2 }) : '—'
                   const fmtF = (v: any, d = 4) => v != null ? Number(v).toFixed(d) : '—'
 
+                  const ma20Dist = (ma20 && currentPrice) ? ((currentPrice - ma20) / ma20) * 100 : null
+                  const ma50Dist = (ma50 && currentPrice) ? ((currentPrice - ma50) / ma50) * 100 : null
+                  const bbPos = (bbUp && bbLow && bbUp > bbLow && currentPrice) ? (currentPrice - bbLow) / (bbUp - bbLow) : null
+
                   const techItems = [
-                    { key: 'rsi',  label: 'Kekuatan Tren Jenuh Beli/Jual (RSI)',      val: fmt(rsi),      raw: rsi,   color: '#3b82f6' },
-                    { key: 'macd', label: 'Tren Pergerakan Harga (MACD)',          val: fmtF(macd),    raw: macd,  color: '#10b981' },
-                    { key: 'macd', label: 'Sinyal Pemicu Tren (MACD Signal)',   val: fmtF(macdSig), raw: macdSig, color: '#f59e0b' },
-                    { key: 'macd', label: 'Selisih Tren (MACD Histogram)',val: fmtF(macdHist),raw: macdHist,color: '#9333ea' },
-                    { key: 'ma20', label: 'Harga Rata-rata 20 Hari (MA-20)',         val: `Rp ${fmt(ma20)}`, raw: null, color: '#2196F3' },
-                    { key: 'ma50', label: 'Harga Rata-rata 50 Hari (MA-50)',         val: `Rp ${fmt(ma50)}`, raw: null, color: '#FF9800' },
-                    { key: 'bb',   label: 'Batas Atas Rentang Harga (Bollinger Upper)',      val: `Rp ${fmt(bbUp)}`, raw: null, color: '#ef4444' },
-                    { key: 'bb',   label: 'Batas Tengah Rentang Harga (Bollinger Mid)', val: `Rp ${fmt(bbMid)}`,raw: null, color: '#888' },
-                    { key: 'bb',   label: 'Batas Bawah Rentang Harga (Bollinger Lower)',      val: `Rp ${fmt(bbLow)}`,raw: null, color: '#10b981' },
+                    { key: 'rsi',  label: 'Kekuatan Tren Jenuh Beli/Jual (RSI)',      val: fmt(rsi),      raw: rsi },
+                    { key: 'macd', label: 'Tren Pergerakan Harga (MACD)',          val: fmtF(macd),    raw: macd },
+                    { key: 'macd', label: 'Sinyal Pemicu Tren (MACD Signal)',   val: fmtF(macdSig), raw: macdSig },
+                    { key: 'macd', label: 'Selisih Tren (MACD Histogram)',val: fmtF(macdHist),raw: macdHist },
+                    { key: 'ma20', label: 'Harga Rata-rata 20 Hari (MA-20)',         val: `Rp ${fmt(ma20)}`, raw: ma20Dist },
+                    { key: 'ma50', label: 'Harga Rata-rata 50 Hari (MA-50)',         val: `Rp ${fmt(ma50)}`, raw: ma50Dist },
+                    { key: 'bb',   label: 'Batas Atas Rentang Harga (Bollinger Upper)',      val: `Rp ${fmt(bbUp)}`, raw: bbPos },
+                    { key: 'bb',   label: 'Batas Tengah Rentang Harga (Bollinger Mid)', val: `Rp ${fmt(bbMid)}`,raw: bbPos },
+                    { key: 'bb',   label: 'Batas Bawah Rentang Harga (Bollinger Lower)',      val: `Rp ${fmt(bbLow)}`,raw: bbPos },
                   ]
 
                   return (
                     <div className="ticker-card-grid-3col">
                       {techItems.map((item, i) => (
-                        <div key={i} className="stat-card" style={{ padding: 12, borderLeft: `3px solid ${item.color}` }}>
+                        <div key={i} className="stat-card" style={{ padding: 12 }}>
                           <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>
                             {item.label}
                             <FundamentalTooltip metricKey={item.key} value={item.raw ?? null} label={item.label} />
                           </div>
-                          <div className="stat-value" style={{ fontSize: 15, color: item.color }}>{item.val}</div>
+                          <div className="stat-value" style={{ fontSize: 15, color: 'var(--text-primary)' }}>{item.val}</div>
                         </div>
                       ))}
                     </div>

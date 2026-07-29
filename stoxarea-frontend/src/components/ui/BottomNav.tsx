@@ -10,7 +10,6 @@ export default function BottomNav() {
     { href: '/dashboard', label: 'Dashboard', icon: '⊞' },
     { href: '/market', label: 'Pasar', icon: '◎' },
     { href: '/virtual-trading', label: 'Trading', icon: '◈' },
-    { href: '/profile', label: 'Profil', icon: '👤' },
     { href: '/settings', label: 'Pengaturan', icon: '⚙' },
   ]
 

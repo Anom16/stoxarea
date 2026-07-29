@@ -177,20 +177,30 @@ def seed_database_if_empty(db):
         logger.error(f"[Seed] Failed seeding indicator weights: {ex}")
         db.rollback()
 
-    # 4. Seed Default Test Users if empty
+    # 4. Seed Default Test Users if explicitly enabled via ENV (Prevent default insecure admin in production)
     try:
+        import os
         from app.models.user import User, RiskProfileEnum
         from app.core.security import get_password_hash
-        if db.query(User).count() == 0:
-            logger.info("[Seed] Seeding default test users...")
-            default_users = [
-                User(email="admin@gmail.com", password_hash=get_password_hash("admin"), risk_profile=RiskProfileEnum.agresif, is_admin=True, full_name="Admin StoxArea"),
-                User(email="moderat@gmail.com", password_hash=get_password_hash("admin"), risk_profile=RiskProfileEnum.moderat, is_admin=False, full_name="User Moderat"),
-                User(email="agresif@gmail.com", password_hash=get_password_hash("admin"), risk_profile=RiskProfileEnum.agresif, is_admin=False, full_name="User Agresif")
-            ]
-            for u in default_users:
-                db.add(u)
-            db.commit()
+        
+        seed_enabled = os.getenv("SEED_DEFAULT_USERS", "false").lower() == "true"
+        if seed_enabled and db.query(User).count() == 0:
+            admin_email = os.getenv("ADMIN_EMAIL", "admin@stoxarea.local")
+            admin_pass = os.getenv("ADMIN_PASSWORD")
+            
+            if not admin_pass:
+                logger.warning("[Seed] SEED_DEFAULT_USERS diset true tetapi ADMIN_PASSWORD tidak diatur. Mengabaikan seeding user bawaan demi keamanan.")
+            else:
+                logger.info(f"[Seed] Seeding admin user ({admin_email})...")
+                admin_user = User(
+                    email=admin_email,
+                    password_hash=get_password_hash(admin_pass),
+                    risk_profile=RiskProfileEnum.agresif,
+                    is_admin=True,
+                    full_name="Admin StoxArea"
+                )
+                db.add(admin_user)
+                db.commit()
     except Exception as ex:
         logger.error(f"[Seed] Failed seeding default users: {ex}")
         db.rollback()
@@ -225,15 +235,20 @@ def on_startup():
                 logger.critical("Semua percobaan koneksi database gagal. Aplikasi tidak dapat dijalankan.")
                 raise e
     
-    # Menjalankan Scheduler ML Pipeline
-    logger.info("Memulai Background Scheduler untuk ML Pipeline (Berjalan tiap hari kerja jam 17:00)...")
-    scheduler = BackgroundScheduler()
-    # Harian: Senin-Jumat jam 17:00 — ingest + inference (cepat)
-    scheduler.add_job(run_daily_pipeline, 'cron', day_of_week='mon-fri', hour=17, minute=0)
-    # Mingguan: Jumat jam 18:00 — full retrain XGBoost (lebih lama)
-    scheduler.add_job(run_weekly_retrain, 'cron', day_of_week='fri', hour=18, minute=0)
-    scheduler.start()
-    logger.info("Scheduler aktif: Harian (Sen-Jum 17:00) + Mingguan Retrain (Jum 18:00)")
+    # Menjalankan Scheduler ML Pipeline (Hanya jika RUN_SCHEDULER=true)
+    import os
+    run_scheduler_flag = os.getenv("RUN_SCHEDULER", "true").lower() == "true"
+    if run_scheduler_flag:
+        logger.info("Memulai Background Scheduler untuk ML Pipeline (Berjalan tiap hari kerja jam 17:00)...")
+        scheduler = BackgroundScheduler()
+        # Harian: Senin-Jumat jam 17:00 — ingest + inference (cepat)
+        scheduler.add_job(run_daily_pipeline, 'cron', day_of_week='mon-fri', hour=17, minute=0)
+        # Mingguan: Jumat jam 18:00 — full retrain XGBoost (lebih lama)
+        scheduler.add_job(run_weekly_retrain, 'cron', day_of_week='fri', hour=18, minute=0)
+        scheduler.start()
+        logger.info("Scheduler aktif: Harian (Sen-Jum 17:00) + Mingguan Retrain (Jum 18:00)")
+    else:
+        logger.info("Background Scheduler dinonaktifkan (RUN_SCHEDULER=false) — berguna untuk multi-worker node.")
 
     # ── Auto-run pipeline jika data sudah usang (> 1 hari) ──────────────────
     import threading

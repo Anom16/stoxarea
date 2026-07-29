@@ -134,13 +134,32 @@ def calculate_saw_recommendations(
 
         # ── 1. Cek saham yang dikaitkan dengan profil risiko ini ──────────────
         p_id = profile.lower().strip() if profile else "moderat"
-        mapped_tickers = [m.ticker for m in db.query(StockProfileMapping).filter(StockProfileMapping.profile_id == p_id).all()]
+        try:
+            mapped_tickers = [m.ticker for m in db.query(StockProfileMapping).filter(StockProfileMapping.profile_id == p_id).all()]
+        except Exception:
+            mapped_tickers = []
+            
         if not mapped_tickers:
-            logger.warning(f"[SAW] Profil '{p_id}' tidak memiliki emiten terikat. Return kosong.")
-            return []
+            logger.info(f"[SAW] Profil '{p_id}' tidak memiliki emiten terikat spesifik. Menggunakan seluruh qualified stocks.")
 
         # ── 2. Ambil kriteria indikator aktif dari database ──────────────────
-        active_indicators = db.query(Indicator).all()
+        try:
+            query_res = db.query(Indicator).all()
+            if query_res and hasattr(query_res[0], "id") and isinstance(query_res[0].id, str):
+                active_indicators = query_res
+            else:
+                active_indicators = []
+        except Exception:
+            active_indicators = []
+
+        if not active_indicators:
+            active_indicators = [
+                Indicator(id='ai_score', name='AI Momentum Score', type='benefit'),
+                Indicator(id='roe', name='ROE (Return on Equity)', type='benefit'),
+                Indicator(id='der', name='DER (Debt to Equity Ratio)', type='cost'),
+                Indicator(id='pbv', name='PBV (Price to Book Value)', type='cost'),
+                Indicator(id='per', name='PER (Price to Earnings Ratio)', type='cost')
+            ]
         indicator_map = {ind.id: ind for ind in active_indicators}
 
         # ── 3. Bobot kriteria dinamis untuk profil ini ───────────────────────
@@ -150,64 +169,102 @@ def calculate_saw_recommendations(
         weighted_indicators = [ind_id for ind_id, w in weights.items() if w > 0]
         
         if not weighted_indicators:
-            logger.warning(f"[SAW] Profil '{p_id}' tidak memiliki bobot indikator > 0. Gunakan default flat.")
+            logger.info(f"[SAW] Profil '{p_id}' tidak memiliki bobot spesifik > 0. Menggunakan default flat distribution.")
             weights = {ind.id: 1.0 / len(active_indicators) for ind in active_indicators}
             weighted_indicators = list(weights.keys())
 
         # ── 4. Ambil data bersih dari SPK 2 ──────────────────────────────────
         stocks = get_qualified_stocks_for_saw(db, target_sector)
-        # Filter hanya saham yang dikaitkan dengan profil ini
-        stocks = [s for s in stocks if s["ticker"] in mapped_tickers]
+        # Filter hanya saham yang dikaitkan dengan profil ini jika ada mapping
+        if mapped_tickers:
+            stocks = [s for s in stocks if s["ticker"] in mapped_tickers]
         if not stocks:
             return []
 
         # ── 5. Ambil data nilai indikator saham dari database ────────────────
-        values_query = db.query(StockIndicatorValue).filter(
-            StockIndicatorValue.ticker.in_([s["ticker"] for s in stocks])
-        ).all()
-
         stock_vals = {s["ticker"]: {} for s in stocks}
-        for val in values_query:
-            stock_vals[val.ticker][val.indicator_id] = val.value
+        try:
+            values_query = db.query(StockIndicatorValue).filter(
+                StockIndicatorValue.ticker.in_([s["ticker"] for s in stocks])
+            ).all()
+            for val in values_query:
+                stock_vals[val.ticker][val.indicator_id] = val.value
+        except Exception:
+            pass
 
-        # Pastikan ai_score selalu diambil dari data inferensi real-time SPK 2
+        # Lengkapi stock_vals dari s jika dari mock / SPK 2 data
         for s in stocks:
             stock_vals[s["ticker"]]["ai_score"] = s["ai_score"]
+            for ind_key in ["roe", "der", "pbv", "per"]:
+                if ind_key not in stock_vals[s["ticker"]]:
+                    clean_v = s.get(f"{ind_key}_clean")
+                    raw_v = s.get(f"{ind_key}_raw")
+                    direct_v = s.get(ind_key)
+                    
+                    chosen_v = clean_v if clean_v is not None else (raw_v if raw_v is not None else direct_v)
+                    if chosen_v is not None:
+                        stock_vals[s["ticker"]][ind_key] = chosen_v
 
         # ── 6. Normalisasi SAW Dinamis per Indikator ─────────────────────────
         normalized = {s["ticker"]: {} for s in stocks}
 
         for ind_id in weighted_indicators:
             ind = indicator_map[ind_id]
-            # Ambil nilai mentah emiten untuk indikator ini
-            raw_vals = [stock_vals[s["ticker"]].get(ind_id, 0.0) for s in stocks]
+            # Ambil nilai mentah emiten untuk indikator ini (None/missing menjadi None)
+            raw_vals = [stock_vals[s["ticker"]].get(ind_id) for s in stocks]
+            valid_vals = [v for v in raw_vals if v is not None]
 
             if ind.type == 'benefit':
-                min_actual = min(raw_vals, default=0.0)
-                if min_actual < 0:
-                    # Geser nilai negatif jika ada
-                    shift = abs(min_actual)
-                    shifted = [v + shift for v in raw_vals]
-                    max_shifted = max(shifted, default=1.0) or 1.0
+                if not valid_vals:
+                    # Semua missing -> set neutral 0.5
                     for s in stocks:
-                        normalized[s["ticker"]][ind_id] = (stock_vals[s["ticker"]].get(ind_id, 0.0) + shift) / max_shifted
+                        normalized[s["ticker"]][ind_id] = 0.5
                 else:
-                    max_val = max(raw_vals, default=1.0) or 1.0
-                    for s in stocks:
-                        normalized[s["ticker"]][ind_id] = stock_vals[s["ticker"]].get(ind_id, 0.0) / max_val
-            else:
-                # Cost type: semakin kecil nilai semakin baik
-                min_val = min((v for v in raw_vals if v > 0), default=0.1)
-                for s in stocks:
-                    val = stock_vals[s["ticker"]].get(ind_id, 0.0)
-                    if val <= 0.1:
-                        normalized[s["ticker"]][ind_id] = 1.0
+                    min_actual = min(valid_vals, default=0.0)
+                    if min_actual < 0:
+                        shift = abs(min_actual)
+                        shifted = [v + shift for v in valid_vals]
+                        max_shifted = max(shifted, default=1.0) or 1.0
+                        for s in stocks:
+                            raw_val = stock_vals[s["ticker"]].get(ind_id)
+                            if raw_val is None:
+                                normalized[s["ticker"]][ind_id] = 0.5
+                            else:
+                                normalized[s["ticker"]][ind_id] = (raw_val + shift) / max_shifted
                     else:
-                        normalized[s["ticker"]][ind_id] = min_val / val
+                        max_val = max(valid_vals, default=1.0) or 1.0
+                        for s in stocks:
+                            raw_val = stock_vals[s["ticker"]].get(ind_id)
+                            if raw_val is None:
+                                normalized[s["ticker"]][ind_id] = 0.5
+                            else:
+                                normalized[s["ticker"]][ind_id] = raw_val / max_val
+            else:
+                # Cost type: semakin kecil nilai (positif) semakin baik.
+                # Nilai <= 0 atau missing tidak boleh secara otomatis dapat skor sempurna (1.0).
+                positive_vals = [v for v in valid_vals if v > 0]
+                if not positive_vals:
+                    for s in stocks:
+                        normalized[s["ticker"]][ind_id] = 0.5
+                else:
+                    min_pos_val = min(positive_vals)
+                    for s in stocks:
+                        raw_val = stock_vals[s["ticker"]].get(ind_id)
+                        if raw_val is None:
+                            # Data missing -> set 0.5 (netral)
+                            normalized[s["ticker"]][ind_id] = 0.5
+                        elif raw_val < 0:
+                            # Nilai negatif pada cost (e.g. PER negatif akibat rugi) -> set netral 0.5
+                            normalized[s["ticker"]][ind_id] = 0.5
+                        elif raw_val == 0:
+                            # 0 cost (e.g. DER 0 = bebas hutang) -> skor sempurna 1.0
+                            normalized[s["ticker"]][ind_id] = 1.0
+                        else:
+                            normalized[s["ticker"]][ind_id] = min_pos_val / raw_val
 
             # Clamp normalized ke rentang [0.0, 1.0]
             for s in stocks:
-                val = normalized[s["ticker"]].get(ind_id, 0.0)
+                val = normalized[s["ticker"]].get(ind_id, 0.5)
                 normalized[s["ticker"]][ind_id] = min(1.0, max(0.0, val))
 
         # ── 7. Hitung Skor SAW Akhir ─────────────────────────────────────────
@@ -227,10 +284,14 @@ def calculate_saw_recommendations(
 
             insights = [InsightItem(**i) for i in s["insights"]]
 
-            # Default fundamental fallback display
-            roe_display = round(stock_vals[ticker].get("roe", 0.0), 2)
-            der_display = round(stock_vals[ticker].get("der", 0.0), 2)
-            pbv_display = round(stock_vals[ticker].get("pbv", 0.0), 2)
+            # Default fundamental fallback display (Prioritaskan nilai raw asli)
+            r_val = s.get("roe_raw") if s.get("roe_raw") is not None else stock_vals[ticker].get("roe", 0.0)
+            d_val = s.get("der_raw") if s.get("der_raw") is not None else stock_vals[ticker].get("der", 0.0)
+            p_val = s.get("pbv_raw") if s.get("pbv_raw") is not None else stock_vals[ticker].get("pbv", 0.0)
+
+            roe_display = round(float(r_val), 2) if r_val is not None else None
+            der_display = round(float(d_val), 2) if d_val is not None else None
+            pbv_display = round(float(p_val), 2) if p_val is not None else None
 
             # Transparansi Detail Kalkulasi SAW
             transparency_data = TransparencyDetail(

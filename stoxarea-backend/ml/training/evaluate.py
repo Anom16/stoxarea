@@ -206,9 +206,9 @@ def run():
     logger.info(f"  Threshold optimal ({best_thresh}): Acc={acc:.4f}  Prec={prec:.4f}  Rec={rec:.4f}  F1={f1:.4f}")
     logger.info(f"  AUC-ROC: {auc:.4f}")
 
-    # Gunakan threshold default untuk classification report (standar akademik)
-    y_pred = y_pred_default
-    acc, prec, rec, f1 = acc_d, prec_d, rec_d, f1_d
+    # Gunakan threshold optimal (best_thresh) agar metrik F1-Score & Recall mencerminkan ambang batas produksi
+    y_pred = y_pred_opt
+    # acc, prec, rec, f1 tetap menggunakan nilai dari threshold optimal (best_thresh)
 
     report_str = classification_report(y, y_pred, target_names=["Tidak Naik (0)", "Naik ≥5% (1)"])
     logger.info(f"\n{report_str}")

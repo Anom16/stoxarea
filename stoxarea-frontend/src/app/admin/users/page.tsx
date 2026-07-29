@@ -131,10 +131,16 @@ export default function AdminUsersPage() {
     }
   }
 
+  const [page, setPage]         = useState(1)
+  const pageSize = 10
+
   const filtered = users.filter(u =>
     u.email.toLowerCase().includes(search.toLowerCase()) ||
     (u.full_name || '').toLowerCase().includes(search.toLowerCase())
   )
+
+  const totalPages = Math.ceil(filtered.length / pageSize) || 1
+  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize)
 
   return (
     <div>
@@ -256,7 +262,7 @@ export default function AdminUsersPage() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(u => (
+            {paginated.map(u => (
               <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                 {editId === u.id ? (
                   // Mode Edit
@@ -352,6 +358,32 @@ export default function AdminUsersPage() {
 
         {!loading && filtered.length === 0 && (
           <div style={{ padding: 24, textAlign: 'center', color: '#888' }}>Tidak ada user yang cocok</div>
+        )}
+
+        {/* Pagination Footer */}
+        {filtered.length > pageSize && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: 'rgba(255,255,255,0.02)', borderTop: '1px solid var(--border)', fontSize: 12, color: '#888' }}>
+            <div>
+              Menampilkan {Math.min(filtered.length, (page - 1) * pageSize + 1)}–{Math.min(filtered.length, page * pageSize)} dari {filtered.length} user
+            </div>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                style={{ background: 'var(--bg-primary)', color: page <= 1 ? '#555' : '#fff', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 12, cursor: page <= 1 ? 'not-allowed' : 'pointer' }}
+              >
+                ← Prev
+              </button>
+              <span>Halaman <b>{page}</b> dari <b>{totalPages}</b></span>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                style={{ background: 'var(--bg-primary)', color: page >= totalPages ? '#555' : '#fff', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 12, cursor: page >= totalPages ? 'not-allowed' : 'pointer' }}
+              >
+                Next →
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

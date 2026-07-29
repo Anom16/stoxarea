@@ -6,6 +6,7 @@ const adminNav = [
   { href: '/admin',                  label: 'Dashboard Admin',    icon: '⊞' },
   { href: '/admin/users',            label: 'Kelola User',        icon: '👥' },
   { href: '/admin/stocks',           label: 'Daftar Saham',       icon: '📈' },
+  { href: '/admin/indicators',       label: 'Master Indikator',   icon: '📊' },
   { href: '/admin/risk-profiles',    label: 'Kelola Profil Risiko',icon: '⚖️' },
   { href: '/admin/questions',        label: 'Kelola Kuesioner',   icon: '❓' },
   { href: '/admin/ml-pipeline',      label: 'Pipeline ML',        icon: '⚙️' },

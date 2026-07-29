@@ -47,6 +47,7 @@ export default function VirtualTradingPage() {
   const [modalActionType, setModalActionType] = useState<'BUY' | 'SELL'>('BUY')
   const [modalCurrentPrice, setModalCurrentPrice] = useState(0)
   const [modalHoldingQty, setModalHoldingQty] = useState(0)
+  const [selectedTxReceipt, setSelectedTxReceipt] = useState<Transaction | null>(null)
 
   const handleDownloadPDF = async () => {
     try {
@@ -352,7 +353,7 @@ export default function VirtualTradingPage() {
                         </table>
                       </div>
 
-                      {/* Mobile Portfolio Cards */}
+                      {/* Mobile Portfolio Cards (100% Fit Width) */}
                       <div className="market-card-mobile">
                         {portfolio.map((s) => {
                           const cp = s.current_price || s.avg_price
@@ -363,50 +364,31 @@ export default function VirtualTradingPage() {
                           const plPct = (pl / s.avg_price) * 100
                           const isProfit = pl >= 0
                           return (
-                            <div key={s.ticker} style={{ padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                            <div key={s.ticker} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: 10, marginBottom: 8, border: '1px solid var(--border)', boxShadow: 'var(--shadow-card)' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                                 <div>
-                                  <div style={{ fontSize: 16, fontWeight: 800 }}>{s.ticker.replace('.JK', '')}</div>
-                                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', marginTop: 2 }}>
-                                    {s.qty / 100} Lot ({s.qty.toLocaleString('id-ID')} lbr)
-                                  </div>
+                                  <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>{s.ticker.replace('.JK', '')}</span>
+                                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', marginLeft: 8 }}>
+                                    {s.qty / 100} Lot
+                                  </span>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
-                                  <div style={{ fontSize: 14, fontWeight: 800, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
-                                    {isProfit ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')}
-                                  </div>
-                                  <div style={{ fontSize: 11, fontWeight: 700, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
-                                    {isProfit ? '+' : ''}{formatJuta(totalPL)} ({isProfit ? '+' : ''}{plPct.toFixed(2)}%)
-                                  </div>
+                                  <span style={{ fontSize: 14, fontWeight: 800, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                                    {isProfit ? '+' : ''}{plPct.toFixed(2)}% ({isProfit ? '+' : ''}{formatJuta(totalPL)})
+                                  </span>
                                 </div>
                               </div>
 
-                              <div style={{ display: 'flex', justifyContent: 'space-between', background: 'rgba(255,255,255,0.03)', padding: '10px 12px', borderRadius: 8, marginTop: 8 }}>
-                                <div>
-                                  <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>UANG BELI (MODAL)</div>
-                                  <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', marginTop: 2 }}>
-                                    Rp {totalInvested.toLocaleString('id-ID')} <span style={{ color: '#f59e0b' }}>({formatJuta(totalInvested)})</span>
-                                  </div>
-                                </div>
-                                <div style={{ textAlign: 'right' }}>
-                                  <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>NILAI UANG SEKARANG</div>
-                                  <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--blue)', marginTop: 2 }}>
-                                    Rp {currentValue.toLocaleString('id-ID')} <span>({formatJuta(currentValue)})</span>
-                                  </div>
-                                </div>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '8px 10px', borderRadius: 6, fontSize: 11, color: 'var(--text-secondary)' }}>
+                                <div>Modal: <strong>Rp {totalInvested.toLocaleString('id-ID')}</strong></div>
+                                <div>Nilai Kini: <strong style={{ color: 'var(--blue)' }}>Rp {currentValue.toLocaleString('id-ID')}</strong></div>
                               </div>
 
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
-                                <div style={{ display: 'flex', gap: 12, fontSize: 11, color: 'var(--text-secondary)' }}>
-                                  <div>Avg: Rp {s.avg_price.toLocaleString('id-ID')}</div>
-                                  <div>Kini: Rp {cp.toLocaleString('id-ID')}</div>
-                                </div>
-                                <div style={{ display: 'flex', gap: 6 }}>
-                                  <button className="btn-outline" style={{ padding: '4px 8px', fontSize: 11, color: 'var(--accent)' }}
-                                    onClick={() => handleQuickTrade(s.ticker, 'buy', cp)}>+ Beli</button>
-                                  <button className="btn-outline" style={{ padding: '4px 8px', fontSize: 11, color: 'var(--red)' }}
-                                    onClick={() => handleQuickTrade(s.ticker, 'sell', cp)}>− Jual</button>
-                                </div>
+                              <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                                <button className="btn-outline" style={{ flex: 1, padding: '6px', fontSize: 12, fontWeight: 700, color: 'var(--accent)', borderColor: 'rgba(16,185,129,0.3)', minHeight: 38 }}
+                                  onClick={() => handleQuickTrade(s.ticker, 'buy', cp)}>+ Beli</button>
+                                <button className="btn-outline" style={{ flex: 1, padding: '6px', fontSize: 12, fontWeight: 700, color: 'var(--red)', borderColor: 'rgba(239,68,68,0.3)', minHeight: 38 }}
+                                  onClick={() => handleQuickTrade(s.ticker, 'sell', cp)}>− Jual</button>
                               </div>
                             </div>
                           )
@@ -463,8 +445,8 @@ export default function VirtualTradingPage() {
                                   Rp {tx.net_value.toLocaleString('id-ID')}
                                 </td>
                                 <td style={{ textAlign: 'center' }}>
-                                  <button onClick={() => handleDownloadReceipt(tx.id)} className="btn-outline" style={{ padding: '4px 8px', fontSize: 10 }}>
-                                    Nota
+                                  <button onClick={() => setSelectedTxReceipt(tx)} className="btn-outline" style={{ padding: '4px 8px', fontSize: 10 }}>
+                                    📄 Nota
                                   </button>
                                 </td>
                               </tr>
@@ -476,24 +458,38 @@ export default function VirtualTradingPage() {
                       {/* Mobile History Cards */}
                       <div className="market-card-mobile">
                         {transactions.slice(0, 20).map((tx) => (
-                          <div key={tx.id} style={{ padding: '14px 0', borderBottom: '1px solid var(--border)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-                              <div>
-                                <span style={{ fontWeight: 800, fontSize: 15 }}>{tx.ticker.replace('.JK', '')}</span>
-                                <span className={`sentiment-badge ${tx.type === 'BUY' ? 'bullish' : 'bearish'}`} style={{ fontSize: 9, marginLeft: 8 }}>
-                                  {tx.type}
+                          <div key={tx.id} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: 10, marginBottom: 8, border: '1px solid var(--border)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <span className={`sentiment-badge ${tx.type === 'BUY' ? 'bullish' : 'bearish'}`} style={{ fontSize: 9 }}>
+                                  {tx.type === 'BUY' ? '🟢 BELI' : '🔴 JUAL'}
+                                </span>
+                                <span style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>{tx.ticker.replace('.JK', '')}</span>
+                                <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>
+                                  {new Date(tx.timestamp).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                                 </span>
                               </div>
-                              <span style={{ fontWeight: 700, fontSize: 14, color: tx.type === 'BUY' ? 'var(--red)' : 'var(--accent)' }}>
-                                Rp {tx.net_value.toLocaleString('id-ID')}
-                              </span>
+                              <button 
+                                onClick={() => setSelectedTxReceipt(tx)}
+                                style={{
+                                  background: 'rgba(59,130,246,0.1)',
+                                  color: 'var(--blue)',
+                                  border: '1px solid rgba(59,130,246,0.3)',
+                                  borderRadius: 6,
+                                  padding: '3px 8px',
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                📄 Nota
+                              </button>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: 'var(--text-muted)' }}>
-                              <div>
-                                {new Date(tx.timestamp).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                              </div>
-                              <div>
-                                {tx.qty / 100} Lot @ Rp {tx.price.toLocaleString('id-ID')}
+
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: 'var(--text-secondary)' }}>
+                              <div>{tx.qty / 100} Lot @ Rp {tx.price.toLocaleString('id-ID')}</div>
+                              <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 12 }}>
+                                Total: Rp {tx.net_value.toLocaleString('id-ID')}
                               </div>
                             </div>
                           </div>
@@ -577,6 +573,123 @@ export default function VirtualTradingPage() {
         onConfirm={handleConfirmTrade}
         processing={processing}
       />
+
+      {/* ─── MODAL KUITANSI / NOTA TRANSAKSI PROFESIONAL ─── */}
+      {selectedTxReceipt && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000,
+          backdropFilter: 'blur(8px)', fontFamily: 'Inter, sans-serif', padding: 16
+        }}>
+          <div style={{
+            background: '#16213e', border: '1px solid var(--accent)', borderRadius: 16,
+            padding: '20px', maxWidth: 440, width: '100%', boxSizing: 'border-box',
+            position: 'relative', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            maxHeight: '90vh', overflowY: 'auto'
+          }}>
+            <button 
+              onClick={() => setSelectedTxReceipt(null)}
+              style={{
+                position: 'absolute', top: 14, right: 14, background: 'transparent',
+                border: 'none', color: '#888', fontSize: 20, cursor: 'pointer'
+              }}
+            >
+              ✕
+            </button>
+
+            {/* Header Sekuritas */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 12, marginBottom: 14 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 18 }}>🟢</span>
+                <span style={{ fontWeight: 800, fontSize: 16, color: '#fff' }}>STOXAREA</span>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>TRADE CONFIRMATION</div>
+                <div style={{ fontSize: 10, color: '#aaa', fontFamily: 'monospace' }}>Ref: #TX-{selectedTxReceipt.id.toString().padStart(4, '0')}</div>
+              </div>
+            </div>
+
+            {/* Verified Stamp */}
+            <div style={{ textAlign: 'center', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 8, padding: '8px', marginBottom: 16 }}>
+              <span style={{ fontSize: 12, fontWeight: 800, color: '#10b981' }}>✅ TRANSAKSI BERHASIL</span>
+              <div style={{ fontSize: 10, color: '#aaa', marginTop: 2 }}>
+                {new Date(selectedTxReceipt.timestamp).toLocaleString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
+              </div>
+            </div>
+
+            {/* Instrument Breakdown */}
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 6 }}>
+              Rincian Instrumen Saham
+            </div>
+            <div style={{ background: '#0a0f1a', borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#aaa' }}>Ticker Saham</span>
+                <strong style={{ color: '#fff' }}>{selectedTxReceipt.ticker.replace('.JK', '')}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#aaa' }}>Jenis Order</span>
+                <strong style={{ color: selectedTxReceipt.type === 'BUY' ? '#10b981' : '#ef4444' }}>
+                  {selectedTxReceipt.type === 'BUY' ? 'PEMBELIAN (BUY)' : 'PENJUALAN (SELL)'}
+                </strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#aaa' }}>Volume</span>
+                <strong style={{ color: '#fff' }}>{selectedTxReceipt.qty / 100} Lot ({selectedTxReceipt.qty.toLocaleString('id-ID')} Lembar)</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#aaa' }}>Harga Eksekusi</span>
+                <strong style={{ color: '#fff' }}>Rp {selectedTxReceipt.price.toLocaleString('id-ID')} / lembar</strong>
+              </div>
+            </div>
+
+            {/* Financial Settlement Breakdown */}
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 6 }}>
+              Rincian Biaya & Penyelesaian
+            </div>
+            <div style={{ background: '#0a0f1a', borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#aaa' }}>Nilai Gross Transaksi</span>
+                <span style={{ color: '#ccc' }}>Rp {(selectedTxReceipt.price * selectedTxReceipt.qty).toLocaleString('id-ID')}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#aaa' }}>Biaya Broker ({selectedTxReceipt.type === 'BUY' ? '0.15%' : '0.25%'})</span>
+                <span style={{ color: '#ccc' }}>Rp {(selectedTxReceipt.fee || Math.round(selectedTxReceipt.price * selectedTxReceipt.qty * (selectedTxReceipt.type === 'BUY' ? 0.0015 : 0.0025))).toLocaleString('id-ID')}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px dashed #333', paddingTop: 8, marginTop: 4 }}>
+                <strong style={{ color: '#fff', fontSize: 13 }}>TOTAL PENYELESAIAN (NET)</strong>
+                <strong style={{ color: '#10b981', fontSize: 14 }}>Rp {selectedTxReceipt.net_value.toLocaleString('id-ID')}</strong>
+              </div>
+            </div>
+
+            <div style={{ fontSize: 9, color: '#777', lineHeight: 1.4, marginBottom: 16, textAlign: 'center' }}>
+              🔒 Dokumen ini dihasilkan secara otomatis oleh sistem SPK Investasi STOXAREA sebagai bukti sah transaksi virtual.
+            </div>
+
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button 
+                onClick={() => handleDownloadReceipt(selectedTxReceipt.id)}
+                style={{
+                  flex: 1, background: 'var(--accent)', color: 'white',
+                  border: 'none', borderRadius: 8, padding: '10px', fontSize: 12,
+                  fontWeight: 700, cursor: 'pointer'
+                }}
+              >
+                📄 Unduh Kuitansi PDF
+              </button>
+              <button 
+                onClick={() => setSelectedTxReceipt(null)}
+                style={{
+                  flex: 1, background: 'rgba(255,255,255,0.05)', color: '#ccc',
+                  border: '1px solid var(--border)', borderRadius: 8, padding: '10px', fontSize: 12,
+                  fontWeight: 600, cursor: 'pointer'
+                }}
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>

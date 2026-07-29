@@ -1,104 +1,104 @@
 {
   "model": "XGBoost Classifier + Isotonic Calibration",
   "dataset": {
-    "total_samples": 68433,
-    "class_0_count": 53123,
-    "class_1_count": 15310,
-    "positive_rate": 22.37
+    "total_samples": 68662,
+    "class_0_count": 53332,
+    "class_1_count": 15330,
+    "positive_rate": 22.33
   },
   "parameters": {
     "n_estimators": 150,
     "max_depth": 4,
     "learning_rate": 0.05,
-    "scale_pos_weight": 3.4698,
+    "scale_pos_weight": 3.4789,
     "calibration": "isotonic",
     "validation": "TimeSeriesSplit (5 fold)",
     "optimal_threshold": 0.3
   },
   "metrics_final_model": {
-    "accuracy": 77.75,
-    "precision": 85.25,
-    "recall": 0.68,
-    "f1_score": 1.35,
-    "auc_roc": 0.6458
+    "accuracy": 77.33,
+    "precision": 47.12,
+    "recall": 12.62,
+    "f1_score": 19.9,
+    "auc_roc": 0.6457
   },
   "confusion_matrix": {
-    "true_negative": 53105,
-    "false_positive": 18,
-    "false_negative": 15206,
-    "true_positive": 104
+    "true_negative": 51162,
+    "false_positive": 2170,
+    "false_negative": 13396,
+    "true_positive": 1934
   },
   "walkforward_per_fold": [
     {
       "fold": 1,
-      "train_size": 11408,
-      "test_size": 11405,
-      "accuracy": 0.4777,
-      "precision": 0.2206,
-      "recall": 0.6523,
-      "f1": 0.3297,
-      "auc": 0.5631
+      "train_size": 11447,
+      "test_size": 11443,
+      "accuracy": 0.4761,
+      "precision": 0.2178,
+      "recall": 0.6393,
+      "f1": 0.325,
+      "auc": 0.5585
     },
     {
       "fold": 2,
-      "train_size": 22813,
-      "test_size": 11405,
-      "accuracy": 0.6016,
-      "precision": 0.2459,
-      "recall": 0.4595,
-      "f1": 0.3204,
-      "auc": 0.5685
+      "train_size": 22890,
+      "test_size": 11443,
+      "accuracy": 0.5965,
+      "precision": 0.2381,
+      "recall": 0.4508,
+      "f1": 0.3116,
+      "auc": 0.5675
     },
     {
       "fold": 3,
-      "train_size": 34218,
-      "test_size": 11405,
-      "accuracy": 0.6198,
-      "precision": 0.2476,
-      "recall": 0.4215,
-      "f1": 0.312,
-      "auc": 0.5597
+      "train_size": 34333,
+      "test_size": 11443,
+      "accuracy": 0.6118,
+      "precision": 0.2454,
+      "recall": 0.4272,
+      "f1": 0.3117,
+      "auc": 0.5594
     },
     {
       "fold": 4,
-      "train_size": 45623,
-      "test_size": 11405,
-      "accuracy": 0.5847,
-      "precision": 0.3121,
-      "recall": 0.576,
-      "f1": 0.4049,
-      "auc": 0.6183
+      "train_size": 45776,
+      "test_size": 11443,
+      "accuracy": 0.5782,
+      "precision": 0.3095,
+      "recall": 0.5871,
+      "f1": 0.4053,
+      "auc": 0.6187
     },
     {
       "fold": 5,
-      "train_size": 57028,
-      "test_size": 11405,
-      "accuracy": 0.545,
-      "precision": 0.2919,
-      "recall": 0.6339,
-      "f1": 0.3998,
-      "auc": 0.6059
+      "train_size": 57219,
+      "test_size": 11443,
+      "accuracy": 0.5404,
+      "precision": 0.2871,
+      "recall": 0.6337,
+      "f1": 0.3952,
+      "auc": 0.6028
     }
   ],
   "walkforward_mean": {
-    "accuracy": 0.5658,
-    "precision": 0.2636,
-    "recall": 0.5486,
-    "f1": 0.3534,
-    "auc": 0.5831
+    "accuracy": 0.5606,
+    "precision": 0.2596,
+    "recall": 0.5476,
+    "f1": 0.3498,
+    "auc": 0.5814
   },
   "top3_features": [
     {
       "feature": "macd_hist_norm",
-      "importance": 0.10213451832532883
+      "importance": 0.09639496356248856
     },
     {
       "feature": "macd_signal_norm",
-      "importance": 0.11495725065469742
+      "importance": 0.11512739956378937
     },
     {
       "feature": "bb_width",
-      "importance": 0.25690072774887085
+      "importance": 0.2571338713169098
     }
   ]
 }
