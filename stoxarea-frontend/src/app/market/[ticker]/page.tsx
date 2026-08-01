@@ -41,6 +41,7 @@ const FEATURE_LABELS: Record<string, string> = {
   roe: 'Keuntungan dari Modal (ROE)',
   der: 'Tingkat Utang vs Modal (DER)',
   pbv: 'Kewajaran Harga (PBV)',
+  per: 'Harga vs Laba (PER)',
   close: 'Harga Saham Saat Ini',
   bb_width: 'Gejolak Rentang Harga (Bollinger Bands)',
   bb_position: 'Posisi Harga vs Bollinger Bands',
@@ -834,8 +835,12 @@ export default function StockDetailPage() {
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Valuasi &amp; Gejolak Pergerakan</div>
                     <div className="ticker-card-grid">
                       <div className="stat-card" style={{ padding: 12 }}>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Harga vs Laba (PER) <FundamentalTooltip metricKey="per" value={f.valuation?.per ?? f.per} label="Harga vs Laba (PER)" /></div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.valuation?.per != null ? `${Number(f.valuation.per).toFixed(2)}x` : (f.per != null ? `${Number(f.per).toFixed(2)}x` : '—')}</div>
+                      </div>
+                      <div className="stat-card" style={{ padding: 12 }}>
                         <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Kewajaran Harga (PBV) <FundamentalTooltip metricKey="pbv" value={f.valuation?.pbv} label="Kewajaran Harga (PBV)" /></div>
-                        <div className="stat-value" style={{ fontSize: 15 }}>{f.valuation?.pbv != null ? `${f.valuation.pbv}x` : '—'}</div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{f.valuation?.pbv != null ? `${Number(f.valuation.pbv).toFixed(2)}x` : '—'}</div>
                       </div>
                       <div className="stat-card" style={{ padding: 12 }}>
                         <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Gejolak Harga vs IHSG (Beta) <FundamentalTooltip metricKey="beta" value={f.price?.beta} label="Gejolak Harga (Beta)" /></div>

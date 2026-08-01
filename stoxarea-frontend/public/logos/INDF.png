@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" style="color-scheme:light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Search: api — Statvoo</title>
+<meta name="description" content="Search results for api on Statvoo. Find websites, companies, and data.">
+
+<meta name="robots" content="noindex">
+
+
+<meta property="og:site_name" content="Statvoo">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Statvoo - Website Worth Calculator & Traffic Estimator">
+<meta property="og:description" content="Free website worth calculator and traffic estimator.">
+<meta property="og:image" content="https://statvoo.com/static/icons/og-default.db70017e1073.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Statvoo — The Data Behind Everything">
+<meta name="twitter:description" content="Research any website or company. Traffic data, financial profiles, security analysis, and editorial insights — free, no signup.">
+<meta name="twitter:image" content="https://statvoo.com/static/icons/og-default.db70017e1073.png">
+
+<link rel="icon" href="/static/icons/favicon.0d917b7d2648.svg" type="image/svg+xml">
+<link rel="icon" href="/static/icons/favicon.099dbdb84915.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.09a0c6bc7075.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.dc3e10045d8d.png">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.d0cd9a788756.png">
+<link rel="manifest" href="/static/icons/site.e4175f1df1e6.webmanifest">
+<link rel="author" href="https://statvoo.com/about">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://www.google.com">
+<link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://www.google.com">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1126602015214222" crossorigin="anonymous" type="0673ce3900ebab860dfad0f9-text/javascript"></script>
+<script type="0673ce3900ebab860dfad0f9-text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NPPJXDHZ');</script>
+<style>
+:root{--green:#16c784;--dark:#1a1a2e;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#2d2d3a;font-size:14px;display:flex;flex-direction:column;min-height:100vh;}
+footer{margin-top:auto;}
+a{color:var(--green);}a:hover{color:#12a86d;}
+</style>
+<link rel="stylesheet" href="/static/css/style.6d3745b89359.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Statvoo","url":"https://statvoo.com","logo":"https://statvoo.com/static/icons/android-chrome-512x512.15f7de442c73.png","foundingDate":"2013","description":"The data behind everything. Web intelligence, company research, and data-driven insights since 2013.","sameAs":["https://github.com/ao/w3"],"knowsAbout":["web analytics","domain statistics","website traffic","company financials","internet research","web technology"],"areaServed":"Worldwide","numberOfEmployees":{"@type":"QuantitativeValue","value":1}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Statvoo","url":"https://statvoo.com","description":"Research any website or company. Free, instant, no signup.","potentialAction":{"@type":"SearchAction","target":"https://statvoo.com/{search_term_string}","query-input":"required name=search_term_string"}}</script>
+
+<style>
+.result-card{border:1px solid #e8e8e8;border-radius:8px;padding:.8rem 1rem;margin-bottom:.5rem;display:flex;align-items:center;text-decoration:none;color:#2d2d3a;transition:border-color .15s}
+.result-card:hover{border-color:#16c784}
+.result-card .icon{width:32px;height:32px;margin-right:12px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.result-card .info{flex:1;min-width:0}
+.result-card .title{font-weight:600;font-size:.92rem}
+.result-card .meta{font-size:.8rem;color:#888;margin-top:2px}
+.result-card .badge-type{font-size:.7rem;padding:2px 8px;border-radius:10px;font-weight:600;margin-left:8px;flex-shrink:0}
+@media(max-width:480px){.result-card .badge-type{display:none}.result-card .icon{width:24px;height:24px;margin-right:8px}.result-card{padding:.6rem .8rem}}
+.badge-website{background:#e8f5e9;color:#2e7d32}
+.badge-company{background:#e3f2fd;color:#1565c0}
+</style>
+
+</head>
+<body>
+<a href="#main-content" class="visually-hidden-focusable" style="position:absolute;top:0;left:0;padding:.5rem 1rem;background:var(--green);color:#fff;z-index:9999;">Skip to content</a>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPPJXDHZ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background:#1a1a2e;">
+<div class="container">
+<a class="navbar-brand" href="/" style="display:flex;align-items:center;gap:6px"><span style="color:#16c784;">●</span> <strong>Statvoo</strong></a>
+<form class="d-flex d-lg-none flex-grow-1 mx-2" method="post" action="/" aria-label="Search">
+<input type="hidden" name="csrfmiddlewaretoken" value="cPlRJWPHCdl1bRkaVAkOmnrE3sO4DM4cAyuJ2YVK7Qn3zgUwEMLxFIRbFI9gc1hv">
+<div class="input-group input-group-sm">
+<label for="nav-domain-mobile" class="visually-hidden">Search</label>
+<input type="search" id="nav-domain-mobile" name="domain" class="form-control" placeholder="Search..." aria-label="Search" required autocomplete="off">
+<button class="btn btn-success" type="submit">Go</button>
+</div>
+</form>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navMain">
+<ul class="navbar-nav me-auto">
+<li class="nav-item dropdown">
+<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
+<div class="dropdown-menu p-3" style="min-width:420px">
+<div class="row g-0">
+<div class="col-6">
+<h6 class="dropdown-header" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#16c784">Verticals</h6>
+<a class="dropdown-item" href="/top">🌐 Websites <small class="text-muted">1.6M ranked</small></a>
+<a class="dropdown-item" href="/company">🏢 Companies <small class="text-muted">500+</small></a>
+<a class="dropdown-item" href="/countries">🌍 Countries <small class="text-muted">200+</small></a>
+<a class="dropdown-item" href="/universities">🎓 Universities <small class="text-muted">2,600+</small></a>
+<a class="dropdown-item" href="/cars">🚗 Cars <small class="text-muted">8,000+</small></a>
+<a class="dropdown-item" href="/names">👤 Names <small class="text-muted">5,000+</small></a>
+<a class="dropdown-item" href="/movies">🎬 Movies <small class="text-muted">8,300+</small></a>
+<a class="dropdown-item" href="/series">📺 TV Shows <small class="text-muted">4,900+</small></a>
+<a class="dropdown-item" href="/actors">🎭 Actors <small class="text-muted">10,000+</small></a>
+</div>
+<div class="col-6">
+<h6 class="dropdown-header" style="font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#16c784">Browse</h6>
+<a class="dropdown-item" href="/trending">Trending Sites</a>
+<a class="dropdown-item" href="/category/social-media">Categories</a>
+<a class="dropdown-item" href="/top/com">Top .com</a>
+<a class="dropdown-item" href="/top/io">Top .io</a>
+<a class="dropdown-item" href="/cars/top">Best MPG Cars</a>
+<a class="dropdown-item" href="/cars/top?sort=safety">Safest Cars</a>
+</div>
+</div>
+</div>
+</li>
+<li class="nav-item dropdown">
+<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tools</a>
+<ul class="dropdown-menu">
+<li><a class="dropdown-item" href="/whois/google.com">WHOIS Lookup</a></li>
+<li><a class="dropdown-item" href="/dns/google.com">DNS Records</a></li>
+<li><a class="dropdown-item" href="/headers/google.com">HTTP Headers</a></li>
+<li><a class="dropdown-item" href="/ssl/google.com">SSL Checker</a></li>
+<li><a class="dropdown-item" href="/status/google.com">Status Check</a></li>
+<li><a class="dropdown-item" href="/down/google.com">Down Checker</a></li>
+<li><hr class="dropdown-divider"></li>
+<li><a class="dropdown-item" href="/compare/google.com/bing.com">Compare Sites</a></li>
+<li><a class="dropdown-item" href="/ip">IP Lookup</a></li>
+</ul>
+</li>
+<li class="nav-item dropdown">
+<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Research</a>
+<ul class="dropdown-menu">
+<li><a class="dropdown-item" href="/research/state-of-the-web-2026">State of the Web 2026</a></li>
+<li><a class="dropdown-item" href="/research/web-technology-market-share">Tech Market Share</a></li>
+<li><a class="dropdown-item" href="/tech/cloudflare">Cloudflare Usage</a></li>
+<li><hr class="dropdown-divider"></li>
+<li><a class="dropdown-item" href="/blog">Blog</a></li>
+</ul>
+</li>
+</ul>
+<form class="d-none d-lg-flex" method="post" action="/" aria-label="Search" style="position:relative">
+<input type="hidden" name="csrfmiddlewaretoken" value="cPlRJWPHCdl1bRkaVAkOmnrE3sO4DM4cAyuJ2YVK7Qn3zgUwEMLxFIRbFI9gc1hv">
+<input type="hidden" name="action" value="search">
+<div class="input-group">
+<label for="nav-domain-desktop" class="visually-hidden">Search</label>
+<input type="search" id="nav-domain-desktop" name="domain" class="form-control" placeholder="Search domains, companies, cars..." aria-label="Search" required autocomplete="off" style="min-width:240px">
+<button class="btn btn-success" type="submit">Search</button>
+</div>
+</form>
+</div>
+</div>
+</nav>
+<style>
+.sv-autocomplete{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #e0e0e0;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:9999;max-height:400px;overflow-y:auto;display:none}
+.sv-autocomplete.active{display:block}
+.sv-ac-item{display:flex;align-items:center;padding:8px 12px;text-decoration:none;color:#333;font-size:.87rem;border-bottom:1px solid #f5f5f5}
+.sv-ac-item:hover,.sv-ac-item.selected{background:#f0fdf4}
+.sv-ac-item .type{font-size:.7rem;text-transform:uppercase;color:#16c784;width:60px;flex-shrink:0;font-weight:600}
+.sv-ac-item .label{flex:1}
+.sv-ac-item .meta{font-size:.78rem;color:#999}
+@media(max-width:991px){.sv-autocomplete{position:fixed;top:56px;left:8px;right:8px}}
+</style>
+<div class="sv-autocomplete" id="sv-ac"></div>
+<script type="0673ce3900ebab860dfad0f9-text/javascript">
+(function(){
+var timer,ac=document.getElementById('sv-ac'),inputs=document.querySelectorAll('#nav-domain-desktop,#nav-domain-mobile');
+inputs.forEach(function(inp){
+inp.addEventListener('input',function(){
+clearTimeout(timer);var q=this.value.trim();
+if(q.length<2){ac.classList.remove('active');return}
+timer=setTimeout(function(){
+fetch('/api/search?q='+encodeURIComponent(q)).then(r=>r.json()).then(function(d){
+if(!d.results.length){ac.classList.remove('active');return}
+ac.innerHTML=d.results.map(function(r){
+return '<a class="sv-ac-item" href="'+r.url+'"><span class="type">'+r.type+'</span><span class="label">'+r.label+'</span><span class="meta">'+r.meta+'</span></a>'
+}).join('');
+ac.classList.add('active');
+});
+},200);
+});
+inp.addEventListener('blur',function(){setTimeout(function(){ac.classList.remove('active')},200)});
+inp.addEventListener('focus',function(){if(ac.innerHTML&&this.value.length>=2)ac.classList.add('active')});
+});
+document.addEventListener('click',function(e){if(!ac.contains(e.target))ac.classList.remove('active')});
+})();
+</script>
+
+<main id="main-content">
+<div class="container py-4" style="max-width:800px">
+  <h1 style="font-size:1.5rem;margin-bottom:.3rem">Search results</h1>
+  <p style="color:#888;font-size:.9rem;margin-bottom:1.5rem">41 results for "api"</p>
+
+  <form method="post" action="/" class="mb-4">
+    <input type="hidden" name="csrfmiddlewaretoken" value="cPlRJWPHCdl1bRkaVAkOmnrE3sO4DM4cAyuJ2YVK7Qn3zgUwEMLxFIRbFI9gc1hv">
+    <div class="input-group">
+      <label for="search-input" class="visually-hidden">Search</label>
+      <input type="text" id="search-input" name="domain" class="form-control" placeholder="Search domains, companies, tickers..." value="api" required>
+      <button class="btn btn-success" type="submit">Search</button>
+    </div>
+  </form>
+
+  
+  <h2 style="font-size:1.1rem;margin-bottom:.8rem">Companies</h2>
+  
+  <a href="/company/morgan-stanley" class="result-card">
+    <div class="icon" style="background:#e3f2fd">🏢</div>
+    <div class="info">
+      <div class="title">Morgan Stanley (MS)</div>
+      <div class="meta">Financial Services · Capital Markets · $180.0B market cap</div>
+    </div>
+    <span class="badge-type badge-company">Company</span>
+  </a>
+  
+  <a href="/company/goldman-sachs" class="result-card">
+    <div class="icon" style="background:#e3f2fd">🏢</div>
+    <div class="info">
+      <div class="title">Goldman Sachs Group Inc. (GS)</div>
+      <div class="meta">Financial Services · Capital Markets · $170.0B market cap</div>
+    </div>
+    <span class="badge-type badge-company">Company</span>
+  </a>
+  
+  <a href="/company/charles-schwab" class="result-card">
+    <div class="icon" style="background:#e3f2fd">🏢</div>
+    <div class="info">
+      <div class="title">Charles Schwab Corporation (SCHW)</div>
+      <div class="meta">Financial Services · Capital Markets · $140.0B market cap</div>
+    </div>
+    <span class="badge-type badge-company">Company</span>
+  </a>
+  
+  <a href="/company/capital-one-financial" class="result-card">
+    <div class="icon" style="background:#e3f2fd">🏢</div>
+    <div class="info">
+      <div class="title">Capital One Financial Corporation (COF)</div>
+      <div class="meta">Financial Services · Credit Services · $55.0B market cap</div>
+    </div>
+    <span class="badge-type badge-company">Company</span>
+  </a>
+  
+  <a href="/company/robinhood-markets" class="result-card">
+    <div class="icon" style="background:#e3f2fd">🏢</div>
+    <div class="info">
+      <div class="title">Robinhood Markets Inc. (HOOD)</div>
+      <div class="meta">Financial Services · Capital Markets · $20.0B market cap</div>
+    </div>
+    <span class="badge-type badge-company">Company</span>
+  </a>
+  
+  <a href="/company/futu-holdings" class="result-card">
+    <div class="icon" style="background:#e3f2fd">🏢</div>
+    <div class="info">
+      <div class="title">Futu Holdings Limited (FUTU)</div>
+      <div class="meta">Financial Services · Capital Markets · $8.0B market cap</div>
+    </div>
+    <span class="badge-type badge-company">Company</span>
+  </a>
+  
+  
+
+  
+  <h2 style="font-size:1.1rem;margin-bottom:.8rem;margin-top:1.5rem">Countries</h2>
+  
+  <a href="/countries/samoa" class="result-card">
+    <div class="icon" style="background:#fff3e0;font-size:1.3rem">🇼🇸</div>
+    <div class="info">
+      <div class="title">Samoa</div>
+      <div class="meta">Oceania · Pop: 198,414 · Capital: Apia</div>
+    </div>
+    <span class="badge-type" style="background:#fff3e0;color:#e65100">Country</span>
+  </a>
+  
+  
+
+  
+
+  
+  <h2 style="font-size:1.1rem;margin-bottom:.8rem;margin-top:1.5rem">Websites</h2>
+  
+  <a href="/api.id.me" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=api.id.me" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">api.id.me</div>
+      <div class="meta">Ranked #1,000 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  <a href="/apigee.net" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=apigee.net" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">apigee.net</div>
+      <div class="meta">Ranked #1,314 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  <a href="/api.aws" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=api.aws" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">api.aws</div>
+      <div class="meta">Ranked #1,781 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  <a href="/api66y.space" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=api66y.space" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">api66y.space</div>
+      <div class="meta">Ranked #5,000 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  <a href="/apiblink.ru" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=apiblink.ru" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">apiblink.ru</div>
+      <div class="meta">Ranked #6,676 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  <a href="/api.narwhalpay.ph" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=api.narwhalpay.ph" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">api.narwhalpay.ph</div>
+      <div class="meta">Ranked #10,000 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  <a href="/apitd.net" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=apitd.net" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">apitd.net</div>
+      <div class="meta">Ranked #10,849 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  <a href="/apicgate.com" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=apicgate.com" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">apicgate.com</div>
+      <div class="meta">Ranked #11,730 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  <a href="/apibay.org" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=apibay.org" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">apibay.org</div>
+      <div class="meta">Ranked #14,847 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  <a href="/api-taboola.com" class="result-card">
+    <div class="icon" style="background:#e8f5e9"><img src="https://www.google.com/s2/favicons?sz=20&amp;domain_url=api-taboola.com" width="20" height="20" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="title">api-taboola.com</div>
+      <div class="meta">Ranked #16,255 globally</div>
+    </div>
+    <span class="badge-type badge-website">Website</span>
+  </a>
+  
+  
+
+  
+  <h2 style="font-size:1.1rem;margin-bottom:.8rem;margin-top:1.5rem">Movies</h2>
+  
+  <a href="/movie/papillon-2017" class="result-card">
+    <div class="icon" style="background:#ede7f6">🎬</div>
+    <div class="info">
+      <div class="title">Papillon (2017)</div>
+      <div class="meta">Adventure, Crime, Drama · ⭐ 7.32 · Dir: Michael Noer</div>
+    </div>
+    <span class="badge-type" style="background:#ede7f6;color:#4527a0">Movie</span>
+  </a>
+  
+  <a href="/movie/detective-conan-crossroad-in-the-ancient-capital-2003" class="result-card">
+    <div class="icon" style="background:#ede7f6">🎬</div>
+    <div class="info">
+      <div class="title">Detective Conan: Crossroad in the Ancient Capital (2003)</div>
+      <div class="meta">Animation, Mystery, Adventure · ⭐ 7.1 · Dir: Kenji Kodama</div>
+    </div>
+    <span class="badge-type" style="background:#ede7f6;color:#4527a0">Movie</span>
+  </a>
+  
+  <a href="/movie/the-hunger-games-sunrise-on-the-reaping-2026" class="result-card">
+    <div class="icon" style="background:#ede7f6">🎬</div>
+    <div class="info">
+      <div class="title">The Hunger Games: Sunrise on the Reaping (2026)</div>
+      <div class="meta">Science Fiction, Action, Adventure · Dir: Francis Lawrence</div>
+    </div>
+    <span class="badge-type" style="background:#ede7f6;color:#4527a0">Movie</span>
+  </a>
+  
+  <a href="/movie/papillon-1973" class="result-card">
+    <div class="icon" style="background:#ede7f6">🎬</div>
+    <div class="info">
+      <div class="title">Papillon (1973)</div>
+      <div class="meta">Crime, Drama · ⭐ 7.8 · Dir: Franklin J. Schaffner</div>
+    </div>
+    <span class="badge-type" style="background:#ede7f6;color:#4527a0">Movie</span>
+  </a>
+  
+  <a href="/movie/the-reaping-2007" class="result-card">
+    <div class="icon" style="background:#ede7f6">🎬</div>
+    <div class="info">
+      <div class="title">The Reaping (2007)</div>
+      <div class="meta">Horror · ⭐ 5.762 · Dir: Stephen Hopkins</div>
+    </div>
+    <span class="badge-type" style="background:#ede7f6;color:#4527a0">Movie</span>
+  </a>
+  
+  
+
+  
+  <h2 style="font-size:1.1rem;margin-bottom:.8rem;margin-top:1.5rem">TV Shows</h2>
+  
+  <a href="/series/the-kapil-sharma-show" class="result-card">
+    <div class="icon" style="background:#e8eaf6">📺</div>
+    <div class="info">
+      <div class="title">The Kapil Sharma Show</div>
+      <div class="meta">Comedy, Talk · ⭐ 7.038 · Ended</div>
+    </div>
+    <span class="badge-type" style="background:#e8eaf6;color:#283593">TV Show</span>
+  </a>
+  
+  <a href="/series/capitol" class="result-card">
+    <div class="icon" style="background:#e8eaf6">📺</div>
+    <div class="info">
+      <div class="title">Capitol</div>
+      <div class="meta">War &amp; Politics, Soap · ⭐ 6.286 · Ended</div>
+    </div>
+    <span class="badge-type" style="background:#e8eaf6;color:#283593">TV Show</span>
+  </a>
+  
+  <a href="/series/dr-katz-professional-therapist" class="result-card">
+    <div class="icon" style="background:#e8eaf6">📺</div>
+    <div class="info">
+      <div class="title">Dr. Katz, Professional Therapist</div>
+      <div class="meta">Animation, Comedy · ⭐ 7.856 · Ended</div>
+    </div>
+    <span class="badge-type" style="background:#e8eaf6;color:#283593">TV Show</span>
+  </a>
+  
+  <a href="/series/comedy-nights-with-kapil" class="result-card">
+    <div class="icon" style="background:#e8eaf6">📺</div>
+    <div class="info">
+      <div class="title">Comedy Nights with Kapil</div>
+      <div class="meta">Comedy · ⭐ 6.795 · Ended</div>
+    </div>
+    <span class="badge-type" style="background:#e8eaf6;color:#283593">TV Show</span>
+  </a>
+  
+  <a href="/series/pecado-capital" class="result-card">
+    <div class="icon" style="background:#e8eaf6">📺</div>
+    <div class="info">
+      <div class="title">Pecado Capital</div>
+      <div class="meta">Drama, Soap · ⭐ 8.5 · Ended</div>
+    </div>
+    <span class="badge-type" style="background:#e8eaf6;color:#283593">TV Show</span>
+  </a>
+  
+  
+
+  
+  <h2 style="font-size:1.1rem;margin-bottom:.8rem;margin-top:1.5rem">People</h2>
+  
+  <a href="/actor/charles-napier" class="result-card">
+    <div class="icon" style="background:#fce4ec">🎭</div>
+    <div class="info">
+      <div class="title">Charles Napier</div>
+      <div class="meta">Acting · Scottsville, Kentucky, USA</div>
+    </div>
+    <span class="badge-type" style="background:#fce4ec;color:#880e4f">Person</span>
+  </a>
+  
+  <a href="/actor/lauren-chapin" class="result-card">
+    <div class="icon" style="background:#fce4ec">🎭</div>
+    <div class="info">
+      <div class="title">Lauren Chapin</div>
+      <div class="meta">Acting · Los Angeles, California, USA</div>
+    </div>
+    <span class="badge-type" style="background:#fce4ec;color:#880e4f">Person</span>
+  </a>
+  
+  <a href="/actor/al-sapienza" class="result-card">
+    <div class="icon" style="background:#fce4ec">🎭</div>
+    <div class="info">
+      <div class="title">Al Sapienza</div>
+      <div class="meta">Acting · New York City, New York, USA</div>
+    </div>
+    <span class="badge-type" style="background:#fce4ec;color:#880e4f">Person</span>
+  </a>
+  
+  <a href="/actor/yaren-yapici" class="result-card">
+    <div class="icon" style="background:#fce4ec">🎭</div>
+    <div class="info">
+      <div class="title">Yaren Yapici</div>
+      <div class="meta">Acting</div>
+    </div>
+    <span class="badge-type" style="background:#fce4ec;color:#880e4f">Person</span>
+  </a>
+  
+  
+
+  
+
+  <div style="margin:1rem auto;text-align:center;">
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1126602015214222" data-ad-slot="6871039417" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script type="0673ce3900ebab860dfad0f9-text/javascript">(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+</div>
+
+</div>
+</main>
+
+<footer style="background:#1a1a2e;color:#a0a0b8;padding:3rem 0 calc(1rem + env(safe-area-inset-bottom, 0px));">
+<div class="container">
+<div class="row">
+<div class="col-6 col-md-2 mb-3">
+<h6 class="text-white"><span style="color:#16c784;">●</span> Statvoo</h6>
+<p style="font-size:.85rem">The data behind everything. Trusted since 2013.</p>
+<form method="post" action="/subscribe" style="margin-top:.8rem">
+<input type="hidden" name="csrfmiddlewaretoken" value="cPlRJWPHCdl1bRkaVAkOmnrE3sO4DM4cAyuJ2YVK7Qn3zgUwEMLxFIRbFI9gc1hv">
+<input type="email" name="email" class="form-control form-control-sm" placeholder="Get weekly insights" required style="font-size:.8rem;background:#2a2a4a;border-color:#3a3a5a;color:#fff">
+<button type="submit" class="btn btn-success btn-sm w-100 mt-1" style="font-size:.78rem">Subscribe</button>
+</form>
+</div>
+<div class="col-6 col-md-2 mb-3">
+<h6 class="text-white">Websites</h6>
+<ul class="list-unstyled" style="font-size:.85rem">
+<li><a href="/top">Top 1 Million</a></li>
+<li><a href="/trending">Trending</a></li>
+<li><a href="/category/social-media">Social Media</a></li>
+<li><a href="/category/ecommerce">E-Commerce</a></li>
+<li><a href="/category/developer-tools">Developer Tools</a></li>
+<li><a href="/top/com">.com</a></li>
+<li><a href="/top/io">.io</a></li>
+</ul>
+</div>
+<div class="col-6 col-md-2 mb-3">
+<h6 class="text-white">Cars</h6>
+<ul class="list-unstyled" style="font-size:.85rem">
+<li><a href="/cars">All Makes</a></li>
+<li><a href="/cars/make/toyota">Toyota</a></li>
+<li><a href="/cars/make/ford">Ford</a></li>
+<li><a href="/cars/make/honda">Honda</a></li>
+<li><a href="/cars/make/bmw">BMW</a></li>
+<li><a href="/cars/top">Best MPG</a></li>
+<li><a href="/cars/top?sort=safety">Safest</a></li>
+</ul>
+</div>
+<div class="col-6 col-md-2 mb-3">
+<h6 class="text-white">More Data</h6>
+<ul class="list-unstyled" style="font-size:.85rem">
+<li><a href="/company">Companies</a></li>
+<li><a href="/countries">Countries</a></li>
+<li><a href="/universities">Universities</a></li>
+<li><a href="/names">Baby Names</a></li>
+<li><a href="/movies">Movies</a></li>
+<li><a href="/series">TV Shows</a></li>
+<li><a href="/actors">Actors</a></li>
+</ul>
+</div>
+<div class="col-6 col-md-2 mb-3">
+<h6 class="text-white">Research</h6>
+<ul class="list-unstyled" style="font-size:.85rem">
+<li><a href="/research/state-of-the-web-2026">State of the Web</a></li>
+<li><a href="/research/web-technology-market-share">Tech Market Share</a></li>
+<li><a href="/tech/cloudflare">Cloudflare Stats</a></li>
+<li><a href="/tech/nginx">Nginx Stats</a></li>
+<li><a href="/blog">Blog</a></li>
+</ul>
+<h6 class="text-white mt-3">Tools</h6>
+<ul class="list-unstyled" style="font-size:.85rem">
+<li><a href="/whois/google.com">WHOIS</a></li>
+<li><a href="/dns/google.com">DNS</a></li>
+<li><a href="/ssl/google.com">SSL</a></li>
+<li><a href="/ip">IP Lookup</a></li>
+</ul>
+</div>
+<div class="col-6 col-md-2 mb-3">
+<h6 class="text-white">Statvoo</h6>
+<ul class="list-unstyled" style="font-size:.85rem">
+<li><a href="/about">About</a></li>
+<li><a href="/blog">Blog</a></li>
+<li><a href="/tos">Terms & Privacy</a></li>
+<li><a href="/sitemap">Sitemap</a></li>
+<li><a href="/llms.txt">llms.txt</a></li>
+</ul>
+</div>
+</div>
+<hr style="border-color:#2a2a4a;">
+<div class="d-flex justify-content-between flex-wrap gap-2" style="padding-bottom:1.5rem;font-size:.85rem">
+<span>&copy; 2013&ndash;2026 Statvoo. The data behind everything.</span>
+<span><a href="/about">About</a> &middot; <a href="/tos">Terms & Privacy</a> &middot; <a href="/sitemap">Sitemap</a></span>
+</div>
+</div>
+</footer>
+
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" type="0673ce3900ebab860dfad0f9-text/javascript"></script>
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="0673ce3900ebab860dfad0f9-|49" defer></script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a24526c0d96258c3',t:'MTc4NTU5MDU0Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

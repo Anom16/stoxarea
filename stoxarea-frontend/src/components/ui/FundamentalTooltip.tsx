@@ -51,7 +51,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Kriteria Utama — Saham dengan ROE tinggi mendapatkan bobot nilai rekomendasi lebih tinggi dari sistem AI.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       const pct = v > 1 ? v : v * 100
       if (pct > 15)  return { text: `ROE ${pct.toFixed(1)}% — Sangat Bagus. Perusahaan sangat pintar menghasilkan laba dari modal sendiri.`, color: '#10b981' }
       if (pct >= 8)  return { text: `ROE ${pct.toFixed(1)}% — Sedang / Wajar. Tingkat keuntungan modal cukup stabil.`, color: '#f59e0b' }
@@ -69,7 +69,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Kriteria Keamanan — Semakin rendah utang (DER), semakin tinggi skor keamanan investasi yang diberikan AI.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       if (v < 0)    return { text: `DER ${v.toFixed(2)}x — Ekuitas negatif. Total utang melebihi nilai aset perusahaan.`, color: '#ef4444' }
       if (v < 1.0)  return { text: `DER ${v.toFixed(2)}x — Aman. Beban utang sangat kecil dan risiko keuangan rendah.`, color: '#10b981' }
       if (v <= 2.0) return { text: `DER ${v.toFixed(2)}x — Waspada. Utang cukup besar, perhatikan kemampuan bayarnya.`, color: '#f59e0b' }
@@ -86,7 +86,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Kriteria Valuasi — Mencegah pembeli membayar terlalu mahal untuk saham yang asetnya kecil.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       if (v <= 0)  return { text: `PBV ${v.toFixed(2)}x — Tidak valid / ekuitas negatif.`, color: '#ef4444' }
       if (v < 1.0) return { text: `PBV ${v.toFixed(2)}x — Murah. Harga di bawah nilai aset bersih perusahaan (potensi bargain).`, color: '#10b981' }
       if (v <= 3.0) return { text: `PBV ${v.toFixed(2)}x — Wajar. Harga mencerminkan nilai pasar secara seimbang.`, color: '#f59e0b' }
@@ -103,7 +103,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Filter Keamanan — Saham dengan PER negatif (rugi) atau mahal ekstrem disaring dari rekomendasi teratas.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       if (v < 0)   return { text: `PER Negatif (${v.toFixed(1)}x) — Perusahaan sedang merugi.`, color: '#ef4444' }
       if (v < 12)  return { text: `PER ${v.toFixed(1)}x — Murah. Relatif lebih cepat mengembalikan harga pembelian via laba.`, color: '#10b981' }
       if (v <= 25) return { text: `PER ${v.toFixed(1)}x — Wajar. Berada pada rata-rata nilai industri.`, color: '#f59e0b' }
@@ -120,7 +120,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Pengukur Risiko — Digunakan untuk menyesuaikan kecocokan saham dengan Profil Risiko user (Konservatif/Agresif).',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       if (v < 0)    return { text: `Beta ${v.toFixed(2)} — Pergerakan berlawanan arah dengan IHSG.`, color: '#f59e0b' }
       if (v < 0.8)  return { text: `Beta ${v.toFixed(2)} — Stabil & Tenang. Cocok untuk investor pemula/konservatif karena pergerakannya tenang.`, color: '#10b981' }
       if (v <= 1.2) return { text: `Beta ${v.toFixed(2)} — Normal. Bergerak searah dan seirama dengan IHSG.`, color: '#f59e0b' }
@@ -137,7 +137,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Pendapatan Pasif — Memberikan nilai tambah bagi investor pencari dividen rutin.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       const pct = v > 1 ? v : v * 100
       if (pct === 0) return { text: 'Perusahaan tidak membagikan dividen.', color: '#ef4444' }
       if (pct > 5)   return { text: `Dividend Yield ${pct.toFixed(2)}% — Sangat Menarik! Memberikan hasil pasif di atas deposito.`, color: '#10b981' }
@@ -155,7 +155,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Filter Kesehatan Operasional — Mengonfirmasi kelayakan aset operasional perusahaan.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       const pct = v > 1 ? v : v * 100
       if (pct > 8)  return { text: `ROA ${pct.toFixed(1)}% — Sangat Efisien dalam mengolah aset menjadi laba.`, color: '#10b981' }
       if (pct >= 3) return { text: `ROA ${pct.toFixed(1)}% — Sedang / Wajar. Penggunaan aset mencukupi standar.`, color: '#f59e0b' }
@@ -172,7 +172,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Filter Kualitas Laba — Perusahaan dengan margin tebal lebih tahan terhadap krisis ekonomi.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       const pct = v > 1 ? v : v * 100
       if (pct > 15) return { text: `Net Margin ${pct.toFixed(1)}% — Margin Tebal. Bisnis memiliki daya saing tinggi.`, color: '#10b981' }
       if (pct >= 5) return { text: `Net Margin ${pct.toFixed(1)}% — Margin Cukup. Sisa laba penjualan tergolong wajar.`, color: '#f59e0b' }
@@ -191,7 +191,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Filter Keamanan — Perusahaan berukuran besar (Big Cap) cenderung lebih tahan banting terhadap gejolak pasar.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       const inTrillion = v / 1_000_000_000_000
       if (inTrillion >= 50) return { text: `Market Cap Rp ${inTrillion.toFixed(1)}T — Big Chip / Perusahaan Raksasa yang sangat stabil.`, color: '#10b981' }
       if (inTrillion >= 10) return { text: `Market Cap Rp ${inTrillion.toFixed(1)}T — Mid Cap. Perusahaan skala menengah dengan potensi tumbuh.`, color: '#f59e0b' }
@@ -316,7 +316,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Pengukur Keberlanjutan Dividen.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       const pct = v > 1 ? v : v * 100
       if (pct > 80) return { text: `Payout Ratio ${pct.toFixed(1)}% — Sangat Tinggi. Risiko pembagian dividen berkurang di tahun depan.`, color: '#ef4444' }
       if (pct >= 30) return { text: `Payout Ratio ${pct.toFixed(1)}% — Ideal & Sehat. Keseimbangan yang baik antara dividen dan modal ekspansi.`, color: '#10b981' }
@@ -335,7 +335,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Sinyal Waktu Beli/Jual — Fitur utama model AI XGBoost dalam mendeteksi momentum pembalikan harga.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       if (v <= 30) return { text: `RSI ${v.toFixed(1)} — Sangat Murah (Jenuh Jual). Sinyal positif: Harga sudah turun terlalu dalam, berpotensi memantul naik (Rebound).`, color: '#10b981' }
       if (v < 70)  return { text: `RSI ${v.toFixed(1)} — Normal. Harga bergerak dalam kisaran tren yang wajar.`, color: '#f59e0b' }
       return { text: `RSI ${v.toFixed(1)} — Sangat Mahal (Jenuh Beli). Sinyal waspada: Pembeli sudah mulai lelah, rawan penurunan harga (Koreksi).`, color: '#ef4444' }
@@ -351,7 +351,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Penentu Arah Tren — Menjadi salah satu fitur teknikal penting dalam kalkulasi skor AI.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       if (v > 0) return { text: `MACD Positif (+${v.toFixed(4)}) — Sinyal Naik Kuat. Tren saham didominasi oleh kekuatan pembeli (Bullish).`, color: '#10b981' }
       return { text: `MACD Negatif (${v.toFixed(4)}) — Sinyal Turun. Tren saham masih didominasi oleh tekanan jual (Bearish).`, color: '#ef4444' }
     },
@@ -366,7 +366,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Pengukur Tren Jangka Pendek.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       if (v > 0) return { text: `Di Atas MA20 (+${v.toFixed(2)}%) — Bagus! Harga bertahan di atas rata-rata 1 bulan, menandakan tren jangka pendek sedang naik.`, color: '#10b981' }
       if (v === 0) return { text: `Menempel MA20 — Harga tepat di rata-rata 1 bulan (Netral).`, color: '#f59e0b' }
       return { text: `Di Bawah MA20 (${v.toFixed(2)}%) — Lemah. Harga berada di bawah rata-rata 1 bulan, tren jangka pendek cenderung melemah.`, color: '#ef4444' }
@@ -382,7 +382,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Pengukur Pondasi Tren Menengah.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       if (v > 0) return { text: `Di Atas MA50 (+${v.toFixed(2)}%) — Bagus! Saham memiliki pondasi tren jangka menengah yang kuat untuk naik.`, color: '#10b981' }
       if (v === 0) return { text: `Menempel MA50 — Tren jangka menengah berada dalam fase konsolidasi.`, color: '#f59e0b' }
       return { text: `Di Bawah MA50 (${v.toFixed(2)}%) — Waspada. Tren jangka menengah saham ini masih cenderung melemah.`, color: '#ef4444' }
@@ -398,7 +398,7 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
     ],
     spkRole: 'Pengukur Volatilitas & Titik Pembalikan Harga.',
     getInterpretation: (v) => {
-      if (v === null) return null
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
       if (v < 0.2) return { text: `Menyentuh Pita Bawah (${v.toFixed(2)}) — Peluang Beli! Harga berada di batas terendah wajar, berpotensi memantul naik.`, color: '#10b981' }
       if (v <= 0.8) return { text: `Di Area Tengah (${v.toFixed(2)}) — Harga berada dalam rentang gejolak normal.`, color: '#f59e0b' }
       return { text: `Menembus Pita Atas (${v.toFixed(2)}) — Rawan Koreksi. Harga sudah terlalu tinggi melepasi batas atas wajar.`, color: '#ef4444' }

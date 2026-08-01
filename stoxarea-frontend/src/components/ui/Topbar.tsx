@@ -42,16 +42,6 @@ export default function Topbar({ username: initialUsername, riskProfile: initial
           />
           <span className="logo-text" style={{ fontSize: 18 }}>Stox<span>Area</span></span>
         </div>
-
-
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Link href="/settings" style={{ textDecoration: 'none' }}>
-            <div className="profile-avatar" title="Pengaturan Akun">
-              {username.substring(0, 1).toUpperCase()}
-            </div>
-          </Link>
-        </div>
       </header>
 
       {/* Render Bottom Navigation Bar on Mobile Screens */}

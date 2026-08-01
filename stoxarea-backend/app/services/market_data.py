@@ -192,7 +192,7 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
                         "price": {"current": None, "open": None, "day_high": None,
                                   "day_low": None, "week_52_high": None, "week_52_low": None,
                                   "volume": 0, "avg_volume": 0, "market_cap": None, "beta": None},
-                        "valuation": {"per": stock.pbv, "pbv": stock.pbv},
+                        "valuation": {"per": getattr(stock, 'per', None), "pbv": stock.pbv},
                         "profitability": {"roe": stock.roe, "roa": None, "net_margin": None},
                         "health": {"der": stock.der},
                         "dividend": {"yield_pct": None, "payout_ratio": None},
@@ -213,12 +213,12 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
                 return default
 
         # Data dari DB jika tersedia
-        db_roe, db_der, db_pbv = None, None, None
+        db_roe, db_der, db_pbv, db_per = None, None, None, None
         if db:
             from app.models.stock import Stock
             stock = db.query(Stock).filter_by(ticker=ticker).first()
             if stock:
-                db_roe, db_der, db_pbv = stock.roe, stock.der, stock.pbv
+                db_roe, db_der, db_pbv, db_per = stock.roe, stock.der, stock.pbv, getattr(stock, 'per', None)
 
         # Waktu update harga terakhir dari Yahoo Finance
         # regularMarketTime = Unix timestamp kapan harga terakhir diupdate di Yahoo
@@ -261,6 +261,7 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
                 "beta":            safe("beta"),
             },
             "valuation": {
+                "per":  db_per if db_per is not None else (safe("trailingPE") or safe("forwardPE")),
                 "pbv":  db_pbv if db_pbv is not None else safe("priceToBook"),
             },
             "profitability": {
