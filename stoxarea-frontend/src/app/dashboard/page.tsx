@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Sidebar from '@/components/ui/Sidebar'
 import Topbar from '@/components/ui/Topbar'
 import DisclaimerFooter from '@/components/ui/DisclaimerFooter'
+import QualificationModal from '@/components/ui/QualificationModal'
 import api from '@/lib/api'
 import { AreaChart, Area, ResponsiveContainer } from 'recharts'
 
@@ -50,6 +51,9 @@ export default function DashboardPage() {
   const [virtualBalance, setVirtualBalance] = useState<number>(100000000)
   const [error, setError]     = useState('')
   const [selectedTransparency, setSelectedTransparency] = useState<any>(null)
+  
+  // Qualification Info Modal State
+  const [showQualModal, setShowQualModal] = useState(false)
 
   // Layout switch
   const [dashLayout, setDashLayout] = useState<'classic' | 'modern'>('classic')
@@ -135,10 +139,10 @@ export default function DashboardPage() {
     })
   }, [])
 
-  // Fetch momentum stocks (used by modern layout)
+  // Fetch momentum stocks (used by modern layout) - hanya saham qualified
   useEffect(() => {
     api.get('/market/momentum')
-      .then(res => { if (Array.isArray(res.data)) setMomentumStocks(res.data) })
+      .then(res => { if (Array.isArray(res.data)) setMomentumStocks(res.data.filter((s: any) => s.is_qualified !== false)) })
       .catch(() => {})
   }, [])
 
@@ -351,7 +355,28 @@ export default function DashboardPage() {
               <div className="modern-overview-grid">
                 {/* Left: Watchlist */}
                 <section>
-                  <div className="section-title" style={{ fontSize: 15, marginBottom: 4 }}>AI Watchlist — Top Matches</div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <div className="section-title" style={{ fontSize: 15 }}>AI Watchlist — Top Matches</div>
+                    <button
+                      onClick={() => setShowQualModal(true)}
+                      style={{
+                        background: 'rgba(37, 99, 235, 0.08)',
+                        border: '1px solid rgba(37, 99, 235, 0.2)',
+                        color: 'var(--accent, #2563eb)',
+                        fontSize: 11,
+                        fontWeight: 700,
+                        padding: '2px 8px',
+                        borderRadius: 12,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4
+                      }}
+                      title="Klik untuk melihat 3 Kriteria Kualifikasi Likuiditas Saham"
+                    >
+                      🛡️ Lolos Kualifikasi SPK ℹ️
+                    </button>
+                  </div>
                   <div className="section-sub">Emiten terbaik sesuai profil risiko <strong>{profile}</strong> Anda</div>
                   <div style={{ marginTop: 12 }}>
                     {recs.length === 0 ? (
@@ -1091,6 +1116,13 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Qualification Explainer Modal */}
+      <QualificationModal
+        isOpen={showQualModal}
+        onClose={() => setShowQualModal(false)}
+        totalQualified={116}
+      />
     </div>
   )
 }

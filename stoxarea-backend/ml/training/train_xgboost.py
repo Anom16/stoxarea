@@ -63,9 +63,9 @@ def run():
         logger.error("Tidak ada sampel positif (kelas 1) di data training. Periksa label generation.")
         return
 
-    scale_pos_weight = n_neg / n_pos
+    scale_pos_weight = min(1.2, max(0.8, n_neg / n_pos))
     logger.info(f"Class distribution — Kelas 0: {n_neg}, Kelas 1: {n_pos}")
-    logger.info(f"scale_pos_weight = {scale_pos_weight:.2f} (bobot kompensasi imbalance)")
+    logger.info(f"scale_pos_weight = {scale_pos_weight:.2f} (terkalibrasi seimbang)")
     
     # ── Walk-Forward Validation (Time Series Split) ──
     logger.info("Memulai Walk-Forward Validation (5 Splits)...")

@@ -465,7 +465,7 @@ def get_sector_summary(db) -> list:
         "Transportasi & Logistik",
     ]
 
-    stocks = db.query(Stock).all()
+    stocks = db.query(Stock).filter(Stock.is_qualified == True).all()
     all_scores = ai_store.get_all_scores()
 
     result = []

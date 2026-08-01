@@ -105,11 +105,11 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <label style={{ color: 'var(--text-primary)', fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Email</label>
+              <label style={{ color: 'var(--text-primary)', fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 8 }}>Email / Username</label>
               <input
-                type="email" id="login-email" value={email}
+                type="text" id="login-email" value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="admin@gmail.com"
+                placeholder="admin01 atau admin01@gmail.com"
                 required
                 style={{
                   width: '100%',

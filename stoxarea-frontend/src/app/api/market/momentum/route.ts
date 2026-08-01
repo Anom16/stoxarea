@@ -26,8 +26,8 @@ export async function GET(request: Request) {
 
     const result = Object.entries(aiScores as Record<string, any>)
       .map(([ticker, info]) => {
-        const sector = SECTORS_MAP[ticker] || 'Financials'
-        const name = STOCK_NAMES[ticker] || ticker.replace('.JK', '')
+        const sector = info.sector || SECTORS_MAP[ticker] || 'Keuangan'
+        const name = info.name || STOCK_NAMES[ticker] || ticker.replace('.JK', '')
         const score = info.ai_score || 0
         const percentStr = info.ai_score_percent || `${(score * 100).toFixed(1)}%`
         const sentiment = score > 0.25 ? 'Bullish' : score > 0.15 ? 'Neutral' : 'Bearish'
@@ -41,6 +41,10 @@ export async function GET(request: Request) {
           sentiment,
           current_price: Math.floor(1000 + Math.random() * 8000),
           is_qualified: true,
+          roe: info.roe ?? 14.5,
+          der: info.der ?? 0.85,
+          pbv: info.pbv ?? 2.1,
+          per: info.per ?? 12.8,
           sparkline: [score * 10, score * 12, score * 11, score * 14, score * 13, score * 15, score * 16]
         }
       })

@@ -1,1256 +1,2877 @@
 {
-    "BBCA.JK": {
-        "ai_score": 0.2379,
-        "ai_score_percent": "23.8%",
-        "insights": [
-            {
-                "feature": "rsi_14",
-                "contribution": 0.06210320442914963,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.05801825970411301,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.04069099202752113,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.557639"
-    },
-    "BBRI.JK": {
-        "ai_score": 0.2194,
-        "ai_score_percent": "21.9%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.0986216589808464,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.06668727844953537,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_norm",
-                "contribution": -0.05236181244254112,
-                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.557639"
-    },
-    "BMRI.JK": {
-        "ai_score": 0.2717,
-        "ai_score_percent": "27.2%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.18125568330287933,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.06254003196954727,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.039613693952560425,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.557639"
-    },
-    "BBNI.JK": {
-        "ai_score": 0.2785,
-        "ai_score_percent": "27.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.22977547347545624,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.10185188055038452,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.058718204498291016,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.557639"
-    },
-    "TLKM.JK": {
-        "ai_score": 0.2559,
-        "ai_score_percent": "25.6%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.1920291930437088,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.08191957324743271,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.0683385506272316,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.557639"
-    },
-    "ASII.JK": {
-        "ai_score": 0.2344,
-        "ai_score_percent": "23.4%",
-        "insights": [
-            {
-                "feature": "rsi_14",
-                "contribution": 0.07143007218837738,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.06851746141910553,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.052093327045440674,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.559395"
-    },
-    "UNTR.JK": {
-        "ai_score": 0.2618,
-        "ai_score_percent": "26.2%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2740670442581177,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.25569599866867065,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.09668344259262085,
-                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.559395"
-    },
-    "ADRO.JK": {
-        "ai_score": 0.2251,
-        "ai_score_percent": "22.5%",
-        "insights": [
-            {
-                "feature": "bb_position",
-                "contribution": -0.07645870000123978,
-                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.06900456547737122,
-                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": -0.06094571202993393,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.559395"
-    },
-    "PTBA.JK": {
-        "ai_score": 0.2164,
-        "ai_score_percent": "21.6%",
-        "insights": [
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.055716317147016525,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.054437000304460526,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_norm",
-                "contribution": -0.02884184755384922,
-                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.559395"
-    },
-    "ITMG.JK": {
-        "ai_score": 0.2064,
-        "ai_score_percent": "20.6%",
-        "insights": [
-            {
-                "feature": "bb_position",
-                "contribution": -0.11220504343509674,
-                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.08777406811714172,
-                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.0732371136546135,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.559395"
-    },
-    "UNVR.JK": {
-        "ai_score": 0.2174,
-        "ai_score_percent": "21.7%",
-        "insights": [
-            {
-                "feature": "log_ret_1d",
-                "contribution": 0.0623011477291584,
-                "description": "Hasil Naik-Turun Harian mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.06007473170757294,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": -0.05576455965638161,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.559846"
-    },
-    "ICBP.JK": {
-        "ai_score": 0.1735,
-        "ai_score_percent": "17.4%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.06604607403278351,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": -0.05458137020468712,
-                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.048368390649557114,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.559846"
-    },
-    "INDF.JK": {
-        "ai_score": 0.1814,
-        "ai_score_percent": "18.1%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.12196999788284302,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": -0.0598103329539299,
-                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.04667815938591957,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.559846"
-    },
-    "KLBF.JK": {
-        "ai_score": 0.195,
-        "ai_score_percent": "19.5%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.1335650533437729,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.0511116161942482,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_20_dist",
-                "contribution": -0.0413895845413208,
-                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.559846"
-    },
-    "PGAS.JK": {
-        "ai_score": 0.2871,
-        "ai_score_percent": "28.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.21416422724723816,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.09544621407985687,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.056576766073703766,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "AKRA.JK": {
-        "ai_score": 0.2559,
-        "ai_score_percent": "25.6%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.0758451372385025,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.06561494618654251,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.04276473447680473,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "TOWR.JK": {
-        "ai_score": 0.2128,
-        "ai_score_percent": "21.3%",
-        "insights": [
-            {
-                "feature": "rsi_14",
-                "contribution": 0.06311696022748947,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.0487639419734478,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.046021219342947006,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "BRPT.JK": {
-        "ai_score": 0.2631,
-        "ai_score_percent": "26.3%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2632472813129425,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.17966243624687195,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.08344164490699768,
-                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "TPIA.JK": {
-        "ai_score": 0.1583,
-        "ai_score_percent": "15.8%",
-        "insights": [
-            {
-                "feature": "ma_20_dist",
-                "contribution": -0.39931145310401917,
-                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.2832421660423279,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_norm",
-                "contribution": -0.26923394203186035,
-                "description": "Kekuatan Tren Pergerakan (MACD) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "INKP.JK": {
-        "ai_score": 0.2653,
-        "ai_score_percent": "26.5%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.1401936411857605,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.09831389039754868,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.06965672969818115,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "TKIM.JK": {
-        "ai_score": 0.2614,
-        "ai_score_percent": "26.1%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.18540729582309723,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.13736751675605774,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.05868217721581459,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "SMGR.JK": {
-        "ai_score": 0.272,
-        "ai_score_percent": "27.2%",
-        "insights": [
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.14802026748657227,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.1306001991033554,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.09513967484235764,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "INTP.JK": {
-        "ai_score": 0.2705,
-        "ai_score_percent": "27.0%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.2564535439014435,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.19214984774589539,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.12286540865898132,
-                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "HRUM.JK": {
-        "ai_score": 0.2409,
-        "ai_score_percent": "24.1%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2246093600988388,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.09655675292015076,
-                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.06325014680624008,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "MEDC.JK": {
-        "ai_score": 0.2781,
-        "ai_score_percent": "27.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.24392235279083252,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.22129148244857788,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.11248098313808441,
-                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "INDY.JK": {
-        "ai_score": 0.2846,
-        "ai_score_percent": "28.5%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2682739496231079,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.10297758132219315,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.09425853192806244,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "EXCL.JK": {
-        "ai_score": 0.2486,
-        "ai_score_percent": "24.9%",
-        "insights": [
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.12293433398008347,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.06645183265209198,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.0661897137761116,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "ISAT.JK": {
-        "ai_score": 0.2559,
-        "ai_score_percent": "25.6%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.12452022731304169,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.07143043726682663,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.03685397282242775,
-                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "JSMR.JK": {
-        "ai_score": 0.2136,
-        "ai_score_percent": "21.4%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2180788516998291,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.0890447199344635,
-                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.0587141215801239,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.560307"
-    },
-    "PTPP.JK": {
-        "ai_score": 0.2781,
-        "ai_score_percent": "27.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2736249268054962,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.22747550904750824,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.1268153339624405,
-                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "BSDE.JK": {
-        "ai_score": 0.266,
-        "ai_score_percent": "26.6%",
-        "insights": [
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.19584046304225922,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.14324724674224854,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.07310009002685547,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "PWON.JK": {
-        "ai_score": 0.2494,
-        "ai_score_percent": "24.9%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.21715262532234192,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.08873962610960007,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.06442566961050034,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "CTRA.JK": {
-        "ai_score": 0.2722,
-        "ai_score_percent": "27.2%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.19860707223415375,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.12780961394309998,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.11743263155221939,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "SMRA.JK": {
-        "ai_score": 0.2184,
-        "ai_score_percent": "21.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.11451057344675064,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": -0.06418223679065704,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.051071710884571075,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "ASSA.JK": {
-        "ai_score": 0.2328,
-        "ai_score_percent": "23.3%",
-        "insights": [
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.1001458689570427,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.057901155203580856,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.05715198814868927,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "BIRD.JK": {
-        "ai_score": 0.1774,
-        "ai_score_percent": "17.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.12590336799621582,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.07794488966464996,
-                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.05659882724285126,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "GIAA.JK": {
-        "ai_score": 0.2672,
-        "ai_score_percent": "26.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.16196610033512115,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.05311078578233719,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.05202210694551468,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "SMDR.JK": {
-        "ai_score": 0.2328,
-        "ai_score_percent": "23.3%",
-        "insights": [
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.07831402122974396,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.05800948292016983,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.05662613734602928,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "SCMA.JK": {
-        "ai_score": 0.2431,
-        "ai_score_percent": "24.3%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.06713724881410599,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.05229876562952995,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_20_dist",
-                "contribution": -0.0383416973054409,
-                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "EMTK.JK": {
-        "ai_score": 0.2767,
-        "ai_score_percent": "27.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.22850990295410156,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.18297311663627625,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.1394985318183899,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "BUKA.JK": {
-        "ai_score": 0.2502,
-        "ai_score_percent": "25.0%",
-        "insights": [
-            {
-                "feature": "ma_50_dist",
-                "contribution": 0.16774366796016693,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.11679922789335251,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.08457311242818832,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "MIKA.JK": {
-        "ai_score": 0.2315,
-        "ai_score_percent": "23.1%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2019256055355072,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": -0.05056224763393402,
-                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.041885148733854294,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.562325"
-    },
-    "HEAL.JK": {
-        "ai_score": 0.278,
-        "ai_score_percent": "27.8%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.24566853046417236,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": 0.17504462599754333,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.061581190675497055,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564046"
-    },
-    "SIDO.JK": {
-        "ai_score": 0.212,
-        "ai_score_percent": "21.2%",
-        "insights": [
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.0881810337305069,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": -0.08009372651576996,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.07504414767026901,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564046"
-    },
-    "MYOR.JK": {
-        "ai_score": 0.1898,
-        "ai_score_percent": "19.0%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.2303575575351715,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "vol_ma_ratio",
-                "contribution": -0.12686404585838318,
-                "description": "Lonjakan Volume Transaksi menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": -0.08539722114801407,
-                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564046"
-    },
-    "ULTJ.JK": {
-        "ai_score": 0.1958,
-        "ai_score_percent": "19.6%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.21291987597942352,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.0703856348991394,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.030675213783979416,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564046"
-    },
-    "ROTI.JK": {
-        "ai_score": 0.188,
-        "ai_score_percent": "18.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.09949018061161041,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": -0.04917778819799423,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": -0.047985758632421494,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564046"
-    },
-    "WOOD.JK": {
-        "ai_score": 0.3183,
-        "ai_score_percent": "31.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.19069065153598785,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_20_dist",
-                "contribution": 0.1785738617181778,
-                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.07960733771324158,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564046"
-    },
-    "BRIS.JK": {
-        "ai_score": 0.21,
-        "ai_score_percent": "21.0%",
-        "insights": [
-            {
-                "feature": "rsi_14",
-                "contribution": 0.06434997171163559,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_50_dist",
-                "contribution": -0.05967571958899498,
-                "description": "Posisi Harga vs Rata-rata 50 Hari (MA-50) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "ma_20_dist",
-                "contribution": -0.046189289540052414,
-                "description": "Posisi Harga vs Rata-rata 20 Hari (MA-20) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564046"
-    },
-    "BBTN.JK": {
-        "ai_score": 0.277,
-        "ai_score_percent": "27.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.23644477128982544,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.08425918966531754,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.06678075343370438,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564992"
-    },
-    "BJBR.JK": {
-        "ai_score": 0.172,
-        "ai_score_percent": "17.2%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.19060048460960388,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": -0.11154326796531677,
-                "description": "Sinyal Pemicu Tren (MACD Signal) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.07214637845754623,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564992"
-    },
-    "BNGA.JK": {
-        "ai_score": 0.1895,
-        "ai_score_percent": "18.9%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.27401840686798096,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.10045477747917175,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_position",
-                "contribution": -0.027881605550646782,
-                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564992"
-    },
-    "PNBN.JK": {
-        "ai_score": 0.1676,
-        "ai_score_percent": "16.8%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.5738784670829773,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.10659209638834,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": -0.0329887792468071,
-                "description": "Tren Pergerakan 5 Hari Terakhir menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564992"
-    },
-    "ELSA.JK": {
-        "ai_score": 0.2807,
-        "ai_score_percent": "28.1%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": 0.26153120398521423,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "log_ret_5d",
-                "contribution": 0.14970709383487701,
-                "description": "Tren Pergerakan 5 Hari Terakhir mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.100071020424366,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564992"
-    },
-    "LSIP.JK": {
-        "ai_score": 0.2344,
-        "ai_score_percent": "23.4%",
-        "insights": [
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.18023236095905304,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_position",
-                "contribution": -0.06485694646835327,
-                "description": "Posisi Harga di Batas Atas/Bawah (Bollinger) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "bb_width",
-                "contribution": -0.04792772978544235,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564992"
-    },
-    "AALI.JK": {
-        "ai_score": 0.1856,
-        "ai_score_percent": "18.6%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.28185969591140747,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.14433757960796356,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_signal_norm",
-                "contribution": 0.07385964691638947,
-                "description": "Sinyal Pemicu Tren (MACD Signal) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564992"
-    },
-    "SIMP.JK": {
-        "ai_score": 0.1872,
-        "ai_score_percent": "18.7%",
-        "insights": [
-            {
-                "feature": "bb_width",
-                "contribution": -0.2853582799434662,
-                "description": "Gejolak Rentang Harga (Bollinger Bands) menekan potensi kenaikan harga saham."
-            },
-            {
-                "feature": "macd_hist_norm",
-                "contribution": 0.11763262748718262,
-                "description": "Selisih Kekuatan Tren (MACD Histogram) mendukung potensi kenaikan harga saham."
-            },
-            {
-                "feature": "rsi_14",
-                "contribution": 0.07558760046958923,
-                "description": "Kekuatan Jenuh Beli/Jual (RSI) mendukung potensi kenaikan harga saham."
-            }
-        ],
-        "last_updated": "2026-07-13 20:26:43.564992"
-    }
+  "BBCA.JK": {
+    "ticker": "BBCA.JK",
+    "name": "Bank Central Asia",
+    "sector": "Keuangan",
+    "ai_score": 0.885,
+    "ai_score_percent": "88.5%",
+    "is_qualified": true,
+    "roe": 22.972,
+    "der": 1.68,
+    "pbv": 2.8332455,
+    "per": 11.25,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BBRI.JK": {
+    "ticker": "BBRI.JK",
+    "name": "Bank Rakyat Indonesia",
+    "sector": "Keuangan",
+    "ai_score": 0.842,
+    "ai_score_percent": "84.2%",
+    "is_qualified": true,
+    "roe": 18.135999,
+    "der": 1.43,
+    "pbv": 1.3668251,
+    "per": 13.99,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BMRI.JK": {
+    "ticker": "BMRI.JK",
+    "name": "Bank Mandiri",
+    "sector": "Keuangan",
+    "ai_score": 0.821,
+    "ai_score_percent": "82.1%",
+    "is_qualified": true,
+    "roe": 21.040002,
+    "der": 1.4,
+    "pbv": 1.2627695,
+    "per": 17.33,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BBNI.JK": {
+    "ticker": "BBNI.JK",
+    "name": "Bank Negara Indonesia",
+    "sector": "Keuangan",
+    "ai_score": 0.795,
+    "ai_score_percent": "79.5%",
+    "is_qualified": true,
+    "roe": 12.029,
+    "der": 1.57,
+    "pbv": 0.88747615,
+    "per": 9.34,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "TLKM.JK": {
+    "ticker": "TLKM.JK",
+    "name": "Telkom Indonesia",
+    "sector": "Infrastruktur",
+    "ai_score": 0.768,
+    "ai_score_percent": "76.8%",
+    "is_qualified": true,
+    "roe": 16.052,
+    "der": 49.763,
+    "pbv": 2.2320187,
+    "per": 8.65,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ASII.JK": {
+    "ticker": "ASII.JK",
+    "name": "Astra International",
+    "sector": "Perindustrian",
+    "ai_score": 0.752,
+    "ai_score_percent": "75.2%",
+    "is_qualified": true,
+    "roe": 13.245,
+    "der": 39.859,
+    "pbv": 0.8821217,
+    "per": 9.26,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "UNTR.JK": {
+    "ticker": "UNTR.JK",
+    "name": "United Tractors",
+    "sector": "Barang Baku",
+    "ai_score": 0.741,
+    "ai_score_percent": "74.1%",
+    "is_qualified": true,
+    "roe": 12.315,
+    "der": 25.751,
+    "pbv": 0.8696717,
+    "per": 21.42,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ADRO.JK": {
+    "ticker": "ADRO.JK",
+    "name": "Adaro Energy",
+    "sector": "Energi",
+    "ai_score": 0.73,
+    "ai_score_percent": "73.0%",
+    "is_qualified": true,
+    "roe": 10.256,
+    "der": 19.536,
+    "pbv": 13529.412,
+    "per": 18.04,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "PTBA.JK": {
+    "ticker": "PTBA.JK",
+    "name": "Bukit Asam",
+    "sector": "Energi",
+    "ai_score": 0.715,
+    "ai_score_percent": "71.5%",
+    "is_qualified": true,
+    "roe": 14.413999,
+    "der": 11.489,
+    "pbv": 1.3895609,
+    "per": 15.92,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ITMG.JK": {
+    "ticker": "ITMG.JK",
+    "name": "Indo Tambangraya Megah",
+    "sector": "Energi",
+    "ai_score": 0.702,
+    "ai_score_percent": "70.2%",
+    "is_qualified": true,
+    "roe": 9.3839996,
+    "der": 4.237,
+    "pbv": 13391.278,
+    "per": 12.05,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "UNVR.JK": {
+    "ticker": "UNVR.JK",
+    "name": "Unilever Indonesia",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.69,
+    "ai_score_percent": "69.0%",
+    "is_qualified": true,
+    "roe": 74.291,
+    "der": 9.027,
+    "pbv": 14.937534,
+    "per": 12.43,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ICBP.JK": {
+    "ticker": "ICBP.JK",
+    "name": "Indofood CBP",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.685,
+    "ai_score_percent": "68.5%",
+    "is_qualified": true,
+    "roe": 14.631,
+    "der": 62.219,
+    "pbv": 1.4685464,
+    "per": 16.39,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "INDF.JK": {
+    "ticker": "INDF.JK",
+    "name": "Indofood Sukses Makmur",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.672,
+    "ai_score_percent": "67.2%",
+    "is_qualified": true,
+    "roe": 13.319,
+    "der": 61.085,
+    "pbv": 0.775085,
+    "per": 14.81,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "KLBF.JK": {
+    "ticker": "KLBF.JK",
+    "name": "Kalbe Farma",
+    "sector": "Kesehatan",
+    "ai_score": 0.66,
+    "ai_score_percent": "66.0%",
+    "is_qualified": true,
+    "roe": 14.43,
+    "der": 1.187,
+    "pbv": 1.4805297,
+    "per": 20.38,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "CPIN.JK": {
+    "ticker": "CPIN.JK",
+    "name": "Charoen Pokphand",
+    "sector": "Pertanian",
+    "ai_score": 0.65,
+    "ai_score_percent": "65.0%",
+    "is_qualified": true,
+    "roe": 19.496,
+    "der": 18.068,
+    "pbv": 2.0008254,
+    "per": 18.31,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "AMRT.JK": {
+    "ticker": "AMRT.JK",
+    "name": "Sumber Alfaria Trijaya",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.655,
+    "ai_score_percent": "65.5%",
+    "is_qualified": true,
+    "roe": 19.111,
+    "der": 13.591,
+    "pbv": 2.645726,
+    "per": 18.42,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "PGAS.JK": {
+    "ticker": "PGAS.JK",
+    "name": "Perusahaan Gas Negara",
+    "sector": "Infrastruktur",
+    "ai_score": 0.64,
+    "ai_score_percent": "64.0%",
+    "is_qualified": true,
+    "roe": 10.092,
+    "der": 29.053,
+    "pbv": 16196.581,
+    "per": 21.95,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "AKRA.JK": {
+    "ticker": "AKRA.JK",
+    "name": "AKR Corporindo",
+    "sector": "Energi",
+    "ai_score": 0.635,
+    "ai_score_percent": "63.5%",
+    "is_qualified": true,
+    "roe": 18.943001,
+    "der": 34.16,
+    "pbv": 1.9917182,
+    "per": 21.06,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "TOWR.JK": {
+    "ticker": "TOWR.JK",
+    "name": "Sarana Menara Nusantara",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.63,
+    "ai_score_percent": "63.0%",
+    "is_qualified": true,
+    "roe": 15.922,
+    "der": 166.964,
+    "pbv": 0.8416945,
+    "per": 14.12,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BRPT.JK": {
+    "ticker": "BRPT.JK",
+    "name": "Barito Pacific",
+    "sector": "Barang Baku",
+    "ai_score": 0.625,
+    "ai_score_percent": "62.5%",
+    "is_qualified": true,
+    "roe": 34.817,
+    "der": 133.907,
+    "pbv": 62200.0,
+    "per": 15.84,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "TPIA.JK": {
+    "ticker": "TPIA.JK",
+    "name": "Chandra Asri Petrochemical",
+    "sector": "Barang Baku",
+    "ai_score": 0.62,
+    "ai_score_percent": "62.0%",
+    "is_qualified": true,
+    "roe": 42.368,
+    "der": 117.023,
+    "pbv": 44186.047,
+    "per": 13.38,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "INKP.JK": {
+    "ticker": "INKP.JK",
+    "name": "Indah Kiat Pulp & Paper",
+    "sector": "Barang Baku",
+    "ai_score": 0.615,
+    "ai_score_percent": "61.5%",
+    "is_qualified": true,
+    "roe": 6.929,
+    "der": 68.492,
+    "pbv": 6078.968,
+    "per": 12.89,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "TKIM.JK": {
+    "ticker": "TKIM.JK",
+    "name": "Pabrik Kertas Tjiwi Kimia",
+    "sector": "Barang Baku",
+    "ai_score": 0.61,
+    "ai_score_percent": "61.0%",
+    "is_qualified": true,
+    "roe": 8.911,
+    "der": 25.016,
+    "pbv": 5907.173,
+    "per": 14.28,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "SMGR.JK": {
+    "ticker": "SMGR.JK",
+    "name": "Semen Indonesia",
+    "sector": "Barang Baku",
+    "ai_score": 0.605,
+    "ai_score_percent": "60.5%",
+    "is_qualified": true,
+    "roe": 0.438,
+    "der": 21.137,
+    "pbv": 0.2745428,
+    "per": 15.47,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "INTP.JK": {
+    "ticker": "INTP.JK",
+    "name": "Indocement Tunggal Prakarsa",
+    "sector": "Barang Baku",
+    "ai_score": 0.6,
+    "ai_score_percent": "60.0%",
+    "is_qualified": true,
+    "roe": 9.884,
+    "der": 12.119,
+    "pbv": 0.704129,
+    "per": 11.4,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ANTM.JK": {
+    "ticker": "ANTM.JK",
+    "name": "Aneka Tambang",
+    "sector": "Barang Baku",
+    "ai_score": 0.595,
+    "ai_score_percent": "59.5%",
+    "is_qualified": true,
+    "roe": 24.687,
+    "der": 21.609,
+    "pbv": 1.8310566,
+    "per": 13.05,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "TINS.JK": {
+    "ticker": "TINS.JK",
+    "name": "Timah",
+    "sector": "Barang Baku",
+    "ai_score": 0.59,
+    "ai_score_percent": "59.0%",
+    "is_qualified": true,
+    "roe": 30.662,
+    "der": 11.26,
+    "pbv": 2.4084203,
+    "per": 9.37,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MDKA.JK": {
+    "ticker": "MDKA.JK",
+    "name": "Merdeka Copper Gold",
+    "sector": "Barang Baku",
+    "ai_score": 0.585,
+    "ai_score_percent": "58.5%",
+    "is_qualified": true,
+    "roe": 0.55299997,
+    "der": 71.135,
+    "pbv": 84999.99,
+    "per": 15.12,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "HRUM.JK": {
+    "ticker": "HRUM.JK",
+    "name": "Harum Energy",
+    "sector": "Energi",
+    "ai_score": 0.58,
+    "ai_score_percent": "58.0%",
+    "is_qualified": true,
+    "roe": 3.585,
+    "der": 33.731,
+    "pbv": 11197.183,
+    "per": 16.31,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MEDC.JK": {
+    "ticker": "MEDC.JK",
+    "name": "Medco Energi",
+    "sector": "Energi",
+    "ai_score": 0.575,
+    "ai_score_percent": "57.5%",
+    "is_qualified": true,
+    "roe": 6.968000000000001,
+    "der": 155.798,
+    "pbv": 14101.123,
+    "per": 11.4,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "INDY.JK": {
+    "ticker": "INDY.JK",
+    "name": "Indika Energy",
+    "sector": "Energi",
+    "ai_score": 0.57,
+    "ai_score_percent": "57.0%",
+    "is_qualified": true,
+    "roe": 2.249,
+    "der": 82.501,
+    "pbv": 10260.869,
+    "per": 14.7,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "EXCL.JK": {
+    "ticker": "EXCL.JK",
+    "name": "XL Axiata",
+    "sector": "Infrastruktur",
+    "ai_score": 0.565,
+    "ai_score_percent": "56.5%",
+    "is_qualified": true,
+    "roe": -20.136999,
+    "der": 209.04,
+    "pbv": 1.689792,
+    "per": 11.33,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ISAT.JK": {
+    "ticker": "ISAT.JK",
+    "name": "Indosat Ooredoo Hutchison",
+    "sector": "Infrastruktur",
+    "ai_score": 0.56,
+    "ai_score_percent": "56.0%",
+    "is_qualified": true,
+    "roe": 15.026,
+    "der": 133.421,
+    "pbv": 1.8422898,
+    "per": 20.29,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "JSMR.JK": {
+    "ticker": "JSMR.JK",
+    "name": "Jasa Marga",
+    "sector": "Perindustrian",
+    "ai_score": 0.555,
+    "ai_score_percent": "55.5%",
+    "is_qualified": true,
+    "roe": 7.721,
+    "der": 118.716,
+    "pbv": 0.59291744,
+    "per": 14.16,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "PTPP.JK": {
+    "ticker": "PTPP.JK",
+    "name": "PP Persero",
+    "sector": "Perindustrian",
+    "ai_score": 0.55,
+    "ai_score_percent": "55.0%",
+    "is_qualified": true,
+    "roe": -82.073,
+    "der": 464.341,
+    "pbv": 0.41241485,
+    "per": 18.92,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ADHI.JK": {
+    "ticker": "ADHI.JK",
+    "name": "Adhi Karya",
+    "sector": "Perindustrian",
+    "ai_score": 0.545,
+    "ai_score_percent": "54.5%",
+    "is_qualified": true,
+    "roe": -82.901,
+    "der": 247.473,
+    "pbv": 0.4983865,
+    "per": 11.24,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BSDE.JK": {
+    "ticker": "BSDE.JK",
+    "name": "Bumi Serpong Damai",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.54,
+    "ai_score_percent": "54.0%",
+    "is_qualified": true,
+    "roe": 5.716,
+    "der": 31.143,
+    "pbv": 0.31737396,
+    "per": 13.89,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "PWON.JK": {
+    "ticker": "PWON.JK",
+    "name": "Pakuwon Jati",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.535,
+    "ai_score_percent": "53.5%",
+    "is_qualified": true,
+    "roe": 11.0240005,
+    "der": 20.976,
+    "pbv": 0.62585735,
+    "per": 14.15,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "CTRA.JK": {
+    "ticker": "CTRA.JK",
+    "name": "Ciputra Development",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.53,
+    "ai_score_percent": "53.0%",
+    "is_qualified": true,
+    "roe": 10.2290004,
+    "der": 28.661,
+    "pbv": 0.49378994,
+    "per": 12.81,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "SMRA.JK": {
+    "ticker": "SMRA.JK",
+    "name": "Summarecon Agung",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.525,
+    "ai_score_percent": "52.5%",
+    "is_qualified": true,
+    "roe": 7.928,
+    "der": 87.736,
+    "pbv": 0.40511695,
+    "per": 8.38,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ASSA.JK": {
+    "ticker": "ASSA.JK",
+    "name": "Adi Sarana Armada",
+    "sector": "Perindustrian",
+    "ai_score": 0.52,
+    "ai_score_percent": "52.0%",
+    "is_qualified": true,
+    "roe": 18.826,
+    "der": 128.721,
+    "pbv": 1.0479815,
+    "per": 19.03,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BIRD.JK": {
+    "ticker": "BIRD.JK",
+    "name": "Blue Bird",
+    "sector": "Perindustrian",
+    "ai_score": 0.515,
+    "ai_score_percent": "51.5%",
+    "is_qualified": true,
+    "roe": 10.444,
+    "der": 35.953,
+    "pbv": 0.6246791,
+    "per": 17.54,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "GIAA.JK": {
+    "ticker": "GIAA.JK",
+    "name": "Garuda Indonesia",
+    "sector": "Perindustrian",
+    "ai_score": 0.51,
+    "ai_score_percent": "51.0%",
+    "is_qualified": true,
+    "roe": 19.8,
+    "der": 5399.223,
+    "pbv": 4.01,
+    "per": 18.81,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "SMDR.JK": {
+    "ticker": "SMDR.JK",
+    "name": "Samudera Indonesia",
+    "sector": "Perindustrian",
+    "ai_score": 0.505,
+    "ai_score_percent": "50.5%",
+    "is_qualified": true,
+    "roe": 9.154,
+    "der": 65.778,
+    "pbv": 9212.121,
+    "per": 8.93,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "TMAS.JK": {
+    "ticker": "TMAS.JK",
+    "name": "Temas",
+    "sector": "Perindustrian",
+    "ai_score": 0.5,
+    "ai_score_percent": "50.0%",
+    "is_qualified": true,
+    "roe": 18.056,
+    "der": 55.75,
+    "pbv": 2.2283492,
+    "per": 17.93,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "SCMA.JK": {
+    "ticker": "SCMA.JK",
+    "name": "Surya Citra Media",
+    "sector": "Infrastruktur",
+    "ai_score": 0.495,
+    "ai_score_percent": "49.5%",
+    "is_qualified": true,
+    "roe": 11.3970004,
+    "der": 0.234,
+    "pbv": 2.215528,
+    "per": 10.76,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MNCN.JK": {
+    "ticker": "MNCN.JK",
+    "name": "Media Nusantara Citra",
+    "sector": "Infrastruktur",
+    "ai_score": 0.49,
+    "ai_score_percent": "49.0%",
+    "is_qualified": true,
+    "roe": 5.941,
+    "der": 5.688,
+    "pbv": 0.12598853,
+    "per": 19.61,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "EMTK.JK": {
+    "ticker": "EMTK.JK",
+    "name": "Elang Mahkota Teknologi",
+    "sector": "Infrastruktur",
+    "ai_score": 0.485,
+    "ai_score_percent": "48.5%",
+    "is_qualified": true,
+    "roe": 9.003,
+    "der": 4.509,
+    "pbv": 1.0862733,
+    "per": 11.3,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BUKA.JK": {
+    "ticker": "BUKA.JK",
+    "name": "Bukalapak.com",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.48,
+    "ai_score_percent": "48.0%",
+    "is_qualified": true,
+    "roe": 12.847,
+    "der": 0.446,
+    "pbv": 0.5177587,
+    "per": 12.87,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MIKA.JK": {
+    "ticker": "MIKA.JK",
+    "name": "Mitra Keluarga Karyasehat",
+    "sector": "Kesehatan",
+    "ai_score": 0.475,
+    "ai_score_percent": "47.5%",
+    "is_qualified": true,
+    "roe": 17.980999999999998,
+    "der": 0.111,
+    "pbv": 3.0277119,
+    "per": 17.84,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "HEAL.JK": {
+    "ticker": "HEAL.JK",
+    "name": "Medikaloka Hermina",
+    "sector": "Kesehatan",
+    "ai_score": 0.47,
+    "ai_score_percent": "47.0%",
+    "is_qualified": true,
+    "roe": 7.834,
+    "der": 48.057,
+    "pbv": 2.6527402,
+    "per": 14.18,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "SIDO.JK": {
+    "ticker": "SIDO.JK",
+    "name": "Industri Jamu Sido Muncul",
+    "sector": "Kesehatan",
+    "ai_score": 0.465,
+    "ai_score_percent": "46.5%",
+    "is_qualified": true,
+    "roe": 32.823002,
+    "der": 0.049,
+    "pbv": 3.6503274,
+    "per": 15.3,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MYOR.JK": {
+    "ticker": "MYOR.JK",
+    "name": "Mayora Indah",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.46,
+    "ai_score_percent": "46.0%",
+    "is_qualified": true,
+    "roe": 17.131001,
+    "der": 26.627,
+    "pbv": 2.1656196,
+    "per": 12.3,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ULTJ.JK": {
+    "ticker": "ULTJ.JK",
+    "name": "Ultra Jaya Milk",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.455,
+    "ai_score_percent": "45.5%",
+    "is_qualified": true,
+    "roe": 18.201,
+    "der": 0.462,
+    "pbv": 1.9922109,
+    "per": 11.98,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ROTI.JK": {
+    "ticker": "ROTI.JK",
+    "name": "Nippon Indosari Corpindo",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.45,
+    "ai_score_percent": "45.0%",
+    "is_qualified": true,
+    "roe": 10.853,
+    "der": 30.824,
+    "pbv": 1.4856838,
+    "per": 21.52,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "WOOD.JK": {
+    "ticker": "WOOD.JK",
+    "name": "Integra Indocabinet",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.445,
+    "ai_score_percent": "44.5%",
+    "is_qualified": true,
+    "roe": 0.987,
+    "der": 62.386,
+    "pbv": 0.36141288,
+    "per": 17.9,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "AVIA.JK": {
+    "ticker": "AVIA.JK",
+    "name": "Avia Avian",
+    "sector": "Barang Baku",
+    "ai_score": 0.44,
+    "ai_score_percent": "44.0%",
+    "is_qualified": true,
+    "roe": 18.088,
+    "der": 0.234,
+    "pbv": 2.0519183,
+    "per": 19.54,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ACES.JK": {
+    "ticker": "ACES.JK",
+    "name": "Ace Hardware Indonesia",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.435,
+    "ai_score_percent": "43.5%",
+    "is_qualified": true,
+    "roe": 12.577,
+    "der": 15.234,
+    "pbv": 0.88807213,
+    "per": 15.2,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ERAA.JK": {
+    "ticker": "ERAA.JK",
+    "name": "Erajaya Swasembada",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.43,
+    "ai_score_percent": "43.0%",
+    "is_qualified": true,
+    "roe": 15.758,
+    "der": 98.549,
+    "pbv": 0.61598045,
+    "per": 8.41,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "LPPF.JK": {
+    "ticker": "LPPF.JK",
+    "name": "Matahari Department Store",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.425,
+    "ai_score_percent": "42.5%",
+    "is_qualified": true,
+    "roe": 76.869005,
+    "der": 241.162,
+    "pbv": 3.5109026,
+    "per": 21.37,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MAPI.JK": {
+    "ticker": "MAPI.JK",
+    "name": "Mitra Adiperkasa",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.42,
+    "ai_score_percent": "42.0%",
+    "is_qualified": true,
+    "roe": 17.544999999999998,
+    "der": 46.96,
+    "pbv": 1.6994857,
+    "per": 17.21,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "AMMN.JK": {
+    "ticker": "AMMN.JK",
+    "name": "Amman Mineral Internasional",
+    "sector": "Barang Baku",
+    "ai_score": 0.415,
+    "ai_score_percent": "41.5%",
+    "is_qualified": true,
+    "roe": 10.484,
+    "der": 116.552,
+    "pbv": 40921.055,
+    "per": 9.67,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BRIS.JK": {
+    "ticker": "BRIS.JK",
+    "name": "Bank Syariah Indonesia",
+    "sector": "Keuangan",
+    "ai_score": 0.41,
+    "ai_score_percent": "41.0%",
+    "is_qualified": true,
+    "roe": 16.150999,
+    "der": 1.3,
+    "pbv": 1.7536129,
+    "per": 14.44,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BBTN.JK": {
+    "ticker": "BBTN.JK",
+    "name": "Bank Tabungan Negara",
+    "sector": "Keuangan",
+    "ai_score": 0.405,
+    "ai_score_percent": "40.5%",
+    "is_qualified": true,
+    "roe": 10.541,
+    "der": 0.91,
+    "pbv": 0.5114668,
+    "per": 13.51,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BJBR.JK": {
+    "ticker": "BJBR.JK",
+    "name": "Bank BJB",
+    "sector": "Keuangan",
+    "ai_score": 0.4,
+    "ai_score_percent": "40.0%",
+    "is_qualified": true,
+    "roe": 7.808,
+    "der": 0.56,
+    "pbv": 0.47999626,
+    "per": 12.27,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BJTM.JK": {
+    "ticker": "BJTM.JK",
+    "name": "Bank Jatim",
+    "sector": "Keuangan",
+    "ai_score": 0.395,
+    "ai_score_percent": "39.5%",
+    "is_qualified": true,
+    "roe": 10.316,
+    "der": 1.35,
+    "pbv": 0.5681011,
+    "per": 12.89,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ARTO.JK": {
+    "ticker": "ARTO.JK",
+    "name": "Bank Jago",
+    "sector": "Keuangan",
+    "ai_score": 0.39,
+    "ai_score_percent": "39.0%",
+    "is_qualified": true,
+    "roe": 3.447,
+    "der": 1.64,
+    "pbv": 1.7796913,
+    "per": 8.15,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BNGA.JK": {
+    "ticker": "BNGA.JK",
+    "name": "Bank CIMB Niaga",
+    "sector": "Keuangan",
+    "ai_score": 0.385,
+    "ai_score_percent": "38.5%",
+    "is_qualified": true,
+    "roe": 11.9770005,
+    "der": 1.39,
+    "pbv": 0.6879389,
+    "per": 19.48,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "PNBN.JK": {
+    "ticker": "PNBN.JK",
+    "name": "Bank Pan Indonesia",
+    "sector": "Keuangan",
+    "ai_score": 0.38,
+    "ai_score_percent": "38.0%",
+    "is_qualified": true,
+    "roe": 4.9750000000000005,
+    "der": 1.66,
+    "pbv": 0.42035463,
+    "per": 12.58,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BDMN.JK": {
+    "ticker": "BDMN.JK",
+    "name": "Bank Danamon",
+    "sector": "Keuangan",
+    "ai_score": 0.375,
+    "ai_score_percent": "37.5%",
+    "is_qualified": true,
+    "roe": 8.383001,
+    "der": 1.69,
+    "pbv": 0.8674157,
+    "per": 19.77,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "AGRO.JK": {
+    "ticker": "AGRO.JK",
+    "name": "Bank Raya Indonesia",
+    "sector": "Keuangan",
+    "ai_score": 0.37,
+    "ai_score_percent": "37.0%",
+    "is_qualified": true,
+    "roe": -15.855,
+    "der": 1.64,
+    "pbv": 1.3724884,
+    "per": 8.34,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BBYB.JK": {
+    "ticker": "BBYB.JK",
+    "name": "Bank Neo Commerce",
+    "sector": "Keuangan",
+    "ai_score": 0.365,
+    "ai_score_percent": "36.5%",
+    "is_qualified": true,
+    "roe": 13.502,
+    "der": 1.06,
+    "pbv": 0.8249392,
+    "per": 14.47,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BVIC.JK": {
+    "ticker": "BVIC.JK",
+    "name": "Bank Victoria International",
+    "sector": "Keuangan",
+    "ai_score": 0.36,
+    "ai_score_percent": "36.0%",
+    "is_qualified": true,
+    "roe": 3.174,
+    "der": 1.55,
+    "pbv": 0.41738516,
+    "per": 9.4,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "FILM.JK": {
+    "ticker": "FILM.JK",
+    "name": "MD Pictures",
+    "sector": "Infrastruktur",
+    "ai_score": 0.355,
+    "ai_score_percent": "35.5%",
+    "is_qualified": true,
+    "roe": -9.716,
+    "der": 12.22,
+    "pbv": 8.804078,
+    "per": 15.7,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "RAAM.JK": {
+    "ticker": "RAAM.JK",
+    "name": "Tripar Multivision Plus",
+    "sector": "Infrastruktur",
+    "ai_score": 0.35,
+    "ai_score_percent": "35.0%",
+    "is_qualified": true,
+    "roe": -5.328,
+    "der": 27.337,
+    "pbv": 1.0426093,
+    "per": 9.1,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MTDL.JK": {
+    "ticker": "MTDL.JK",
+    "name": "Metrodata Electronics",
+    "sector": "Teknologi",
+    "ai_score": 0.345,
+    "ai_score_percent": "34.5%",
+    "is_qualified": true,
+    "roe": 18.726000000000003,
+    "der": 33.353,
+    "pbv": 1.3609592,
+    "per": 19.35,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "PTSN.JK": {
+    "ticker": "PTSN.JK",
+    "name": "Sat Nusapersada",
+    "sector": "Teknologi",
+    "ai_score": 0.34,
+    "ai_score_percent": "34.0%",
+    "is_qualified": true,
+    "roe": 12.694,
+    "der": 21.293,
+    "pbv": 11250.0,
+    "per": 11.08,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BULL.JK": {
+    "ticker": "BULL.JK",
+    "name": "Buana Lintas Lautan",
+    "sector": "Perindustrian",
+    "ai_score": 0.335,
+    "ai_score_percent": "33.5%",
+    "is_qualified": true,
+    "roe": 13.378,
+    "der": 56.213,
+    "pbv": 29384.615,
+    "per": 12.97,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ELSA.JK": {
+    "ticker": "ELSA.JK",
+    "name": "Elnusa",
+    "sector": "Energi",
+    "ai_score": 0.33,
+    "ai_score_percent": "33.0%",
+    "is_qualified": true,
+    "roe": 13.618,
+    "der": 9.986,
+    "pbv": 0.8423203,
+    "per": 12.97,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "WINS.JK": {
+    "ticker": "WINS.JK",
+    "name": "Wintermar Offshore Marine",
+    "sector": "Perindustrian",
+    "ai_score": 0.325,
+    "ai_score_percent": "32.5%",
+    "is_qualified": true,
+    "roe": 16.018,
+    "der": 17.471,
+    "pbv": 12500.0,
+    "per": 14.83,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MBMA.JK": {
+    "ticker": "MBMA.JK",
+    "name": "Merdeka Battery Materials",
+    "sector": "Barang Baku",
+    "ai_score": 0.32,
+    "ai_score_percent": "32.0%",
+    "is_qualified": true,
+    "roe": 4.279999999999999,
+    "der": 40.244,
+    "pbv": 31733.334,
+    "per": 15.72,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "NCKL.JK": {
+    "ticker": "NCKL.JK",
+    "name": "Trimegah Bangun Persada",
+    "sector": "Barang Baku",
+    "ai_score": 0.315,
+    "ai_score_percent": "31.5%",
+    "is_qualified": true,
+    "roe": 25.308000000000003,
+    "der": 23.671,
+    "pbv": 1.4900186,
+    "per": 17.4,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ABMM.JK": {
+    "ticker": "ABMM.JK",
+    "name": "ABM Investama",
+    "sector": "Energi",
+    "ai_score": 0.31,
+    "ai_score_percent": "31.0%",
+    "is_qualified": true,
+    "roe": 7.2620004,
+    "der": 104.057,
+    "pbv": 7523.2197,
+    "per": 12.26,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ADMR.JK": {
+    "ticker": "ADMR.JK",
+    "name": "Adaro Minerals Indonesia",
+    "sector": "Barang Baku",
+    "ai_score": 0.305,
+    "ai_score_percent": "30.5%",
+    "is_qualified": true,
+    "roe": 16.939,
+    "der": 53.254,
+    "pbv": 37750.0,
+    "per": 19.84,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "DOID.JK": {
+    "ticker": "DOID.JK",
+    "name": "Delta Dunia Makmur",
+    "sector": "Energi",
+    "ai_score": 0.3,
+    "ai_score_percent": "30.0%",
+    "is_qualified": true,
+    "roe": -76.149005,
+    "der": 1096.966,
+    "pbv": 16307.692,
+    "per": 20.94,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "KKGI.JK": {
+    "ticker": "KKGI.JK",
+    "name": "Resource Alam Indonesia",
+    "sector": "Energi",
+    "ai_score": 0.295,
+    "ai_score_percent": "29.5%",
+    "is_qualified": true,
+    "roe": 1.387,
+    "der": 1.872,
+    "pbv": 9225.807,
+    "per": 10.72,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "RMKE.JK": {
+    "ticker": "RMKE.JK",
+    "name": "RMK Energy",
+    "sector": "Energy",
+    "ai_score": 0.29,
+    "ai_score_percent": "29.0%",
+    "is_qualified": true,
+    "roe": 13.317001,
+    "der": 53.577,
+    "pbv": 6.4532666,
+    "per": 19.97,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "CUAN.JK": {
+    "ticker": "CUAN.JK",
+    "name": "Petrindo Jaya Kreasi",
+    "sector": "Energi",
+    "ai_score": 0.285,
+    "ai_score_percent": "28.5%",
+    "is_qualified": true,
+    "roe": 25.986,
+    "der": 240.953,
+    "pbv": 168333.33,
+    "per": 8.65,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BREN.JK": {
+    "ticker": "BREN.JK",
+    "name": "Barito Renewables Energy",
+    "sector": "Infrastruktur",
+    "ai_score": 0.28,
+    "ai_score_percent": "28.0%",
+    "is_qualified": true,
+    "roe": 20.444000000000003,
+    "der": 221.044,
+    "pbv": 528000.0,
+    "per": 20.59,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MBSS.JK": {
+    "ticker": "MBSS.JK",
+    "name": "Mitrabahtera Segara Sejati",
+    "sector": "Perindustrian",
+    "ai_score": 0.275,
+    "ai_score_percent": "27.5%",
+    "is_qualified": true,
+    "roe": 6.601,
+    "der": 5.443,
+    "pbv": 1.0853069,
+    "per": 17.21,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "HAIS.JK": {
+    "ticker": "HAIS.JK",
+    "name": "Hasnur Internasional Shipping",
+    "sector": "Perindustrian",
+    "ai_score": 0.27,
+    "ai_score_percent": "27.0%",
+    "is_qualified": true,
+    "roe": 8.959,
+    "der": 69.748,
+    "pbv": 0.5931078,
+    "per": 13.14,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "TPMA.JK": {
+    "ticker": "TPMA.JK",
+    "name": "Trans Power Marine",
+    "sector": "Perindustrian",
+    "ai_score": 0.265,
+    "ai_score_percent": "26.5%",
+    "is_qualified": true,
+    "roe": 9.198,
+    "der": 80.762,
+    "pbv": 13405.405,
+    "per": 18.41,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "LSIP.JK": {
+    "ticker": "LSIP.JK",
+    "name": "PP London Sumatra Indonesia",
+    "sector": "Pertanian",
+    "ai_score": 0.26,
+    "ai_score_percent": "26.0%",
+    "is_qualified": true,
+    "roe": 13.82,
+    "der": 0.001,
+    "pbv": 0.61867046,
+    "per": 11.38,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "AALI.JK": {
+    "ticker": "AALI.JK",
+    "name": "Astra Agro Lestari",
+    "sector": "Pertanian",
+    "ai_score": 0.255,
+    "ai_score_percent": "25.5%",
+    "is_qualified": true,
+    "roe": 6.839000400000001,
+    "der": 0.44,
+    "pbv": 0.52910584,
+    "per": 17.47,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "TAPG.JK": {
+    "ticker": "TAPG.JK",
+    "name": "Triputra Agro Persada",
+    "sector": "Pertanian",
+    "ai_score": 0.25,
+    "ai_score_percent": "25.0%",
+    "is_qualified": true,
+    "roe": 30.756,
+    "der": 8.742,
+    "pbv": 2.6478126,
+    "per": 11.71,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "DSNG.JK": {
+    "ticker": "DSNG.JK",
+    "name": "Dharma Satya Nusantara",
+    "sector": "Pertanian",
+    "ai_score": 0.245,
+    "ai_score_percent": "24.5%",
+    "is_qualified": true,
+    "roe": 16.868,
+    "der": 32.12,
+    "pbv": 1.0678836,
+    "per": 21.73,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "SIMP.JK": {
+    "ticker": "SIMP.JK",
+    "name": "Salim Ivomas Pratama",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.24,
+    "ai_score_percent": "24.0%",
+    "is_qualified": true,
+    "roe": 11.061,
+    "der": 34.109,
+    "pbv": 0.4195288,
+    "per": 14.09,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BWPT.JK": {
+    "ticker": "BWPT.JK",
+    "name": "Eagle High Plantations",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.235,
+    "ai_score_percent": "23.5%",
+    "is_qualified": true,
+    "roe": 14.29,
+    "der": 162.425,
+    "pbv": 0.9342241,
+    "per": 17.09,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "TBLA.JK": {
+    "ticker": "TBLA.JK",
+    "name": "Tunas Baru Lampung",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.23,
+    "ai_score_percent": "23.0%",
+    "is_qualified": true,
+    "roe": 9.8850004,
+    "der": 187.438,
+    "pbv": 0.41266993,
+    "per": 11.25,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "JPFA.JK": {
+    "ticker": "JPFA.JK",
+    "name": "Japfa Comfeed Indonesia",
+    "sector": "Pertanian",
+    "ai_score": 0.225,
+    "ai_score_percent": "22.5%",
+    "is_qualified": true,
+    "roe": 27.829,
+    "der": 37.268,
+    "pbv": 1.6011304,
+    "per": 13.41,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "MAIN.JK": {
+    "ticker": "MAIN.JK",
+    "name": "Malindo Feedmill",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.22,
+    "ai_score_percent": "22.0%",
+    "is_qualified": true,
+    "roe": 15.941,
+    "der": 59.262,
+    "pbv": 0.61989236,
+    "per": 13.43,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "WMUU.JK": {
+    "ticker": "WMUU.JK",
+    "name": "Widodo Makmur Unggas",
+    "sector": "Pertanian",
+    "ai_score": 0.215,
+    "ai_score_percent": "21.5%",
+    "is_qualified": true,
+    "roe": -8.993,
+    "der": 164.662,
+    "pbv": 0.95249236,
+    "per": 8.31,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "STAA.JK": {
+    "ticker": "STAA.JK",
+    "name": "Sumber Tani Agung Resources",
+    "sector": "Pertanian",
+    "ai_score": 0.21,
+    "ai_score_percent": "21.0%",
+    "is_qualified": true,
+    "roe": 26.591,
+    "der": 21.432,
+    "pbv": 1.61007,
+    "per": 10.77,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "CLEO.JK": {
+    "ticker": "CLEO.JK",
+    "name": "Sariguna Primatirta",
+    "sector": "Barang Konsumen Primer",
+    "ai_score": 0.205,
+    "ai_score_percent": "20.5%",
+    "is_qualified": true,
+    "roe": 17.608999,
+    "der": 17.606,
+    "pbv": 3.9513679,
+    "per": 17.31,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "PANI.JK": {
+    "ticker": "PANI.JK",
+    "name": "Pantai Indah Kapuk Dua",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.2,
+    "ai_score_percent": "20.0%",
+    "is_qualified": true,
+    "roe": 8.327,
+    "der": 1.562,
+    "pbv": 5.007069,
+    "per": 16.13,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "DILD.JK": {
+    "ticker": "DILD.JK",
+    "name": "Intiland Development",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.195,
+    "ai_score_percent": "19.5%",
+    "is_qualified": true,
+    "roe": 2.434,
+    "der": 48.1,
+    "pbv": 0.22023804,
+    "per": 18.18,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "KIJA.JK": {
+    "ticker": "KIJA.JK",
+    "name": "Kawasan Industri Jababeka",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.19,
+    "ai_score_percent": "19.0%",
+    "is_qualified": true,
+    "roe": 10.227,
+    "der": 55.543,
+    "pbv": 0.40507606,
+    "per": 19.6,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "SSIA.JK": {
+    "ticker": "SSIA.JK",
+    "name": "Surya Semesta Internusa",
+    "sector": "Perindustrian",
+    "ai_score": 0.185,
+    "ai_score_percent": "18.5%",
+    "is_qualified": true,
+    "roe": 2.5090002,
+    "der": 30.874,
+    "pbv": 1.3737767,
+    "per": 19.38,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "BEST.JK": {
+    "ticker": "BEST.JK",
+    "name": "Bekasi Fajar Industrial Estate",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.185,
+    "ai_score_percent": "18.5%",
+    "is_qualified": true,
+    "roe": 0.677,
+    "der": 26.102,
+    "pbv": 0.2208581,
+    "per": 20.0,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "ASRI.JK": {
+    "ticker": "ASRI.JK",
+    "name": "Alam Sutera Realty",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.185,
+    "ai_score_percent": "18.5%",
+    "is_qualified": true,
+    "roe": 2.647,
+    "der": 50.887,
+    "pbv": 0.20250253,
+    "per": 14.22,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "NZIA.JK": {
+    "ticker": "NZIA.JK",
+    "name": "Nusantara Almazia",
+    "sector": "Properti & Real Estat",
+    "ai_score": 0.185,
+    "ai_score_percent": "18.5%",
+    "is_qualified": true,
+    "roe": -2.873,
+    "der": 12.331,
+    "pbv": 0.6565831,
+    "per": 21.55,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "AUTO.JK": {
+    "ticker": "AUTO.JK",
+    "name": "Astra Otoparts",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.185,
+    "ai_score_percent": "18.5%",
+    "is_qualified": true,
+    "roe": 14.193,
+    "der": 3.318,
+    "pbv": 0.743484,
+    "per": 9.2,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "DRMA.JK": {
+    "ticker": "DRMA.JK",
+    "name": "Dharma Polimetal",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.185,
+    "ai_score_percent": "18.5%",
+    "is_qualified": true,
+    "roe": 23.509,
+    "der": 9.028,
+    "pbv": 1.5709844,
+    "per": 17.57,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "SMSM.JK": {
+    "ticker": "SMSM.JK",
+    "name": "Selamat Sempurna",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.185,
+    "ai_score_percent": "18.5%",
+    "is_qualified": true,
+    "roe": 27.407,
+    "der": 3.671,
+    "pbv": 2.6008236,
+    "per": 21.11,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  },
+  "GJTL.JK": {
+    "ticker": "GJTL.JK",
+    "name": "Gajah Tunggal",
+    "sector": "Barang Konsumen Non-Primer",
+    "ai_score": 0.185,
+    "ai_score_percent": "18.5%",
+    "is_qualified": true,
+    "roe": 12.292,
+    "der": 48.59,
+    "pbv": 0.39815667,
+    "per": 15.32,
+    "insights": [
+      {
+        "feature": "rsi_14",
+        "contribution": 0.05,
+        "description": "Kekuatan momentum RSI mendukung potensi tren."
+      },
+      {
+        "feature": "roe_growth",
+        "contribution": 0.08,
+        "description": "Pertumbuhan ROE fundamental solid."
+      }
+    ],
+    "last_updated": "2026-08-01 12:00:00"
+  }
 }

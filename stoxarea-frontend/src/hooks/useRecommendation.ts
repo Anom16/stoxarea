@@ -61,7 +61,14 @@ export function useDashboardData() {
 
     api.get('/recommendation/top-picks', { headers })
       .then(r => setRecs(r.data))
-      .catch(() => setError('Gagal memuat data analisis. Pastikan server backend berjalan.'))
+      .catch((err) => {
+        if (err?.response?.status === 400) {
+          // User belum mengisi kuesioner — ini kondisi normal, bukan error server
+          setRecs([])
+        } else {
+          setError('Gagal memuat data analisis. Pastikan server backend berjalan.')
+        }
+      })
 
     api.get('/market/sectors')
       .then(r => setSectors(r.data))

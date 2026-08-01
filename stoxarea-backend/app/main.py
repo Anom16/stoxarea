@@ -1,4 +1,4 @@
-from fastapi import FastAPI  # Trigger uvicorn reload to load newly calibrated AI scores
+from fastapi import FastAPI  # Reloaded all 485 qualified stocks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import logging

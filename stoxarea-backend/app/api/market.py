@@ -34,7 +34,7 @@ def get_hot_momentum(
     diurutkan dari AI Score tertinggi ke terendah.
     Bisa difilter per sektor (12 sektor resmi BEI).
     """
-    return get_top_momentum_stocks(db, limit=100, target_sector=sector)
+    return get_top_momentum_stocks(db, limit=1000, target_sector=sector)
 
 
 @router.get("/ai-score/{ticker}")

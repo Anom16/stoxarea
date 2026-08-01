@@ -177,7 +177,11 @@ def calculate_saw_recommendations(
         stocks = get_qualified_stocks_for_saw(db, target_sector)
         # Filter hanya saham yang dikaitkan dengan profil ini jika ada mapping
         if mapped_tickers:
-            stocks = [s for s in stocks if s["ticker"] in mapped_tickers]
+            clean_mapped = {t.replace(".JK", "").strip().upper() for t in mapped_tickers}
+            filtered = [s for s in stocks if s["ticker"].replace(".JK", "").strip().upper() in clean_mapped]
+            if filtered:
+                stocks = filtered
+
         if not stocks:
             return []
 

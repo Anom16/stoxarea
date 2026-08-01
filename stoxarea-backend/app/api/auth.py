@@ -44,13 +44,16 @@ def register(request: Request, user_in: UserCreate, db: Session = Depends(get_db
 @limiter.limit("10/minute")  # Max 10 login attempts per minute
 def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """Login user with rate limiting to prevent brute force"""
-    user = db.query(User).filter(User.email == form_data.username).first()
+    input_user = form_data.username.strip().lower()
+    user = db.query(User).filter(
+        (User.email == input_user) | (User.email.ilike(f"{input_user}@%"))
+    ).first()
     if not user or not verify_password(form_data.password, user.password_hash):
         logger.warning(f"Login GAGAL: Invalid credentials untuk {form_data.username}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     access_token = create_access_token(data={"sub": user.email})
-    logger.info(f"Login SUCCESS: {form_data.username}")
+    logger.info(f"Login SUCCESS: {user.email}")
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=UserResponse)

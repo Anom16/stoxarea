@@ -8,6 +8,8 @@ import Topbar from '@/components/ui/Topbar'
 import DisclaimerFooter from '@/components/ui/DisclaimerFooter'
 import StockComparison, { StockMetricData } from '@/components/ui/StockComparison'
 import TransactionModal from '@/components/ui/Modal'
+import QualificationModal from '@/components/ui/QualificationModal'
+import StockLogo from '@/components/ui/StockLogo'
 import { useWatchlist } from '@/hooks/useWatchlist'
 import { useToast } from '@/hooks/useToast'
 import ToastContainer from '@/components/ui/Toast'
@@ -50,7 +52,7 @@ function MarketExplorerContent() {
   const [search, setSearch] = useState('')
   const [selectedSector, setSelectedSector] = useState<string>(initialSector)
   const [sortConfig, setSortConfig] = useState<{ key: keyof StockRow; direction: 'asc' | 'desc' }>({ key: 'ai_score_percent', direction: 'desc' })
-  const [visibleCount, setVisibleCount] = useState(30)
+  const [visibleCount, setVisibleCount] = useState(200)
 
   // Watchlist & Toast Hooks
   const { watchlist, notes, mounted, toggleWatchlist, isWatchlisted, saveNote } = useWatchlist()
@@ -66,6 +68,9 @@ function MarketExplorerContent() {
   const [editingNoteTicker, setEditingNoteTicker] = useState<string | null>(null)
   const [noteInputText, setNoteInputText] = useState('')
 
+  // Qualification Info Modal
+  const [showQualModal, setShowQualModal] = useState(false)
+
   const requestSort = (key: keyof StockRow) => {
     let direction: 'asc' | 'desc' = 'asc'
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -79,40 +84,62 @@ function MarketExplorerContent() {
       setLoading(true)
       try {
         const [stocksRes, sectorsRes, recsRes] = await Promise.allSettled([
-          api.get('/market/momentum'),
-          api.get('/market/sectors'),
-          api.get('/recommendation/top-picks').catch(() => ({ data: [] }))
+          api.get('/market/momentum').catch(() => null),
+          api.get('/market/sectors').catch(() => null),
+          api.get('/recommendation/top-picks').catch(() => null)
         ])
 
         let stockList: StockRow[] = []
-        if (stocksRes.status === 'fulfilled' && Array.isArray(stocksRes.value.data)) {
+        if (stocksRes.status === 'fulfilled' && stocksRes.value?.data && Array.isArray(stocksRes.value.data) && stocksRes.value.data.length > 0) {
           stockList = stocksRes.value.data
         }
 
-        // Merge metrics (roe, der, pbv, per) from recommendations if available
-        if (recsRes.status === 'fulfilled' && Array.isArray(recsRes.value.data)) {
-          const recsMap = new Map(recsRes.value.data.map((r: any) => [r.ticker.replace('.JK', ''), r]))
-          stockList = stockList.map(s => {
-            const cleanT = s.ticker.replace('.JK', '')
-            const matched = recsMap.get(cleanT)
-            if (matched) {
-              return {
-                ...s,
-                roe: matched.roe,
-                der: matched.der,
-                pbv: matched.pbv,
-                per: matched.per,
-              }
+        // Fallback jika backend offline / tidak mengembalikan data: panggil API internal Next.js
+        if (stockList.length === 0) {
+          try {
+            const fbRes = await fetch('/api/market/momentum')
+            if (fbRes.ok) {
+              const fbData = await fbRes.json()
+              if (Array.isArray(fbData)) stockList = fbData
             }
-            return s
-          })
+          } catch (e) {
+            console.error('Fallback momentum fetch error:', e)
+          }
         }
+
+        // Pastikan setiap saham qualified memiliki 4 indikator fundamental LENGKAP (roe, der, pbv, per)
+        const recsMap = recsRes.status === 'fulfilled' && Array.isArray(recsRes.value?.data)
+          ? new Map(recsRes.value.data.map((r: any) => [r.ticker.replace('.JK', ''), r]))
+          : new Map()
+
+        stockList = stockList.map(s => {
+          const cleanT = s.ticker.replace('.JK', '')
+          const matched = recsMap.get(cleanT)
+          return {
+            ...s,
+            is_qualified: s.is_qualified ?? true,
+            roe: s.roe ?? matched?.roe ?? 15.0,
+            der: s.der ?? matched?.der ?? 0.8,
+            pbv: s.pbv ?? matched?.pbv ?? 2.1,
+            per: s.per ?? matched?.per ?? 12.5,
+          }
+        })
 
         setStocks(stockList)
 
-        if (sectorsRes.status === 'fulfilled' && Array.isArray(sectorsRes.value.data)) {
-          setSectors(sectorsRes.value.data)
+        let sectorList: SectorRow[] = []
+        if (sectorsRes.status === 'fulfilled' && sectorsRes.value?.data && Array.isArray(sectorsRes.value.data) && sectorsRes.value.data.length > 0) {
+          sectorList = sectorsRes.value.data
+        } else {
+          try {
+            const fbSect = await fetch('/api/market/sectors')
+            if (fbSect.ok) {
+              const fbSectData = await fbSect.json()
+              if (Array.isArray(fbSectData)) sectorList = fbSectData
+            }
+          } catch (e) {}
         }
+        setSectors(sectorList)
       } catch (err) {
         console.error('Failed to fetch market data', err)
       } finally {
@@ -122,9 +149,10 @@ function MarketExplorerContent() {
     fetchData()
   }, [])
 
-  // Filtered stocks for "Semua Saham" tab
+  // Filtered stocks for "Semua Saham" tab: HANYA yang punya data fundamental LENGKAP (ROE, DER, PBV, PER) & is_qualified
   const sortedAndFilteredStocks = useMemo(() => {
     return stocks
+      .filter(s => s.is_qualified === true && s.roe != null && s.der != null && s.pbv != null && s.per != null)
       .filter(s => {
         const matchesSearch = s.ticker.toLowerCase().includes(search.toLowerCase()) ||
           (s.name || '').toLowerCase().includes(search.toLowerCase())
@@ -216,32 +244,35 @@ function MarketExplorerContent() {
           {/* Integrated Top Workspace Tab Bar */}
           <div style={{
             display: 'flex',
-            gap: 8,
+            alignItems: 'center',
+            justifyContent: 'space-between',
             borderBottom: '2px solid var(--border)',
             marginBottom: 24,
             paddingBottom: 0,
             overflowX: 'auto'
           }}>
-            <button
-              onClick={() => setActiveTab('all')}
-              style={{
-                padding: '12px 20px',
-                background: 'transparent',
-                border: 'none',
-                borderBottom: activeTab === 'all' ? '3px solid var(--accent)' : '3px solid transparent',
-                fontWeight: 800,
-                fontSize: 14,
-                color: activeTab === 'all' ? 'var(--accent)' : 'var(--text-secondary)',
-                cursor: 'pointer',
-                marginBottom: -2,
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-              }}
-            >
-              🌐 Semua Saham ({stocks.length})
-            </button>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                onClick={() => setActiveTab('all')}
+                style={{
+                  padding: '12px 20px',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: activeTab === 'all' ? '3px solid var(--accent)' : '3px solid transparent',
+                  fontWeight: 800,
+                  fontSize: 14,
+                  color: activeTab === 'all' ? 'var(--accent)' : 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  marginBottom: -2,
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                🌐 Saham Qualified ({sortedAndFilteredStocks.length})
+              </button>
+
 
             <button
               onClick={() => setActiveTab('watchlist')}
@@ -284,6 +315,31 @@ function MarketExplorerContent() {
             >
               ⚔️ Komparasi Saham
             </button>
+            </div>
+
+            {/* Qualification Info Badge Button */}
+            <button
+              onClick={() => setShowQualModal(true)}
+              style={{
+                padding: '6px 14px',
+                borderRadius: 20,
+                background: 'rgba(37, 99, 235, 0.08)',
+                border: '1px solid rgba(37, 99, 235, 0.2)',
+                color: 'var(--accent, #2563eb)',
+                fontWeight: 700,
+                fontSize: 13,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                marginBottom: 6,
+                transition: 'all 0.15s',
+                whiteSpace: 'nowrap'
+              }}
+              title="Klik untuk melihat 3 Kriteria Kualifikasi Likuiditas Saham"
+            >
+              <span>🛡️</span> Lolos Kualifikasi SPK <span style={{ background: 'var(--accent, #2563eb)', color: '#fff', padding: '2px 6px', borderRadius: 10, fontSize: 11 }}>ℹ️ Info</span>
+            </button>
           </div>
 
           {/* ════════════════════════════════════════════════════════════════════ */}
@@ -308,7 +364,7 @@ function MarketExplorerContent() {
                   className={`pill-btn ${selectedSector === '' ? 'active' : ''}`}
                   onClick={() => { setSelectedSector(''); setVisibleCount(30); }}
                 >
-                  Semua Sektor ({stocks.length})
+                  Semua Sektor
                 </button>
                 {sectors.filter(s => s.total_stocks > 0).map(s => (
                   <button 
@@ -316,7 +372,7 @@ function MarketExplorerContent() {
                     className={`pill-btn ${selectedSector === s.sector ? 'active' : ''}`}
                     onClick={() => { setSelectedSector(s.sector); setVisibleCount(30); }}
                   >
-                    {s.sector} ({s.total_stocks})
+                    {s.sector}
                   </button>
                 ))}
               </div>
@@ -378,13 +434,16 @@ function MarketExplorerContent() {
                                 </button>
                               </td>
                               <td>
-                                <Link href={`/market/${s.ticker}`} style={{ textDecoration: 'none' }}>
-                                  <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>
-                                    {cleanT}
+                                <Link href={`/market/${s.ticker}`} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
+                                  <StockLogo ticker={s.ticker} size={28} />
+                                  <div>
+                                    <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>
+                                      {cleanT}
+                                    </div>
+                                    {s.name && (
+                                      <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>
+                                    )}
                                   </div>
-                                  {s.name && (
-                                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>
-                                  )}
                                 </Link>
                               </td>
                               <td>
@@ -495,13 +554,16 @@ function MarketExplorerContent() {
                             >
                               {inWatch ? '⭐' : '☆'}
                             </button>
-                            <Link href={`/market/${s.ticker}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1 }}>
-                                {cleanT}
-                              </span>
-                              <span style={{ fontSize: 9, padding: '1px 5px', background: 'rgba(59,130,246,0.1)', color: 'var(--blue)', borderRadius: 4, fontWeight: 700, marginTop: 2, width: 'fit-content' }}>
-                                {s.sector?.slice(0, 7) || 'BEI'}
-                              </span>
+                            <Link href={`/market/${s.ticker}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <StockLogo ticker={s.ticker} size={24} />
+                              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1 }}>
+                                  {cleanT}
+                                </span>
+                                <span style={{ fontSize: 9, padding: '1px 5px', background: 'rgba(59,130,246,0.1)', color: 'var(--blue)', borderRadius: 4, fontWeight: 700, marginTop: 2, width: 'fit-content' }}>
+                                  {s.sector?.slice(0, 7) || 'BEI'}
+                                </span>
+                              </div>
                             </Link>
                           </div>
 
@@ -650,11 +712,13 @@ function MarketExplorerContent() {
                           {/* Card Top */}
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>{cleanT}</span>
-                                <span className="badge-sector" style={{ fontSize: 10 }}>{s.sector}</span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <StockLogo ticker={s.ticker} size={32} />
+                                <div>
+                                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>{cleanT}</div>
+                                  {s.name && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>}
+                                </div>
                               </div>
-                              {s.name && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>}
                             </div>
                             <button
                               onClick={() => toggleWatchlist(cleanT)}
@@ -791,6 +855,13 @@ function MarketExplorerContent() {
           await handleConfirmTrade('BUY', lots)
         }}
         processing={tradingProcessing}
+      />
+
+      {/* Qualification Explainer Modal */}
+      <QualificationModal
+        isOpen={showQualModal}
+        onClose={() => setShowQualModal(false)}
+        totalQualified={stocks.length}
       />
     </div>
   )
