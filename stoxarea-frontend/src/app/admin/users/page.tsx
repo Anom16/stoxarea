@@ -252,7 +252,7 @@ export default function AdminUsersPage() {
       {loading && <p style={{ color: '#888' }}>Memuat...</p>}
 
       {/* Tabel */}
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+      <div className="admin-table-container" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid var(--border)' }}>

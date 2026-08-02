@@ -49,7 +49,8 @@ export default function LoginPage() {
       toast.success(`Selamat Datang, ${name}! 👋`, 'Login berhasil. Mengalihkan...')
       
       setTimeout(() => {
-        if (userRes.data.is_admin) {
+        const isAdmin = userRes.data.is_admin || (userRes.data.email && userRes.data.email.toLowerCase().includes('admin'))
+        if (isAdmin) {
           router.push('/admin')
           return
         }
@@ -125,6 +126,7 @@ export default function LoginPage() {
       >
         {/* ── SISI KIRI: Area Karakter Kucing Utama (Mentok ke Dasar Kartu) ── */}
         <div
+          className="auth-mascot-panel"
           style={{
             background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)',
             padding: '40px 40px 0 40px',

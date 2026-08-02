@@ -940,3 +940,52 @@ body, .sidebar, .topbar, .nav-item, .logo-text, .nav-label, .card {
     padding: 40px 16px;
   }
 }
+
+/* ── AUTH MASCOT MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  .auth-mascot-panel {
+    display: none !important;
+  }
+}
+
+/* ── ADMIN PANEL MOBILE RESPONSIVE ── */
+.admin-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--bg-card, #ffffff);
+  border-top: 1px solid var(--border, #e2e8f0);
+  z-index: 100;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.admin-main-content {
+  flex: 1;
+  padding: 24px 32px;
+  box-sizing: border-box;
+}
+
+.admin-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .admin-bottom-nav {
+    display: flex !important;
+  }
+
+  .admin-main-content {
+    padding: 16px 12px 76px 12px !important;
+  }
+}
+
+

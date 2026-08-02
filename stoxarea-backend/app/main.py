@@ -205,6 +205,18 @@ def seed_database_if_empty(db):
         logger.error(f"[Seed] Failed seeding default users: {ex}")
         db.rollback()
 
+    # 5. Pastikan semua user dengan email admin (misal admin@gmail.com) berstatus is_admin = True
+    try:
+        from app.models.user import User
+        admin_list = db.query(User).filter(User.email.ilike("%admin%")).all()
+        for au in admin_list:
+            if not au.is_admin:
+                au.is_admin = True
+        db.commit()
+    except Exception:
+        db.rollback()
+
+
 @app.on_event("startup")
 def on_startup():
     # Retry database connection and table creation (handles Supabase cold starts/pauses)

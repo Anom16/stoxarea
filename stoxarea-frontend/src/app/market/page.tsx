@@ -488,26 +488,21 @@ function MarketExplorerContent() {
                                 </div>
                               </td>
                               <td style={{ textAlign: 'right' }}>
-                                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                                  <button
-                                    onClick={() => handleOpenTradeModal(s.ticker, s.current_price || 0)}
-                                    style={{
-                                      background: 'var(--accent)',
-                                      color: 'white',
-                                      border: 'none',
-                                      borderRadius: 6,
-                                      padding: '6px 12px',
-                                      fontSize: 12,
-                                      fontWeight: 700,
-                                      cursor: 'pointer',
-                                    }}
-                                  >
-                                    Beli
-                                  </button>
-                                  <Link href={`/market/${s.ticker}`} className="btn-outline" style={{ padding: '6px 12px', fontSize: 12 }}>
-                                    Detail
-                                  </Link>
-                                </div>
+                                <Link
+                                  href={`/market/${s.ticker}`}
+                                  style={{
+                                    background: 'var(--accent)',
+                                    color: 'white',
+                                    borderRadius: 6,
+                                    padding: '6px 14px',
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    textDecoration: 'none',
+                                    display: 'inline-block'
+                                  }}
+                                >
+                                  Detail
+                                </Link>
                               </td>
                             </tr>
                           )
@@ -609,23 +604,22 @@ function MarketExplorerContent() {
                             </div>
                           </div>
 
-                          {/* 5. Tombol Beli */}
-                          <button
-                            onClick={() => handleOpenTradeModal(s.ticker, s.current_price || 0)}
+                          {/* 5. Tombol Detail */}
+                          <Link
+                            href={`/market/${s.ticker}`}
                             style={{
                               background: 'var(--accent)',
                               color: 'white',
-                              border: 'none',
                               borderRadius: 6,
                               padding: '6px 10px',
                               fontSize: 11,
                               fontWeight: 700,
-                              cursor: 'pointer',
+                              textDecoration: 'none',
                               flexShrink: 0
                             }}
                           >
-                            Beli
-                          </button>
+                            Detail
+                          </Link>
                         </div>
                       )
                     })}
@@ -803,19 +797,24 @@ function MarketExplorerContent() {
                         </div>
 
                         {/* Card Actions */}
-                        <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-                          <button
-                            onClick={() => handleOpenTradeModal(s.ticker, s.current_price || 0)}
-                            style={{ flex: 1, background: 'var(--accent)', color: 'white', border: 'none', borderRadius: 8, padding: '10px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
-                          >
-                            🛒 Beli Virtual Trading
-                          </button>
+                        <div style={{ marginTop: 20 }}>
                           <Link
                             href={`/market/${s.ticker}`}
-                            className="btn-outline"
-                            style={{ padding: '10px 14px', fontSize: 13, textDecoration: 'none', textAlign: 'center' }}
+                            style={{
+                              display: 'block',
+                              width: '100%',
+                              background: 'var(--accent)',
+                              color: 'white',
+                              borderRadius: 8,
+                              padding: '10px',
+                              fontSize: 13,
+                              fontWeight: 700,
+                              textDecoration: 'none',
+                              textAlign: 'center',
+                              boxSizing: 'border-box'
+                            }}
                           >
-                            Detail
+                            Detail Saham
                           </Link>
                         </div>
                       </div>

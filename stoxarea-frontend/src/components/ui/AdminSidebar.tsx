@@ -3,13 +3,13 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 
 const adminNav = [
-  { href: '/admin',                  label: 'Dashboard Admin',    icon: '⊞' },
-  { href: '/admin/users',            label: 'Kelola User',        icon: '👥' },
-  { href: '/admin/spk',              label: 'Pengaturan SPK',     icon: '🎯' },
-  { href: '/admin/stocks',           label: 'Daftar Saham',       icon: '📈' },
-  { href: '/admin/ml-pipeline',      label: 'Pipeline ML',        icon: '⚙️' },
-  { href: '/admin/model-performance',label: 'Performa Model AI',  icon: '🧠' },
-  { href: '/admin/cache',            label: 'Cache Monitor',      icon: '🗄️' },
+  { href: '/admin',                  label: 'Overview System',        icon: '📊' },
+  { href: '/admin/users',            label: 'Kelola Pengguna',        icon: '👥' },
+  { href: '/admin/spk',              label: 'Bobot & Aturan SPK',     icon: '🎯' },
+  { href: '/admin/stocks',           label: 'Katalog Emiten',         icon: '📈' },
+  { href: '/admin/ml-pipeline',      label: 'Pipeline ML & Training', icon: '⚡' },
+  { href: '/admin/model-performance',label: 'Evaluasi Model AI',      icon: '🧠' },
+  { href: '/admin/cache',            label: 'Monitor Cache',          icon: '🗄️' },
 ]
 
 export default function AdminSidebar() {

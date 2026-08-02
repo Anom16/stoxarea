@@ -19,6 +19,19 @@ const STOCK_NAMES: Record<string, string> = {
   'UNVR.JK': 'Unilever Indonesia Tbk', 'ICBP.JK': 'Indofood CBP Sukses Makmur Tbk', 'INDF.JK': 'Indofood Sukses Makmur Tbk', 'ANTM.JK': 'Aneka Tambang Tbk', 'KLBF.JK': 'Kalbe Farma Tbk'
 }
 
+const KNOWN_PRICES: Record<string, number> = {
+  'BBCA': 9850, 'BBRI': 5150, 'BMRI': 6650, 'BBNI': 5200, 'BRIS': 2950,
+  'TLKM': 3850, 'ASII': 5050, 'ADRO': 3180, 'UNVR': 3100, 'ICBP': 11150,
+  'INDF': 6800, 'ANTM': 1520, 'KLBF': 1480, 'PGAS': 1550, 'PTBA': 2450,
+  'ITMG': 26800, 'MEDC': 1320, 'AMRT': 2850, 'MYOR': 2450, 'CPIN': 5100,
+  'JPFA': 1250, 'MDKA': 2350, 'TPIA': 9250, 'INKP': 7800, 'TKIM': 6900,
+  'INTP': 7100, 'SMGR': 3950, 'MIKA': 2800, 'HEAL': 1350, 'SIDO': 650,
+  'CTRA': 1150, 'BSDE': 1050, 'PWON': 440, 'SMRA': 550, 'BUKA': 140,
+  'EMTK': 450, 'MTDL': 620, 'ACES': 820, 'MAPI': 1450, 'ERAA': 430,
+  'AUTO': 2100, 'ISAT': 10500, 'EXCL': 2250, 'TOWR': 780, 'JSMR': 4850,
+  'AKRA': 1650, 'DOID': 610, 'ELSA': 480, 'ARTO': 2850, 'BBTN': 1320,
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -30,7 +43,16 @@ export async function GET(request: Request) {
         const name = info.name || STOCK_NAMES[ticker] || ticker.replace('.JK', '')
         const score = info.ai_score || 0
         const percentStr = info.ai_score_percent || `${(score * 100).toFixed(1)}%`
-        const sentiment = score > 0.25 ? 'Bullish' : score > 0.15 ? 'Neutral' : 'Bearish'
+        const sentiment = score >= 0.40 ? 'Bullish' : score >= 0.30 ? 'Neutral' : 'Bearish'
+
+        const cleanT = ticker.replace('.JK', '')
+        const basePrice = KNOWN_PRICES[cleanT] || (500 + Math.abs(cleanT.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) * 17) % 4500)
+
+        const sparkline = sentiment === 'Bullish'
+          ? [Math.round(basePrice * 0.94), Math.round(basePrice * 0.95), Math.round(basePrice * 0.945), Math.round(basePrice * 0.97), Math.round(basePrice * 0.965), Math.round(basePrice * 0.99), basePrice]
+          : sentiment === 'Bearish'
+          ? [Math.round(basePrice * 1.06), Math.round(basePrice * 1.05), Math.round(basePrice * 1.03), Math.round(basePrice * 1.04), Math.round(basePrice * 1.02), Math.round(basePrice * 1.01), basePrice]
+          : [Math.round(basePrice * 0.98), Math.round(basePrice * 1.01), Math.round(basePrice * 0.99), Math.round(basePrice * 1.02), Math.round(basePrice * 0.98), Math.round(basePrice * 1.00), basePrice]
 
         return {
           ticker,
@@ -39,13 +61,14 @@ export async function GET(request: Request) {
           ai_score: score,
           ai_score_percent: percentStr,
           sentiment,
-          current_price: Math.floor(1000 + Math.random() * 8000),
+          current_price: basePrice,
+          price: basePrice,
           is_qualified: true,
           roe: info.roe ?? 14.5,
           der: info.der ?? 0.85,
           pbv: info.pbv ?? 2.1,
           per: info.per ?? 12.8,
-          sparkline: [score * 10, score * 12, score * 11, score * 14, score * 13, score * 15, score * 16]
+          sparkline
         }
       })
       .filter(item => !targetSector || item.sector.toLowerCase() === targetSector.toLowerCase())

@@ -116,6 +116,7 @@ export default function RegisterPage() {
         }}
       >
         <div
+          className="auth-mascot-panel"
           style={{
             background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)',
             padding: '40px 40px 0 40px',

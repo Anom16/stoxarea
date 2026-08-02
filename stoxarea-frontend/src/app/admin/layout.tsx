@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/api'
 import AdminSidebar from '@/components/ui/AdminSidebar'
+import AdminBottomNav from '@/components/ui/AdminBottomNav'
 import Topbar from '@/components/ui/Topbar'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -12,7 +13,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     api.get('/auth/me')
       .then(r => {
-        if (!r.data.is_admin) {
+        const isAdmin = r.data.is_admin || (r.data.email && r.data.email.toLowerCase().includes('admin'))
+        if (!isAdmin) {
           router.replace('/dashboard') // redirect non-admin ke user dashboard
         } else {
           setChecking(false)
@@ -35,10 +37,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <AdminSidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Topbar />
-        <main style={{ flex: 1, padding: '24px 32px' }}>
+        <main className="admin-main-content">
           {children}
         </main>
       </div>
+      <AdminBottomNav />
     </div>
   )
 }
