@@ -48,7 +48,7 @@ export default function Sidebar() {
           alt="StoxArea Logo" 
           style={{ width: 38, height: 38, borderRadius: 10, objectFit: 'contain' }} 
         />
-        <span className="logo-text">Stox<span style={{ color: 'var(--accent)' }}>Area</span></span>
+        <span className="logo-text">STOX<span style={{ color: 'var(--accent)' }}>AREA</span></span>
       </div>
 
       <nav className="sidebar-nav">

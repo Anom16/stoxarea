@@ -3,7 +3,11 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-export default function BottomNav() {
+interface BottomNavProps {
+  isAdmin?: boolean
+}
+
+export default function BottomNav({ isAdmin }: BottomNavProps) {
   const pathname = usePathname()
 
   const navItems = [
@@ -12,6 +16,10 @@ export default function BottomNav() {
     { href: '/virtual-trading', label: 'Trading', icon: '◈' },
     { href: '/settings', label: 'Pengaturan', icon: '⚙' },
   ]
+
+  if (isAdmin) {
+    navItems.push({ href: '/admin', label: 'Admin', icon: '🛡️' })
+  }
 
   return (
     <nav className="mobile-bottom-nav">
@@ -22,6 +30,7 @@ export default function BottomNav() {
             key={item.href}
             href={item.href}
             className={`bottom-nav-item ${isActive ? 'active' : ''}`}
+            style={item.href === '/admin' ? { color: '#ef4444', fontWeight: 800 } : {}}
           >
             <span className="bottom-nav-icon">{item.icon}</span>
             <span className="bottom-nav-label">{item.label}</span>

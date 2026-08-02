@@ -136,7 +136,7 @@ export default function RegisterPage() {
               style={{ width: 42, height: 42, borderRadius: 12, objectFit: 'contain' }}
             />
             <span style={{ fontSize: 26, fontWeight: 900, color: '#0f172a', letterSpacing: -0.5 }}>
-              Stox<span style={{ color: '#2563eb' }}>Area</span>
+              STOX<span style={{ color: '#2563eb' }}>AREA</span>
             </span>
           </div>
 

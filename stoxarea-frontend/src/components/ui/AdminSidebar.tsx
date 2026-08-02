@@ -27,7 +27,7 @@ export default function AdminSidebar() {
       <div className="sidebar-logo">
         <img src="/icons/icon-192x192.png" alt="StoxArea Logo"
           style={{ width: 36, height: 36, objectFit: 'contain' }} />
-        <span className="logo-text">Stox<span>Area</span></span>
+        <span className="logo-text">STOX<span>AREA</span></span>
       </div>
 
       {/* Admin Badge */}
