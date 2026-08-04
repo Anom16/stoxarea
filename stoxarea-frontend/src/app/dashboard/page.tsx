@@ -604,7 +604,7 @@ export default function DashboardPage() {
             <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
               Profil Risiko Anda:{' '}
               <strong style={{ color: getProfileColor(profile) }}>{profile}</strong>
-              {' '}— AI STOXAREA menganalisis emiten yang paling sesuai dengan profil Anda secara matematis.
+              {' '}— STOXAREA menganalisis emiten yang paling sesuai dengan profil Anda secara matematis.
             </p>
           </div>
 
@@ -744,7 +744,7 @@ export default function DashboardPage() {
           <section className="dashboard-section mb-24" role="region" aria-label="AI Watchlist Emiten Pilihan">
             <div className="section-title">🎯 AI Watchlist — Top Matches</div>
             <div className="section-sub">
-              Emiten Paling Sesuai Profil {profile} Anda berdasarkan Kalkulasi SAW · Bukan Saran Investasi
+              Emiten Paling Sesuai Profil {profile} Anda berdasarkan Kalkulasi SAW
             </div>
 
             {recs.length === 0 ? (
@@ -836,7 +836,7 @@ export default function DashboardPage() {
           <div style={{ margin: '0 0 24px', padding: '12px 16px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 10, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
             <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
             <p style={{ fontSize: 11, color: '#f59e0b', lineHeight: 1.7, margin: 0 }}>
-              <strong>Pernyataan Penting:</strong> Seluruh hasil analisis di halaman ini — termasuk AI Watchlist, Match Score, dan AI Score — merupakan <strong>output kalkulasi matematis algoritmik</strong> (metode SAW + XGBoost) berdasarkan data historis dan teknikal. Hasil ini <strong>bukan merupakan saran, ajakan, atau rekomendasi investasi</strong> dalam bentuk apapun. Keputusan investasi sepenuhnya merupakan tanggung jawab pengguna. StoxArea tidak memiliki lisensi Penasihat Investasi dari OJK.
+              <strong>Pernyataan Penting:</strong> Seluruh hasil analisis di halaman ini — termasuk Match Score, dan AI Score — merupakan <strong>output kalkulasi matematis algoritmik</strong> berdasarkan data historis dan teknikal. Hasil ini <strong>bukan merupakan saran, ajakan, atau rekomendasi investasi</strong> dalam bentuk apapun. Keputusan investasi sepenuhnya merupakan tanggung jawab pengguna. StoxArea tidak memiliki lisensi Penasihat Investasi dari OJK.
             </p>
           </div>
 
@@ -844,8 +844,8 @@ export default function DashboardPage() {
           <section className="dashboard-section mb-24" role="region" aria-label="Ranking dan Radar Sektor Pasar">
             <div className="ranking-grid-2col">
               <div className="card" style={{ overflowX: 'auto' }}>
-                <div className="section-title" style={{ fontSize: 16, marginBottom: 4 }}>📊 Ranking SPK Keseluruhan</div>
-                <div className="section-sub" style={{ marginBottom: 16 }}>15 emiten paling sesuai berdasarkan Skor SAW</div>
+                <div className="section-title" style={{ fontSize: 16, marginBottom: 4 }}>📊 Ranking Keseluruhan</div>
+                <div className="section-sub" style={{ marginBottom: 16 }}>10 emiten paling sesuai berdasarkan SAW</div>
                 <table className="ranking-table">
                   <thead>
                     <tr><th>#</th><th>Ticker</th><th>Sektor</th><th>Match %</th><th>AI Score</th></tr>
@@ -901,7 +901,7 @@ export default function DashboardPage() {
 
               <div className="card" style={{ overflowX: 'auto' }}>
                 <div className="section-title" style={{ fontSize: 16, marginBottom: 4 }}>🌐 Radar Sektor BEI</div>
-                <div className="section-sub" style={{ marginBottom: 16 }}>Sentimen AI per Sektor (Bullish/Netral/Bearish)</div>
+                <div className="section-sub" style={{ marginBottom: 16 }}>Sentimen Sektoral (Bullish/Netral/Bearish)</div>
                 <table className="ranking-table">
                   <thead>
                     <tr><th>Sektor</th><th>Saham</th><th>AI Avg</th><th>Sentimen</th></tr>

@@ -14,12 +14,12 @@ const FAQ_ITEMS = [
     category: '🗂 Platform & Akun',
     items: [
       {
-        q: 'Apa itu StoxArea?',
-        a: 'StoxArea adalah platform analitik dan edukasi pasar saham Indonesia berbasis kecerdasan buatan. Sistem ini menggabungkan algoritma Machine Learning (XGBoost) dan metode Sistem Pendukung Keputusan (SAW) untuk menghasilkan rekomendasi saham yang dipersonalisasi sesuai profil risiko Anda.'
+        q: 'Apa itu STOXAREA?',
+        a: 'STOXAREA adalah platform analitik dan edukasi pasar saham Indonesia berbasis kecerdasan buatan. Sistem ini menggabungkan algoritma Machine Learning (XGBoost) dan metode Sistem Pendukung Keputusan (SAW) untuk menghasilkan rekomendasi saham yang dipersonalisasi sesuai profil risiko Anda.'
       },
       {
-        q: 'Apakah StoxArea gratis digunakan?',
-        a: 'Ya, StoxArea sepenuhnya gratis. Seluruh fitur termasuk AI Watchlist, analisis fundamental/teknikal, dan Virtual Trading tersedia tanpa biaya apapun.'
+        q: 'Apakah STOXAREA gratis digunakan?',
+        a: 'Ya, STOXAREA sepenuhnya gratis. Seluruh fitur termasuk AI Watchlist, analisis fundamental/teknikal, dan Virtual Trading tersedia tanpa biaya apapun.'
       },
       {
         q: 'Bagaimana cara mengubah nama profil saya?',
@@ -60,13 +60,13 @@ const FAQ_ITEMS = [
       },
       {
         q: 'Mengapa rekomendasi saya berbeda dengan pengguna lain?',
-        a: 'Rekomendasi StoxArea bersifat personal, bukan generik. Perbedaan terjadi karena metode SAW memberikan bobot berbeda pada setiap kriteria (AI Score, ROE, DER, PBV) tergantung profil risiko Anda. Dua pengguna dengan profil berbeda akan melihat urutan rekomendasi yang berbeda meskipun melihat sektor yang sama.'
+        a: 'Rekomendasi STOXAREA bersifat personal, bukan generik. Perbedaan terjadi karena metode SAW memberikan bobot berbeda pada setiap kriteria (AI Score, ROE, DER, PBV) tergantung profil risiko Anda. Dua pengguna dengan profil berbeda akan melihat urutan rekomendasi yang berbeda meskipun melihat sektor yang sama.'
       },
       {
-        q: 'Apakah rekomendasi StoxArea dapat dijadikan dasar keputusan investasi?',
-        a: '**Tidak.** Seluruh output StoxArea — termasuk AI Score, Match Score, dan AI Watchlist — adalah hasil kalkulasi matematis algoritmik, bukan saran investasi.\n\n' +
+        q: 'Apakah rekomendasi STOXAREA dapat dijadikan dasar keputusan investasi?',
+        a: '**Tidak.** Seluruh output STOXAREA — termasuk AI Score, Match Score, dan AI Watchlist — adalah hasil kalkulasi matematis algoritmik, bukan saran investasi.\n\n' +
           '**Batasan penting:**\n' +
-          '• StoxArea tidak terdaftar sebagai Penasihat Investasi di OJK.\n' +
+          '• STOXAREA tidak terdaftar sebagai Penasihat Investasi di OJK.\n' +
           '• Sistem tidak memprediksi harga saham secara pasti, melainkan mengukur probabilitas tren berdasarkan data historis.\n' +
           '• Selalu lakukan riset mandiri dan pertimbangkan kondisi keuangan Anda sebelum berinvestasi.'
       },
@@ -101,13 +101,13 @@ const FAQ_ITEMS = [
         a: 'Data harga saham dan indeks pasar (termasuk IHSG) diambil secara real-time dari Yahoo Finance melalui library yfinance. Data ini digunakan untuk keperluan edukasi dan analisis, bukan transaksi keuangan nyata.'
       },
       {
-        q: 'Apakah data pribadi saya aman di StoxArea?',
+        q: 'Apakah data pribadi saya aman di STOXAREA?',
         a: '**Ya, data Anda aman.** Kami menerapkan standar keamanan industri untuk melindungi informasi pribadi Anda.\n\n' +
           '**Rincian teknis:**\n' +
           '• Data pribadi (email, nama, profil risiko) disimpan di database PostgreSQL yang dihosting di Supabase.\n' +
           '• Database dilindungi enkripsi standar industri.\n' +
           '• Password disimpan dalam bentuk hash menggunakan algoritma bcrypt — tidak ada yang bisa melihat password asli Anda, termasuk administrator.\n' +
-          '• StoxArea tidak menyimpan informasi keuangan atau rekening bank Anda.'
+          '• STOXAREA tidak menyimpan informasi keuangan atau rekening bank Anda.'
       },
     ]
   },
@@ -280,7 +280,7 @@ export default function SettingsPage() {
 
   // ── Handler: Logout ───────────────────────────────────────────────────────
   const handleLogout = () => {
-    if (confirm('Yakin ingin keluar dari StoxArea?')) {
+    if (confirm('Yakin ingin keluar dari STOXAREA?')) {
       localStorage.removeItem('access_token')
       router.push('/auth/login')
     }
@@ -305,7 +305,7 @@ export default function SettingsPage() {
           {/* Breadcrumb & Subtitle */}
           <div style={{ marginBottom: 20 }}>
             <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>
-              StoxArea / <span style={{ color: 'var(--text-primary)' }}>Pengaturan</span>
+              STOXAREA / <span style={{ color: 'var(--text-primary)' }}>Pengaturan</span>
             </div>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0 }}>
               Kelola akun dan preferensi aplikasi kamu.
@@ -891,7 +891,7 @@ export default function SettingsPage() {
                           <button
                             onClick={() => {
                               localStorage.removeItem('stoxarea_tour_done')
-                              window.dispatchEvent(new Event('stoxarea:open-tutorial'))
+                              window.dispatchEvent(new Event('STOXAREA:open-tutorial'))
                               toast.info('Tutorial Dibuka 🎓', 'Petunjuk panduan aplikasi sedang ditampilkan...')
                             }}
                             style={{

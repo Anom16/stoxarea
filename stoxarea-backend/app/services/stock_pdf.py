@@ -1,6 +1,21 @@
 from fpdf import FPDF
 from datetime import datetime
 
+def clean_txt(text) -> str:
+    if text is None:
+        return "-"
+    s = str(text)
+    return (
+        s.replace("—", "-")
+         .replace("–", "-")
+         .replace("·", "|")
+         .replace("’", "'")
+         .replace("“", '"')
+         .replace("”", '"')
+         .encode("latin-1", "replace")
+         .decode("latin-1")
+    )
+
 def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> bytes:
     # Initialize A4 Portrait PDF
     pdf = FPDF(orientation="P", unit="mm", format="A4")
@@ -8,25 +23,31 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
     pdf.add_page()
     
     # Formatting helper for currency
-    def format_idr(val: float) -> str:
+    def format_idr(val) -> str:
         try:
+            if val is None:
+                return "-"
             return f"Rp {int(val):,}".replace(",", ".")
         except:
-            return "—"
+            return "-"
             
     # Format percent helper
-    def format_pct(val: float) -> str:
+    def format_pct(val) -> str:
         try:
+            if val is None:
+                return "-"
             return f"{float(val * 100):.2f}%"
         except:
-            return "—"
+            return "-"
 
     # Format normal float helper
-    def format_num(val: float, decimals=2) -> str:
+    def format_num(val, decimals=2) -> str:
         try:
+            if val is None:
+                return "-"
             return f"{float(val):.{decimals}f}"
         except:
-            return "—"
+            return "-"
 
     # ─── HEADER SECTION ───
     pdf.set_font("helvetica", "B", 18)
@@ -35,14 +56,17 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
     
     pdf.set_font("helvetica", "B", 12)
     pdf.set_text_color(74, 85, 104)  # Muted Dark Grey
-    comp_name = fund.get("name", "Laporan Riset Saham")
-    pdf.cell(0, 6, f"Laporan Riset Emiten: {comp_name} ({ticker.replace('.JK', '')})", new_x="LMARGIN", new_y="NEXT", align="L")
+    comp_name = clean_txt(fund.get("name", "Laporan Riset Saham"))
+    clean_ticker_str = clean_txt(ticker.replace('.JK', ''))
+    pdf.cell(0, 6, clean_txt(f"Laporan Riset Emiten: {comp_name} ({clean_ticker_str})"), new_x="LMARGIN", new_y="NEXT", align="L")
     pdf.ln(2)
     
     # Metadata info (Timestamp)
     pdf.set_font("helvetica", "", 9)
     pdf.set_text_color(113, 128, 150)  # Cool Grey
-    pdf.cell(100, 5, f"Sektor: {fund.get('sector', '—')} · Industri: {fund.get('industry', '—')}", new_x="RIGHT", new_y="LAST")
+    sec_str = clean_txt(fund.get('sector', '-'))
+    ind_str = clean_txt(fund.get('industry', '-'))
+    pdf.cell(100, 5, clean_txt(f"Sektor: {sec_str} | Industri: {ind_str}"), new_x="RIGHT", new_y="LAST")
     
     print_time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     pdf.cell(0, 5, f"Tanggal Ekspor: {print_time}", new_x="LMARGIN", new_y="NEXT", align="R")
@@ -64,8 +88,8 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
     pdf.set_text_color(45, 55, 72)
     pdf.cell(45, 6, "AI Score (Momentum):", border=0, new_x="RIGHT", new_y="LAST")
     
-    ai_score_percent = ai.get("ai_score_percent", "—")
-    ai_score = ai.get("ai_score", 0)
+    ai_score_percent = clean_txt(ai.get("ai_score_percent", "-"))
+    ai_score = ai.get("ai_score", 0) or 0
     
     pdf.set_font("helvetica", "", 10)
     pdf.cell(45, 6, f"{ai_score_percent}", border=0, new_x="RIGHT", new_y="LAST")
@@ -92,14 +116,17 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
     pdf.cell(0, 7, "2. RINGKASAN DATA FUNDAMENTAL", new_x="LMARGIN", new_y="NEXT", align="L")
     pdf.ln(2)
 
-    val = fund.get("valuation", {})
-    prof = fund.get("profitability", {})
-    health = fund.get("health", {})
-    price = fund.get("price", {})
-    div = fund.get("dividend", {})
+    val = fund.get("valuation", {}) or {}
+    prof = fund.get("profitability", {}) or {}
+    health = fund.get("health", {}) or {}
+    price = fund.get("price", {}) or {}
+    div = fund.get("dividend", {}) or {}
+
+    pbv_val = format_num(val.get("pbv"))
+    pbv_str = f"{pbv_val}x" if pbv_val != "-" else "-"
 
     metrics = [
-        ("Harga Terakhir", format_idr(price.get("current")), "PBV", format_num(val.get("pbv")) + "x"),
+        ("Harga Terakhir", format_idr(price.get("current")), "PBV", pbv_str),
         ("52W High", format_idr(price.get("week_52_high")), "Beta Saham", format_num(price.get("beta"))),
         ("ROE", format_pct(prof.get("roe")), "DER", format_num(health.get("der"))),
         ("ROA", format_pct(prof.get("roa")), "Div. Yield", format_pct(div.get("yield_pct"))),
@@ -109,19 +136,19 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
     for label1, val1, label2, val2 in metrics:
         pdf.set_font("helvetica", "B", 9)
         pdf.set_text_color(113, 128, 150)
-        pdf.cell(40, 6, label1, new_x="RIGHT", new_y="LAST")
+        pdf.cell(40, 6, clean_txt(label1), new_x="RIGHT", new_y="LAST")
         
         pdf.set_font("helvetica", "", 9)
         pdf.set_text_color(45, 55, 72)
-        pdf.cell(50, 6, val1, new_x="RIGHT", new_y="LAST")
+        pdf.cell(50, 6, clean_txt(val1), new_x="RIGHT", new_y="LAST")
 
         pdf.set_font("helvetica", "B", 9)
         pdf.set_text_color(113, 128, 150)
-        pdf.cell(40, 6, label2, new_x="RIGHT", new_y="LAST")
+        pdf.cell(40, 6, clean_txt(label2), new_x="RIGHT", new_y="LAST")
         
         pdf.set_font("helvetica", "", 9)
         pdf.set_text_color(45, 55, 72)
-        pdf.cell(0, 6, val2, new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(0, 6, clean_txt(val2), new_x="LMARGIN", new_y="NEXT")
 
     pdf.ln(6)
 
@@ -131,11 +158,10 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
     pdf.cell(0, 7, "3. KINERJA LAPORAN KEUANGAN HISTORIS", new_x="LMARGIN", new_y="NEXT", align="L")
     pdf.ln(2)
 
-    fin_hist = hist.get("financials_history", [])
-    bs_hist = hist.get("balance_sheet_history", [])
+    fin_hist = hist.get("financials_history", []) if isinstance(hist, dict) else []
+    bs_hist = hist.get("balance_sheet_history", []) if isinstance(hist, dict) else []
 
     if fin_hist:
-        # Table Headers: Tahun, Pendapatan, Laba Bersih, Aset, Liabilitas, Ekuitas
         headers = ["Tahun", "Pendapatan", "Laba Bersih", "Total Aset", "Total Liabilitas", "Ekuitas"]
         widths = [20, 32, 32, 32, 32, 32]
         
@@ -144,7 +170,7 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
         pdf.set_font("helvetica", "B", 9)
         
         for i in range(len(headers)):
-            pdf.cell(widths[i], 7, headers[i], border=1, align="C", fill=True)
+            pdf.cell(widths[i], 7, clean_txt(headers[i]), border=1, align="C", fill=True)
         pdf.ln()
 
         pdf.set_font("helvetica", "", 8.5)
@@ -153,7 +179,6 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
 
         for i, f_item in enumerate(fin_hist):
             year = f_item.get("year")
-            # Cari Neraca yang tahunnya sama
             b_item = next((b for b in bs_hist if str(b.get("year")) == str(year)), {})
             
             fill = i % 2 == 0
@@ -162,12 +187,12 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
             else:
                 pdf.set_fill_color(255, 255, 255)
 
-            pdf.cell(widths[0], 7, str(year), border=1, align="C", fill=fill)
-            pdf.cell(widths[1], 7, format_idr(f_item.get("revenue")), border=1, align="R", fill=fill)
-            pdf.cell(widths[2], 7, format_idr(f_item.get("net_income")), border=1, align="R", fill=fill)
-            pdf.cell(widths[3], 7, format_idr(b_item.get("assets")), border=1, align="R", fill=fill)
-            pdf.cell(widths[4], 7, format_idr(b_item.get("liabilities")), border=1, align="R", fill=fill)
-            pdf.cell(widths[5], 7, format_idr(b_item.get("equity")), border=1, align="R", fill=fill)
+            pdf.cell(widths[0], 7, clean_txt(year), border=1, align="C", fill=fill)
+            pdf.cell(widths[1], 7, clean_txt(format_idr(f_item.get("revenue"))), border=1, align="R", fill=fill)
+            pdf.cell(widths[2], 7, clean_txt(format_idr(f_item.get("net_income"))), border=1, align="R", fill=fill)
+            pdf.cell(widths[3], 7, clean_txt(format_idr(b_item.get("assets"))), border=1, align="R", fill=fill)
+            pdf.cell(widths[4], 7, clean_txt(format_idr(b_item.get("liabilities"))), border=1, align="R", fill=fill)
+            pdf.cell(widths[5], 7, clean_txt(format_idr(b_item.get("equity"))), border=1, align="R", fill=fill)
             pdf.ln()
     else:
         pdf.set_font("helvetica", "I", 9)
@@ -182,7 +207,7 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
     pdf.cell(0, 7, "4. RIWAYAT DIVIDEN (10 DISTRIBUSI TERAKHIR)", new_x="LMARGIN", new_y="NEXT", align="L")
     pdf.ln(2)
 
-    div_hist = hist.get("dividend_history", [])
+    div_hist = hist.get("dividend_history", []) if isinstance(hist, dict) else []
     if div_hist:
         widths_div = [40, 60]
         pdf.set_fill_color(26, 54, 93)
@@ -203,15 +228,17 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
             else:
                 pdf.set_fill_color(255, 255, 255)
 
-            # Format date
             date_str = d_item.get("date")
             try:
                 date_formatted = datetime.strptime(date_str, "%Y-%m-%d").strftime("%d-%m-%Y")
             except:
                 date_formatted = date_str
 
-            pdf.cell(widths_div[0], 7, date_formatted, border=1, align="C", fill=fill)
-            pdf.cell(widths_div[1], 7, f"Rp {d_item.get('amount'):.2f}", border=1, align="R", fill=fill)
+            amt = d_item.get('amount')
+            amt_str = f"Rp {float(amt):.2f}" if amt is not None else "-"
+
+            pdf.cell(widths_div[0], 7, clean_txt(date_formatted), border=1, align="C", fill=fill)
+            pdf.cell(widths_div[1], 7, clean_txt(amt_str), border=1, align="R", fill=fill)
             pdf.ln()
     else:
         pdf.set_font("helvetica", "I", 9)
@@ -227,3 +254,4 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
     pdf.cell(0, 5, "StoxArea tidak bertanggung jawab atas kerugian investasi yang dialami pengguna. Selalu lakukan analisis mandiri.", new_x="LMARGIN", new_y="NEXT", align="C")
 
     return bytes(pdf.output())
+

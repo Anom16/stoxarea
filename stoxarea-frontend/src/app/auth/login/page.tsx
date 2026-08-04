@@ -284,7 +284,7 @@ export default function LoginPage() {
               Sign In
             </h1>
             <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>
-              Masuk untuk mengakses terminal analitik STOXAREA.
+              Masuk untuk mengakses STOXAREA.
             </p>
           </div>
 
@@ -306,7 +306,7 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {/* Input Email / Username */}
+            {/* Input Email  */}
             <div>
               <label
                 style={{
@@ -337,7 +337,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setIsPasswordFocused(false)}
-                  placeholder="admin01 atau admin01@gmail.com"
+                  placeholder="Akun Anda"
                   required
                   style={{
                     width: '100%',

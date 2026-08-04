@@ -240,7 +240,7 @@ export default function RegisterPage() {
               Create an Account
             </h1>
             <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>
-              Daftar akun baru untuk mengakses terminal analitik STOXAREA.
+              Daftar akun baru untuk mengakses STOXAREA.
             </p>
           </div>
 

@@ -196,7 +196,7 @@ export default function VirtualTradingPage() {
           <div className="page-header vt-header-row">
             <div>
               <h1>Virtual Trading</h1>
-              <p>Simulasi transaksi saham BEI real-time tanpa risiko finansial</p>
+              <p>Simulasi transaksi tanpa risiko finansial</p>
             </div>
             <button onClick={fetchData} className="btn-outline" style={{ fontSize: 13, padding: '8px 16px' }}>
               🔄 Refresh
@@ -505,7 +505,7 @@ export default function VirtualTradingPage() {
             <div className="panel-right" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               <div>
                 <h2 className="section-title" style={{ fontSize: 18 }}>Alokasi Aset</h2>
-                <p className="section-sub" style={{ marginBottom: 12 }}>Distribusi portofolio virtual Anda</p>
+                <p className="section-sub" style={{ marginBottom: 12 }}>Distribusi portofolio Anda</p>
               </div>
 
               {allocationData.length === 0 ? (
@@ -662,7 +662,7 @@ export default function VirtualTradingPage() {
             </div>
 
             <div style={{ fontSize: 9, color: '#777', lineHeight: 1.4, marginBottom: 16, textAlign: 'center' }}>
-              🔒 Dokumen ini dihasilkan secara otomatis oleh sistem SPK Investasi STOXAREA sebagai bukti sah transaksi virtual.
+              🔒 Dokumen ini dihasilkan secara otomatis oleh STOXAREA sebagai bukti sah transaksi virtual.
             </div>
 
             <div style={{ display: 'flex', gap: 8 }}>
