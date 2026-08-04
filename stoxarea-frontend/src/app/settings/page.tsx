@@ -764,130 +764,47 @@ export default function SettingsPage() {
                   {/* ── TAB 4: PREFERENSI ── */}
                   {activeTab === 'preferences' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                      {/* Card 1: Tampilan Visual */}
+                      {/* Card 1: Tema Tampilan */}
                       <div className="card" style={{ padding: 24 }}>
-                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>🎨 Tampilan Visual</h3>
+                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>🎨 Tema Tampilan</h3>
                         <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
-                          Atur tema warna dan tata letak halaman utama aplikasi.
+                          Pilih suasana tampilan warna aplikasi sesuai kenyamanan mata Anda.
                         </p>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-                          {/* Tema Tampilan */}
-                          <div>
-                            <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 10 }}>
-                              TEMA TAMPILAN
-                            </label>
-                            <div style={{ display: 'flex', gap: 8 }}>
-                              {(['dark', 'light'] as const).map(t => (
-                                <div
-                                  key={t}
-                                  onClick={() => handleThemeChange(t)}
-                                  style={{
-                                    flex: 1, padding: '12px', borderRadius: 10, cursor: 'pointer',
-                                    border: theme === t ? '2px solid #2563eb' : '1px solid var(--border)',
-                                    background: theme === t ? '#eff6ff' : 'var(--bg-primary)',
-                                    fontWeight: 700, fontSize: 12, transition: 'all 0.15s ease',
-                                    color: theme === t ? '#2563eb' : 'var(--text-secondary)',
-                                    textAlign: 'center'
-                                  }}
-                                >
-                                  {t === 'dark' ? '🌙 Gelap' : '☀️ Terang'}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Layout Dashboard */}
-                          <div>
-                            <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 10 }}>
-                              LAYOUT DASHBOARD
-                            </label>
-                            <div style={{ display: 'flex', gap: 8 }}>
-                              {[
-                                { id: 'classic' as const, name: '📊 Klasik' },
-                                { id: 'modern' as const, name: '🖥️ Modern' },
-                              ].map(opt => (
-                                <div
-                                  key={opt.id}
-                                  onClick={() => handleDashLayoutChange(opt.id)}
-                                  style={{
-                                    flex: 1, padding: '12px', borderRadius: 10, cursor: 'pointer',
-                                    border: dashboardLayout === opt.id ? '2px solid #2563eb' : '1px solid var(--border)',
-                                    background: dashboardLayout === opt.id ? '#eff6ff' : 'var(--bg-primary)',
-                                    fontWeight: 700, fontSize: 12, transition: 'all 0.15s ease',
-                                    color: dashboardLayout === opt.id ? '#2563eb' : 'var(--text-secondary)',
-                                    textAlign: 'center'
-                                  }}
-                                >
-                                  {opt.name}
-                                </div>
-                              ))}
-                            </div>
+                        <div style={{ maxWidth: 400 }}>
+                          <label style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', display: 'block', marginBottom: 10 }}>
+                            MODE WARNA APLIKASI
+                          </label>
+                          <div style={{ display: 'flex', gap: 12 }}>
+                            {(['dark', 'light'] as const).map(t => (
+                              <div
+                                key={t}
+                                onClick={() => handleThemeChange(t)}
+                                style={{
+                                  flex: 1, padding: '16px 14px', borderRadius: 12, cursor: 'pointer',
+                                  border: theme === t ? '2px solid #2563eb' : '1px solid var(--border)',
+                                  background: theme === t ? 'rgba(37,99,235,0.08)' : 'var(--bg-primary)',
+                                  fontWeight: 700, fontSize: 14, transition: 'all 0.2s ease',
+                                  color: theme === t ? '#2563eb' : 'var(--text-secondary)',
+                                  textAlign: 'center',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
+                                }}
+                              >
+                                {t === 'dark' ? '🌙 Gelap' : '☀️ Terang'}
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
 
-                      {/* Card 2: Notifikasi & Sinyal AI */}
+                      {/* Card 2: Panduan & Tutorial Aplikasi */}
                       <div className="card" style={{ padding: 24 }}>
-                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>🔔 Notifikasi & Sinyal AI</h3>
+                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>🎓 Panduan Aplikasi</h3>
                         <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
-                          Atur pemberitahuan rekomendasi dan peringatan portofolio.
+                          Pelajari kembali fitur-fitur utama dan alur penggunaan STOXAREA.
                         </p>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                          {/* Item 1 */}
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-primary)', padding: '12px 16px', borderRadius: 12, border: '1px solid var(--border)' }}>
-                            <div>
-                              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Sinyal AI Top Picks Harian (17:00 WIB)</div>
-                              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Pengingat saat model Machine Learning selesai di-update</div>
-                            </div>
-                            <input 
-                              type="checkbox" 
-                              checked={notifyAiSignals} 
-                              onChange={e => setNotifyAiSignals(e.target.checked)}
-                              style={{ width: 18, height: 18, accentColor: '#2563eb', cursor: 'pointer' }}
-                            />
-                          </div>
-
-                          {/* Item 2 */}
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-primary)', padding: '12px 16px', borderRadius: 12, border: '1px solid var(--border)' }}>
-                            <div>
-                              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Waspada Pergerakan Portofolio (&gt;3%)</div>
-                              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Pemberitahuan saat saham simpanan mengalami lonjakan/penurunan</div>
-                            </div>
-                            <input 
-                              type="checkbox" 
-                              checked={notifyPortfolioAlert} 
-                              onChange={e => setNotifyPortfolioAlert(e.target.checked)}
-                              style={{ width: 18, height: 18, accentColor: '#2563eb', cursor: 'pointer' }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Card 3: Preferensi Data & Panduan */}
-                      <div className="card" style={{ padding: 24 }}>
-                        <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: 'var(--text-primary)' }}>📊 Display Data & Panduan</h3>
-                        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
-                          Pengaturan tambahan untuk grafik dan tur edukasi aplikasi.
-                        </p>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20 }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-primary)', padding: '12px 16px', borderRadius: 12, border: '1px solid var(--border)' }}>
-                            <div>
-                              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Tampilkan Mini Sparkline Chart 7-Hari</div>
-                              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Menampilkan tren grafik mini di daftar pasar & portofolio</div>
-                            </div>
-                            <input 
-                              type="checkbox" 
-                              checked={showSparklines} 
-                              onChange={e => setShowSparklines(e.target.checked)}
-                              style={{ width: 18, height: 18, accentColor: '#2563eb', cursor: 'pointer' }}
-                            />
-                          </div>
-                        </div>
-
-                        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                        <div>
                           <button
                             onClick={() => {
                               localStorage.removeItem('stoxarea_tour_done')
@@ -895,25 +812,14 @@ export default function SettingsPage() {
                               toast.info('Tutorial Dibuka 🎓', 'Petunjuk panduan aplikasi sedang ditampilkan...')
                             }}
                             style={{
-                              background: 'transparent', color: '#2563eb',
-                              border: '1px solid rgba(37,99,235,0.4)', borderRadius: 10,
-                              padding: '10px 18px', fontSize: 12, fontWeight: 700,
-                              cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6
+                              background: '#2563eb', color: '#fff',
+                              border: 'none', borderRadius: 12,
+                              padding: '12px 24px', fontSize: 13, fontWeight: 700,
+                              cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8,
+                              boxShadow: '0 4px 14px rgba(37,99,235,0.3)', transition: 'all 0.2s ease'
                             }}
                           >
                             <span>🎓</span> Lihat Tutorial Aplikasi
-                          </button>
-
-                          <button 
-                            onClick={handleSavePreferences} 
-                            style={{
-                              background: '#2563eb', color: '#fff', border: 'none',
-                              borderRadius: 10, padding: '10px 24px', fontSize: 13,
-                              fontWeight: 700, cursor: 'pointer',
-                              boxShadow: '0 4px 14px rgba(37,99,235,0.3)'
-                            }}
-                          >
-                            Simpan Preferensi
                           </button>
                         </div>
                       </div>

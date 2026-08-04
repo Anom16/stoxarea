@@ -211,15 +211,16 @@ function MarketExplorerContent() {
   const handleConfirmTrade = async (action: 'BUY' | 'SELL', lotQty: number) => {
     setTradingProcessing(true)
     try {
+      const endpoint = action === 'BUY' ? '/portfolio/buy' : '/portfolio/sell'
       const payload = {
         ticker: tradeTicker,
-        action,
-        lot_qty: lotQty,
+        qty: lotQty,
       }
-      const res = await api.post('/portfolio/trade', payload)
+      const res = await api.post(endpoint, payload)
+      const cleanT = tradeTicker.replace('.JK', '')
       toast.success(
         `Transaksi ${action === 'BUY' ? 'Pembelian' : 'Penjualan'} Berhasil! 🎉`,
-        res.data.message || `${lotQty} Lot ${tradeTicker} berhasil diproses.`,
+        res.data.message || `${lotQty} Lot ${cleanT} berhasil diproses.`,
         ''
       )
       setTradeModalOpen(false)
@@ -462,27 +463,31 @@ function MarketExplorerContent() {
                               </td>
                               <td>
                                 <div style={{ width: 100, height: 35 }}>
-                                  {s.sparkline && s.sparkline.length > 0 ? (
-                                    <ResponsiveContainer width="100%" height="100%">
-                                      <AreaChart data={s.sparkline.map((v) => ({ v }))}>
-                                        <defs>
-                                          <linearGradient id={`grad-${s.ticker}`} x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} stopOpacity={0.3}/>
-                                            <stop offset="95%" stopColor={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} stopOpacity={0}/>
-                                          </linearGradient>
-                                        </defs>
-                                        <Area 
-                                          type="monotone" 
-                                          dataKey="v" 
-                                          stroke={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} 
-                                          fillOpacity={1} 
-                                          fill={`url(#grad-${s.ticker})`} 
-                                          strokeWidth={1.5}
-                                          dot={false} 
-                                        />
-                                      </AreaChart>
-                                    </ResponsiveContainer>
-                                  ) : (
+                                  {s.sparkline && s.sparkline.length > 0 ? (() => {
+                                    const isUp = s.sparkline[s.sparkline.length - 1] >= s.sparkline[0]
+                                    const trendColor = isUp ? '#10b981' : '#ef4444'
+                                    return (
+                                      <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={s.sparkline.map((v) => ({ v }))}>
+                                          <defs>
+                                            <linearGradient id={`grad-${s.ticker}`} x1="0" y1="0" x2="0" y2="1">
+                                              <stop offset="5%" stopColor={trendColor} stopOpacity={0.3}/>
+                                              <stop offset="95%" stopColor={trendColor} stopOpacity={0}/>
+                                            </linearGradient>
+                                          </defs>
+                                          <Area 
+                                            type="monotone" 
+                                            dataKey="v" 
+                                            stroke={trendColor} 
+                                            fillOpacity={1} 
+                                            fill={`url(#grad-${s.ticker})`} 
+                                            strokeWidth={1.5}
+                                            dot={false} 
+                                          />
+                                        </AreaChart>
+                                      </ResponsiveContainer>
+                                    )
+                                  })() : (
                                     <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>No Data</div>
                                   )}
                                 </div>
@@ -572,27 +577,31 @@ function MarketExplorerContent() {
 
                           {/* 3. Mini Sparkline Chart */}
                           <div style={{ width: 48, height: 26, flexShrink: 0 }}>
-                            {s.sparkline && s.sparkline.length > 0 ? (
-                              <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={s.sparkline.map((v) => ({ v }))}>
-                                  <defs>
-                                    <linearGradient id={`grad-m-${s.ticker}`} x1="0" y1="0" x2="0" y2="1">
-                                      <stop offset="5%" stopColor={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} stopOpacity={0.3}/>
-                                      <stop offset="95%" stopColor={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} stopOpacity={0}/>
-                                    </linearGradient>
-                                  </defs>
-                                  <Area 
-                                    type="monotone" 
-                                    dataKey="v" 
-                                    stroke={s.sentiment === 'Bullish' ? 'var(--accent)' : 'var(--red)'} 
-                                    fillOpacity={1} 
-                                    fill={`url(#grad-m-${s.ticker})`} 
-                                    strokeWidth={1.5}
-                                    dot={false} 
-                                  />
-                                </AreaChart>
-                              </ResponsiveContainer>
-                            ) : (
+                            {s.sparkline && s.sparkline.length > 0 ? (() => {
+                              const isUp = s.sparkline[s.sparkline.length - 1] >= s.sparkline[0]
+                              const trendColor = isUp ? '#10b981' : '#ef4444'
+                              return (
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <AreaChart data={s.sparkline.map((v) => ({ v }))}>
+                                    <defs>
+                                      <linearGradient id={`grad-m-${s.ticker}`} x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor={trendColor} stopOpacity={0.3}/>
+                                        <stop offset="95%" stopColor={trendColor} stopOpacity={0}/>
+                                      </linearGradient>
+                                    </defs>
+                                    <Area 
+                                      type="monotone" 
+                                      dataKey="v" 
+                                      stroke={trendColor} 
+                                      fillOpacity={1} 
+                                      fill={`url(#grad-m-${s.ticker})`} 
+                                      strokeWidth={1.5}
+                                      dot={false} 
+                                    />
+                                  </AreaChart>
+                                </ResponsiveContainer>
+                              )
+                            })() : (
                               <div style={{ fontSize: 9, color: 'var(--text-muted)', textAlign: 'center', paddingTop: 6 }}>—</div>
                             )}
                           </div>

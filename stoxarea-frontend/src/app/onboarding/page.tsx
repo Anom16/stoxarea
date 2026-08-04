@@ -102,6 +102,7 @@ export default function OnboardingPage() {
         'k2_kualitas_perusahaan',
         'k3_toleransi_risiko',
         'k4_sensitivitas_harga',
+        'k6_valuasi_per',
         'k5_kapasitas_finansial',
       ]
       const missingKeys = requiredKeys.filter(k => payload[k] === undefined)
@@ -192,6 +193,7 @@ export default function OnboardingPage() {
                 k2_kualitas_perusahaan: 'Kualitas Perusahaan',
                 k3_toleransi_risiko: 'Toleransi Risiko',
                 k4_sensitivitas_harga: 'Sensitivitas Harga',
+                k6_valuasi_per: 'Valuasi Laba (PER)',
                 k5_kapasitas_finansial: 'Kapasitas Finansial',
               }
               const scoreLabel: Record<number, string> = { 1: 'Konservatif', 3: 'Moderat', 5: 'Agresif' }

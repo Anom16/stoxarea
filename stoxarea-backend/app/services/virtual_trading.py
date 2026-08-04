@@ -51,11 +51,17 @@ def execute_trade(
     if not user:
         return {"success": False, "message": "User tidak ditemukan."}
 
+    # Standardize ticker format: DB always stores ticker with .JK suffix (e.g. BBCA.JK)
+    ticker_upper = ticker.upper().strip()
+    ticker_full = ticker_upper if ticker_upper.endswith(".JK") else f"{ticker_upper}.JK"
+    ticker_clean = ticker_upper.replace(".JK", "")
+
     gross_value = qty * current_price
 
+    # Flexible matching: search portfolio by ticker_full, ticker_clean, or raw input
     portfolio = db.query(Portfolio).filter(
         Portfolio.user_id == user_id,
-        Portfolio.ticker == ticker
+        Portfolio.ticker.in_([ticker_full, ticker_clean, ticker_upper])
     ).first()
 
     if trade_type == TransactionTypeEnum.buy:
@@ -66,7 +72,7 @@ def execute_trade(
         # Cek saldo mencukupi (termasuk fee)
         if user.virtual_balance < net_value:
             logger.warning(
-                f"Gagal BUY {ticker}: Saldo tidak cukup "
+                f"Gagal BUY {ticker_clean}: Saldo tidak cukup "
                 f"(Saldo: {user.virtual_balance:,.0f}, Butuh: {net_value:,.0f} "
                 f"[termasuk fee Rp {fee_amount:,.0f}])"
             )
@@ -82,6 +88,8 @@ def execute_trade(
         user.virtual_balance -= net_value
 
         if portfolio:
+            # Standardize ticker to .JK
+            portfolio.ticker = ticker_full
             # Average cost: hitung ulang avg_price berdasarkan total cost
             total_cost = (portfolio.qty * portfolio.avg_price) + gross_value
             portfolio.qty += qty
@@ -89,7 +97,7 @@ def execute_trade(
         else:
             portfolio = Portfolio(
                 user_id=user_id,
-                ticker=ticker,
+                ticker=ticker_full,
                 qty=qty,
                 avg_price=current_price
             )
@@ -97,8 +105,8 @@ def execute_trade(
 
     elif trade_type == TransactionTypeEnum.sell:
         if not portfolio or portfolio.qty < qty:
-            logger.warning(f"Gagal SELL {ticker}: Saham tidak cukup.")
-            return {"success": False, "message": f"Kepemilikan saham {ticker} tidak mencukupi."}
+            logger.warning(f"Gagal SELL {ticker_clean}: Saham tidak cukup.")
+            return {"success": False, "message": f"Kepemilikan saham {ticker_clean} tidak mencukupi untuk dijual."}
 
         # Hitung fee jual
         fee_amount = round(gross_value * FEE_SELL_RATE, 2)
@@ -114,10 +122,10 @@ def execute_trade(
     else:
         return {"success": False, "message": "Tipe transaksi tidak valid."}
 
-    # Catat history transaksi (simpan gross_value dan fee untuk transparansi)
+    # Catat history transaksi (simpan ticker_full untuk konsistensi)
     new_tx = Transaction(
         user_id=user_id,
-        ticker=ticker,
+        ticker=ticker_full,
         type=trade_type,
         price=current_price,
         qty=qty,

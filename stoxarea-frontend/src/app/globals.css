@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -33,21 +33,68 @@
   --radius-sm:     10px;
 }
 
-/* Dark Mode Overrides (Opsional / Mode Kedua) */
+/* Dark Mode Overrides (Comprehensive Clean Dark Slate) */
 body.dark-mode {
-  --bg-primary:    #0f172a;
-  --bg-secondary:  #1e293b;
-  --bg-sidebar:    #1e293b;
-  --bg-card:       #1e293b;
-  --bg-hover:      #334155;
-  --border:        rgba(255, 255, 255, 0.08);
-  --border-bright: #475569;
-  --accent:        #0066ff;
+  --bg-primary:    #0a0f1d;
+  --bg-secondary:  #141c2e;
+  --bg-sidebar:    #141c2e;
+  --bg-sidebar-rgba: rgba(20, 28, 46, 0.95);
+  --bg-card:       #141c2e;
+  --bg-hover:      #1e293b;
+  --border:        rgba(255, 255, 255, 0.1);
+  --border-bright: #334155;
+  --accent:        #3b82f6;
   --blue:          #38bdf8;
   --text-primary:  #f8fafc;
-  --text-secondary:#94a3b8;
-  --text-muted:    #64748b;
-  --shadow-card:   0 4px 20px rgba(0, 0, 0, 0.3);
+  --text-secondary:#cbd5e1;
+  --text-muted:    #94a3b8;
+  --shadow-card:   0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .card {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark-mode .nav-item.active {
+  background: rgba(37, 99, 235, 0.25) !important;
+  color: #38bdf8 !important;
+}
+
+body.dark-mode .badge-sector {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode .pick-metrics {
+  background: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode .insight-pill {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode input:not([type="checkbox"]):not([type="radio"]),
+body.dark-mode select,
+body.dark-mode textarea {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+body.dark-mode div[style*="background: '#ffffff'"],
+body.dark-mode div[style*="background: '#f8fafc'"],
+body.dark-mode div[style*="background: '#fff'"],
+body.dark-mode div[style*="background:#ffffff"],
+body.dark-mode div[style*="background:#f8fafc"] {
+  background-color: #141c2e !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 html {
@@ -56,7 +103,8 @@ html {
   max-width: 100vw;
 }
 body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-variant-numeric: tabular-nums;
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
@@ -401,6 +449,9 @@ body, .sidebar, .topbar, .nav-item, .logo-text, .nav-label, .card {
 .clean-table tr:hover td {
   background: rgba(241, 245, 249, 0.5);
 }
+body.dark-mode .clean-table tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
+}
 
 /* ════════════════════════════════════════════════════════════════════════ */
 /* DASHBOARD SPECIFIC STYLES (CLASSIC & MODERN DECK LAYOUTS)                */
@@ -609,6 +660,9 @@ body, .sidebar, .topbar, .nav-item, .logo-text, .nav-label, .card {
   border-radius: 3px;
   overflow: hidden;
 }
+body.dark-mode .ai-bar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
 .ai-bar-fill {
   height: 100%;
   background: var(--accent);
@@ -657,6 +711,11 @@ body, .sidebar, .topbar, .nav-item, .logo-text, .nav-label, .card {
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   border-radius: var(--radius-md);
+}
+body.dark-mode .skeleton {
+  background: linear-gradient(90deg, #1e293b 25%, #263548 50%, #1e293b 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
 }
 @keyframes loading {
   0% { background-position: 200% 0; }
@@ -986,6 +1045,28 @@ body, .sidebar, .topbar, .nav-item, .logo-text, .nav-label, .card {
   .admin-main-content {
     padding: 16px 12px 76px 12px !important;
   }
+}
+
+/* ════════════════════════════════════════════════════════════════════════ */
+/* INTER FINTECH TYPOGRAPHY SYSTEM RULES                                    */
+/* ════════════════════════════════════════════════════════════════════════ */
+.clean-table th {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  color: var(--text-secondary) !important;
+}
+
+.ticker-symbol {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px !important;
+}
+
+.num-tabular {
+  font-variant-numeric: tabular-nums !important;
 }
 
 

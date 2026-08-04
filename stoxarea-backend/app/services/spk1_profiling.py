@@ -13,7 +13,8 @@ def calculate_risk_profile(db: Session, answers: QuestionnaireInput) -> str:
     if apply_veto_logic(answers):
         return "konservatif"
 
-    # Total skor dari ke-5 kriteria utama + pertanyaan kustom tambahan
+    # Total skor dari ke-6 kriteria utama + pertanyaan kustom tambahan
+    per_score = answers.k6_valuasi_per if answers.k6_valuasi_per is not None else 3
     extra_sum = sum(answers.extra_answers.values()) if answers.extra_answers else 0
     total_score = (
         answers.k1_target_keuntungan +
@@ -21,6 +22,7 @@ def calculate_risk_profile(db: Session, answers: QuestionnaireInput) -> str:
         answers.k3_toleransi_risiko +
         answers.k4_sensitivitas_harga +
         answers.k5_kapasitas_finansial +
+        per_score +
         extra_sum
     )
 

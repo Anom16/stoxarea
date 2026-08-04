@@ -1,104 +1,104 @@
 {
   "model": "XGBoost Classifier + Isotonic Calibration",
   "dataset": {
-    "total_samples": 68892,
-    "class_0_count": 53520,
-    "class_1_count": 15372,
-    "positive_rate": 22.31
+    "total_samples": 69122,
+    "class_0_count": 53665,
+    "class_1_count": 15457,
+    "positive_rate": 22.36
   },
   "parameters": {
     "n_estimators": 150,
     "max_depth": 4,
     "learning_rate": 0.05,
-    "scale_pos_weight": 3.4817,
+    "scale_pos_weight": 3.4719,
     "calibration": "isotonic",
     "validation": "TimeSeriesSplit (5 fold)",
     "optimal_threshold": 0.3
   },
   "metrics_final_model": {
-    "accuracy": 77.24,
-    "precision": 46.42,
-    "recall": 12.98,
-    "f1_score": 20.28,
-    "auc_roc": 0.643
+    "accuracy": 77.14,
+    "precision": 46.11,
+    "recall": 13.1,
+    "f1_score": 20.4,
+    "auc_roc": 0.6428
   },
   "confusion_matrix": {
-    "true_negative": 51217,
-    "false_positive": 2303,
-    "false_negative": 13377,
-    "true_positive": 1995
+    "true_negative": 51298,
+    "false_positive": 2367,
+    "false_negative": 13432,
+    "true_positive": 2025
   },
   "walkforward_per_fold": [
     {
       "fold": 1,
-      "train_size": 11482,
-      "test_size": 11482,
-      "accuracy": 0.4754,
-      "precision": 0.2198,
-      "recall": 0.6436,
-      "f1": 0.3277,
-      "auc": 0.5574
+      "train_size": 11522,
+      "test_size": 11520,
+      "accuracy": 0.4815,
+      "precision": 0.2254,
+      "recall": 0.6456,
+      "f1": 0.3342,
+      "auc": 0.5629
     },
     {
       "fold": 2,
-      "train_size": 22964,
-      "test_size": 11482,
-      "accuracy": 0.5982,
-      "precision": 0.2382,
-      "recall": 0.4607,
-      "f1": 0.3141,
-      "auc": 0.5706
+      "train_size": 23042,
+      "test_size": 11520,
+      "accuracy": 0.5927,
+      "precision": 0.2292,
+      "recall": 0.4551,
+      "f1": 0.3049,
+      "auc": 0.5685
     },
     {
       "fold": 3,
-      "train_size": 34446,
-      "test_size": 11482,
-      "accuracy": 0.6083,
-      "precision": 0.2452,
-      "recall": 0.4283,
-      "f1": 0.3119,
-      "auc": 0.5598
+      "train_size": 34562,
+      "test_size": 11520,
+      "accuracy": 0.6057,
+      "precision": 0.2499,
+      "recall": 0.4349,
+      "f1": 0.3174,
+      "auc": 0.561
     },
     {
       "fold": 4,
-      "train_size": 45928,
-      "test_size": 11482,
-      "accuracy": 0.5788,
-      "precision": 0.3114,
-      "recall": 0.5975,
-      "f1": 0.4094,
-      "auc": 0.6188
+      "train_size": 46082,
+      "test_size": 11520,
+      "accuracy": 0.5798,
+      "precision": 0.3098,
+      "recall": 0.5812,
+      "f1": 0.4042,
+      "auc": 0.6157
     },
     {
       "fold": 5,
-      "train_size": 57410,
-      "test_size": 11482,
-      "accuracy": 0.5361,
-      "precision": 0.2855,
-      "recall": 0.6379,
-      "f1": 0.3945,
-      "auc": 0.6008
+      "train_size": 57602,
+      "test_size": 11520,
+      "accuracy": 0.5347,
+      "precision": 0.2831,
+      "recall": 0.6329,
+      "f1": 0.3912,
+      "auc": 0.5992
     }
   ],
   "walkforward_mean": {
-    "accuracy": 0.5594,
-    "precision": 0.26,
-    "recall": 0.5536,
-    "f1": 0.3515,
+    "accuracy": 0.5589,
+    "precision": 0.2595,
+    "recall": 0.5499,
+    "f1": 0.3504,
     "auc": 0.5815
   },
   "top3_features": [
     {
-      "feature": "ma_20_dist",
-      "importance": 0.09602992236614227
+      "feature": "macd_signal_norm",
+      "importance": 0.09826690703630447
     },
     {
-      "feature": "macd_signal_norm",
-      "importance": 0.11064140498638153
+      "feature": "ma_20_dist",
+      "importance": 0.10513857007026672
     },
     {
       "feature": "bb_width",
-      "importance": 0.26485514640808105
+      "importance": 0.26321709156036377
     }
   ]
 }

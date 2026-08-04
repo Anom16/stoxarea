@@ -83,6 +83,26 @@ QUESTIONNAIRE_DATA = [
     },
     {
         "id": "q9",
+        "category": "k6_valuasi_per",
+        "question": "Dua perusahaan di industri yang sama memiliki prospek bisnis serupa. Perusahaan A dijual pada tingkat harga yang relatif murah dibanding laba tahunannya, sedangkan Perusahaan B dihargai sangat mahal karena sedang populer. Apa keputusan investasi Anda?",
+        "options": [
+            {"value": 1, "text": "Memilih Perusahaan A karena harganya murah dan memberikan perlindungan nilai (margin of safety) yang lebih aman."},
+            {"value": 3, "text": "Membagi alokasi dana ke kedua perusahaan untuk menyeimbangkan antara faktor harga murah dan popularitas pasar."},
+            {"value": 5, "text": "Memilih Perusahaan B karena antusiasme pasar yang tinggi biasanya mendorong harga terus naik lebih tinggi."}
+        ]
+    },
+    {
+        "id": "q10",
+        "category": "k6_valuasi_per",
+        "question": "Ketika Anda menemukan sebuah saham dengan kinerja pendapatan tumbuh pesat, namun harga sahamnya sudah naik begitu tinggi sehingga keuntungan tahunannya terlihat kecil dibanding harganya, bagaimana tindakan Anda?",
+        "options": [
+            {"value": 1, "text": "Menghindari saham tersebut karena harganya sudah terlalu mahal dibanding laba bersih riil yang dihasilkannya."},
+            {"value": 3, "text": "Menunggu hingga terjadi penurunan harga (koreksi teknikal) ke level wajar sebelum mempertimbangkan untuk membeli."},
+            {"value": 5, "text": "Tetap melakukan aksi beli, meyakini bahwa perusahaan dengan pertumbuhan pesat memang layak dihargai mahal oleh pasar."}
+        ]
+    },
+    {
+        "id": "q11",
         "category": "k5_kapasitas_finansial",
         "question": "Jika didefinisikan secara struktur keuangan pribadi, dari mana asal likuiditas yang Anda gunakan di StoxArea?",
         "options": [
@@ -92,7 +112,7 @@ QUESTIONNAIRE_DATA = [
         ]
     },
     {
-        "id": "q10",
+        "id": "q12",
         "category": "k5_kapasitas_finansial",
         "question": "Berapa proporsi dari total aset likuid (kekayaan cair) Anda yang dialokasikan khusus pada instrumen ekuitas atau saham?",
         "options": [

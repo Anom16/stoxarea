@@ -59,4 +59,5 @@ class QuestionnaireInput(BaseModel):
     k3_toleransi_risiko: int
     k4_sensitivitas_harga: int
     k5_kapasitas_finansial: int
+    k6_valuasi_per: Optional[int] = 3
     extra_answers: Optional[Dict[str, int]] = None

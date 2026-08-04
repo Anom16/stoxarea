@@ -96,7 +96,7 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
         ai_pct     = data.get("ai_score_percent", "50.0%")
         insights   = data.get("insights", [])
 
-        # Tentukan harga riil / deterministik emiten
+        # Tentukan harga emiten secara instan dari KNOWN_PRICES atau formula deterministik (tanpa blocking yfinance loop)
         base_price = KNOWN_PRICES.get(clean_ticker)
         if not base_price:
             base_price = 500 + (abs(hash(clean_ticker)) % 450) * 10

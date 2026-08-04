@@ -6,7 +6,7 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import ClientTutorialProvider from '@/components/ui/ClientTutorialProvider'
 import DisclaimerBanner from '@/components/ui/DisclaimerBanner'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'STOXAREA — Platform Analitik & Edukasi Saham IDX',

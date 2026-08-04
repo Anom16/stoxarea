@@ -495,3 +495,25 @@ def get_sector_summary(db) -> list:
     # Urutkan berdasarkan avg_ai_score (sektor paling bullish di atas)
     result.sort(key=lambda x: x["avg_ai_score"], reverse=True)
     return result
+
+
+def pre_warm_cache():
+    """
+    [NEW] Secara otomatis mengisi cache memori (Pre-Warm) untuk emiten-emiten utama BEI 
+    pada saat server backend pertama kali dinyalakan (startup).
+    """
+    popular_tickers = [
+        "BBCA.JK", "BBRI.JK", "BMRI.JK", "TLKM.JK", "ASII.JK",
+        "BBNI.JK", "AMRT.JK", "ICBP.JK", "INDF.JK", "ANTM.JK",
+        "KLBF.JK", "PGAS.JK", "PTBA.JK", "ITMG.JK", "MEDC.JK",
+        "CPIN.JK", "JPFA.JK", "MDKA.JK", "TPIA.JK", "UNTR.JK"
+    ]
+    print(f"[Pre-Warm] Memulai pengisian cache latar belakang untuk {len(popular_tickers)} emiten utama...")
+    for t in popular_tickers:
+        try:
+            get_technical_data(t, period="1y")
+            get_fundamental_data(t)
+            time.sleep(0.5)
+        except Exception as e:
+            pass
+    print("[Pre-Warm] Pengisian cache latar belakang selesai 100%! Server siap tempur untuk pameran.")

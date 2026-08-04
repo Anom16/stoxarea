@@ -282,6 +282,10 @@ def on_startup():
         logger.warning("[Startup] ai_scores.json belum ada. Menjalankan pipeline pertama kali...")
         threading.Thread(target=run_daily_pipeline, daemon=True).start()
     
+    # Pre-Warm Market Cache (Otomatisisi Persiapan Pameran)
+    from app.services.market_data import pre_warm_cache
+    threading.Thread(target=pre_warm_cache, daemon=True).start()
+
     logger.info("StoxArea Backend siap melayani request!")
 
 @app.get("/")

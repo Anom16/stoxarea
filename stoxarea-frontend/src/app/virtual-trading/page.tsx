@@ -118,11 +118,12 @@ export default function VirtualTradingPage() {
 
   const handleQuickTrade = (ticker: string, type: 'buy' | 'sell', currentPrice: number) => {
     const tickerUpper = ticker.toUpperCase()
-    const holding = portfolio.find(p => p.ticker.toUpperCase() === tickerUpper)
+    const cleanCurrent = tickerUpper.replace('.JK', '')
+    const holding = portfolio.find(p => p.ticker.replace('.JK', '').toUpperCase() === cleanCurrent)
     const holdingQty = holding ? holding.qty : 0
 
-    setModalTicker(tickerUpper)
-    setModalCompanyName(tickerUpper.replace('.JK', ''))
+    setModalTicker(tickerUpper.endsWith('.JK') ? tickerUpper : `${tickerUpper}.JK`)
+    setModalCompanyName(cleanCurrent)
     setModalActionType(type === 'buy' ? 'BUY' : 'SELL')
     setModalCurrentPrice(currentPrice)
     setModalHoldingQty(holdingQty)
@@ -135,7 +136,7 @@ export default function VirtualTradingPage() {
     try {
       const res = await api.post(`/portfolio/${type}`, { 
         ticker: modalTicker, 
-        qty: lots * 100 
+        qty: lots 
       })
       const data = res.data
       const tickerClean = modalTicker.replace('.JK', '')
@@ -234,10 +235,10 @@ export default function VirtualTradingPage() {
             </div>
             <div className="stat-card">
               <span className="stat-label">Gain / Loss Total</span>
-              <span className="stat-value" style={{ color: totalPL >= 0 ? 'var(--accent)' : 'var(--red)' }}>
+              <span className="stat-value" style={{ color: totalPL >= 0 ? '#10b981' : '#ef4444' }}>
                 {totalPL >= 0 ? '+' : ''}{totalPLPct.toFixed(2)}%
               </span>
-              <span className="stat-sub" style={{ fontWeight: 700, color: totalPL >= 0 ? 'var(--accent)' : 'var(--red)' }}>
+              <span className="stat-sub" style={{ fontWeight: 700, color: totalPL >= 0 ? '#10b981' : '#ef4444' }}>
                 {totalPL >= 0 ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')} ({totalPL >= 0 ? '+' : ''}{formatJuta(totalPL)})
               </span>
             </div>
@@ -284,8 +285,8 @@ export default function VirtualTradingPage() {
                           <thead>
                             <tr>
                               <th>Emiten</th>
-                              <th style={{ textAlign: 'right' }}>Kepemilikan</th>
-                              <th style={{ textAlign: 'right' }}>Avg. Beli</th>
+                              <th style={{ textAlign: 'right' }}>Jumlah Lot</th>
+                              <th style={{ textAlign: 'right' }}>Nilai Portfolio</th>
                               <th style={{ textAlign: 'right' }}>Harga Kini</th>
                               <th style={{ textAlign: 'right' }}>Gain / Loss</th>
                               <th style={{ textAlign: 'center' }}>Aksi</th>
@@ -295,7 +296,6 @@ export default function VirtualTradingPage() {
                             {portfolio.map((s) => {
                               const cp = s.current_price || s.avg_price
                               const currentValue = cp * s.qty
-                              const totalInvested = s.avg_price * s.qty
                               const pl = cp - s.avg_price
                               const totalPL = pl * s.qty
                               const plPct = (pl / s.avg_price) * 100
@@ -306,43 +306,39 @@ export default function VirtualTradingPage() {
                                     <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)' }}>{s.ticker.replace('.JK', '')}</div>
                                     <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty.toLocaleString('id-ID')} lembar</div>
                                   </td>
-                                  {/* KEPEMILIKAN & TOTAL UANG */}
+                                  {/* JUMLAH LOT */}
                                   <td style={{ textAlign: 'right' }}>
-                                    <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)' }}>
+                                    <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>
                                       {s.qty / 100} Lot
                                     </div>
-                                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--blue)', marginTop: 2 }}>
+                                  </td>
+                                  {/* NILAI PORTFOLIO */}
+                                  <td style={{ textAlign: 'right' }}>
+                                    <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>
                                       Rp {currentValue.toLocaleString('id-ID')}
                                     </div>
-                                    <div style={{ fontSize: 11, fontWeight: 700, color: '#f59e0b', marginTop: 1 }}>
+                                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginTop: 1 }}>
                                       (~{formatJuta(currentValue)})
                                     </div>
                                   </td>
-                                  {/* AVG BELI */}
-                                  <td style={{ textAlign: 'right' }}>
-                                    <div style={{ fontSize: 14, fontWeight: 700 }}>Rp {s.avg_price.toLocaleString('id-ID')}</div>
-                                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-                                      Modal: Rp {totalInvested.toLocaleString('id-ID')} (~{formatJuta(totalInvested)})
-                                    </div>
-                                  </td>
                                   {/* HARGA KINI */}
-                                  <td style={{ textAlign: 'right', color: 'var(--accent)', fontWeight: 700, fontSize: 14 }}>
+                                  <td style={{ textAlign: 'right', color: 'var(--text-primary)', fontWeight: 700, fontSize: 14 }}>
                                     Rp {cp.toLocaleString('id-ID')}
                                   </td>
                                   {/* GAIN / LOSS */}
                                   <td style={{ textAlign: 'right' }}>
-                                    <div style={{ fontSize: 15, fontWeight: 800, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                                    <div style={{ fontSize: 15, fontWeight: 800, color: isProfit ? '#10b981' : '#ef4444' }}>
                                       {isProfit ? '+' : ''}{plPct.toFixed(2)}%
                                     </div>
-                                    <div style={{ fontSize: 12, fontWeight: 700, color: isProfit ? 'var(--accent)' : 'var(--red)', marginTop: 2 }}>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: isProfit ? '#10b981' : '#ef4444', marginTop: 2 }}>
                                       {isProfit ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')} ({isProfit ? '+' : ''}{formatJuta(totalPL)})
                                     </div>
                                   </td>
                                   <td style={{ textAlign: 'center' }}>
                                     <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-                                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: 12, fontWeight: 700, color: 'var(--accent)', borderColor: 'rgba(16,185,129,0.3)' }}
+                                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: 12, fontWeight: 700, color: '#10b981', borderColor: 'rgba(16,185,129,0.3)' }}
                                         onClick={() => handleQuickTrade(s.ticker, 'buy', cp)}>+ Beli</button>
-                                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: 12, fontWeight: 700, color: 'var(--red)', borderColor: 'rgba(239,68,68,0.3)' }}
+                                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: 12, fontWeight: 700, color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)' }}
                                         onClick={() => handleQuickTrade(s.ticker, 'sell', cp)}>− Jual</button>
                                     </div>
                                   </td>
@@ -368,12 +364,12 @@ export default function VirtualTradingPage() {
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                                 <div>
                                   <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)' }}>{s.ticker.replace('.JK', '')}</span>
-                                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', marginLeft: 8 }}>
+                                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginLeft: 8 }}>
                                     {s.qty / 100} Lot
                                   </span>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
-                                  <span style={{ fontSize: 14, fontWeight: 800, color: isProfit ? 'var(--accent)' : 'var(--red)' }}>
+                                  <span style={{ fontSize: 14, fontWeight: 800, color: isProfit ? '#10b981' : '#ef4444' }}>
                                     {isProfit ? '+' : ''}{plPct.toFixed(2)}% ({isProfit ? '+' : ''}{formatJuta(totalPL)})
                                   </span>
                                 </div>
@@ -381,13 +377,13 @@ export default function VirtualTradingPage() {
 
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '8px 10px', borderRadius: 6, fontSize: 11, color: 'var(--text-secondary)' }}>
                                 <div>Modal: <strong>Rp {totalInvested.toLocaleString('id-ID')}</strong></div>
-                                <div>Nilai Kini: <strong style={{ color: 'var(--blue)' }}>Rp {currentValue.toLocaleString('id-ID')}</strong></div>
+                                <div>Nilai Kini: <strong style={{ color: isProfit ? '#10b981' : '#ef4444' }}>Rp {currentValue.toLocaleString('id-ID')}</strong></div>
                               </div>
 
                               <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-                                <button className="btn-outline" style={{ flex: 1, padding: '6px', fontSize: 12, fontWeight: 700, color: 'var(--accent)', borderColor: 'rgba(16,185,129,0.3)', minHeight: 38 }}
+                                <button className="btn-outline" style={{ flex: 1, padding: '6px', fontSize: 12, fontWeight: 700, color: '#10b981', borderColor: 'rgba(16,185,129,0.3)', minHeight: 38 }}
                                   onClick={() => handleQuickTrade(s.ticker, 'buy', cp)}>+ Beli</button>
-                                <button className="btn-outline" style={{ flex: 1, padding: '6px', fontSize: 12, fontWeight: 700, color: 'var(--red)', borderColor: 'rgba(239,68,68,0.3)', minHeight: 38 }}
+                                <button className="btn-outline" style={{ flex: 1, padding: '6px', fontSize: 12, fontWeight: 700, color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)', minHeight: 38 }}
                                   onClick={() => handleQuickTrade(s.ticker, 'sell', cp)}>− Jual</button>
                               </div>
                             </div>
@@ -435,8 +431,17 @@ export default function VirtualTradingPage() {
                                 </td>
                                 <td style={{ fontWeight: 700 }}>{tx.ticker.replace('.JK', '')}</td>
                                 <td style={{ textAlign: 'center' }}>
-                                  <span className={`sentiment-badge ${tx.type === 'BUY' ? 'bullish' : 'bearish'}`} style={{ fontSize: 10 }}>
-                                    {tx.type}
+                                  <span style={{ 
+                                    display: 'inline-block',
+                                    fontSize: 10,
+                                    fontWeight: 800,
+                                    padding: '3px 8px',
+                                    borderRadius: 12,
+                                    background: tx.type === 'BUY' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                                    color: tx.type === 'BUY' ? '#10b981' : '#ef4444',
+                                    border: `1px solid ${tx.type === 'BUY' ? '#10b981' : '#ef4444'}`
+                                  }}>
+                                    {tx.type === 'BUY' ? 'BELI' : 'JUAL'}
                                   </span>
                                 </td>
                                 <td style={{ textAlign: 'right' }}>{tx.qty / 100} Lot</td>
@@ -461,8 +466,17 @@ export default function VirtualTradingPage() {
                           <div key={tx.id} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: 10, marginBottom: 8, border: '1px solid var(--border)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                <span className={`sentiment-badge ${tx.type === 'BUY' ? 'bullish' : 'bearish'}`} style={{ fontSize: 9 }}>
-                                  {tx.type === 'BUY' ? '🟢 BELI' : '🔴 JUAL'}
+                                <span style={{ 
+                                  display: 'inline-block',
+                                  fontSize: 9,
+                                  fontWeight: 800,
+                                  padding: '2px 6px',
+                                  borderRadius: 10,
+                                  background: tx.type === 'BUY' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                                  color: tx.type === 'BUY' ? '#10b981' : '#ef4444',
+                                  border: `1px solid ${tx.type === 'BUY' ? '#10b981' : '#ef4444'}`
+                                }}>
+                                  {tx.type === 'BUY' ? 'BELI' : 'JUAL'}
                                 </span>
                                 <span style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>{tx.ticker.replace('.JK', '')}</span>
                                 <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>

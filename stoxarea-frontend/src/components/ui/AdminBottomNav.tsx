@@ -7,11 +7,11 @@ export default function AdminBottomNav() {
   const pathname = usePathname()
 
   const navItems = [
-    { href: '/admin', label: 'Overview', icon: '📊' },
-    { href: '/admin/users', label: 'User', icon: '👥' },
-    { href: '/admin/spk', label: 'SPK', icon: '🎯' },
-    { href: '/admin/stocks', label: 'Saham', icon: '📈' },
-    { href: '/admin/ml-pipeline', label: 'ML', icon: '⚡' },
+    { href: '/admin', label: 'Overview', icon: '⊞' },
+    { href: '/admin/users', label: 'User', icon: '⍟' },
+    { href: '/admin/spk', label: 'SPK', icon: '⬡' },
+    { href: '/admin/stocks', label: 'Saham', icon: '◎' },
+    { href: '/admin/ml-pipeline', label: 'ML', icon: '⬢' },
     { href: '/dashboard', label: 'User View', icon: '👤' },
   ]
 
@@ -38,7 +38,7 @@ export default function AdminBottomNav() {
               transition: 'all 0.15s',
             }}
           >
-            <span style={{ fontSize: 18, marginBottom: 2 }}>{item.icon}</span>
+            <span style={{ fontSize: 16, marginBottom: 2, fontWeight: 800 }}>{item.icon}</span>
             <span style={{ whiteSpace: 'nowrap' }}>{item.label}</span>
           </Link>
         )

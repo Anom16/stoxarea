@@ -145,12 +145,11 @@ export default function StockDetailPage() {
         })
         setDbCash(userRes.data.virtual_balance || 0)
         
+        const cleanFull = fullTicker.replace('.JK', '').toUpperCase()
         const currentHolding = portRes.data.find(
-          (h: any) => h.ticker.toUpperCase() === fullTicker.toUpperCase()
+          (h: any) => h.ticker.replace('.JK', '').toUpperCase() === cleanFull
         )
-        if (currentHolding) {
-          setDbHoldingShares(currentHolding.qty)
-        }
+        setDbHoldingShares(currentHolding ? currentHolding.qty : 0)
 
         // Terjemahkan deskripsi perusahaan
         if (fundRes.data.description) {
@@ -548,6 +547,28 @@ export default function StockDetailPage() {
         <Topbar />
         <ToastContainer toasts={toasts} onRemove={removeToast} />
         <div className="page-body">
+          {/* Top Bar Action Row: Back Button to Market Explorer */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <Link 
+              href="/market" 
+              className="btn-outline" 
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: 6, 
+                fontSize: 12, 
+                fontWeight: 700, 
+                padding: '6px 14px', 
+                borderRadius: 20,
+                textDecoration: 'none',
+                color: 'var(--text-secondary)',
+                borderColor: 'var(--border)'
+              }}
+            >
+              ← Kembali ke Jelajah Pasar
+            </Link>
+          </div>
+
           {/* Header & Price */}
           <div className="flex-between mb-24">
             <div>

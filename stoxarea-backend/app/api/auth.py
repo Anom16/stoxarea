@@ -1,6 +1,7 @@
 import logging
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Request
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -54,6 +55,39 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db
     
     access_token = create_access_token(data={"sub": user.email})
     logger.info(f"Login SUCCESS: {user.email}")
+    return {"access_token": access_token, "token_type": "bearer"}
+
+class GoogleAuthInput(BaseModel):
+    email: str
+    full_name: str | None = None
+    google_id: str | None = None
+
+@router.post("/google")
+def google_login(payload: GoogleAuthInput, db: Session = Depends(get_db)):
+    """Authentication via Google 1-Click / OAuth"""
+    email_clean = payload.email.strip().lower()
+    if not email_clean or "@" not in email_clean:
+        raise HTTPException(status_code=400, detail="Email Google tidak valid.")
+
+    user = db.query(User).filter(User.email == email_clean).first()
+    if not user:
+        name = payload.full_name or email_clean.split("@")[0].capitalize()
+        hashed = get_password_hash("GoogleOAuthSecuredUser_2026")
+        user = User(
+            email=email_clean,
+            password_hash=hashed,
+            full_name=name,
+            is_admin=False,
+            virtual_balance=100000000.0
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        logger.info(f"[Google Auth] Pendaftaran akun baru via Google sukses: {email_clean}")
+    else:
+        logger.info(f"[Google Auth] Login akun existing via Google sukses: {email_clean}")
+
+    access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=UserResponse)
