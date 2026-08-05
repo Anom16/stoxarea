@@ -31,6 +31,8 @@ SECTOR_KEYWORDS = {
 }
 
 import json
+import csv
+import glob
 from pathlib import Path
 
 QUALIFIED_TICKERS_SET = set()
@@ -41,6 +43,31 @@ if tf_path.exists():
             QUALIFIED_TICKERS_SET = {t.replace(".JK", "").strip().upper() for t in json.load(f)}
     except Exception:
         pass
+
+
+def _get_ohlcv_prices() -> dict:
+    """Membaca harga close terbaru dari file CSV OHLCV lokal."""
+    prices = {}
+    ohlcv_dir = Path("data/raw/ohlcv")
+    if not ohlcv_dir.exists():
+        return prices
+    for f in ohlcv_dir.glob("*.JK.csv"):
+        ticker = f.stem.replace(".JK", "").upper()
+        try:
+            with open(f, "r") as fp:
+                rows = list(csv.reader(fp))
+                if len(rows) >= 2:
+                    last_row = rows[-1]
+                    close_price = float(last_row[4])
+                    if close_price > 0:
+                        prices[ticker] = int(close_price)
+        except Exception:
+            pass
+    return prices
+
+
+# Cache harga OHLCV saat startup (di-refresh saat module diload)
+_OHLCV_PRICES = _get_ohlcv_prices()
 
 def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optional[str] = None) -> List[dict]:
     """
@@ -75,18 +102,9 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
             if not existing.name and s.name:
                 grouped[clean] = s
 
-    KNOWN_PRICES = {
-        "BBCA": 9850, "BBRI": 5150, "BMRI": 6650, "BBNI": 5200, "BRIS": 2950,
-        "TLKM": 3850, "ASII": 5050, "ADRO": 3180, "UNVR": 3100, "ICBP": 11150,
-        "INDF": 6800, "ANTM": 1520, "KLBF": 1480, "PGAS": 1550, "PTBA": 2450,
-        "ITMG": 26800, "MEDC": 1320, "AMRT": 2850, "MYOR": 2450, "CPIN": 5100,
-        "JPFA": 1250, "MDKA": 2350, "TPIA": 9250, "INKP": 7800, "TKIM": 6900,
-        "INTP": 7100, "SMGR": 3950, "MIKA": 2800, "HEAL": 1350, "SIDO": 650,
-        "CTRA": 1150, "BSDE": 1050, "PWON": 440, "SMRA": 550, "BUKA": 140,
-        "EMTK": 450, "MTDL": 620, "ACES": 820, "MAPI": 1450, "ERAA": 430,
-        "AUTO": 2100, "ISAT": 10500, "EXCL": 2250, "TOWR": 780, "JSMR": 4850,
-        "AKRA": 1650, "DOID": 610, "ELSA": 480, "ARTO": 2850, "BBTN": 1320,
-    }
+    # Gunakan harga dari OHLCV lokal (sumber yang sama dengan halaman detail)
+    # Harga ini diambil dari close terbaru di CSV OHLCV
+    ohlcv_prices = _OHLCV_PRICES
 
     stocks_list = []
     for clean_ticker, s in grouped.items():
@@ -97,7 +115,8 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
         ai_pct     = data.get("ai_score_percent", "7.2%")
         insights   = data.get("insights", [])
 
-        base_price = KNOWN_PRICES.get(clean_ticker)
+        # Prioritas: harga OHLCV lokal → fallback hash-based
+        base_price = ohlcv_prices.get(clean_ticker)
         if not base_price:
             base_price = 500 + (abs(hash(clean_ticker)) % 450) * 10
 

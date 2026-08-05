@@ -392,7 +392,11 @@ function MarketExplorerContent() {
               ) : (
                 <>
                   {/* Desktop Table View */}
-                  <div className="market-table-desktop" style={{ overflowX: 'auto', marginTop: 16 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 12, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span>ℹ️</span>
+                    <span>* Harga diambil dari snapshot harian pipeline AI (bukan real-time). Klik nama saham untuk melihat harga live terkini.</span>
+                  </div>
+                  <div className="market-table-desktop" style={{ overflowX: 'auto', marginTop: 8 }}>
                     <table className="clean-table">
                       <thead>
                         <tr>
@@ -405,7 +409,7 @@ function MarketExplorerContent() {
                             AI Score (%) {sortConfig.key === 'ai_score_percent' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : '↕'}
                           </th>
                           <th onClick={() => requestSort('current_price')} style={{ cursor: 'pointer' }}>
-                            Harga {sortConfig.key === 'current_price' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : '↕'}
+                            Harga* {sortConfig.key === 'current_price' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : '↕'}
                           </th>
                           <th style={{ width: 120 }}>Trend (7D)</th>
                           <th style={{ textAlign: 'right' }}>Aksi</th>

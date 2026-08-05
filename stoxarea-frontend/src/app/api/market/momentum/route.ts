@@ -19,17 +19,31 @@ const STOCK_NAMES: Record<string, string> = {
   'UNVR.JK': 'Unilever Indonesia Tbk', 'ICBP.JK': 'Indofood CBP Sukses Makmur Tbk', 'INDF.JK': 'Indofood Sukses Makmur Tbk', 'ANTM.JK': 'Aneka Tambang Tbk', 'KLBF.JK': 'Kalbe Farma Tbk'
 }
 
+// Harga snapshot terbaru dari OHLCV (per 4 Agustus 2026) — diupdate berkala setelah pipeline AI
 const KNOWN_PRICES: Record<string, number> = {
-  'BBCA': 9850, 'BBRI': 5150, 'BMRI': 6650, 'BBNI': 5200, 'BRIS': 2950,
-  'TLKM': 3850, 'ASII': 5050, 'ADRO': 3180, 'UNVR': 3100, 'ICBP': 11150,
-  'INDF': 6800, 'ANTM': 1520, 'KLBF': 1480, 'PGAS': 1550, 'PTBA': 2450,
-  'ITMG': 26800, 'MEDC': 1320, 'AMRT': 2850, 'MYOR': 2450, 'CPIN': 5100,
-  'JPFA': 1250, 'MDKA': 2350, 'TPIA': 9250, 'INKP': 7800, 'TKIM': 6900,
-  'INTP': 7100, 'SMGR': 3950, 'MIKA': 2800, 'HEAL': 1350, 'SIDO': 650,
-  'CTRA': 1150, 'BSDE': 1050, 'PWON': 440, 'SMRA': 550, 'BUKA': 140,
-  'EMTK': 450, 'MTDL': 620, 'ACES': 820, 'MAPI': 1450, 'ERAA': 430,
-  'AUTO': 2100, 'ISAT': 10500, 'EXCL': 2250, 'TOWR': 780, 'JSMR': 4850,
-  'AKRA': 1650, 'DOID': 610, 'ELSA': 480, 'ARTO': 2850, 'BBTN': 1320,
+  'AALI': 7200, 'ABMM': 2540, 'ACES': 350, 'ADHI': 157, 'ADMR': 1510,
+  'ADRO': 2520, 'AGRO': 144, 'AKRA': 1450, 'AMMN': 4310, 'AMRT': 1330,
+  'ANTM': 2880, 'ARTO': 1210, 'ASII': 5125, 'ASRI': 116, 'ASSA': 625,
+  'AUTO': 2770, 'AVIA': 326, 'BBCA': 6500, 'BBNI': 3660, 'BBRI': 3060,
+  'BBTN': 1225, 'BBYB': 254, 'BDMN': 4200, 'BEST': 109, 'BIRD': 1610,
+  'BJBR': 790, 'BJTM': 515, 'BMRI': 4260, 'BNGA': 1645, 'BREN': 3230,
+  'BRIS': 1795, 'BRPT': 1855, 'BSDE': 575, 'BUKA': 120, 'BULL': 422,
+  'BVIC': 94, 'BWPT': 88, 'CLEO': 382, 'CPIN': 3170, 'CTRA': 585,
+  'CUAN': 665, 'DILD': 115, 'DOID': 214, 'DRMA': 960, 'DSNG': 1390,
+  'ELSA': 690, 'EMTK': 530, 'ERAA': 430, 'EXCL': 2510, 'FILM': 1095,
+  'GIAA': 54, 'GJTL': 1345, 'HAIS': 183, 'HEAL': 795, 'HRUM': 880,
+  'ICBP': 7175, 'INDF': 7200, 'INDY': 2520, 'INKP': 8500, 'INTP': 5025,
+  'ISAT': 1990, 'ITMG': 24825, 'JPFA': 2180, 'JSMR': 2760, 'KIJA': 124,
+  'KKGI': 276, 'KLBF': 735, 'LPPF': 1555, 'LSIP': 1455, 'MAIN': 670,
+  'MAPI': 1890, 'MBMA': 520, 'MBSS': 2830, 'MDKA': 2750, 'MEDC': 1370,
+  'MIKA': 1805, 'MNCN': 202, 'MTDL': 515, 'MYOR': 1685, 'NCKL': 945,
+  'NZIA': 140, 'PANI': 6200, 'PGAS': 1515, 'PNBN': 910, 'PTBA': 2360,
+  'PTPP': 202, 'PTSN': 278, 'PWON': 258, 'ROTI': 585, 'SCMA': 204,
+  'SIDO': 352, 'SIMP': 595, 'SMDR': 302, 'SMGR': 1530, 'SMRA': 318,
+  'SMSM': 1800, 'SSIA': 1650, 'STAA': 1105, 'TAPG': 1870, 'TBLA': 620,
+  'TINS': 3790, 'TKIM': 7175, 'TLKM': 2790, 'TMAS': 121, 'TOWR': 410,
+  'TPIA': 2070, 'TPMA': 462, 'ULTJ': 1515, 'UNTR': 24000, 'UNVR': 1820,
+  'WINS': 510, 'WOOD': 220,
 }
 
 export async function GET(request: Request) {
