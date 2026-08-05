@@ -40,7 +40,23 @@ interface MetricInfo {
 }
 
 export const METRIC_INFO: Record<string, MetricInfo> = {
-  // ── Fundamental ───────────────────────────────────────────────────────────
+  ai_score: {
+    fullName: 'AI Momentum Score (Probabilitas Terkalibrasi)',
+    description: 'Probabilitas statistik terkalibrasi murni (Isotonic Calibration) dari model XGBoost yang mengukur peluang saham tembus target ATR dalam 5 hari bursa. Karena baseline rata-rata bursa adalah 7.16%, nilai 8.5% ke atas sudah merupakan Sinyal Bullish (Top Momentum Bursa).',
+    howToRead: [
+      { range: '≥ 8.5%',   label: 'Bullish (Sinyal Kuat di Atas Baseline 7.16%)', color: '#10b981' },
+      { range: '6.0–8.4%', label: 'Netral (Konsolidasi di Sekitar Rata-rata Bursa)', color: '#f59e0b' },
+      { range: '< 6.0%',   label: 'Bearish (Tekanan Jual / Momentum Lemah)', color: '#ef4444' },
+    ],
+    spkRole: 'Kriteria Utama SPK — Skor AI terkalibrasi digunakan dalam matriks SAW untuk mengurutkan rekomendasi saham terbaik secara objektif.',
+    getInterpretation: (v) => {
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
+      const pct = v > 1 ? v : v * 100
+      if (pct >= 8.5) return { text: `Probabilitas AI ${pct.toFixed(1)}% — Bullish Kuat! Berada di atas baseline bursa (7.16%) dengan peluang momentum terbaik.`, color: '#10b981' }
+      if (pct >= 6.0) return { text: `Probabilitas AI ${pct.toFixed(1)}% — Netral. Pergerakan saham berada di sekitar rata-rata bursa.`, color: '#f59e0b' }
+      return { text: `Probabilitas AI ${pct.toFixed(1)}% — Bearish. Pergerakan saham di bawah rata-rata bursa dengan momentum lemah.`, color: '#ef4444' }
+    },
+  },
   roe: {
     fullName: 'Return on Equity (ROE) — Profit Modal',
     description: 'Mengukur seberapa jago manajemen perusahaan mencetak keuntungan dari setiap rupiah modal pemegang saham. Semakin tinggi angkanya, semakin efektif perusahaan dalam mencetak laba.',

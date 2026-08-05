@@ -156,20 +156,20 @@ export default function MLPipelinePage() {
         <PipelineCard
           icon="▶️"
           title="Pipeline Harian"
-          desc="Ingest OHLCV → Feature Engineering → Inference AI Score"
+          desc="Ingest OHLCV → Feature Engineering → Inference AI Score & SHAP (Memakai model tersimpan)"
           buttonLabel="▶ Jalankan Pipeline Harian"
           buttonColor="#2196F3"
-          estimatedTime="~3-5 menit"
+          estimatedTime="~1-2 menit"
           status={dailyStatus}
           onRun={() => runPipeline('daily')}
         />
         <PipelineCard
           icon="🔄"
           title="Full Retrain Mingguan"
-          desc="Semua step harian + Retrain XGBoost dengan Walk-Forward Validation"
+          desc="Ingest → Feature Eng → Full Retrain XGBoost (Walk-Forward CV) → Inference & Evaluasi Metrik"
           buttonLabel="🔄 Jalankan Full Retrain"
           buttonColor="#9C27B0"
-          estimatedTime="~10-15 menit"
+          estimatedTime="~3-5 menit"
           status={weeklyStatus}
           onRun={() => runPipeline('retrain')}
         />

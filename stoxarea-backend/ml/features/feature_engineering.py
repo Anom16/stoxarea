@@ -3,8 +3,8 @@ ml/pipeline/features.py
 -----------------------
 Tugas:
   1. Membaca data OHLCV historis dari data/raw/ohlcv/.
-  2. Melakukan Feature Engineering (Teknikal).
-  3. Menghasilkan label klasifikasi (Target 5 Hari > 5%).
+  2. Melakukan Feature Engineering (Teknikal murni: Return, MA, BB, RSI, MACD, ATR, OBV, Stochastic, Candlesticks).
+  3. Menghasilkan label klasifikasi berbasis ATR Dynamic Threshold (Random Walk Theory).
   4. Menggabungkan seluruh data emiten ke dalam satu dataset training.
 
 Input: data/raw/ohlcv/*.csv
@@ -16,7 +16,10 @@ import numpy as np
 import json
 import logging
 from pathlib import Path
-from ml.features.technical_indicators import compute_rsi, compute_macd, compute_atr, detect_candlestick
+from ml.features.technical_indicators import (
+    compute_rsi, compute_macd, compute_atr,
+    compute_obv, compute_stochastic, detect_candlestick
+)
 
 # ── Setup logging ──────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -35,9 +38,20 @@ OUTPUT_PATH     = Path("data/processed/features_targets.csv")
 
 # ── Parameter Target ──
 TARGET_HORIZON_DAYS = 5
-TARGET_PROFIT_PCT   = 0.03  # 3% dalam 5 hari — lebih realistis untuk pasar BEI
 
-
+FEATURES = [
+    "log_ret_1d", "log_ret_5d",
+    "ma_20_dist", "ma_50_dist",
+    "bb_width", "bb_position",
+    "rsi_14",
+    "macd_norm", "macd_signal_norm", "macd_hist_norm",
+    "vol_ma_ratio",
+    "atr_norm",
+    "obv_norm",
+    "stoch_k", "stoch_d",
+    "is_doji", "is_hammer", "is_bullish_engulfing",
+    "is_bearish_engulfing", "is_shooting_star", "is_morning_star",
+]
 
 # ── Pemrosesan Per Ticker ──────────────────────────────────────────────────────
 def process_ticker(ticker: str, file_path: Path) -> pd.DataFrame:
@@ -55,6 +69,7 @@ def process_ticker(ticker: str, file_path: Path) -> pd.DataFrame:
 
     close = df["Close"]
     high  = df["High"]
+    low   = df["Low"]
     
     # ── Feature Engineering ──
     # 1. Log Returns
@@ -77,70 +92,53 @@ def process_ticker(ticker: str, file_path: Path) -> pd.DataFrame:
     df["bb_position"] = (close - bb_lower) / (bb_upper - bb_lower) # 0 = di bawah, 1 = di atas
     
     # 4. RSI (14)
-    # 4. RSI (14)
     df["rsi_14"] = compute_rsi(close, 14)
     df["rsi_zscore"] = (df["rsi_14"] - df["rsi_14"].rolling(30).mean()) / df["rsi_14"].rolling(30).std()
     
     # 5. MACD
     macd, macd_signal, macd_hist = compute_macd(close)
-    # Normalisasi MACD dengan membaginya terhadap Close agar bisa diperbandingkan antar saham
     df["macd_norm"] = macd / close
     df["macd_signal_norm"] = macd_signal / close
     df["macd_hist_norm"] = macd_hist / close
     df["macd_hist_zscore"] = (df["macd_hist_norm"] - df["macd_hist_norm"].rolling(30).mean()) / df["macd_hist_norm"].rolling(30).std()
     
-    # 6. ATR & Candlestick
-    df["atr_14"] = compute_atr(high, df["Low"], close, 14)
+    # 6. ATR & Candlestick Patterns
+    df["atr_14"] = compute_atr(high, low, close, 14)
     df["atr_norm"] = df["atr_14"] / close
     df = detect_candlestick(df)
     
-    # 6. Volume Momentum
+    # 7. Volume Momentum & OBV
     vol_ma_20 = df["Volume"].rolling(20).mean()
     df["vol_ma_ratio"] = df["Volume"] / vol_ma_20
-    
-    # ── Target Generation ──
-    # FIX #2: Perbaikan data leakage pada label target.
-    #
-    # BUG LAMA (SALAH):
-    #   high.rolling(window=5).max().shift(-5)
-    #   → rolling() mengambil window [t-4, t-3, t-2, t-1, t] (termasuk hari ini & masa lalu)
-    #   → shift(-5) hanya menggeser posisi baris, BUKAN mengambil masa depan murni
-    #   → Hasilnya: label di baris t mencerminkan max(high[t-9]...high[t-5]), bukan masa depan
-    #
-    # SEBELUMNYA:
-    #   high.shift(-1).rolling(5).max()
-    #   → Ini juga BOCOR! Karena rolling(5) di pandas selalu backward-looking,
-    #     maka pada hari t, ia menghitung max dari shift(-1) pada hari t-4, t-3, t-2, t-1, t.
-    #     Yang berarti max(high[t-3], high[t-2], high[t-1], high[t], high[t+1]).
-    #     Ini membocorkan data masa lalu dan hari ini (high[t-3]..high[t]) ke target hari ini!
-    #
-    # SOLUSI BEBAS LEAKAGE (BENAR):
-    #   Menggeser hasil rolling max kembali ke atas sebanyak (horizon - 1) hari.
-    #   Untuk horizon 5 hari, kita shift(-4) setelah rolling.
-    #   Hasilnya: target hari t = max(high[t+1], high[t+2], high[t+3], high[t+4], high[t+5]).
-    #   Murni masa depan!
-    # Ambil harga Close tepat 5 hari ke depan
-    future_close = close.shift(-TARGET_HORIZON_DAYS)
+    df["obv_norm"] = compute_obv(close, df["Volume"])
 
-    # Label 1 jika future close > 0% dari close hari ini (naik)
+    # 8. Stochastic Oscillator (%K, %D)
+    stoch_k, stoch_d = compute_stochastic(high, low, close)
+    df["stoch_k"] = stoch_k
+    df["stoch_d"] = stoch_d
+
+    # ── Target Generation (ATR Dynamic Threshold - Random Walk Theory) ──
+    future_close = close.shift(-TARGET_HORIZON_DAYS)
     target_pct = (future_close - close) / close
 
-    # Biarkan NaN tetap NaN (baris 5 terakhir tidak punya label valid)
+    # Dynamic Threshold per saham berdasarkan volatilitas ATR 5 hari
+    df["dynamic_threshold"] = df["atr_norm"] * np.sqrt(TARGET_HORIZON_DAYS) * 1.0
+
+    # Label 1 jika return 5 hari melampaui ATR dynamic threshold
     df["target_5d_up"] = np.where(
         target_pct.isna(),
         np.nan,
-        (target_pct > TARGET_PROFIT_PCT).astype(int)
+        (target_pct > df["dynamic_threshold"]).astype(int)
     )
     
     # Tandai baris terbaru untuk inferensi
     df["is_latest"] = False
     df.loc[df.index[-1], "is_latest"] = True
     
-    # Drop baris awal yang NaN akibat kalkulasi MA50
-    df = df.dropna(subset=["ma_50_dist", "rsi_14"]).copy()
+    # Drop baris awal yang NaN akibat kalkulasi MA50 dan indikator lain
+    df = df.dropna(subset=["ma_50_dist", "rsi_14", "stoch_d", "obv_norm"]).copy()
     
-    # Untuk data training (bukan baris terakhir), pastikan target tidak NaN (yaitu 5 hari sebelum hari ini)
-    # Tapi kita ingin inference data (terakhir) tetap masuk dataset meskipun targetnya NaN
+    # Untuk data training (bukan baris terakhir), pastikan target tidak NaN
     is_training = ~df["is_latest"]
     is_target_nan = df["target_5d_up"].isna()
     
@@ -193,11 +191,11 @@ def run():
     target_counts = train_data["target_5d_up"].value_counts()
     pos_rate = target_counts.get(1, 0) / len(train_data) * 100
     
-    logger.info("\n=== Distribusi Target (Training) ===")
-    logger.info(f"0 (Gagal capai 5%) : {target_counts.get(0, 0)} baris")
-    logger.info(f"1 (Tembus >5%)     : {target_counts.get(1, 0)} baris")
-    logger.info(f"Positive Rate      : {pos_rate:.2f}%")
-    logger.info("====================================")
+    logger.info("\n=== Distribusi Target (ATR Dynamic Threshold) ===")
+    logger.info(f"0 (Dibawah Dynamic ATR Threshold) : {target_counts.get(0, 0)} baris")
+    logger.info(f"1 (Tembus Dynamic ATR Threshold)   : {target_counts.get(1, 0)} baris")
+    logger.info(f"Positive Rate                      : {pos_rate:.2f}%")
+    logger.info("================================================")
 
 if __name__ == "__main__":
     run()

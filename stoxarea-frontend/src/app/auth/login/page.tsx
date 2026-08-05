@@ -113,6 +113,10 @@ export default function LoginPage() {
         localStorage.removeItem('access_token')
       }
 
+      // Reset watchlist agar setiap akun mulai dari kondisi bersih
+      localStorage.removeItem('stoxarea_watchlist')
+      localStorage.removeItem('stoxarea_stock_notes')
+
       const userRes = await api.get('/auth/me')
       const name = userRes.data.full_name || userRes.data.email?.split('@')[0] || 'Pengguna'
       toast.success(`Selamat Datang, ${name}! 👋`, 'Login berhasil. Mengalihkan...')
@@ -160,7 +164,8 @@ export default function LoginPage() {
       } catch (postErr: any) {
         // Double-fail-safe: Tembak langsung ke localhost:8000/auth/google jika proxy Next 404
         const axios = (await import('axios')).default
-        res = await axios.post('http://localhost:8000/auth/google', {
+        const targetBackend = process.env.NEXT_PUBLIC_API_URL || 'https://stoxarea-backend-production.up.railway.app'
+        res = await axios.post(`${targetBackend}/auth/google`, {
           email: emailClean,
           full_name: targetName || emailClean.split('@')[0].toUpperCase(),
         })
@@ -172,6 +177,9 @@ export default function LoginPage() {
         sessionStorage.setItem('access_token', res.data.access_token)
         localStorage.removeItem('access_token')
       }
+      // Reset watchlist agar setiap akun mulai dari kondisi bersih
+      localStorage.removeItem('stoxarea_watchlist')
+      localStorage.removeItem('stoxarea_stock_notes')
       const userRes = await api.get('/auth/me')
       const name = userRes.data.full_name || 'Pengguna'
       toast.success(`Selamat Datang, ${name}! 🎉`, 'Login Google berhasil.')

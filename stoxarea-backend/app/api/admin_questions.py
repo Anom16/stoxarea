@@ -9,14 +9,6 @@ from app.models.question import Question, QuestionOption
 
 router = APIRouter(prefix="/admin/users/questions", tags=["Admin - Questionnaire Management"])
 
-VALID_CATEGORIES = {
-    "k1_target_keuntungan",
-    "k2_kualitas_perusahaan",
-    "k3_toleransi_risiko",
-    "k4_sensitivitas_harga",
-    "k5_kapasitas_finansial"
-}
-
 # Schemas
 class OptionUpdateSchema(BaseModel):
     value: int
@@ -37,13 +29,13 @@ def list_questions(
     _: str = Depends(require_admin),
     db: Session = Depends(get_db)
 ):
-    """Mengambil daftar seluruh pertanyaan kuesioner berserta pilihan jawabannya."""
+    """Mengambil daftar seluruh pertanyaan kuesioner beserta pilihan jawabannya."""
     questions = db.query(Question).all()
     
     def get_num(q_id: str):
         try:
             return int(q_id[1:])
-        except:
+        except Exception:
             return 999
             
     questions_sorted = sorted(questions, key=lambda x: get_num(x.id))
@@ -69,15 +61,16 @@ def create_question(
     _: str = Depends(require_admin),
     db: Session = Depends(get_db)
 ):
-    """Membuat pertanyaan kuesioner baru beserta 3 pilihan jawabannya."""
-    if body.category not in VALID_CATEGORIES:
-        raise HTTPException(status_code=400, detail=f"Kategori tidak valid. Harus salah satu dari: {', '.join(VALID_CATEGORIES)}")
+    """Membuat pertanyaan kuesioner baru beserta N pilihan jawabannya secara fleksibel."""
+    cat = body.category.strip()
+    if not cat:
+        raise HTTPException(status_code=400, detail="Kategori tidak boleh kosong.")
 
     if not body.question.strip():
         raise HTTPException(status_code=400, detail="Teks pertanyaan tidak boleh kosong.")
 
-    if len(body.options) != 3:
-        raise HTTPException(status_code=400, detail="Pilihan jawaban harus berjumlah tepat 3 opsi.")
+    if len(body.options) < 2:
+        raise HTTPException(status_code=400, detail="Pilihan jawaban minimal harus berjumlah 2 opsi.")
 
     # Auto-generate next question ID: q1, q2, ...
     questions = db.query(Question).all()
@@ -96,7 +89,7 @@ def create_question(
     # Create new question
     new_q = Question(
         id=new_id,
-        category=body.category,
+        category=cat,
         question=body.question.strip()
     )
     db.add(new_q)
@@ -138,7 +131,7 @@ def update_question(
     _: str = Depends(require_admin),
     db: Session = Depends(get_db)
 ):
-    """Memperbarui teks pertanyaan dan opsi pilihan jawaban beserta nilainya."""
+    """Memperbarui teks pertanyaan dan N opsi pilihan jawaban beserta nilainya."""
     question = db.query(Question).filter(Question.id == question_id).first()
     if not question:
         raise HTTPException(status_code=404, detail="Pertanyaan tidak ditemukan.")
@@ -146,12 +139,11 @@ def update_question(
     if not body.question.strip():
         raise HTTPException(status_code=400, detail="Teks pertanyaan tidak boleh kosong.")
 
+    if len(body.options) < 2:
+        raise HTTPException(status_code=400, detail="Pilihan jawaban minimal harus berjumlah 2 opsi.")
+
     # Update question text
     question.question = body.question.strip()
-
-    # Update options (we expect exactly 3 options for the profiling logic)
-    if len(body.options) != 3:
-        raise HTTPException(status_code=400, detail="Pilihan jawaban harus berjumlah tepat 3 opsi.")
 
     # Delete old options
     db.query(QuestionOption).filter(QuestionOption.question_id == question_id).delete()

@@ -262,29 +262,16 @@ def on_startup():
     else:
         logger.info("Background Scheduler dinonaktifkan (RUN_SCHEDULER=false) — berguna untuk multi-worker node.")
 
-    # ── Auto-run pipeline jika data sudah usang (> 1 hari) ──────────────────
+    # ── Auto-run pipeline hanya jika file ai_scores.json tidak ada ────────────
     import threading
     from pathlib import Path
-    import time as _time
 
     ai_scores_path = Path("data/processed/ai_scores.json")
-    if ai_scores_path.exists():
-        age_hours = (_time.time() - ai_scores_path.stat().st_mtime) / 3600
-        if age_hours > 24:
-            logger.warning(
-                f"[Startup] Data AI Score sudah {age_hours:.1f} jam usang. "
-                f"Menjalankan pipeline otomatis di background..."
-            )
-            threading.Thread(target=run_daily_pipeline, daemon=True).start()
-        else:
-            logger.info(f"[Startup] Data AI Score masih fresh ({age_hours:.1f} jam yang lalu).")
-    else:
+    if not ai_scores_path.exists():
         logger.warning("[Startup] ai_scores.json belum ada. Menjalankan pipeline pertama kali...")
         threading.Thread(target=run_daily_pipeline, daemon=True).start()
-    
-    # Pre-Warm Market Cache (Otomatisisi Persiapan Pameran)
-    from app.services.market_data import pre_warm_cache
-    threading.Thread(target=pre_warm_cache, daemon=True).start()
+    else:
+        logger.info("[Startup] Data AI Score siap. Server berjalan tanpa locking SQLite.")
 
     logger.info("StoxArea Backend siap melayani request!")
 

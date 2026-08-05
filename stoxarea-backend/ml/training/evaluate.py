@@ -1,19 +1,15 @@
 """
 ml/training/evaluate.py
 ------------------------
-Script evaluasi lengkap model XGBoost STOXAREA.
+Script evaluasi lengkap model XGBoost STOXAREA dengan Indikator Teknikal Murni & ATR Dynamic Threshold.
 
 Output yang dihasilkan (disimpan ke reports/):
   1. classification_report.txt  — Accuracy, Precision, Recall, F1
   2. confusion_matrix.png       — Heatmap confusion matrix
   3. roc_curve.png              — AUC-ROC Curve
-  4. feature_importance.png     — Top 11 fitur paling berpengaruh
+  4. feature_importance.png     — Top fitur paling berpengaruh
   5. walkforward_results.png    — Performa tiap fold validasi
   6. evaluation_summary.json    — Semua metrik dalam format JSON
-
-Cara menjalankan:
-  cd stoxarea-backend
-  python -m ml.training.evaluate
 """
 
 import json
@@ -47,31 +43,44 @@ FEATURES = [
     "rsi_14",
     "macd_norm", "macd_signal_norm", "macd_hist_norm",
     "vol_ma_ratio",
+    "atr_norm",
+    "obv_norm",
+    "stoch_k", "stoch_d",
+    "is_doji", "is_hammer", "is_bullish_engulfing",
+    "is_bearish_engulfing", "is_shooting_star", "is_morning_star",
 ]
 
 FEATURE_LABELS = {
-    "log_ret_1d":        "Return Harian",
-    "log_ret_5d":        "Momentum 5 Hari",
-    "ma_20_dist":        "Jarak ke MA20",
-    "ma_50_dist":        "Jarak ke MA50",
-    "bb_width":          "Lebar Bollinger Bands",
-    "bb_position":       "Posisi Harga (BB)",
-    "rsi_14":            "RSI 14",
-    "macd_norm":         "MACD",
-    "macd_signal_norm":  "MACD Signal",
-    "macd_hist_norm":    "MACD Histogram",
-    "vol_ma_ratio":      "Rasio Volume",
+    "log_ret_1d":           "Return Harian",
+    "log_ret_5d":           "Momentum 5 Hari",
+    "ma_20_dist":           "Jarak ke MA20",
+    "ma_50_dist":           "Jarak ke MA50",
+    "bb_width":             "Lebar Bollinger Bands",
+    "bb_position":          "Posisi Harga (BB)",
+    "rsi_14":               "RSI 14",
+    "macd_norm":            "MACD",
+    "macd_signal_norm":     "MACD Signal",
+    "macd_hist_norm":       "MACD Histogram",
+    "vol_ma_ratio":         "Rasio Volume",
+    "atr_norm":             "Volatilitas ATR",
+    "obv_norm":             "On-Balance Volume (OBV)",
+    "stoch_k":              "Stochastic %K",
+    "stoch_d":              "Stochastic %D",
+    "is_doji":              "Pola Doji",
+    "is_hammer":            "Pola Hammer",
+    "is_bullish_engulfing": "Bullish Engulfing",
+    "is_bearish_engulfing": "Bearish Engulfing",
+    "is_shooting_star":     "Shooting Star",
+    "is_morning_star":      "Morning Star",
 }
 
 TARGET = "target_5d_up"
 
 
 def run():
-    # ── Setup matplotlib non-GUI ───────────────────────────────────────────────
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    import matplotlib.ticker as mticker
     from matplotlib.colors import LinearSegmentedColormap
     import seaborn as sns
 
@@ -79,7 +88,7 @@ def run():
 
     # ── Load Data ──────────────────────────────────────────────────────────────
     if not INPUT_PATH.exists():
-        logger.error(f"File {INPUT_PATH} tidak ditemukan. Jalankan feature_engineering.py dulu.")
+        logger.error(f"File {INPUT_PATH} tidak ditemukan.")
         return
 
     logger.info("Memuat dataset...")
@@ -92,8 +101,8 @@ def run():
     y = train_df[TARGET]
 
     logger.info(f"Total sampel: {len(X):,}")
-    logger.info(f"  Class 0 (tidak naik): {(y==0).sum():,} ({(y==0).mean()*100:.1f}%)")
-    logger.info(f"  Class 1 (naik ≥5%)  : {(y==1).sum():,} ({(y==1).mean()*100:.1f}%)")
+    logger.info(f"  Class 0 (Di bawah ATR Target): {(y==0).sum():,} ({(y==0).mean()*100:.1f}%)")
+    logger.info(f"  Class 1 (Tembus ATR Target)  : {(y==1).sum():,} ({(y==1).mean()*100:.1f}%)")
 
     # ── Load Model ─────────────────────────────────────────────────────────────
     if not MODEL_PATH.exists():
@@ -111,26 +120,32 @@ def run():
     import xgboost as xgb
     n_neg = int((y == 0).sum())
     n_pos = int((y == 1).sum())
-    spw   = n_neg / n_pos
+    spw   = min(5.0, max(0.5, n_neg / n_pos))
 
     for fold, (tr_idx, te_idx) in enumerate(tscv.split(X)):
         X_tr, X_te = X.iloc[tr_idx], X.iloc[te_idx]
         y_tr, y_te = y.iloc[tr_idx], y.iloc[te_idx]
 
         fold_model = xgb.XGBClassifier(
-            n_estimators=100, max_depth=4, learning_rate=0.05,
+            n_estimators=100, max_depth=3, learning_rate=0.05,
+            subsample=0.75, colsample_bytree=0.75, gamma=0.1,
             objective="binary:logistic", eval_metric="logloss",
             scale_pos_weight=spw, random_state=42, n_jobs=-1
         )
         fold_model.fit(X_tr, y_tr)
-        preds = fold_model.predict(X_te)
         proba = fold_model.predict_proba(X_te)[:, 1]
+        
+        # Evaluasi threshold dinamis pada fold (misal 0.08)
+        preds = (proba >= 0.08).astype(int)
 
         acc  = accuracy_score(y_te, preds)
         prec = precision_score(y_te, preds, zero_division=0)
         rec  = recall_score(y_te, preds, zero_division=0)
         f1   = f1_score(y_te, preds, zero_division=0)
-        auc  = roc_auc_score(y_te, proba)
+        try:
+            auc = roc_auc_score(y_te, proba)
+        except Exception:
+            auc = 0.5
 
         fold_results.append({
             "fold": fold + 1,
@@ -149,7 +164,7 @@ def run():
 
     df_folds = pd.DataFrame(fold_results)
     mean_row = df_folds[["accuracy","precision","recall","f1","auc"]].mean().round(4)
-    logger.info(f"\n  Rata-rata: {mean_row.to_dict()}")
+    logger.info(f"\n  Rata-rata Walk-Forward: {mean_row.to_dict()}")
 
     # ── Plot Walk-Forward ──────────────────────────────────────────────────────
     fig, ax = plt.subplots(figsize=(10, 5))
@@ -165,7 +180,7 @@ def run():
 
     ax.set_xlabel("Fold", fontsize=12)
     ax.set_ylabel("Score", fontsize=12)
-    ax.set_title("Walk-Forward Validation — Performa per Fold", fontsize=14, fontweight="bold")
+    ax.set_title("Walk-Forward Validation — Performa per Fold (Model Baru)", fontsize=14, fontweight="bold")
     ax.set_ylim(0, 1.05)
     ax.set_xticks(range(1, 6))
     ax.legend(loc="lower left", fontsize=10)
@@ -175,26 +190,32 @@ def run():
     plt.close()
     logger.info("  ✅ walkforward_results.png disimpan")
 
-    # ── 2. Evaluasi Model Final di Seluruh Data ────────────────────────────────
-    logger.info("\n📊 Evaluasi Model Final...")
+    # ── 2. Evaluasi Model Final & Threshold Adaptation ─────────────────────────
+    logger.info("\n📊 Evaluasi Model Final & Threshold Adaptation...")
     y_proba = model.predict_proba(X)[:, 1]
-    y_pred_default = model.predict(X)   # threshold default 0.5
+    auc     = roc_auc_score(y, y_proba)
 
-    # Metrik dengan threshold default (0.5) — untuk laporan formal
-    acc_d  = accuracy_score(y, y_pred_default)
-    prec_d = precision_score(y, y_pred_default, zero_division=0)
-    rec_d  = recall_score(y, y_pred_default, zero_division=0)
-    f1_d   = f1_score(y, y_pred_default, zero_division=0)
-    auc    = roc_auc_score(y, y_proba)
+    # Threshold Adaptation Search untuk calibrated base-rate 7.16%
+    best_thresh, best_f1 = 0.08, 0.0
+    profiles = {}
 
-    # Cari threshold optimal berdasarkan F1-Score terbaik
-    best_thresh, best_f1 = 0.5, 0.0
-    for thresh in np.arange(0.30, 0.71, 0.01):
-        preds_t = (y_proba >= thresh).astype(int)
+    for thresh in np.arange(0.03, 0.25, 0.005):
+        t_val = round(float(thresh), 3)
+        preds_t = (y_proba >= t_val).astype(int)
         f1_t = f1_score(y, preds_t, zero_division=0)
+        prec_t = precision_score(y, preds_t, zero_division=0)
+        rec_t = recall_score(y, preds_t, zero_division=0)
+        acc_t = accuracy_score(y, preds_t)
+
         if f1_t > best_f1:
             best_f1 = f1_t
-            best_thresh = round(float(thresh), 2)
+            best_thresh = t_val
+
+        # Simpan profil contoh
+        if t_val == 0.06:
+            profiles["Agresif (0.060)"] = {"acc": acc_t, "prec": prec_t, "rec": rec_t, "f1": f1_t}
+        elif t_val == 0.10:
+            profiles["Konservatif (0.100)"] = {"acc": acc_t, "prec": prec_t, "rec": rec_t, "f1": f1_t}
 
     y_pred_opt = (y_proba >= best_thresh).astype(int)
     acc  = accuracy_score(y, y_pred_opt)
@@ -202,31 +223,32 @@ def run():
     rec  = recall_score(y, y_pred_opt, zero_division=0)
     f1   = f1_score(y, y_pred_opt, zero_division=0)
 
-    logger.info(f"  Threshold default (0.50): Acc={acc_d:.4f} Prec={prec_d:.4f} Rec={rec_d:.4f} F1={f1_d:.4f}")
-    logger.info(f"  Threshold optimal ({best_thresh}): Acc={acc:.4f}  Prec={prec:.4f}  Rec={rec:.4f}  F1={f1:.4f}")
+    profiles[f"Moderat/Optimal ({best_thresh})"] = {"acc": acc, "prec": prec, "rec": rec, "f1": f1}
+
     logger.info(f"  AUC-ROC: {auc:.4f}")
+    logger.info("\n=== Profil Threshold Adaptation ===")
+    for pname, pdata in profiles.items():
+        logger.info(f"  Profil {pname:<22}: Acc={pdata['acc']*100:.2f}% | Prec={pdata['prec']*100:.2f}% | Rec={pdata['rec']*100:.2f}% | F1={pdata['f1']*100:.2f}%")
 
-    # Gunakan threshold optimal (best_thresh) agar metrik F1-Score & Recall mencerminkan ambang batas produksi
     y_pred = y_pred_opt
-    # acc, prec, rec, f1 tetap menggunakan nilai dari threshold optimal (best_thresh)
+    report_str = classification_report(y, y_pred, target_names=["Biasa (0)", "Tembus ATR Threshold (1)"])
+    logger.info(f"\nClassification Report (Optimal Threshold {best_thresh}):\n{report_str}")
 
-    report_str = classification_report(y, y_pred, target_names=["Tidak Naik (0)", "Naik ≥5% (1)"])
-    logger.info(f"\n{report_str}")
-
-    # Simpan classification report ke txt
+    # Simpan report txt
     with open(REPORTS_DIR / "classification_report.txt", "w", encoding="utf-8") as f:
         f.write("=" * 60 + "\n")
-        f.write("LAPORAN EVALUASI MODEL XGBOOST — STOXAREA\n")
+        f.write("LAPORAN EVALUASI MODEL XGBOOST BARU — STOXAREA\n")
         f.write("=" * 60 + "\n\n")
         f.write(f"Dataset    : {len(X):,} sampel\n")
         f.write(f"Class 0    : {(y==0).sum():,} ({(y==0).mean()*100:.1f}%)\n")
         f.write(f"Class 1    : {(y==1).sum():,} ({(y==1).mean()*100:.1f}%)\n\n")
-        f.write("METRIK EVALUASI:\n")
-        f.write(f"  Accuracy : {acc*100:.2f}%\n")
-        f.write(f"  Precision: {prec*100:.2f}%\n")
-        f.write(f"  Recall   : {rec*100:.2f}%\n")
-        f.write(f"  F1-Score : {f1*100:.2f}%\n")
-        f.write(f"  AUC-ROC  : {auc:.4f}\n\n")
+        f.write("METRIK EVALUASI (THRESHOLD OPTIMAL):\n")
+        f.write(f"  Optimal Threshold : {best_thresh}\n")
+        f.write(f"  Accuracy          : {acc*100:.2f}%\n")
+        f.write(f"  Precision         : {prec*100:.2f}%\n")
+        f.write(f"  Recall            : {rec*100:.2f}%\n")
+        f.write(f"  F1-Score          : {f1*100:.2f}%\n")
+        f.write(f"  AUC-ROC           : {auc:.4f}\n\n")
         f.write("CLASSIFICATION REPORT:\n")
         f.write(report_str)
         f.write("\n\nWALK-FORWARD VALIDATION:\n")
@@ -241,16 +263,15 @@ def run():
     cmap = LinearSegmentedColormap.from_list("custom", ["#FFFFFF", "#2255AA"])
     sns.heatmap(
         cm, annot=True, fmt=",d", cmap=cmap,
-        xticklabels=["Prediksi: Tidak Naik", "Prediksi: Naik ≥5%"],
-        yticklabels=["Aktual: Tidak Naik", "Aktual: Naik ≥5%"],
+        xticklabels=["Prediksi: Biasa", "Prediksi: Tembus ATR"],
+        yticklabels=["Aktual: Biasa", "Aktual: Tembus ATR"],
         linewidths=2, linecolor="white", ax=ax,
         annot_kws={"size": 16, "weight": "bold"}
     )
-    ax.set_title("Confusion Matrix — Model XGBoost STOXAREA", fontsize=13, fontweight="bold", pad=15)
+    ax.set_title("Confusion Matrix — Model XGBoost Baru STOXAREA", fontsize=13, fontweight="bold", pad=15)
     ax.set_ylabel("Nilai Aktual", fontsize=12)
     ax.set_xlabel("Nilai Prediksi", fontsize=12)
 
-    # Tambah keterangan
     stats = f"TN={tn:,}  FP={fp:,}  FN={fn:,}  TP={tp:,}\nAccuracy={acc*100:.1f}%  Precision={prec*100:.1f}%  Recall={rec*100:.1f}%"
     ax.text(0.5, -0.12, stats, transform=ax.transAxes,
             fontsize=10, ha="center", color="#555555")
@@ -271,7 +292,7 @@ def run():
 
     ax.set_xlabel("False Positive Rate", fontsize=12)
     ax.set_ylabel("True Positive Rate", fontsize=12)
-    ax.set_title("ROC Curve — Model XGBoost STOXAREA", fontsize=13, fontweight="bold")
+    ax.set_title("ROC Curve — Model XGBoost Baru STOXAREA", fontsize=13, fontweight="bold")
     ax.legend(fontsize=11, loc="lower right")
     ax.grid(True, alpha=0.3)
     ax.set_xlim([0, 1])
@@ -291,22 +312,22 @@ def run():
     importances = base.feature_importances_
     feat_df = pd.DataFrame({
         "feature": FEATURES,
-        "label":   [FEATURE_LABELS[f] for f in FEATURES],
+        "label":   [FEATURE_LABELS.get(f, f) for f in FEATURES],
         "importance": importances
     }).sort_values("importance", ascending=True)
 
-    fig, ax = plt.subplots(figsize=(9, 6))
+    fig, ax = plt.subplots(figsize=(10, 7))
     colors_bar = ["#2255AA" if v > feat_df["importance"].median() else "#90A4AE"
                   for v in feat_df["importance"]]
     bars = ax.barh(feat_df["label"], feat_df["importance"],
                    color=colors_bar, edgecolor="white", height=0.6)
 
     for bar, val in zip(bars, feat_df["importance"]):
-        ax.text(val + 0.002, bar.get_y() + bar.get_height() / 2,
-                f"{val:.4f}", va="center", fontsize=9, color="#333333")
+        ax.text(val + 0.001, bar.get_y() + bar.get_height() / 2,
+                f"{val:.4f}", va="center", fontsize=8, color="#333333")
 
     ax.set_xlabel("Feature Importance Score", fontsize=12)
-    ax.set_title("Feature Importance — Model XGBoost STOXAREA", fontsize=13, fontweight="bold")
+    ax.set_title("Feature Importance — Model XGBoost Baru STOXAREA", fontsize=13, fontweight="bold")
     ax.grid(True, alpha=0.2, axis="x")
     ax.set_xlim(0, feat_df["importance"].max() * 1.2)
     plt.tight_layout()
@@ -316,7 +337,7 @@ def run():
 
     # ── 6. Simpan Summary JSON ─────────────────────────────────────────────────
     summary = {
-        "model": "XGBoost Classifier + Isotonic Calibration",
+        "model": "XGBoost Classifier + Isotonic Calibration (Optimized)",
         "dataset": {
             "total_samples":    int(len(X)),
             "class_0_count":    int((y == 0).sum()),
@@ -324,14 +345,10 @@ def run():
             "positive_rate":    round(float((y == 1).mean() * 100), 2),
         },
         "parameters": {
-            "n_estimators": 150,
-            "max_depth": 4,
-            "learning_rate": 0.05,
-            "scale_pos_weight": round(spw, 4),
-            "calibration": "isotonic",
             "validation": "TimeSeriesSplit (5 fold)",
             "optimal_threshold": best_thresh,
         },
+        "threshold_profiles": profiles,
         "metrics_final_model": {
             "accuracy":  round(acc * 100, 2),
             "precision": round(prec * 100, 2),
@@ -347,14 +364,13 @@ def run():
         },
         "walkforward_per_fold": fold_results,
         "walkforward_mean": {k: round(float(v), 4) for k, v in mean_row.items()},
-        "top3_features": feat_df.tail(3)[["feature", "importance"]].to_dict("records"),
+        "top5_features": feat_df.tail(5)[["feature", "importance"]].to_dict("records"),
     }
 
     with open(REPORTS_DIR / "evaluation_summary.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
     logger.info("  ✅ evaluation_summary.json disimpan")
 
-    # ── Ringkasan Akhir ────────────────────────────────────────────────────────
     logger.info("\n" + "=" * 60)
     logger.info("✅ EVALUASI SELESAI")
     logger.info(f"   Accuracy  : {acc*100:.2f}%")
@@ -362,7 +378,6 @@ def run():
     logger.info(f"   Recall    : {rec*100:.2f}%")
     logger.info(f"   F1-Score  : {f1*100:.2f}%")
     logger.info(f"   AUC-ROC   : {auc:.4f}")
-    logger.info(f"\n   Semua output disimpan di folder: {REPORTS_DIR.resolve()}")
     logger.info("=" * 60)
 
 

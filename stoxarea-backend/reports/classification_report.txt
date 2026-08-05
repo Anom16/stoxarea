@@ -1,33 +1,34 @@
 ============================================================
-LAPORAN EVALUASI MODEL XGBOOST — STOXAREA
+LAPORAN EVALUASI MODEL XGBOOST BARU — STOXAREA
 ============================================================
 
 Dataset    : 69,122 sampel
-Class 0    : 53,665 (77.6%)
-Class 1    : 15,457 (22.4%)
+Class 0    : 64,172 (92.8%)
+Class 1    : 4,950 (7.2%)
 
-METRIK EVALUASI:
-  Accuracy : 77.14%
-  Precision: 46.11%
-  Recall   : 13.10%
-  F1-Score : 20.40%
-  AUC-ROC  : 0.6428
+METRIK EVALUASI (THRESHOLD OPTIMAL):
+  Optimal Threshold : 0.085
+  Accuracy          : 77.60%
+  Precision         : 13.45%
+  Recall            : 39.15%
+  F1-Score          : 20.02%
+  AUC-ROC           : 0.6613
 
 CLASSIFICATION REPORT:
-                precision    recall  f1-score   support
+                          precision    recall  f1-score   support
 
-Tidak Naik (0)       0.79      0.96      0.87     53665
-  Naik ≥5% (1)       0.46      0.13      0.20     15457
+               Biasa (0)       0.94      0.81      0.87     64172
+Tembus ATR Threshold (1)       0.13      0.39      0.20      4950
 
-      accuracy                           0.77     69122
-     macro avg       0.63      0.54      0.54     69122
-  weighted avg       0.72      0.77      0.72     69122
+                accuracy                           0.78     69122
+               macro avg       0.54      0.60      0.54     69122
+            weighted avg       0.89      0.78      0.82     69122
 
 
 WALK-FORWARD VALIDATION:
  fold  train_size  test_size  accuracy  precision  recall     f1    auc
-    1       11522      11520    0.4815     0.2254  0.6456 0.3342 0.5629
-    2       23042      11520    0.5927     0.2292  0.4551 0.3049 0.5685
-    3       34562      11520    0.6057     0.2499  0.4349 0.3174 0.5610
-    4       46082      11520    0.5798     0.3098  0.5812 0.4042 0.6157
-    5       57602      11520    0.5347     0.2831  0.6329 0.3912 0.5992
+    1       11522      11520    0.0661     0.0658     1.0 0.1235 0.5463
+    2       23042      11520    0.0679     0.0674     1.0 0.1263 0.5584
+    3       34562      11520    0.0709     0.0704     1.0 0.1315 0.5866
+    4       46082      11520    0.0734     0.0734     1.0 0.1367 0.5534
+    5       57602      11520    0.0619     0.0615     1.0 0.1158 0.6073

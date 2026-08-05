@@ -97,7 +97,7 @@ def generate_stock_report_pdf(ticker: str, fund: dict, hist: dict, ai: dict) -> 
     pdf.set_font("helvetica", "B", 10)
     pdf.cell(45, 6, "Sinyal / Outlook:", border=0, new_x="RIGHT", new_y="LAST")
     
-    outlook = "BULLISH" if ai_score >= 0.6 else "BEARISH" if ai_score < 0.4 else "NETRAL"
+    outlook = "BULLISH" if ai_score >= 0.085 else "BEARISH" if ai_score < 0.060 else "NETRAL"
     pdf.set_font("helvetica", "B", 10)
     if outlook == "BULLISH":
         pdf.set_text_color(38, 162, 67)

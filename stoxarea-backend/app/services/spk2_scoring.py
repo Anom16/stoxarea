@@ -45,6 +45,7 @@ if tf_path.exists():
 def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optional[str] = None) -> List[dict]:
     """
     Menampilkan saham-saham yang LOLOS 3 KRITERIA LIKUIDITAS (115 Qualified Stocks).
+    Sentimen Bullish/Netral/Bearish disesuaikan terhadap Decision Threshold 8.5% (0.085).
     """
     all_scores = ai_store.get_all_scores()
     query = db.query(Stock).filter(
@@ -92,24 +93,23 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
         ticker = s.ticker
         data = all_scores.get(clean_ticker) or all_scores.get(f"{clean_ticker}.JK") or all_scores.get(ticker) or {}
         
-        ai_score   = data.get("ai_score", 0.50)
-        ai_pct     = data.get("ai_score_percent", "50.0%")
+        ai_score   = data.get("ai_score", 0.0716)
+        ai_pct     = data.get("ai_score_percent", "7.2%")
         insights   = data.get("insights", [])
 
-        # Tentukan harga emiten secara instan dari KNOWN_PRICES atau formula deterministik (tanpa blocking yfinance loop)
         base_price = KNOWN_PRICES.get(clean_ticker)
         if not base_price:
             base_price = 500 + (abs(hash(clean_ticker)) % 450) * 10
 
-        # Generate sparkline 7D sesuai AI Score & Sentiment
-        if ai_score >= 0.40:
+        # Generate sparkline 7D sesuai Sentimen Threshold Murni (0.085 = 8.5%)
+        if ai_score >= 0.085:
             sparkline = [
                 round(base_price * 0.94), round(base_price * 0.95),
                 round(base_price * 0.945), round(base_price * 0.97),
                 round(base_price * 0.965), round(base_price * 0.99),
                 base_price
             ]
-        elif ai_score < 0.30:
+        elif ai_score < 0.060:
             sparkline = [
                 round(base_price * 1.06), round(base_price * 1.05),
                 round(base_price * 1.03), round(base_price * 1.04),
@@ -139,7 +139,7 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
             "current_price":    base_price,
             "price":            base_price,
             "sparkline":        sparkline,
-            "sentiment":        "Bullish" if ai_score >= 0.40 else ("Netral" if ai_score >= 0.30 else "Bearish")
+            "sentiment":        "Bullish" if ai_score >= 0.085 else ("Netral" if ai_score >= 0.060 else "Bearish")
         })
             
     # Sort alphabetically by ticker
@@ -158,7 +158,7 @@ def get_ai_score_by_ticker(ticker: str) -> dict:
         if f in all_scores:
             return all_scores[f]
             
-    return {"ai_score": 0.50, "ai_score_percent": "50.0%", "insights": []}
+    return {"ai_score": 0.0716, "ai_score_percent": "7.2%", "insights": []}
 
 def get_qualified_stocks_for_saw(
     db: Session,
@@ -187,7 +187,7 @@ def get_qualified_stocks_for_saw(
         clean_t = s.ticker.replace(".JK", "").strip().upper()
         ai_data = all_scores.get(clean_t) or all_scores.get(f"{clean_t}.JK") or all_scores.get(s.ticker) or {}
         
-        ai_score = ai_data.get("ai_score", 0.50)
+        ai_score = ai_data.get("ai_score", 0.0716)
         insights = ai_data.get("insights", [])
 
         roe_raw = s.roe if s.roe is not None else 10.0

@@ -43,7 +43,7 @@ export async function GET(request: Request) {
         const name = info.name || STOCK_NAMES[ticker] || ticker.replace('.JK', '')
         const score = info.ai_score || 0
         const percentStr = info.ai_score_percent || `${(score * 100).toFixed(1)}%`
-        const sentiment = score >= 0.40 ? 'Bullish' : score >= 0.30 ? 'Neutral' : 'Bearish'
+        const sentiment = score >= 0.085 ? 'Bullish' : score >= 0.060 ? 'Neutral' : 'Bearish'
 
         const cleanT = ticker.replace('.JK', '')
         const basePrice = KNOWN_PRICES[cleanT] || (500 + Math.abs(cleanT.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) * 17) % 4500)

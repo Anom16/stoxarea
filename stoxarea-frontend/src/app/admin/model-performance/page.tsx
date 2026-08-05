@@ -92,7 +92,7 @@ export default function AdminModelPerformancePage() {
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>🧠 Performa Model XGBoost</h1>
           <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>
-            Evaluasi AI Score — probabilitas kenaikan saham ≥3% dalam 5 hari
+            Evaluasi AI Score — probabilitas tembus ATR Dynamic Threshold dalam 5 hari bursa
             <span style={{ marginLeft: 10, background: 'rgba(33,150,243,0.15)', color: '#2196F3', padding: '3px 10px', borderRadius: 6, fontSize: 11, fontWeight: 700, display: 'inline-block' }}>
               📅 Terakhir Evaluasi: {data?.last_updated || 'Baru Saja / Aktif'}
             </span>
@@ -139,8 +139,9 @@ export default function AdminModelPerformancePage() {
           }}>
             <span>📊 <b>Sampel:</b> {data.dataset.total_samples.toLocaleString()}</span>
             <span>⚖️ <b>Class 0:</b> {data.dataset.class_0_count.toLocaleString()} | <b>Class 1:</b> {data.dataset.class_1_count.toLocaleString()}</span>
-            <span>🎯 <b>Target:</b> Naik ≥3% dalam 5 hari</span>
+            <span>🎯 <b>Target:</b> Tembus ATR Dynamic Threshold (Random Walk Theory)</span>
             <span>📈 <b>Positive Rate:</b> {data.dataset.positive_rate}%</span>
+            <span>🎯 <b>Optimal Threshold:</b> {((data.parameters?.optimal_threshold || 0.085) * 100).toFixed(1)}%</span>
           </div>
 
           {/* Metrik Final */}

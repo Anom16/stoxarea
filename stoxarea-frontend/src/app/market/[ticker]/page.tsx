@@ -447,7 +447,7 @@ export default function StockDetailPage() {
         { 'Keterangan': '',                 'Nilai': '' },
         { 'Keterangan': '── AI Score ──',   'Nilai': '' },
         { 'Keterangan': 'AI Score',         'Nilai': ai?.ai_score_percent ?? '—' },
-        { 'Keterangan': 'Sinyal',           'Nilai': (ai?.ai_score ?? 0) >= 0.6 ? 'Bullish Kuat' : (ai?.ai_score ?? 0) >= 0.4 ? 'Netral' : 'Bearish' },
+        { 'Keterangan': 'Sinyal',           'Nilai': (ai?.ai_score ?? 0) >= 0.085 ? 'Bullish Kuat' : (ai?.ai_score ?? 0) >= 0.060 ? 'Netral' : 'Bearish' },
         { 'Keterangan': '',                 'Nilai': '' },
         { 'Keterangan': '── Info Ekspor ──','Nilai': '' },
         { 'Keterangan': 'Periode Chart',    'Nilai': chartPeriod },
@@ -570,9 +570,9 @@ export default function StockDetailPage() {
           </div>
 
           {/* Header & Price */}
-          <div className="flex-between mb-24">
+          <div className="flex-between mb-24 stock-detail-header-row">
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 <h1 style={{ fontSize: 32, fontWeight: 800 }}>{f.ticker.replace('.JK', '')}</h1>
                 <span className="pick-sector">{f.sector}</span>
                 {f.cluster && (
@@ -594,9 +594,9 @@ export default function StockDetailPage() {
                   </span>
                 )}
               </div>
-              <p className="text-secondary fs-14">{f.name} — {f.industry}</p>
+              <p className="text-secondary fs-14" style={{ marginTop: 4 }}>{f.name} — {f.industry}</p>
             </div>
-            <div style={{ textAlign: 'right' }}>
+            <div className="stock-detail-header-price">
               <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--accent)' }}>
                 Rp {currentPrice.toLocaleString()}
               </div>
@@ -605,7 +605,7 @@ export default function StockDetailPage() {
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex mb-24" style={{ gap: 12, borderBottom: '1px solid var(--border)', paddingBottom: 12 }}>
+          <div className="flex mb-24 stock-detail-tabs-row" style={{ gap: 12, borderBottom: '1px solid var(--border)', paddingBottom: 12 }}>
             <button 
               className={activeTab === 'ai' ? 'btn-primary' : 'btn-outline'} 
               onClick={() => setActiveTab('ai')}
@@ -1096,6 +1096,7 @@ export default function StockDetailPage() {
 
             {/* Right: AI & Trading */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <FundamentalTooltipProvider>
               {/* AI Score & SHAP */}
               <div className="card" style={{ padding: 0, overflow: 'hidden', border: '1px solid rgba(16,185,129,0.2)' }}>
 
@@ -1107,8 +1108,11 @@ export default function StockDetailPage() {
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center'
                 }}>
                   <div>
-                    <div style={{ fontWeight: 800, fontSize: 14, letterSpacing: 0.3 }}>🤖 AI Score Engine</div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>XGBoost + SHAP Explainability</div>
+                    <div style={{ fontWeight: 800, fontSize: 14, letterSpacing: 0.3, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      🤖 AI Score Engine
+                      <FundamentalTooltip metricKey="ai_score" value={ai?.ai_score} label="AI Momentum Score" />
+                    </div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>XGBoost + Isotonic Calibration + SHAP</div>
                   </div>
 
                 </div>
@@ -1119,21 +1123,32 @@ export default function StockDetailPage() {
                   {(() => {
                     const score = ai.ai_score ?? 0
                     const pct = Math.round(score * 100)
+                    
+                    // Visual Gauge Fill Mapping (Pengisian Busur Lingkaran Visual):
+                    // Baseline bursa (7.16%) -> 50% lingkaran (setengah)
+                    // Top bursa (11.7%+) -> 88% - 94% lingkaran (hijau melingkar penuh!)
+                    // Saham lemah (1.5%) -> 15% lingkaran
+                    let visualGaugePct = 50
+                    if (score >= 0.0716) {
+                      visualGaugePct = 50 + Math.min(44, ((score - 0.0716) / (0.12 - 0.0716)) * 44)
+                    } else {
+                      visualGaugePct = Math.max(15, 15 + ((score - 0.015) / (0.0716 - 0.015)) * 35)
+                    }
+
                     const radius = 52
                     const circ = 2 * Math.PI * radius
-                    const dash = (pct / 100) * circ
-                    const scoreColor = pct >= 60 ? '#10b981' : pct >= 40 ? '#f59e0b' : '#ef4444'
-                    const scoreLabel = pct >= 60 ? 'Bullish Kuat' : pct >= 40 ? 'Netral' : 'Bearish'
-                    const scoreBg = pct >= 60 ? 'rgba(16,185,129,0.1)' : pct >= 40 ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)'
+                    const dash = (visualGaugePct / 100) * circ
+                    const scoreColor = pct >= 8.5 ? '#10b981' : pct >= 6.0 ? '#f59e0b' : '#ef4444'
+                    const scoreLabel = pct >= 8.5 ? 'Bullish Kuat' : pct >= 6.0 ? 'Netral' : 'Bearish'
+                    const scoreBg = pct >= 8.5 ? 'rgba(16,185,129,0.1)' : pct >= 6.0 ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)'
 
                     // Deskripsi dinamis berdasarkan level score
                     const scoreDesc =
-                      pct >= 70 ? 'Sinyal teknikal sangat kuat. Model AI mendeteksi momentum bullish tinggi dengan probabilitas kenaikan >5% dalam 5 hari ke depan.' :
-                      pct >= 60 ? 'Sinyal teknikal cukup kuat. Momentum bullish terdeteksi, namun tetap perhatikan konfirmasi volume.' :
-                      pct >= 50 ? 'Sinyal teknikal sedikit condong bullish. Belum ada momentum yang meyakinkan, pantau pergerakan selanjutnya.' :
-                      pct >= 40 ? 'Sinyal teknikal netral. Pasar sedang konsolidasi, belum ada arah yang jelas.' :
-                      pct >= 30 ? 'Sinyal teknikal sedikit condong bearish. Tekanan jual mulai terdeteksi, waspadai penurunan lebih lanjut.' :
-                      'Sinyal teknikal bearish. Model AI mendeteksi tekanan jual dominan, risiko penurunan harga cukup tinggi.'
+                      pct >= 10.0 ? 'Sinyal teknikal sangat kuat. Model AI mendeteksi momentum bullish tinggi dengan probabilitas melampaui target ATR dalam 5 hari ke depan.' :
+                      pct >= 8.5 ? 'Sinyal teknikal cukup kuat di atas threshold bursa. Momentum bullish terdeteksi.' :
+                      pct >= 7.2 ? 'Sinyal teknikal sedikit condong netral/bullish di sekitar baseline bursa.' :
+                      pct >= 6.0 ? 'Sinyal teknikal netral. Pasar sedang konsolidasi, belum ada arah yang jelas.' :
+                      'Sinyal teknikal bearish. Model AI mendeteksi tekanan jual dominan.'
 
                     // Ambil nilai indikator teknikal terkini
                     const ind = data?.technical?.indicators
@@ -1167,40 +1182,99 @@ export default function StockDetailPage() {
 
                     return (
                       <>
+                        {/* ── Side-by-Side AI Score Card Layout (Sesuai Gambar Referensi) ── */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 20 }}>
-                          {/* SVG Ring */}
-                          <div style={{ position: 'relative', flexShrink: 0 }}>
-                            <svg width={130} height={130} style={{ transform: 'rotate(-90deg)' }}>
-                              <circle cx={65} cy={65} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={10} />
-                              <circle
-                                cx={65} cy={65} r={radius} fill="none"
-                                stroke={scoreColor} strokeWidth={10}
-                                strokeDasharray={`${dash} ${circ}`}
-                                strokeLinecap="round"
-                                style={{ filter: `drop-shadow(0 0 6px ${scoreColor})`, transition: 'stroke-dasharray 1s ease' }}
-                              />
-                            </svg>
+                          
+                          {/* ── Kiri: Semi-Circle Arch Credit Gauge (Sesuai Kodingan User) ── */}
+                          <div style={{ position: 'relative', flexShrink: 0, width: 140, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            {/* AI SCORE Label */}
                             <div style={{
-                              position: 'absolute', inset: 0,
-                              display: 'flex', flexDirection: 'column',
-                              alignItems: 'center', justifyContent: 'center'
+                              color: 'var(--text-secondary)',
+                              fontSize: 10,
+                              fontWeight: 700,
+                              letterSpacing: '0.5px',
+                              marginBottom: 2
                             }}>
-                              <div style={{ fontSize: 26, fontWeight: 900, color: scoreColor, lineHeight: 1 }}>{pct}%</div>
-                              <div style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 2, textTransform: 'uppercase', letterSpacing: 0.5 }}>AI Score</div>
+                              AI SCORE
+                            </div>
+
+                            <div style={{ position: 'relative', width: 140, height: 82 }}>
+                              <svg width={140} height={82} viewBox="0 0 140 82">
+                                <defs>
+                                  <linearGradient id="refArchGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stopColor="#ef4444" />
+                                    <stop offset="35%" stopColor="#f59e0b" />
+                                    <stop offset="70%" stopColor="#84cc16" />
+                                    <stop offset="100%" stopColor="#10b981" />
+                                  </linearGradient>
+                                </defs>
+
+                                {/* Multi-Color Arch Track (Merah -> Kuning -> Hijau Muda -> Hijau Tua) */}
+                                <path
+                                  d="M 16 72 A 54 54 0 0 1 124 72"
+                                  fill="none"
+                                  stroke="url(#refArchGradient)"
+                                  strokeWidth={14}
+                                  strokeLinecap="round"
+                                />
+
+                                {/* Black Pill Slider Pin / Tick Marker (Menggeser Sesuai Skor) */}
+                                {(() => {
+                                  let theta = 90
+                                  if (score >= 0.0716) {
+                                    theta = 90 - Math.min(80, ((score - 0.0716) / (0.12 - 0.0716)) * 80)
+                                  } else {
+                                    theta = 90 + Math.min(80, ((0.0716 - score) / (0.0716 - 0.015)) * 80)
+                                  }
+
+                                  const rad = theta * (Math.PI / 180)
+                                  const px = 70 + 54 * Math.cos(rad)
+                                  const py = 72 - 54 * Math.sin(rad)
+                                  const rotAngle = 90 - theta
+
+                                  return (
+                                    <g transform={`rotate(${rotAngle}, ${px}, ${py})`}>
+                                      <rect
+                                        x={px - 5}
+                                        y={py - 10}
+                                        width={10}
+                                        height={20}
+                                        rx={5}
+                                        fill="#0f172a"
+                                        stroke="#ffffff"
+                                        strokeWidth={2}
+                                        style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))', transition: 'all 0.8s ease' }}
+                                      />
+                                    </g>
+                                  )
+                                })()}
+
+                                {/* Score Number - Presisi Dasar Bawah & Tengah Arch (fontSize 22px) */}
+                                <text
+                                  x="70"
+                                  y="68"
+                                  textAnchor="middle"
+                                  fill="var(--text-primary)"
+                                  fontSize="22"
+                                  fontWeight="900"
+                                  fontFamily="'Inter', var(--font-inter, sans-serif)"
+                                >
+                                  {pct}%
+                                </text>
+                              </svg>
                             </div>
                           </div>
 
-                          {/* Score info */}
+                          {/* Kanan: Badge Status & Deskripsi Emiten */}
                           <div style={{ flex: 1 }}>
                             <div style={{
                               display: 'inline-flex', alignItems: 'center', gap: 6,
                               background: scoreBg, border: `1px solid ${scoreColor}40`,
-                              borderRadius: 8, padding: '5px 12px', marginBottom: 10
+                              borderRadius: 8, padding: '5px 14px', marginBottom: 10
                             }}>
                               <div style={{ width: 8, height: 8, borderRadius: '50%', background: scoreColor, boxShadow: `0 0 6px ${scoreColor}` }} />
                               <span style={{ fontSize: 13, fontWeight: 800, color: scoreColor }}>{scoreLabel}</span>
                             </div>
-                            {/* Deskripsi dinamis — berbeda tiap saham sesuai score */}
                             <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                               {scoreDesc}
                             </div>
@@ -1208,6 +1282,7 @@ export default function StockDetailPage() {
                               Diperbarui: {ai.last_updated ? new Date(ai.last_updated).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
                             </div>
                           </div>
+
                         </div>
 
                         {/* ── Mini Indikator Teknikal ── */}
@@ -1419,6 +1494,7 @@ export default function StockDetailPage() {
                   </div>
                 </div>
               </div>
+              </FundamentalTooltipProvider>
 
               {/* Trading Module */}
               <div className="card" style={{ border: '1px solid rgba(16,185,129,0.3)', position: 'relative', overflow: 'hidden', padding: 0 }}>

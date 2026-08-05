@@ -489,7 +489,7 @@ def get_sector_summary(db) -> list:
             "avg_ai_score": avg_ai,
             "avg_ai_score_percent": f"{avg_ai * 100:.1f}%",
             "top_movers": [{"ticker": t, "ai_score_percent": f"{s*100:.1f}%"} for t, s in top_movers],
-            "sentiment": "Bullish" if avg_ai >= 0.40 else ("Netral" if avg_ai >= 0.30 else "Bearish"),
+            "sentiment": "Bullish" if avg_ai >= 0.085 else ("Netral" if avg_ai >= 0.060 else "Bearish"),
         })
 
     # Urutkan berdasarkan avg_ai_score (sektor paling bullish di atas)

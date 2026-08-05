@@ -1,7 +1,16 @@
 import axios from 'axios'
 
+const getBaseUrl = () => {
+  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+    return process.env.NEXT_PUBLIC_API_URL && !process.env.NEXT_PUBLIC_API_URL.includes('localhost')
+      ? process.env.NEXT_PUBLIC_API_URL
+      : 'https://stoxarea-backend-production.up.railway.app'
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+}
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
+  baseURL: getBaseUrl(),
   headers: { 'Content-Type': 'application/json' },
 })
 
