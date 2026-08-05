@@ -225,6 +225,43 @@ def run():
 
     profiles[f"Moderat/Optimal ({best_thresh})"] = {"acc": acc, "prec": prec, "rec": rec, "f1": f1}
 
+    # ── Hitung Threshold Dinamis per Emiten Berbasis Persentil Historis ──
+    ticker_thresholds = {}
+    train_df = train_df.copy()
+    train_df["pred_proba"] = y_proba
+    grouped_tickers = train_df.groupby("ticker")
+
+    for ticker_name, group in grouped_tickers:
+        clean_ticker = ticker_name.replace(".JK", "").strip().upper()
+        probas = group["pred_proba"].values
+        if len(probas) >= 30:
+            bullish_t = float(np.percentile(probas, 85))
+            bearish_t = float(np.percentile(probas, 35))
+            # Clip untuk keamanan agar tidak ekstrim
+            bullish_t = min(0.15, max(0.06, bullish_t))
+            bearish_t = min(0.10, max(0.04, bearish_t))
+        else:
+            # Fallback ke global best_thresh
+            bullish_t = best_thresh
+            bearish_t = min(0.10, max(0.04, best_thresh * 0.7))
+        
+        ticker_thresholds[clean_ticker] = {
+            "bullish": round(bullish_t, 4),
+            "bearish": round(bearish_t, 4)
+        }
+
+    # Simpan thresholds ke JSON file
+    thresholds_data = {
+        "global_optimal_threshold": float(best_thresh),
+        "global_bearish_threshold": round(float(best_thresh * 0.7), 4),
+        "ticker_thresholds": ticker_thresholds
+    }
+    thresholds_path = Path("data/processed/optimal_thresholds.json")
+    thresholds_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(thresholds_path, "w", encoding="utf-8") as f_out:
+        json.dump(thresholds_data, f_out, indent=2)
+    logger.info(f"  ✅ optimal_thresholds.json berhasil disimpan di {thresholds_path}")
+
     logger.info(f"  AUC-ROC: {auc:.4f}")
     logger.info("\n=== Profil Threshold Adaptation ===")
     for pname, pdata in profiles.items():

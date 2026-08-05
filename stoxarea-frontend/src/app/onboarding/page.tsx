@@ -218,7 +218,7 @@ export default function OnboardingPage() {
               fontSize: 15, fontWeight: 700, cursor: 'pointer',
             }}
           >
-            Mulai Investasi →
+            Jelajahi STOXAREA →
           </button>
         </div>
       </div>

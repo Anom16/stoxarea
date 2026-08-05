@@ -1,1 +1,0 @@
-// Grafik candlestick interaktif

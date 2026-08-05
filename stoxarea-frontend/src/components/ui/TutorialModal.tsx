@@ -11,7 +11,6 @@ const STEPS = [
 
 Tutorial singkat ini akan memandu Anda memahami fitur-fitur utama dalam beberapa langkah.`,
     note: '⚠️ Disclaimer: StoxArea adalah platform edukasi. Seluruh analisis bukan merupakan saran investasi.',
-    link: null,
   },
   {
     icon: '🛡️',
@@ -24,7 +23,6 @@ Tutorial singkat ini akan memandu Anda memahami fitur-fitur utama dalam beberapa
 
 🚀 Agresif — Mengejar momentum & keuntungan maksimal. Siap hadapi fluktuasi tinggi.`,
     note: '💡 Ubah profil risiko kapan saja di menu Pengaturan → Profil Risiko.',
-    link: { label: '⚙️ Buka Pengaturan Profil Risiko', href: '/settings' },
   },
   {
     icon: '📊',
@@ -37,7 +35,6 @@ Tutorial singkat ini akan memandu Anda memahami fitur-fitur utama dalam beberapa
 
 • Market Movers — Saham dengan momentum tertinggi, terendah, dan volume terbesar hari ini.`,
     note: '💡 AI Watchlist diperbarui setiap hari kerja pukul 17:00 WIB.',
-    link: { label: '📊 Buka Dashboard', href: '/dashboard' },
   },
   {
     icon: '🏆',
@@ -50,7 +47,6 @@ Tutorial singkat ini akan memandu Anda memahami fitur-fitur utama dalam beberapa
 
 Klik nama saham untuk melihat analisis lengkapnya!`,
     note: '💡 Klik ikon ⓘ di setiap metrik (ROE, DER, dll) untuk penjelasan lengkap indikator tersebut.',
-    link: { label: '📊 Lihat AI Watchlist di Dashboard', href: '/dashboard' },
   },
   {
     icon: '🔍',
@@ -63,7 +59,6 @@ Klik nama saham untuk melihat analisis lengkapnya!`,
 
 • Klik nama saham untuk langsung masuk ke halaman analisis detail.`,
     note: '💡 Gunakan filter sektor untuk fokus pada industri yang Anda minati.',
-    link: { label: '🔍 Buka Jelajah Pasar', href: '/market' },
   },
   {
     icon: '📈',
@@ -78,7 +73,6 @@ Klik nama saham untuk melihat analisis lengkapnya!`,
 
 • Laporan Keuangan & Riwayat Dividen perusahaan.`,
     note: '💡 Coba klik saham mana saja di Jelajah Pasar untuk melihat analisis detailnya.',
-    link: { label: '🔍 Cari Saham di Jelajah Pasar', href: '/market' },
   },
   {
     icon: '💰',
@@ -91,7 +85,6 @@ Klik nama saham untuk melihat analisis lengkapnya!`,
 
 • Pantau portofolio virtual Anda: total nilai aset, keuntungan/kerugian, dan riwayat transaksi.`,
     note: '⚠️ Virtual Trading hanya untuk simulasi & edukasi. Tidak ada transaksi keuangan nyata.',
-    link: { label: '💰 Buka Virtual Trading', href: '/virtual-trading' },
   },
   {
     icon: '✅',
@@ -106,7 +99,6 @@ Klik nama saham untuk melihat analisis lengkapnya!`,
 
 ⚙️ Pengaturan — Atur profil risiko & baca FAQ.`,
     note: '🎓 Ingin melihat tutorial ini lagi? Buka Pengaturan → Akun → Lihat Tutorial.',
-    link: null,
   },
 ]
 
@@ -209,27 +201,6 @@ export default function TutorialModal({ onClose }: TutorialModalProps) {
         }}>
           {current.content}
         </div>
-
-        {/* Link button to actual page */}
-        {current.link && (
-          <button
-            onClick={() => handleNavigate(current.link!.href)}
-            style={{
-              background: 'rgba(16,185,129,0.1)',
-              border: '1px solid rgba(16,185,129,0.35)',
-              color: '#10b981',
-              borderRadius: 10, padding: '10px 16px',
-              fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              textAlign: 'left', transition: 'all 0.15s',
-              display: 'flex', alignItems: 'center', gap: 8,
-            }}
-            onMouseOver={e => (e.currentTarget.style.background = 'rgba(16,185,129,0.18)')}
-            onMouseOut={e => (e.currentTarget.style.background = 'rgba(16,185,129,0.1)')}
-          >
-            {current.link.label}
-            <span style={{ marginLeft: 'auto', opacity: 0.6 }}>↗</span>
-          </button>
-        )}
 
         {/* Note */}
         <div style={{

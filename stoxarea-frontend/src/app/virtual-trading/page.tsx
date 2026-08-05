@@ -194,51 +194,55 @@ export default function VirtualTradingPage() {
         <div className="page-body">
 
           {/* Header */}
-          <div className="page-header vt-header-row">
+          <div className="page-header vt-header-row" style={{ marginBottom: 16 }}>
             <div>
-              <h1>Virtual Trading</h1>
-              <p>Simulasi transaksi tanpa risiko finansial</p>
+              <h1 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 4px 0', letterSpacing: -0.3 }}>
+                Virtual Trading
+              </h1>
+              <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
+                Simulasi transaksi tanpa risiko finansial
+              </p>
             </div>
-            <button onClick={fetchData} className="btn-outline" style={{ fontSize: 13, padding: '8px 16px' }}>
+            <button onClick={fetchData} className="btn-outline" style={{ fontSize: 12, padding: '6px 14px', fontWeight: 700 }}>
               🔄 Refresh
             </button>
           </div>
 
           {/* Vertical-Divider Stats summary row */}
-          <div className="stats-row" style={{ marginBottom: 32 }}>
+          <div className="stats-row" style={{ marginBottom: 24 }}>
             <div className="stat-card">
               <span className="stat-label">Total Nilai Akun</span>
-              <span className="stat-value" style={{ color: 'var(--blue)' }}>
+              <span className="stat-value" style={{ fontSize: 16, color: '#2563eb', fontWeight: 800 }}>
                 Rp {totalValue.toLocaleString('id-ID')}
               </span>
-              <span className="stat-sub" style={{ fontWeight: 600, color: 'var(--blue)' }}>
+              <span className="stat-sub" style={{ fontSize: 11, fontWeight: 600, color: '#2563eb' }}>
                 ~{formatJuta(totalValue)} (Kas + Saham)
               </span>
             </div>
             <div className="stat-card">
               <span className="stat-label">Saldo Kas (Cash)</span>
-              <span className="stat-value" style={{ color: 'var(--accent)' }}>
+              <span className="stat-value" style={{ fontSize: 16, color: '#10b981', fontWeight: 800 }}>
                 Rp {balance.toLocaleString('id-ID')}
               </span>
-              <span className="stat-sub" style={{ fontWeight: 600, color: 'var(--accent)' }}>
+              <span className="stat-sub" style={{ fontSize: 11, fontWeight: 600, color: '#10b981' }}>
                 ~{formatJuta(balance)} siap dipakai
               </span>
             </div>
             <div className="stat-card">
               <span className="stat-label">Total Uang di Saham (Portofolio)</span>
-              <span className="stat-value">
+              <span className="stat-value" style={{ fontSize: 16, fontWeight: 800, color: '#0f172a' }}>
                 Rp {totalEquity.toLocaleString('id-ID')}
               </span>
-              <span className="stat-sub" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+              <span className="stat-sub" style={{ fontSize: 11, fontWeight: 700, color: '#64748b' }}>
                 ~{formatJuta(totalEquity)} ({portfolio.length} emiten)
               </span>
             </div>
             <div className="stat-card">
               <span className="stat-label">Gain / Loss Total</span>
-              <span className="stat-value" style={{ color: totalPL >= 0 ? '#10b981' : '#ef4444' }}>
+              <span className="stat-value" style={{ fontSize: 16, color: totalPL >= 0 ? '#10b981' : '#ef4444', fontWeight: 800 }}>
                 {totalPL >= 0 ? '+' : ''}{totalPLPct.toFixed(2)}%
               </span>
-              <span className="stat-sub" style={{ fontWeight: 700, color: totalPL >= 0 ? '#10b981' : '#ef4444' }}>
+              <span className="stat-sub" style={{ fontSize: 11, fontWeight: 700, color: totalPL >= 0 ? '#10b981' : '#ef4444' }}>
                 {totalPL >= 0 ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')} ({totalPL >= 0 ? '+' : ''}{formatJuta(totalPL)})
               </span>
             </div>
@@ -250,10 +254,10 @@ export default function VirtualTradingPage() {
             {/* LEFT PANEL: Portfolio list / history */}
             <div className="panel-left">
               <div className="tabs-container">
-                <button className={`tab-btn ${activeTab === 'portfolio' ? 'active' : ''}`} onClick={() => setActiveTab('portfolio')}>
+                <button className={`tab-btn ${activeTab === 'portfolio' ? 'active' : ''}`} onClick={() => setActiveTab('portfolio')} style={{ fontSize: 13, padding: '10px 16px', fontWeight: activeTab === 'portfolio' ? 800 : 600 }}>
                   💼 Portofolio Aktif ({portfolio.length})
                 </button>
-                <button className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>
+                <button className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')} style={{ fontSize: 13, padding: '10px 16px', fontWeight: activeTab === 'history' ? 800 : 600 }}>
                   🕐 Riwayat Transaksi
                 </button>
               </div>
@@ -266,14 +270,14 @@ export default function VirtualTradingPage() {
                         src="/icons/loading.gif" 
                         onError={(e) => { (e.target as HTMLImageElement).src = '/icons/icon-192x192.png' }}
                         alt="Loading..." 
-                        style={{ width: 64, height: 64, objectFit: 'contain' }} 
+                        style={{ width: 48, height: 48, objectFit: 'contain' }} 
                       />
                     </div>
                   ) : portfolio.length === 0 ? (
-                    <div className="empty-state" style={{ padding: '60px 0' }}>
-                      <div className="empty-icon">💼</div>
-                      <div className="empty-text">Anda belum memiliki aset saham apapun.</div>
-                      <Link href="/market" className="btn-primary" style={{ fontSize: 13, marginTop: 8 }}>
+                    <div className="empty-state" style={{ padding: '40px 0' }}>
+                      <div className="empty-icon" style={{ fontSize: 32 }}>💼</div>
+                      <div className="empty-text" style={{ fontSize: 13, fontWeight: 700, marginTop: 6 }}>Anda belum memiliki aset saham apapun.</div>
+                      <Link href="/market" className="btn-primary" style={{ fontSize: 12, padding: '8px 16px', marginTop: 12 }}>
                         Cari Saham & Beli
                       </Link>
                     </div>
@@ -281,15 +285,15 @@ export default function VirtualTradingPage() {
                     <>
                       {/* Desktop Portfolio Table */}
                       <div className="market-table-desktop">
-                        <table className="clean-table">
+                        <table className="clean-table" style={{ fontSize: 12 }}>
                           <thead>
-                            <tr>
-                              <th>Emiten</th>
-                              <th style={{ textAlign: 'right' }}>Jumlah Lot</th>
-                              <th style={{ textAlign: 'right' }}>Nilai Portfolio</th>
-                              <th style={{ textAlign: 'right' }}>Harga Kini</th>
-                              <th style={{ textAlign: 'right' }}>Gain / Loss</th>
-                              <th style={{ textAlign: 'center' }}>Aksi</th>
+                            <tr style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 0.5, color: '#64748b' }}>
+                              <th>EMITEN</th>
+                              <th style={{ textAlign: 'right' }}>JUMLAH LOT</th>
+                              <th style={{ textAlign: 'right' }}>NILAI PORTOFOLIO</th>
+                              <th style={{ textAlign: 'right' }}>HARGA KINI</th>
+                              <th style={{ textAlign: 'right' }}>GAIN / LOSS</th>
+                              <th style={{ textAlign: 'center' }}>AKSI</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -303,42 +307,42 @@ export default function VirtualTradingPage() {
                               return (
                                 <tr key={s.ticker}>
                                   <td>
-                                    <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)' }}>{s.ticker.replace('.JK', '')}</div>
-                                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{s.qty.toLocaleString('id-ID')} lembar</div>
+                                    <div style={{ fontWeight: 800, fontSize: 14, color: '#0f172a' }}>{s.ticker.replace('.JK', '')}</div>
+                                    <div style={{ fontSize: 11, color: '#64748b' }}>{s.qty.toLocaleString('id-ID')} lembar</div>
                                   </td>
                                   {/* JUMLAH LOT */}
                                   <td style={{ textAlign: 'right' }}>
-                                    <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>
+                                    <div style={{ fontWeight: 800, fontSize: 13, color: '#0f172a' }}>
                                       {s.qty / 100} Lot
                                     </div>
                                   </td>
                                   {/* NILAI PORTFOLIO */}
                                   <td style={{ textAlign: 'right' }}>
-                                    <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>
+                                    <div style={{ fontWeight: 800, fontSize: 13, color: '#0f172a' }}>
                                       Rp {currentValue.toLocaleString('id-ID')}
                                     </div>
-                                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginTop: 1 }}>
+                                    <div style={{ fontSize: 11, fontWeight: 600, color: '#64748b', marginTop: 1 }}>
                                       (~{formatJuta(currentValue)})
                                     </div>
                                   </td>
                                   {/* HARGA KINI */}
-                                  <td style={{ textAlign: 'right', color: 'var(--text-primary)', fontWeight: 700, fontSize: 14 }}>
+                                  <td style={{ textAlign: 'right', color: '#0f172a', fontWeight: 700, fontSize: 13 }}>
                                     Rp {cp.toLocaleString('id-ID')}
                                   </td>
                                   {/* GAIN / LOSS */}
                                   <td style={{ textAlign: 'right' }}>
-                                    <div style={{ fontSize: 15, fontWeight: 800, color: isProfit ? '#10b981' : '#ef4444' }}>
+                                    <div style={{ fontSize: 13, fontWeight: 800, color: isProfit ? '#10b981' : '#ef4444' }}>
                                       {isProfit ? '+' : ''}{plPct.toFixed(2)}%
                                     </div>
-                                    <div style={{ fontSize: 12, fontWeight: 700, color: isProfit ? '#10b981' : '#ef4444', marginTop: 2 }}>
+                                    <div style={{ fontSize: 11, fontWeight: 600, color: isProfit ? '#10b981' : '#ef4444', marginTop: 1 }}>
                                       {isProfit ? '+' : ''}Rp {totalPL.toLocaleString('id-ID')} ({isProfit ? '+' : ''}{formatJuta(totalPL)})
                                     </div>
                                   </td>
                                   <td style={{ textAlign: 'center' }}>
-                                    <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-                                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: 12, fontWeight: 700, color: '#10b981', borderColor: 'rgba(16,185,129,0.3)' }}
+                                    <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                                      <button className="btn-outline" style={{ padding: '5px 10px', fontSize: 11, fontWeight: 700, color: '#10b981', borderColor: 'rgba(16,185,129,0.3)' }}
                                         onClick={() => handleQuickTrade(s.ticker, 'buy', cp)}>+ Beli</button>
-                                      <button className="btn-outline" style={{ padding: '6px 12px', fontSize: 12, fontWeight: 700, color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)' }}
+                                      <button className="btn-outline" style={{ padding: '5px 10px', fontSize: 11, fontWeight: 700, color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)' }}
                                         onClick={() => handleQuickTrade(s.ticker, 'sell', cp)}>− Jual</button>
                                     </div>
                                   </td>

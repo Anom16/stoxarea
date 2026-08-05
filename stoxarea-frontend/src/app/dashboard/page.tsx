@@ -38,7 +38,51 @@ const getProfileColor = (p: string) => {
   if (norm.startsWith('konservatif')) return '#10b981'
   if (norm.startsWith('moderat')) return '#3b82f6'
   if (norm.startsWith('agresif')) return '#f59e0b'
-  return '#e040fb'
+  return '#64748b'
+}
+
+const getDynamicTopPickReason = (r: Recommendation, profile: string) => {
+  const p = (profile || 'Moderat').trim()
+  const pLower = p.toLowerCase()
+  const roe = r.roe || 15
+  const pbv = r.pbv || 1.8
+  const der = r.der || 0.8
+  const aiScore = r.ai_score_percent || '75%'
+  const sector = (r.sector || '').toLowerCase()
+
+  // Personalized profile match prefix (without colon)
+  const prefix = pLower.startsWith('agresif')
+    ? `Sesuai profil Agresif Anda, `
+    : pLower.startsWith('konservatif')
+    ? `Cocok dengan profil Konservatif Anda, `
+    : pLower.startsWith('moderat')
+    ? `Seimbang untuk profil Moderat Anda, `
+    : `Cocok untuk profil Anda, `
+
+  // Tailor reason dynamically based on stock metrics and user profile
+  if (roe >= 20) {
+    return `${prefix}Memiliki profitabilitas ROE sangat unggul (${roe}%) dengan efisiensi cetak laba terbaik di kelasnya.`
+  }
+  if (pLower.startsWith('agresif') || (r.ai_score && r.ai_score >= 0.8)) {
+    if (sector.includes('tekno')) {
+      return `${prefix}Lonjakan AI Momentum (${aiScore}) di sektor teknologi berpeluang memberikan kenaikan harga cepat.`
+    }
+    return `${prefix}Skor Momentum AI (${aiScore}) sangat dominan untuk menangkap tren penguatan teknikal.`
+  }
+  if (pLower.startsWith('konservatif') || der <= 0.7) {
+    return `${prefix}Didukung neraca sehat dengan rasio hutang DER sangat aman (${der}x) dan stabilitas laba yang terjaga.`
+  }
+  if (pbv <= 1.5) {
+    return `${prefix}Menawarkan rasio valuasi PBV yang terjangkau (${pbv}x) dengan potensi apresiasi harga menuju nilai wajar.`
+  }
+  if (sector.includes('keuangan') || sector.includes('bank')) {
+    return `${prefix}Perpaduan stabilitas dividen dan imbal hasil profitabilitas (ROE ${roe}%) sebagai penopang portofolio.`
+  }
+  if (sector.includes('konsumen') || sector.includes('baku')) {
+    return `${prefix}Saham defensif sektor ${r.sector} dengan arus kas stabil untuk menjaga ketahanan modal.`
+  }
+
+  return `${prefix}Skor SAW seimbang antara tren Momentum AI (${aiScore}) dan kekuatan fundamental rasio finansial.`
 }
 
 export default function DashboardPage() {
@@ -801,10 +845,7 @@ export default function DashboardPage() {
                         Kenapa Jadi Top Pick?
                       </div>
                       <div style={{ fontSize: 12, lineHeight: 1.4, color: 'var(--text-secondary)' }}>
-                        {profile.toLowerCase().startsWith('agresif')      && `Sangat disarankan karena skor Momentum AI (${r.ai_score_percent}) yang sangat dominan, cocok untuk mengejar kenaikan cepat.`}
-                        {profile.toLowerCase().startsWith('moderat')      && `Menawarkan keseimbangan yang baik antara tren kenaikan harga dan stabilitas laba (ROE ${r.roe}%).`}
-                        {profile.toLowerCase().startsWith('konservatif')  && `Prioritas pada keamanan finansial dengan tingkat hutang yang rendah (DER ${r.der}) dan profitabilitas yang sehat.`}
-                        {(profile === '—' || !profile)                    && `Emiten dengan skor SAW tertinggi berdasarkan data fundamental dan teknikal terkini.`}
+                        {getDynamicTopPickReason(r, profile)}
                       </div>
                     </div>
 

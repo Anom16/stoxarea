@@ -66,15 +66,38 @@ def _get_ohlcv_prices() -> dict:
     return prices
 
 
-# Cache harga OHLCV saat startup (di-refresh saat module diload)
+def _get_optimal_thresholds() -> dict:
+    """Membaca threshold optimal (global & per ticker) dari JSON hasil evaluasi."""
+    default_data = {
+        "global_optimal_threshold": 0.085,
+        "global_bearish_threshold": 0.060,
+        "ticker_thresholds": {}
+    }
+    t_path = Path("data/processed/optimal_thresholds.json")
+    if not t_path.exists():
+        return default_data
+    try:
+        with open(t_path, "r") as fp:
+            return json.load(fp)
+    except Exception:
+        return default_data
+
+
+# Cache harga OHLCV saat startup
 _OHLCV_PRICES = _get_ohlcv_prices()
+
 
 def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optional[str] = None) -> List[dict]:
     """
     Menampilkan saham-saham yang LOLOS 3 KRITERIA LIKUIDITAS (115 Qualified Stocks).
-    Sentimen Bullish/Netral/Bearish disesuaikan terhadap Decision Threshold 8.5% (0.085).
+    Sentimen Bullish/Netral/Bearish disesuaikan terhadap Decision Threshold Dinamis per Emiten.
     """
     all_scores = ai_store.get_all_scores()
+    thresholds_config = _get_optimal_thresholds()
+    ticker_configs = thresholds_config.get("ticker_thresholds", {})
+    global_bullish = thresholds_config.get("global_optimal_threshold", 0.085)
+    global_bearish = thresholds_config.get("global_bearish_threshold", 0.060)
+
     query = db.query(Stock).filter(
         Stock.is_qualified == True
     )
@@ -120,15 +143,20 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
         if not base_price:
             base_price = 500 + (abs(hash(clean_ticker)) % 450) * 10
 
-        # Generate sparkline 7D sesuai Sentimen Threshold Murni (0.085 = 8.5%)
-        if ai_score >= 0.085:
+        # Dapatkan threshold dinamis khusus emiten ini
+        emiten_cfg = ticker_configs.get(clean_ticker, {})
+        bullish_threshold = emiten_cfg.get("bullish", global_bullish)
+        bearish_threshold = emiten_cfg.get("bearish", global_bearish)
+
+        # Generate sparkline 7D sesuai Sentimen Threshold Dinamis
+        if ai_score >= bullish_threshold:
             sparkline = [
                 round(base_price * 0.94), round(base_price * 0.95),
                 round(base_price * 0.945), round(base_price * 0.97),
                 round(base_price * 0.965), round(base_price * 0.99),
                 base_price
             ]
-        elif ai_score < 0.060:
+        elif ai_score < bearish_threshold:
             sparkline = [
                 round(base_price * 1.06), round(base_price * 1.05),
                 round(base_price * 1.03), round(base_price * 1.04),
@@ -158,7 +186,7 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
             "current_price":    base_price,
             "price":            base_price,
             "sparkline":        sparkline,
-            "sentiment":        "Bullish" if ai_score >= 0.085 else ("Netral" if ai_score >= 0.060 else "Bearish")
+            "sentiment":        "Bullish" if ai_score >= bullish_threshold else ("Netral" if ai_score >= bearish_threshold else "Bearish")
         })
             
     # Sort alphabetically by ticker

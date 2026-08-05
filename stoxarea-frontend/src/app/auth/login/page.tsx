@@ -691,17 +691,6 @@ export default function LoginPage() {
               {loading ? 'Processing...' : 'Sign In'}
             </button>
           </form>
-
-          {/* Link to Register */}
-          <div style={{ textAlign: 'center', marginTop: 28, fontSize: 13, color: '#64748b' }}>
-            New here?{' '}
-            <Link
-              href="/auth/register"
-              style={{ color: '#2563eb', textDecoration: 'none', fontWeight: 700 }}
-            >
-              Create an Account
-            </Link>
-          </div>
         </div>
       </div>
 

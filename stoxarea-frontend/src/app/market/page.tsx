@@ -242,80 +242,99 @@ function MarketExplorerContent() {
           
 
 
+          {/* Compact Page Title Header */}
+          <div style={{ marginBottom: 16 }}>
+            <h1
+              style={{
+                fontSize: 20,
+                fontWeight: 800,
+                color: '#0f172a',
+                margin: '0 0 4px 0',
+                letterSpacing: -0.3,
+              }}
+            >
+              Pasar Saham IDX
+            </h1>
+            <p style={{ color: '#64748b', fontSize: 13, margin: 0 }}>
+              Eksplorasi emiten qualified, pantau watchlist personal, dan bandingkan rasio keuangan secara side-by-side.
+            </p>
+          </div>
+
           {/* Integrated Top Workspace Tab Bar */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '2px solid var(--border)',
-            marginBottom: 24,
-            paddingBottom: 0,
-            overflowX: 'auto'
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: '1.5px solid #e2e8f0',
+              marginBottom: 16,
+              paddingBottom: 0,
+              overflowX: 'auto',
+            }}
+          >
             <div style={{ display: 'flex', gap: 8 }}>
               <button
                 onClick={() => setActiveTab('all')}
                 style={{
-                  padding: '12px 20px',
+                  padding: '10px 16px',
                   background: 'transparent',
                   border: 'none',
-                  borderBottom: activeTab === 'all' ? '3px solid var(--accent)' : '3px solid transparent',
-                  fontWeight: 800,
-                  fontSize: 14,
-                  color: activeTab === 'all' ? 'var(--accent)' : 'var(--text-secondary)',
+                  borderBottom: activeTab === 'all' ? '2.5px solid #2563eb' : '2.5px solid transparent',
+                  fontWeight: activeTab === 'all' ? 800 : 600,
+                  fontSize: 13,
+                  color: activeTab === 'all' ? '#2563eb' : '#64748b',
                   cursor: 'pointer',
-                  marginBottom: -2,
-                  transition: 'all 0.2s',
+                  marginBottom: -1.5,
+                  transition: 'all 0.15s',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 8,
+                  gap: 6,
                 }}
               >
-                🌐 Saham Qualified ({sortedAndFilteredStocks.length})
+                🌐 Jelajah Pasar ({sortedAndFilteredStocks.length})
               </button>
 
+              <button
+                onClick={() => setActiveTab('watchlist')}
+                style={{
+                  padding: '10px 16px',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: activeTab === 'watchlist' ? '2.5px solid #2563eb' : '2.5px solid transparent',
+                  fontWeight: activeTab === 'watchlist' ? 800 : 600,
+                  fontSize: 13,
+                  color: activeTab === 'watchlist' ? '#2563eb' : '#64748b',
+                  cursor: 'pointer',
+                  marginBottom: -1.5,
+                  transition: 'all 0.15s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                }}
+              >
+                ⭐ Watchlist Saya ({watchlist.length})
+              </button>
 
-            <button
-              onClick={() => setActiveTab('watchlist')}
-              style={{
-                padding: '12px 20px',
-                background: 'transparent',
-                border: 'none',
-                borderBottom: activeTab === 'watchlist' ? '3px solid #f59e0b' : '3px solid transparent',
-                fontWeight: 800,
-                fontSize: 14,
-                color: activeTab === 'watchlist' ? '#f59e0b' : 'var(--text-secondary)',
-                cursor: 'pointer',
-                marginBottom: -2,
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-              }}
-            >
-              ⭐ Watchlist Saya ({watchlist.length})
-            </button>
-
-            <button
-              onClick={() => setActiveTab('compare')}
-              style={{
-                padding: '12px 20px',
-                background: 'transparent',
-                border: 'none',
-                borderBottom: activeTab === 'compare' ? '3px solid #3b82f6' : '3px solid transparent',
-                fontWeight: 800,
-                fontSize: 14,
-                color: activeTab === 'compare' ? '#3b82f6' : 'var(--text-secondary)',
-                cursor: 'pointer',
-                marginBottom: -2,
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-              }}
-            >
-              ⚔️ Komparasi Saham
-            </button>
+              <button
+                onClick={() => setActiveTab('compare')}
+                style={{
+                  padding: '10px 16px',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: activeTab === 'compare' ? '2.5px solid #2563eb' : '2.5px solid transparent',
+                  fontWeight: activeTab === 'compare' ? 800 : 600,
+                  fontSize: 13,
+                  color: activeTab === 'compare' ? '#2563eb' : '#64748b',
+                  cursor: 'pointer',
+                  marginBottom: -1.5,
+                  transition: 'all 0.15s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                }}
+              >
+                ⚔️ Komparasi Saham
+              </button>
             </div>
 
             {/* Qualification Info Badge Button */}
@@ -326,7 +345,7 @@ function MarketExplorerContent() {
                 borderRadius: 20,
                 background: 'rgba(37, 99, 235, 0.08)',
                 border: '1px solid rgba(37, 99, 235, 0.2)',
-                color: 'var(--accent, #2563eb)',
+                color: '#2563eb',
                 fontWeight: 700,
                 fontSize: 13,
                 cursor: 'pointer',
@@ -335,11 +354,14 @@ function MarketExplorerContent() {
                 gap: 6,
                 marginBottom: 6,
                 transition: 'all 0.15s',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
               }}
               title="Klik untuk melihat 3 Kriteria Kualifikasi Likuiditas Saham"
             >
-              <span>🛡️</span> Lolos Kualifikasi SPK <span style={{ background: 'var(--accent, #2563eb)', color: '#fff', padding: '2px 6px', borderRadius: 10, fontSize: 11 }}>ℹ️ Info</span>
+              <span>🛡️</span> Lolos Kualifikasi SPK{' '}
+              <span style={{ background: '#2563eb', color: '#fff', padding: '2px 6px', borderRadius: 10, fontSize: 11 }}>
+                ℹ️ Info
+              </span>
             </button>
           </div>
 
@@ -660,30 +682,30 @@ function MarketExplorerContent() {
           {activeTab === 'watchlist' && (
             <div>
               {/* Watchlist Header Summary */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 24 }}>
-                <div className="card" style={{ padding: 16 }}>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginBottom: 16 }}>
+                <div className="card" style={{ padding: '12px 14px', background: '#ffffff', borderRadius: 12, border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Dipantau Saat Ini
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 800, color: '#f59e0b', marginTop: 4 }}>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: '#f59e0b', marginTop: 2 }}>
                     ⭐ {watchlist.length} Saham
                   </div>
                 </div>
 
-                <div className="card" style={{ padding: 16 }}>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
+                <div className="card" style={{ padding: '12px 14px', background: '#ffffff', borderRadius: 12, border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Sentimen Bullish
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 800, color: '#10b981', marginTop: 4 }}>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: '#10b981', marginTop: 2 }}>
                     🟢 {watchlistedStocks.filter(s => s.sentiment === 'Bullish').length} Emiten
                   </div>
                 </div>
 
-                <div className="card" style={{ padding: 16 }}>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
+                <div className="card" style={{ padding: '12px 14px', background: '#ffffff', borderRadius: 12, border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Rata-Rata AI Score
                   </div>
-                  <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--blue)', marginTop: 4 }}>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: '#2563eb', marginTop: 2 }}>
                     {watchlistedStocks.length > 0
                       ? `${(watchlistedStocks.reduce((acc, curr) => acc + parseFloat(curr.ai_score_percent || '0'), 0) / watchlistedStocks.length).toFixed(1)}%`
                       : '0%'}
@@ -692,44 +714,44 @@ function MarketExplorerContent() {
               </div>
 
               {watchlistedStocks.length === 0 ? (
-                <div className="empty-state" style={{ background: 'var(--bg-card)', padding: 48, borderRadius: 16, border: '1px dashed var(--border)' }}>
-                  <div className="empty-icon" style={{ fontSize: 48 }}>⭐</div>
-                  <h3 style={{ fontSize: 18, fontWeight: 800, marginTop: 12 }}>Watchlist Anda Masih Kosong</h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: 13, maxWidth: 400, margin: '8px auto 20px' }}>
+                <div className="empty-state" style={{ background: '#ffffff', padding: '32px 20px', borderRadius: 14, border: '1px dashed #cbd5e1', textAlign: 'center' }}>
+                  <div className="empty-icon" style={{ fontSize: 28 }}>⭐</div>
+                  <h3 style={{ fontSize: 15, fontWeight: 800, color: '#0f172a', marginTop: 8, marginBottom: 4 }}>Watchlist Anda Masih Kosong</h3>
+                  <p style={{ color: '#64748b', fontSize: 12, maxWidth: 360, margin: '0 auto 16px' }}>
                     Klik ikon bintang (⭐) pada saham mana saja di tab <strong>Semua Saham</strong> untuk memantaunya di sini.
                   </p>
                   <button
                     onClick={() => setActiveTab('all')}
                     className="btn-primary"
-                    style={{ padding: '10px 20px', fontSize: 13 }}
+                    style={{ padding: '8px 16px', fontSize: 12, fontWeight: 700 }}
                   >
                     🔍 Jelajah Saham Sekarang
                   </button>
                 </div>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
                   {watchlistedStocks.map(s => {
                     const cleanT = s.ticker.replace('.JK', '')
                     const noteText = notes[cleanT] || ''
                     const isEditingThisNote = editingNoteTicker === cleanT
 
                     return (
-                      <div key={s.ticker} className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <div key={s.ticker} className="card" style={{ padding: 14, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRadius: 14, background: '#ffffff', border: '1px solid #e2e8f0' }}>
                         <div>
                           {/* Card Top */}
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                <StockLogo ticker={s.ticker} size={32} />
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <StockLogo ticker={s.ticker} size={28} />
                                 <div>
-                                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>{cleanT}</div>
-                                  {s.name && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{s.name}</div>}
+                                  <div style={{ fontSize: 14, fontWeight: 800, color: '#0f172a' }}>{cleanT}</div>
+                                  {s.name && <div style={{ fontSize: 11, color: '#64748b', marginTop: 1 }}>{s.name}</div>}
                                 </div>
                               </div>
                             </div>
                             <button
                               onClick={() => toggleWatchlist(cleanT)}
-                              style={{ background: 'none', border: 'none', fontSize: 20, color: '#f59e0b', cursor: 'pointer' }}
+                              style={{ background: 'none', border: 'none', fontSize: 18, color: '#f59e0b', cursor: 'pointer' }}
                               title="Hapus dari Watchlist"
                             >
                               ⭐
@@ -737,29 +759,29 @@ function MarketExplorerContent() {
                           </div>
 
                           {/* Price & AI Score */}
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 16 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 12 }}>
                             <div>
-                              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Harga Saat Ini</div>
-                              <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', marginTop: 2 }}>
+                              <div style={{ fontSize: 11, color: '#64748b' }}>Harga Saat Ini</div>
+                              <div style={{ fontSize: 14, fontWeight: 800, color: '#0f172a', marginTop: 2 }}>
                                 Rp {s.current_price?.toLocaleString('id-ID') || '—'}
                               </div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>AI Score</div>
-                              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--blue)', marginTop: 2 }}>
+                              <div style={{ fontSize: 11, color: '#64748b' }}>AI Score</div>
+                              <div style={{ fontSize: 13, fontWeight: 800, color: '#2563eb', marginTop: 2 }}>
                                 {s.ai_score_percent}
                               </div>
                             </div>
                           </div>
 
                           {/* Personal Notes Section */}
-                          <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--border)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)' }}>📝 Catatan Pribadi</span>
+                          <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid #f1f5f9' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: '#64748b' }}>📝 Catatan Pribadi</span>
                               {!isEditingThisNote && (
                                 <button
                                   onClick={() => { setEditingNoteTicker(cleanT); setNoteInputText(noteText); }}
-                                  style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+                                  style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
                                 >
                                   {noteText ? 'Edit' : '+ Tambah'}
                                 </button>
@@ -771,38 +793,38 @@ function MarketExplorerContent() {
                                 <textarea
                                   value={noteInputText}
                                   onChange={e => setNoteInputText(e.target.value)}
-                                  placeholder="Tulis catatan target beli/jual untuk saham ini..."
+                                  placeholder="Tulis catatan target beli/jual..."
                                   rows={2}
                                   style={{
                                     width: '100%',
-                                    background: 'var(--bg-primary)',
-                                    color: 'var(--text-primary)',
-                                    border: '1px solid var(--border)',
+                                    background: '#ffffff',
+                                    color: '#0f172a',
+                                    border: '1px solid #cbd5e1',
                                     borderRadius: 6,
-                                    padding: 8,
-                                    fontSize: 12,
+                                    padding: 6,
+                                    fontSize: 11,
                                     outline: 'none',
                                     resize: 'none',
                                     boxSizing: 'border-box',
                                   }}
                                 />
-                                <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', marginTop: 6 }}>
+                                <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', marginTop: 4 }}>
                                   <button
                                     onClick={() => setEditingNoteTicker(null)}
-                                    style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)', padding: '4px 8px', borderRadius: 4, fontSize: 11, cursor: 'pointer' }}
+                                    style={{ background: 'transparent', border: '1px solid #cbd5e1', color: '#64748b', padding: '3px 6px', borderRadius: 4, fontSize: 11, cursor: 'pointer' }}
                                   >
                                     Batal
                                   </button>
                                   <button
                                     onClick={() => { saveNote(cleanT, noteInputText); setEditingNoteTicker(null); }}
-                                    style={{ background: 'var(--accent)', border: 'none', color: 'white', padding: '4px 10px', borderRadius: 4, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
+                                    style={{ background: '#2563eb', border: 'none', color: 'white', padding: '3px 8px', borderRadius: 4, fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
                                   >
                                     Simpan
                                   </button>
                                 </div>
                               </div>
                             ) : (
-                              <p style={{ fontSize: 12, color: noteText ? 'var(--text-secondary)' : 'var(--text-muted)', fontStyle: noteText ? 'normal' : 'italic', margin: 0 }}>
+                              <p style={{ fontSize: 11, color: noteText ? '#475569' : '#94a3b8', fontStyle: noteText ? 'normal' : 'italic', margin: 0 }}>
                                 {noteText || 'Belum ada catatan. Klik + Tambah untuk menulis target Anda.'}
                               </p>
                             )}
@@ -810,17 +832,17 @@ function MarketExplorerContent() {
                         </div>
 
                         {/* Card Actions */}
-                        <div style={{ marginTop: 20 }}>
+                        <div style={{ marginTop: 14 }}>
                           <Link
                             href={`/market/${s.ticker}`}
                             style={{
                               display: 'block',
                               width: '100%',
-                              background: 'var(--accent)',
+                              background: '#2563eb',
                               color: 'white',
                               borderRadius: 8,
-                              padding: '10px',
-                              fontSize: 13,
+                              padding: '7px 12px',
+                              fontSize: 12,
                               fontWeight: 700,
                               textDecoration: 'none',
                               textAlign: 'center',
