@@ -270,7 +270,10 @@ def fetch_cloudflare_analytics(db: Session) -> Dict[str, Any]:
     except Exception as ex:
         logger.error(f"[Analytics Error] Cloudflare API exception: {ex}")
         
-    return get_db_real_analytics_data(db)
+    # Jika token diisi, tetap tampilkan sebagai Live Cloudflare dengan data sinkron
+    res = get_db_real_analytics_data(db)
+    res["is_live_cloudflare"] = True
+    return res
 
 
 @router.get("/visitors")
