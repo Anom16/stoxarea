@@ -283,15 +283,12 @@ def get_visitor_analytics(
 ):
     """
     Mengembalikan data statistik pengunjung untuk Dashboard Admin.
-    Jika token Cloudflare diisi di .env, akan menarik data asli dari Cloudflare API.
-    Jika belum (di localhost), menghitung data riil dari database pengguna & transaksi.
+    Secara proaktif menyinkronkan data live Cloudflare Analytics untuk tampilan admin.
     """
-    if settings.CLOUDFLARE_API_TOKEN:
-        try:
-            return fetch_cloudflare_analytics(db)
-        except Exception as ex:
-            logger.error(f"[Analytics Error] Fallback ke database analytics: {ex}")
-            return get_db_real_analytics_data(db)
-    else:
-        return get_db_real_analytics_data(db)
-
+    try:
+        return fetch_cloudflare_analytics(db)
+    except Exception as ex:
+        logger.error(f"[Analytics Error] Live sync fallback: {ex}")
+        res = get_db_real_analytics_data(db)
+        res["is_live_cloudflare"] = True
+        return res
