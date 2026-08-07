@@ -109,27 +109,29 @@ def fetch_cloudflare_analytics(db: Session) -> Dict[str, Any]:
     seven_days_ago = (datetime.utcnow() - timedelta(days=7)).strftime("%Y-%m-%d")
     site_token = settings.CLOUDFLARE_SITE_TOKEN or "7b9e49aa362c461dae9a0b279e7649b4"
     
+    account_filter = f'(filter: {{accountTag: "{settings.CLOUDFLARE_ACCOUNT_ID}"}})' if settings.CLOUDFLARE_ACCOUNT_ID else ""
+    
     graphql_query = {
-        "query": """
-        query GetRUMAnalytics($siteToken: String!, $startDate: String!) {
-          viewer {
-            accounts {
+        "query": f"""
+        query GetRUMAnalytics($siteToken: String!, $startDate: String!) {{
+          viewer {{
+            accounts{account_filter} {{
               rumPageloadEventsAdaptiveGroups(
                 limit: 100,
-                filter: {
+                filter: {{
                   siteToken: $siteToken,
                   date_geq: $startDate
-                },
+                }},
                 orderBy: [date_ASC]
-              ) {
+              ) {{
                 count
-                dimensions {
+                dimensions {{
                   date
-                }
-              }
-            }
-          }
-        }
+                }}
+              }}
+            }}
+          }}
+        }}
         """,
         "variables": {
             "siteToken": site_token,
@@ -146,23 +148,30 @@ def fetch_cloudflare_analytics(db: Session) -> Dict[str, Any]:
                 res_body = json.loads(response.read().decode("utf-8"))
                 errors = res_body.get("errors")
                 
-                if not errors:
+                if errors:
+                    logger.error(f"[Analytics Error] Cloudflare GraphQL errors: {errors}")
+                else:
                     accounts = res_body.get("data", {}).get("viewer", {}).get("accounts", [])
                     groups = []
                     for acc in accounts:
-                        groups = acc.get("rumPageloadEventsAdaptiveGroups", [])
-                        if groups:
-                            break
+                        acc_groups = acc.get("rumPageloadEventsAdaptiveGroups", [])
+                        if acc_groups:
+                            groups.extend(acc_groups)
                             
-                    # Peta data per tanggal
+                    # Peta data per tanggal (UTC & Local Time)
                     date_map = {}
-                    today_dt = datetime.now()
+                    today_utc = datetime.utcnow()
+                    today_loc = datetime.now()
                     
                     trend_labels = []
                     for i in range(6, -1, -1):
-                        day_str = (today_dt - timedelta(days=i)).strftime("%Y-%m-%d")
-                        label_str = (today_dt - timedelta(days=i)).strftime("%a (%d/%m)")
-                        date_map[day_str] = {"label": label_str, "count": 0}
+                        day_utc_str = (today_utc - timedelta(days=i)).strftime("%Y-%m-%d")
+                        day_loc_str = (today_loc - timedelta(days=i)).strftime("%Y-%m-%d")
+                        label_str = (today_loc - timedelta(days=i)).strftime("%a (%d/%m)")
+                        
+                        # Simpan di date_map untuk key UTC dan Local
+                        date_map[day_utc_str] = {"label": label_str, "count": 0}
+                        date_map[day_loc_str] = {"label": label_str, "count": 0}
                         trend_labels.append(label_str)
                         
                     for item in groups:
@@ -171,7 +180,14 @@ def fetch_cloudflare_analytics(db: Session) -> Dict[str, Any]:
                         if item_date in date_map:
                             date_map[item_date]["count"] += cnt
                             
-                    trend_values = [v["count"] for v in date_map.values()]
+                    # Ambil tren 7 hari sesuai urutan trend_labels
+                    trend_values = []
+                    for i in range(6, -1, -1):
+                        d_utc = (today_utc - timedelta(days=i)).strftime("%Y-%m-%d")
+                        d_loc = (today_loc - timedelta(days=i)).strftime("%Y-%m-%d")
+                        val = date_map.get(d_utc, {}).get("count", 0) or date_map.get(d_loc, {}).get("count", 0)
+                        trend_values.append(val)
+                        
                     total_7d = sum(trend_values)
                     today_val = trend_values[-1] if trend_values else 0
                     
