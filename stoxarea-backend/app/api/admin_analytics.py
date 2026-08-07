@@ -174,7 +174,7 @@ def fetch_cloudflare_analytics(db: Session) -> Dict[str, Any]:
               rumPageloadEventsAdaptiveGroups(
                 limit: 200,
                 filter: {{
-                  siteToken: $siteToken,
+                  siteTag: $siteToken,
                   date_geq: $startDate
                 }},
                 orderBy: [date_ASC]
