@@ -6,7 +6,7 @@ from pathlib import Path
 
 from app.core.database import engine, Base
 from app.core.config import settings
-from app.api import auth, recommendation, market, portfolio, admin_ml, admin_users, admin_risk_profiles, admin_indicators, admin_questions
+from app.api import auth, recommendation, market, portfolio, admin_ml, admin_users, admin_risk_profiles, admin_indicators, admin_questions, admin_analytics
 from apscheduler.schedulers.background import BackgroundScheduler
 from ml.pipeline.scheduler import run_daily_pipeline, run_weekly_retrain
 
@@ -70,6 +70,7 @@ app.include_router(admin_users.router)
 app.include_router(admin_risk_profiles.router)
 app.include_router(admin_indicators.router)
 app.include_router(admin_questions.router)
+app.include_router(admin_analytics.router)
 
 # Static files untuk reports (plot evaluasi model)
 reports_dir = Path("reports")
@@ -272,6 +273,10 @@ def on_startup():
         threading.Thread(target=run_daily_pipeline, daemon=True).start()
     else:
         logger.info("[Startup] Data AI Score siap. Server berjalan tanpa locking SQLite.")
+
+    # ── Pre-warm memory cache untuk IHSG & Top Stocks agar demo pameran 0ms ─────
+    from app.services.market_data import pre_warm_cache
+    threading.Thread(target=pre_warm_cache, daemon=True).start()
 
     logger.info("StoxArea Backend siap melayani request!")
 

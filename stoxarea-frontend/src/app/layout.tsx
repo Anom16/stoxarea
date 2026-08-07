@@ -5,6 +5,7 @@ import NextTopLoader from 'nextjs-toploader'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ClientTutorialProvider from '@/components/ui/ClientTutorialProvider'
 import DisclaimerBanner from '@/components/ui/DisclaimerBanner'
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800'], variable: '--font-inter' })
 
@@ -18,6 +19,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id">
       <body className={inter.className}>
+        {/* Cloudflare Web Analytics */}
+        <Script
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "7b9e49aa362c461dae9a0b279e7649b4"}'
+          strategy="afterInteractive"
+        />
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             var theme = localStorage.getItem('app_theme') || 'light';

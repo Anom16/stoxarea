@@ -8,14 +8,24 @@ DATABASE_URL = settings.DATABASE_URL
 
 # Pengaturan Engine
 if DATABASE_URL.startswith("sqlite"):
-    # SQLite butuh check_same_thread=False untuk FastAPI
-    # SingletonThreadPool untuk development
+    # SQLite check_same_thread=False & timeout 30 detik untuk cegah 'database is locked'
     engine = create_engine(
         DATABASE_URL,
-        connect_args={"check_same_thread": False},
+        connect_args={"check_same_thread": False, "timeout": 30},
         poolclass=SingletonThreadPool,
-        echo=False  # Set True untuk debug SQL queries
+        echo=False
     )
+    # Event listener untuk mengaktifkan WAL Mode (Write-Ahead Logging) & PRAGMA busy_timeout
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        try:
+            cursor = dbapi_connection.cursor()
+            cursor.execute("PRAGMA journal_mode=WAL;")
+            cursor.execute("PRAGMA busy_timeout=30000;")
+            cursor.close()
+        except Exception:
+            pass
+
 else:
     # Untuk PostgreSQL (Cloud/Production)
     if DATABASE_URL.startswith("postgres://"):

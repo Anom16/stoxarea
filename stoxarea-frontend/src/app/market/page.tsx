@@ -81,7 +81,40 @@ function MarketExplorerContent() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true)
+      // Restore cached market stocks & sectors for instant 0ms load
+      let hasCache = false
+      try {
+        const cachedMarket = localStorage.getItem('stox_cache_market')
+        if (cachedMarket) {
+          const parsed = JSON.parse(cachedMarket)
+          if (parsed.stocks && parsed.stocks.length > 0) {
+            setStocks(parsed.stocks)
+            hasCache = true
+          }
+          if (parsed.sectors && parsed.sectors.length > 0) {
+            setSectors(parsed.sectors)
+          }
+          if (hasCache) setLoading(false)
+        }
+      } catch (e) {}
+
+      // Fast synchronous-like fallback from internal Next.js API if no cache yet
+      if (!hasCache) {
+        try {
+          const localRes = await fetch('/api/market/momentum')
+          if (localRes.ok) {
+            const localData = await localRes.json()
+            if (Array.isArray(localData) && localData.length > 0) {
+              setStocks(localData)
+              setLoading(false)
+              hasCache = true
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (!hasCache) setLoading(true)
+
       try {
         const [stocksRes, sectorsRes, recsRes] = await Promise.allSettled([
           api.get('/market/momentum').catch(() => null),
@@ -125,7 +158,9 @@ function MarketExplorerContent() {
           }
         })
 
-        setStocks(stockList)
+        if (stockList.length > 0) {
+          setStocks(stockList)
+        }
 
         let sectorList: SectorRow[] = []
         if (sectorsRes.status === 'fulfilled' && sectorsRes.value?.data && Array.isArray(sectorsRes.value.data) && sectorsRes.value.data.length > 0) {
@@ -139,7 +174,17 @@ function MarketExplorerContent() {
             }
           } catch (e) {}
         }
-        setSectors(sectorList)
+        if (sectorList.length > 0) {
+          setSectors(sectorList)
+        }
+
+        // Save to localStorage cache for instant next navigation
+        try {
+          localStorage.setItem('stox_cache_market', JSON.stringify({
+            stocks: stockList.length > 0 ? stockList : stocks,
+            sectors: sectorList.length > 0 ? sectorList : sectors
+          }))
+        } catch (e) {}
       } catch (err) {
         console.error('Failed to fetch market data', err)
       } finally {
@@ -149,10 +194,10 @@ function MarketExplorerContent() {
     fetchData()
   }, [])
 
-  // Filtered stocks for "Semua Saham" tab: HANYA yang punya data fundamental LENGKAP (ROE, DER, PBV, PER) & is_qualified
+  // Filtered stocks for "Semua Saham" tab: Menampilkan seluruh saham qualified BEI
   const sortedAndFilteredStocks = useMemo(() => {
     return stocks
-      .filter(s => s.is_qualified === true && s.roe != null && s.der != null && s.pbv != null && s.per != null)
+      .filter(s => s.is_qualified !== false)
       .filter(s => {
         const matchesSearch = s.ticker.toLowerCase().includes(search.toLowerCase()) ||
           (s.name || '').toLowerCase().includes(search.toLowerCase())

@@ -20,12 +20,12 @@ def _yf_rate_limit():
         time.sleep(_YF_MIN_INTERVAL - elapsed)
     _LAST_YF_REQUEST = time.time()
 
-# Cache sederhana untuk optimasi kecepatan load
+# Cache sederhana untuk optimasi kecepatan load saat pameran/demo
 # Format: { "TICKER_KEY": (timestamp, data) }
 _TECHNICAL_CACHE = {}
 _FUNDAMENTAL_CACHE = {}
-CACHE_TTL_TECH = 600   # 10 menit
-CACHE_TTL_FUND = 3600  # 1 jam
+CACHE_TTL_TECH = 86400   # 24 jam (ideal untuk demo/pameran tanpa reload yfinance ulang)
+CACHE_TTL_FUND = 86400   # 24 jam
 
 # Retry config untuk Yahoo Finance throttling
 _YF_MAX_RETRIES = 3
@@ -499,10 +499,11 @@ def get_sector_summary(db) -> list:
 
 def pre_warm_cache():
     """
-    [NEW] Secara otomatis mengisi cache memori (Pre-Warm) untuk emiten-emiten utama BEI 
+    [NEW] Secara otomatis mengisi cache memori (Pre-Warm) untuk IHSG dan emiten-emiten utama BEI 
     pada saat server backend pertama kali dinyalakan (startup).
     """
     popular_tickers = [
+        "^JKSE",
         "BBCA.JK", "BBRI.JK", "BMRI.JK", "TLKM.JK", "ASII.JK",
         "BBNI.JK", "AMRT.JK", "ICBP.JK", "INDF.JK", "ANTM.JK",
         "KLBF.JK", "PGAS.JK", "PTBA.JK", "ITMG.JK", "MEDC.JK",
@@ -511,9 +512,11 @@ def pre_warm_cache():
     print(f"[Pre-Warm] Memulai pengisian cache latar belakang untuk {len(popular_tickers)} emiten utama...")
     for t in popular_tickers:
         try:
+            get_technical_data(t, period="1mo")
             get_technical_data(t, period="1y")
-            get_fundamental_data(t)
-            time.sleep(0.5)
+            if t != "^JKSE":
+                get_fundamental_data(t)
+            time.sleep(0.3)
         except Exception as e:
             pass
     print("[Pre-Warm] Pengisian cache latar belakang selesai 100%! Server siap tempur untuk pameran.")

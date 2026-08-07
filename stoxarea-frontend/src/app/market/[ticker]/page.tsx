@@ -128,32 +128,65 @@ export default function StockDetailPage() {
 
   useEffect(() => {
     const fetchMainData = async () => {
-      setLoading(true)
+      const fullTicker = tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'
+      const cacheKey = `stox_cache_ticker_${fullTicker}`
+      let hasCache = false
+
       try {
-        const fullTicker = tickerStr.endsWith('.JK') ? tickerStr : tickerStr + '.JK'
-        const [fundRes, techRes, aiRes, userRes, portRes] = await Promise.all([
+        const cachedTickerData = localStorage.getItem(cacheKey)
+        if (cachedTickerData) {
+          const parsed = JSON.parse(cachedTickerData)
+          if (parsed.fundamental && parsed.technical && parsed.ai) {
+            setData(parsed)
+            hasCache = true
+            setLoading(false)
+          }
+        }
+      } catch (e) {}
+
+      if (!hasCache) setLoading(true)
+
+      try {
+        const [fundRes, techRes, aiRes, userRes, portRes] = await Promise.allSettled([
           api.get(`/market/fundamental/${fullTicker}`),
           api.get(`/market/technical/${fullTicker}?period=1y`),
           api.get(`/market/ai-score/${fullTicker}`),
           api.get('/auth/me'),
           api.get('/portfolio/')
         ])
-        setData({
-          fundamental: fundRes.data,
-          technical: techRes.data,
-          ai: aiRes.data
-        })
-        setDbCash(userRes.data.virtual_balance || 0)
-        
-        const cleanFull = fullTicker.replace('.JK', '').toUpperCase()
-        const currentHolding = portRes.data.find(
-          (h: any) => h.ticker.replace('.JK', '').toUpperCase() === cleanFull
-        )
-        setDbHoldingShares(currentHolding ? currentHolding.qty : 0)
+
+        const freshFund = fundRes.status === 'fulfilled' ? fundRes.value.data : null
+        const freshTech = techRes.status === 'fulfilled' ? techRes.value.data : null
+        const freshAi   = aiRes.status === 'fulfilled'   ? aiRes.value.data   : null
+
+        if (freshFund || freshTech || freshAi) {
+          const combinedData = {
+            fundamental: freshFund || data?.fundamental,
+            technical: freshTech || data?.technical,
+            ai: freshAi || data?.ai
+          }
+          setData(combinedData)
+
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(combinedData))
+          } catch (e) {}
+        }
+
+        if (userRes.status === 'fulfilled' && userRes.value.data) {
+          setDbCash(userRes.value.data.virtual_balance || 0)
+        }
+
+        if (portRes.status === 'fulfilled' && Array.isArray(portRes.value.data)) {
+          const cleanFull = fullTicker.replace('.JK', '').toUpperCase()
+          const currentHolding = portRes.value.data.find(
+            (h: any) => h.ticker.replace('.JK', '').toUpperCase() === cleanFull
+          )
+          setDbHoldingShares(currentHolding ? currentHolding.qty : 0)
+        }
 
         // Terjemahkan deskripsi perusahaan
-        if (fundRes.data.description) {
-          translateDescription(fundRes.data.description)
+        if (freshFund?.description) {
+          translateDescription(freshFund.description)
         }
       } catch (err) {
         console.error(err)

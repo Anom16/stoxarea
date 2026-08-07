@@ -114,7 +114,7 @@ export default function DashboardPage() {
   const [showAllRanking, setShowAllRanking]         = useState<boolean>(false)
   const [selectedSectorFilter, setSelectedSectorFilter] = useState<string>('ALL')
 
-  // ── Fetch user + data ────────────────────────────────────────────────────
+  // ── Fetch user + data (Cache-First untuk Pameran/Demo 0ms Loading) ──────────
   useEffect(() => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
     if (!token) { 
@@ -126,6 +126,25 @@ export default function DashboardPage() {
     const savedLayout = localStorage.getItem('dashboard_layout') as 'classic' | 'modern'
     if (savedLayout) setDashLayout(savedLayout)
 
+    // Restore cached data for Instant 0ms Load
+    let hasCache = false
+    try {
+      const cachedDash = localStorage.getItem('stox_cache_dash')
+      if (cachedDash) {
+        const parsed = JSON.parse(cachedDash)
+        if (parsed.recs) setRecs(parsed.recs)
+        if (parsed.sectors) setSectors(parsed.sectors)
+        if (parsed.ihsgData) setIhsgData(parsed.ihsgData)
+        if (parsed.username) setUsername(parsed.username)
+        if (parsed.profile) setProfile(parsed.profile)
+        if (parsed.virtualBalance) setVirtualBalance(parsed.virtualBalance)
+        if (parsed.momentumStocks) setMomentumStocks(parsed.momentumStocks)
+        hasCache = true
+        setLoading(false)
+        setIhsgLoading(false)
+      }
+    } catch (e) {}
+
     const headers = { Authorization: `Bearer ${token}` }
 
     // Fetch user info
@@ -133,61 +152,83 @@ export default function DashboardPage() {
       .then(r => {
         const name = r.data.full_name?.trim() || r.data.email?.split('@')[0] || 'Pengguna'
         setUsername(name)
+        let prof = '—'
         if (typeof r.data.virtual_balance === 'number') {
           setVirtualBalance(r.data.virtual_balance)
         }
         const rawProfile = r.data.risk_profile
         if (rawProfile) {
-          const capitalized = rawProfile
+          prof = rawProfile
             .split('_')
             .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ')
-          setProfile(capitalized)
+          setProfile(prof)
         } else if (!r.data.is_admin) {
-          // User biasa yang belum mengisi profil risiko otomatis dialihkan ke /onboarding
           router.replace('/onboarding')
           return
         } else {
           setProfile('—')
         }
+
+        // Parallel background update for market & AI recs
+        Promise.allSettled([
+          api.get('/recommendation/top-picks', { headers }),
+          api.get('/market/technical/^JKSE?period=1mo'),
+          api.get('/market/sectors'),
+          api.get('/market/momentum')
+        ]).then(([recsRes, ihsgRes, sectorsRes, momRes]) => {
+          let latestRecs = recs
+          let latestSectors = sectors
+          let latestIhsg = ihsgData
+          let latestMom = momentumStocks
+
+          if (recsRes.status === 'fulfilled' && Array.isArray(recsRes.value.data)) {
+            latestRecs = recsRes.value.data
+            setRecs(latestRecs)
+          } else if (recsRes.status === 'rejected' && !hasCache) {
+            setError('Gagal memuat data analisis. Pastikan server backend berjalan.')
+          }
+
+          if (ihsgRes.status === 'fulfilled' && ihsgRes.value.data && !ihsgRes.value.data.error) {
+            latestIhsg = ihsgRes.value.data
+            setIhsgData(latestIhsg)
+          }
+          setIhsgLoading(false)
+
+          if (sectorsRes.status === 'fulfilled' && Array.isArray(sectorsRes.value.data)) {
+            latestSectors = sectorsRes.value.data
+            setSectors(latestSectors)
+            const firstValid = sectorsRes.value.data.find((s: any) => s.total_stocks > 0)
+            if (firstValid && !activeSector) setActiveSector(firstValid.sector)
+          }
+
+          if (momRes.status === 'fulfilled' && Array.isArray(momRes.value.data)) {
+            latestMom = momRes.value.data.filter((s: any) => s.is_qualified !== false)
+            setMomentumStocks(latestMom)
+          }
+
+          // Persist to local cache for instant future loads
+          try {
+            localStorage.setItem('stox_cache_dash', JSON.stringify({
+              recs: latestRecs,
+              sectors: latestSectors,
+              ihsgData: latestIhsg,
+              username: name,
+              profile: prof,
+              virtualBalance: r.data.virtual_balance || 100000000,
+              momentumStocks: latestMom
+            }))
+          } catch (e) {}
+        }).finally(() => {
+          setLoading(false)
+        })
       })
       .catch(() => {
-        localStorage.removeItem('access_token')
-        router.replace('/auth/login')
+        if (!hasCache) {
+          localStorage.removeItem('access_token')
+          router.replace('/auth/login')
+        }
       })
-
-    // Fetch recommendations, technicals, sectors in parallel safely
-    Promise.allSettled([
-      api.get('/recommendation/top-picks', { headers }),
-      api.get('/market/technical/^JKSE?period=1mo'),
-      api.get('/market/sectors')
-    ]).then(([recsRes, ihsgRes, sectorsRes]) => {
-      if (recsRes.status === 'fulfilled' && Array.isArray(recsRes.value.data)) {
-        setRecs(recsRes.value.data)
-      } else if (recsRes.status === 'rejected') {
-        setError('Gagal memuat data analisis. Pastikan server backend berjalan.')
-      }
-
-      if (ihsgRes.status === 'fulfilled' && ihsgRes.value.data && !ihsgRes.value.data.error) {
-        setIhsgData(ihsgRes.value.data)
-      }
-      setIhsgLoading(false)
-
-      if (sectorsRes.status === 'fulfilled' && Array.isArray(sectorsRes.value.data)) {
-        setSectors(sectorsRes.value.data)
-        const firstValid = sectorsRes.value.data.find((s: any) => s.total_stocks > 0)
-        if (firstValid) setActiveSector(firstValid.sector)
-      }
-    }).finally(() => {
-      setLoading(false)
-    })
-  }, [])
-
-  // Fetch momentum stocks (used by modern layout) - hanya saham qualified
-  useEffect(() => {
-    api.get('/market/momentum')
-      .then(res => { if (Array.isArray(res.data)) setMomentumStocks(res.data.filter((s: any) => s.is_qualified !== false)) })
-      .catch(() => {})
   }, [])
 
 

@@ -9,6 +9,7 @@ const adminNav = [
   { href: '/admin/stocks',           label: 'Katalog Emiten',         icon: '◎' },
   { href: '/admin/ml-pipeline',      label: 'Pipeline ML & Training', icon: '⬢' },
   { href: '/admin/model-performance',label: 'Evaluasi Model AI',      icon: '⌘' },
+  { href: '/admin/analytics',        label: 'Analitik Pengunjung',    icon: '📊' },
   { href: '/admin/cache',            label: 'Monitor Cache',          icon: '⧉' },
 ]
 
