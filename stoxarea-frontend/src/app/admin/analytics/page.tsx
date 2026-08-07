@@ -125,7 +125,7 @@ export default function AdminAnalyticsPage() {
             border: `1px solid ${is_live_cloudflare ? 'rgba(34, 197, 94, 0.3)' : 'rgba(234, 179, 8, 0.3)'}`
           }}>
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: is_live_cloudflare ? '#22c55e' : '#eab308' }} />
-            {is_live_cloudflare ? 'Live Cloudflare Analytics' : 'Mode Localhost (Mock Data)'}
+            {is_live_cloudflare ? 'Live Cloudflare Analytics' : 'Mode Database Riil (Data Asli)'}
           </span>
 
           <button

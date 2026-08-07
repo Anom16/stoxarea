@@ -31,10 +31,11 @@ class Settings(BaseSettings):
     CAPPING_BOUNDS_PATH: str = "data/processed/capping_bounds.json"
     MODEL_PATH: str = "models/xgb_model.pkl"
     
-    # Cloudflare Analytics (Opsional)
+    # Cloudflare Analytics
     CLOUDFLARE_API_TOKEN: str = Field(default="", env="CLOUDFLARE_API_TOKEN")
     CLOUDFLARE_ZONE_ID: str = Field(default="", env="CLOUDFLARE_ZONE_ID")
     CLOUDFLARE_ACCOUNT_ID: str = Field(default="", env="CLOUDFLARE_ACCOUNT_ID")
+    CLOUDFLARE_SITE_TOKEN: str = Field(default="7b9e49aa362c461dae9a0b279e7649b4", env="CLOUDFLARE_SITE_TOKEN")
     
     # Feature: Rate limiting
     RATE_LIMIT_ENABLED: bool = Field(default=True, env="RATE_LIMIT_ENABLED")
