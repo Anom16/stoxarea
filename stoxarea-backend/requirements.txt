@@ -41,3 +41,4 @@ python-json-logger==2.0.7
 
 # ── PDF Generation ──────────────────────────────────────────────
 fpdf2==2.8.7
+requests==2.31.0
