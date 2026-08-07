@@ -96,6 +96,27 @@ def get_db_real_analytics_data(db: Session) -> Dict[str, Any]:
     }
 
 
+def get_cloudflare_account_id(api_token: str) -> str:
+    """Otomatis mengambil Cloudflare Account ID jika belum diisi di env."""
+    if settings.CLOUDFLARE_ACCOUNT_ID:
+        return settings.CLOUDFLARE_ACCOUNT_ID
+    try:
+        url = "https://api.cloudflare.com/client/v4/accounts"
+        headers = {"Authorization": f"Bearer {api_token}"}
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=5) as response:
+            if response.status == 200:
+                body = json.loads(response.read().decode("utf-8"))
+                results = body.get("result", [])
+                if results and len(results) > 0:
+                    acc_id = results[0].get("id", "")
+                    logger.info(f"[Analytics] Auto-detected Cloudflare Account ID: {acc_id}")
+                    return acc_id
+    except Exception as ex:
+        logger.error(f"[Analytics] Auto-detect Account ID failed: {ex}")
+    return ""
+
+
 def fetch_cloudflare_analytics(db: Session) -> Dict[str, Any]:
     """Mengambil data analitik pengunjung asli dari Cloudflare GraphQL API untuk Web Analytics Standalone."""
     url = "https://api.cloudflare.com/client/v4/graphql"
@@ -109,7 +130,8 @@ def fetch_cloudflare_analytics(db: Session) -> Dict[str, Any]:
     seven_days_ago = (datetime.utcnow() - timedelta(days=7)).strftime("%Y-%m-%d")
     site_token = settings.CLOUDFLARE_SITE_TOKEN or "7b9e49aa362c461dae9a0b279e7649b4"
     
-    account_filter = f'(filter: {{accountTag: "{settings.CLOUDFLARE_ACCOUNT_ID}"}})' if settings.CLOUDFLARE_ACCOUNT_ID else ""
+    account_id = settings.CLOUDFLARE_ACCOUNT_ID or get_cloudflare_account_id(settings.CLOUDFLARE_API_TOKEN)
+    account_filter = f'(filter: {{accountTag: "{account_id}"}})' if account_id else ""
     
     graphql_query = {
         "query": f"""
