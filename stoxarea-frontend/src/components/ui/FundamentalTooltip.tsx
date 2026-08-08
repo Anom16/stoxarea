@@ -126,6 +126,22 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       return { text: `PER ${v.toFixed(1)}x — Mahal. Investor harus optimis akan pertumbuhan laba di masa depan.`, color: '#ef4444' }
     },
   },
+  sortino: {
+    fullName: 'Sortino Ratio — Efisiensi Risiko (Downside Deviation)',
+    description: 'Rasio kuantitatif yang mengukur seberapa besar imbal hasil saham di atas suku bunga bebas risiko (BI Rate 6%) dibandingkan HANYA dengan risiko penurunan harga (Downside Risk). Tidak seperti Sharpe Ratio yang menghukum gejolak kenaikan, Sortino Ratio hanya menghukum gejolak saat harga saham anjlok.',
+    howToRead: [
+      { range: '> 2.0',   label: 'Sangat Tinggi (Sangat Efisien & Safe Haven)', color: '#10b981' },
+      { range: '1.0–2.0', label: 'Sedang / Wajar (Rasio Risiko Seimbang)',    color: '#f59e0b' },
+      { range: '< 1.0',   label: 'Tinggi Gejolak (Downside Risk Tinggi)',       color: '#ef4444' },
+    ],
+    spkRole: 'Kriteria Keamanan SPK — Memberikan proteksi matematis bagi pengguna Konservatif (Bobot 30%) dan Moderat (Bobot 20%) agar terhindar dari saham rawan anjlok.',
+    getInterpretation: (v) => {
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
+      if (v >= 2.0) return { text: `Sortino Ratio ${v.toFixed(2)} — Sangat Tinggi! Saham memberikan imbal hasil tinggi dengan risiko penurunan yang sangat terkendali.`, color: '#10b981' }
+      if (v >= 1.0) return { text: `Sortino Ratio ${v.toFixed(2)} — Sedang / Wajar. Imbal hasil saham seimbang dengan risiko fluktuasi penurunannya.`, color: '#f59e0b' }
+      return { text: `Sortino Ratio ${v.toFixed(2)} — Tinggi Gejolak. Imbal hasil relatif lebih kecil dibanding gejolak penurunannya.`, color: '#ef4444' }
+    },
+  },
   beta: {
     fullName: 'Beta — Gejolak Harga Saham',
     description: 'Mengukur seberapa sensitif atau liar pergerakan harga saham dibandingkan pergerakan pasar (IHSG). Beta 1 artinya saham bergerak seirama IHSG.',
@@ -420,6 +436,53 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       return { text: `Menembus Pita Atas (${v.toFixed(2)}) — Rawan Koreksi. Harga sudah terlalu tinggi melepasi batas atas wajar.`, color: '#ef4444' }
     },
   },
+  bb_upper: {
+    fullName: 'Bollinger Upper — Batas Atas Rentang Harga',
+    description: 'Batas atas pergerakan harga wajar. Jika harga pasar saham menembus garis ini, saham mengalami kenaikan ekstrem (overbought) dan rawan koreksi.',
+    howToRead: [
+      { range: 'Menembus Pita Atas (> 1.0)', label: 'Sangat Mahal / Rawan Koreksi', color: '#ef4444' },
+      { range: 'Mendekati Pita Atas (0.8–1.0)', label: 'Tren Naik Kuat (Bullish)', color: '#10b981' },
+      { range: 'Di Bawah Pita Atas (< 0.8)', label: 'Pergerakan Normal', color: '#f59e0b' },
+    ],
+    spkRole: 'Batas Atas Rentang Harga.',
+    getInterpretation: (v) => {
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
+      if (v > 1.0) return { text: `Menembus Pita Atas (${v.toFixed(2)}) — Rawan Koreksi. Harga pasar saat ini sudah berada di atas batas atas wajar.`, color: '#ef4444' }
+      if (v >= 0.8) return { text: `Mendekati Pita Atas (${v.toFixed(2)}) — Tren Naik Kuat. Pembeli mendominasi pergerakan harga.`, color: '#10b981' }
+      return { text: `Di Bawah Pita Atas (${v.toFixed(2)}) — Pergerakan harga berada di dalam rentang wajar.`, color: '#f59e0b' }
+    },
+  },
+  bb_mid: {
+    fullName: 'Bollinger Mid — Batas Tengah Rentang Harga',
+    description: 'Garis tengah pergerakan Bollinger Bands yang nilainya persis sama dengan rata-rata harga 20 hari (MA20). Berfungsi sebagai garis titik tengah keseimbangan harga.',
+    howToRead: [
+      { range: 'Harga di Atas Mid', label: 'Tren Pendek Naik (Positif)', color: '#10b981' },
+      { range: 'Harga di Garis Mid', label: 'Titik Keseimbangan (Netral)', color: '#f59e0b' },
+      { range: 'Harga di Bawah Mid', label: 'Tren Pendek Turun (Lemah)', color: '#ef4444' },
+    ],
+    spkRole: 'Garis Tengah Keseimbangan Tren.',
+    getInterpretation: (v) => {
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
+      if (v > 0) return { text: `Di Atas Garis Tengah (+${v.toFixed(2)}%) — Tren jangka pendek saham berada dalam jalur penguatan positif.`, color: '#10b981' }
+      if (v === 0) return { text: `Tepat di Garis Tengah — Harga berada pada titik keseimbangan rata-rata 20 hari (Netral).`, color: '#f59e0b' }
+      return { text: `Di Bawah Garis Tengah (${v.toFixed(2)}%) — Tren jangka pendek saham dalam posisi melemah.`, color: '#ef4444' }
+    },
+  },
+  bb_lower: {
+    fullName: 'Bollinger Lower — Batas Bawah Rentang Harga',
+    description: 'Batas lantai terendah pergerakan harga wajar. Jika harga mendekati atau menyentuh garis ini, saham tergolong jenuh jual (oversold) dan berpotensi memantul naik (rebound).',
+    howToRead: [
+      { range: 'Menyentuh Pita Bawah (< 0.2)', label: 'Murah / Sinyal Memantul (Rebound)', color: '#10b981' },
+      { range: 'Di Area Tengah (0.2–0.8)', label: 'Pergerakan Normal', color: '#f59e0b' },
+      { range: 'Di Atas Pita Bawah (> 0.8)', label: 'Aman di Atas Floor', color: '#10b981' },
+    ],
+    spkRole: 'Batas Bawah Rentang Harga.',
+    getInterpretation: (v) => {
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
+      if (v <= 0.2) return { text: `Menyentuh Pita Bawah (${v.toFixed(2)}) — Peluang Beli! Harga berada di lantai terendah wajar, berpotensi memantul naik (Rebound).`, color: '#10b981' }
+      return { text: `Di Atas Pita Bawah (${v.toFixed(2)}) — Harga berada aman di atas lantai penurunan.`, color: '#f59e0b' }
+    },
+  },
 }
 
 // ── Komponen Utama ────────────────────────────────────────────────────────────
@@ -571,19 +634,7 @@ export default function FundamentalTooltip({ metricKey, value, displayValue, lab
               </div>
             </div>
 
-            {/* Peran di SPK */}
-            <div style={{
-              background: 'rgba(0, 102, 255, 0.05)',
-              border: '1px solid rgba(0, 102, 255, 0.15)',
-              borderRadius: 8, padding: '10px 12px',
-            }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
-                Peran dalam SPK
-              </div>
-              <div style={{ fontSize: 13, color: 'var(--accent)', lineHeight: 1.5, fontWeight: 600 }}>
-                {info.spkRole}
-              </div>
-            </div>
+
           </div>
         </>,
         document.body

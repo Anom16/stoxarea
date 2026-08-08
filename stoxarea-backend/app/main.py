@@ -139,41 +139,39 @@ def seed_database_if_empty(db):
 
     # 3. Seed Profile Indicator Weights
     try:
-        existing_weights = {(w.profile_id, w.indicator_id) for w in db.query(ProfileIndicatorWeight).all()}
+        db.query(ProfileIndicatorWeight).delete()
+        db.commit()
+
         default_weights = [
             # Konservatif (Total = 1.0)
-            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='ai_score', weight=0.10),
-            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='roe', weight=0.35),
-            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='der', weight=0.30),
-            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='pbv', weight=0.10),
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='sortino', weight=0.30),
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='roe', weight=0.15),
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='der', weight=0.15),
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='pbv', weight=0.15),
             ProfileIndicatorWeight(profile_id='konservatif', indicator_id='per', weight=0.15),
+            ProfileIndicatorWeight(profile_id='konservatif', indicator_id='ai_score', weight=0.10),
+            
             # Moderat (Total = 1.0)
-            ProfileIndicatorWeight(profile_id='moderat', indicator_id='ai_score', weight=0.30),
-            ProfileIndicatorWeight(profile_id='moderat', indicator_id='roe', weight=0.25),
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='ai_score', weight=0.25),
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='sortino', weight=0.20),
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='roe', weight=0.20),
             ProfileIndicatorWeight(profile_id='moderat', indicator_id='der', weight=0.15),
-            ProfileIndicatorWeight(profile_id='moderat', indicator_id='pbv', weight=0.15),
-            ProfileIndicatorWeight(profile_id='moderat', indicator_id='per', weight=0.15),
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='pbv', weight=0.10),
+            ProfileIndicatorWeight(profile_id='moderat', indicator_id='per', weight=0.10),
+            
             # Agresif (Total = 1.0)
-            ProfileIndicatorWeight(profile_id='agresif', indicator_id='ai_score', weight=0.50),
-            ProfileIndicatorWeight(profile_id='agresif', indicator_id='roe', weight=0.10),
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='ai_score', weight=0.45),
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='roe', weight=0.20),
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='sortino', weight=0.10),
             ProfileIndicatorWeight(profile_id='agresif', indicator_id='der', weight=0.10),
-            ProfileIndicatorWeight(profile_id='agresif', indicator_id='pbv', weight=0.15),
-            ProfileIndicatorWeight(profile_id='agresif', indicator_id='per', weight=0.15)
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='pbv', weight=0.075),
+            ProfileIndicatorWeight(profile_id='agresif', indicator_id='per', weight=0.075)
         ]
-        
-        # Upsert PER weight or add missing default weights
         for w in default_weights:
-            if (w.profile_id, w.indicator_id) not in existing_weights:
-                db.add(w)
-            else:
-                # Update existing weight if we are adding per or updating default distribution
-                existing_w = db.query(ProfileIndicatorWeight).filter(
-                    ProfileIndicatorWeight.profile_id == w.profile_id,
-                    ProfileIndicatorWeight.indicator_id == w.indicator_id
-                ).first()
-                if existing_w:
-                    existing_w.weight = w.weight
+            db.add(w)
         db.commit()
+        from app.services.spk3_saw import invalidate_saw_cache
+        invalidate_saw_cache()
     except Exception as ex:
         logger.error(f"[Seed] Failed seeding indicator weights: {ex}")
         db.rollback()

@@ -231,7 +231,7 @@ export default function StockDetailPage() {
     </div>
   )
 
-  if (!data || data.fundamental.error) return (
+  if (!data || !data.fundamental || data.fundamental.error) return (
     <div className="flex-center" style={{ height: '100vh' }}>
       <div className="card text-center" style={{ maxWidth: 400 }}>
         <h2 className="text-red" style={{ marginBottom: 8 }}>Data Tidak Tersedia</h2>
@@ -633,7 +633,21 @@ export default function StockDetailPage() {
               <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--accent)' }}>
                 Rp {currentPrice.toLocaleString()}
               </div>
-              <div className="text-secondary fs-13">Volume: {f.price?.volume.toLocaleString()}</div>
+              <div className="text-secondary fs-13">
+                Volume: {f.price?.volume != null ? (() => {
+                  const vol = f.price.volume
+                  const lots = vol / 100
+                  let lotStr = `${Math.floor(lots).toLocaleString('id-ID')} Lot`
+                  if (lots >= 1_000_000_000) {
+                    lotStr = `${(lots / 1_000_000_000).toFixed(2).replace('.', ',')} Miliar Lot`
+                  } else if (lots >= 1_000_000) {
+                    lotStr = `${(lots / 1_000_000).toFixed(2).replace('.', ',')} Juta Lot`
+                  } else if (lots >= 10_000) {
+                    lotStr = `${(lots / 1_000).toFixed(1).replace('.', ',')} Ribu Lot`
+                  }
+                  return `${vol.toLocaleString('id-ID')} (${lotStr})`
+                })() : '—'}
+              </div>
             </div>
           </div>
 
@@ -900,40 +914,66 @@ export default function StockDetailPage() {
                         <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Gejolak Harga vs IHSG (Beta) <FundamentalTooltip metricKey="beta" value={f.price?.beta} label="Gejolak Harga (Beta)" /></div>
                         <div className="stat-value" style={{ fontSize: 15 }}>{f.price?.beta ?? '—'}</div>
                       </div>
+                      <div className="stat-card" style={{ padding: 12 }}>
+                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Efisiensi Risiko (Sortino) <FundamentalTooltip metricKey="sortino" value={f.sortino ?? 1.5} label="Efisiensi Risiko (Sortino)" /></div>
+                        <div className="stat-value" style={{ fontSize: 15 }}>{(f.sortino ?? 1.5).toFixed(2)}</div>
+                      </div>
                     </div>
 
                     {/* ── Profitabilitas & Kesehatan ── */}
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Kinerja Keuntungan &amp; Kesehatan Keuangan</div>
                     <div className="ticker-card-grid">
-                      <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Untung dari Modal (ROE) <FundamentalTooltip metricKey="roe" value={f.profitability?.roe} label="Untung dari Modal (ROE)" /></div>
-                        <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.roe != null ? `${(f.profitability.roe * 100).toFixed(2)}%` : '—'}</div>
-                      </div>
-                      <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Untung dari Aset (ROA) <FundamentalTooltip metricKey="roa" value={f.profitability?.roa} label="Untung dari Aset (ROA)" /></div>
-                        <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.roa != null ? `${(f.profitability.roa * 100).toFixed(2)}%` : '—'}</div>
-                      </div>
-                      <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Persentase Untung Bersih (Net Margin) <FundamentalTooltip metricKey="net_margin" value={f.profitability?.net_margin} label="Persentase Untung Bersih (Net Margin)" /></div>
-                        <div className="stat-value" style={{ fontSize: 15 }}>{f.profitability?.net_margin != null ? `${(f.profitability.net_margin * 100).toFixed(2)}%` : '—'}</div>
-                      </div>
-                      <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Tingkat Utang vs Modal (DER) <FundamentalTooltip metricKey="der" value={f.health?.der} label="Tingkat Utang vs Modal (DER)" /></div>
-                        <div className="stat-value" style={{ fontSize: 15 }}>{f.health?.der ?? '—'}</div>
-                      </div>
+                      {(() => {
+                        const fmtPct = (v: number | null | undefined, decimals = 2) => {
+                          if (v == null || typeof v !== 'number' || isNaN(v)) return '—'
+                          const pct = Math.abs(v) <= 1.0 ? v * 100 : v
+                          return `${pct.toFixed(decimals)}%`
+                        }
+                        return (
+                          <>
+                            <div className="stat-card" style={{ padding: 12 }}>
+                              <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Untung dari Modal (ROE) <FundamentalTooltip metricKey="roe" value={f.profitability?.roe} label="Untung dari Modal (ROE)" /></div>
+                              <div className="stat-value" style={{ fontSize: 15 }}>{fmtPct(f.profitability?.roe)}</div>
+                            </div>
+                            <div className="stat-card" style={{ padding: 12 }}>
+                              <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Untung dari Aset (ROA) <FundamentalTooltip metricKey="roa" value={f.profitability?.roa} label="Untung dari Aset (ROA)" /></div>
+                              <div className="stat-value" style={{ fontSize: 15 }}>{fmtPct(f.profitability?.roa)}</div>
+                            </div>
+                            <div className="stat-card" style={{ padding: 12 }}>
+                              <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Persentase Untung Bersih (Net Margin) <FundamentalTooltip metricKey="net_margin" value={f.profitability?.net_margin} label="Persentase Untung Bersih (Net Margin)" /></div>
+                              <div className="stat-value" style={{ fontSize: 15 }}>{fmtPct(f.profitability?.net_margin)}</div>
+                            </div>
+                            <div className="stat-card" style={{ padding: 12 }}>
+                              <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Tingkat Utang vs Modal (DER) <FundamentalTooltip metricKey="der" value={f.health?.der} label="Tingkat Utang vs Modal (DER)" /></div>
+                              <div className="stat-value" style={{ fontSize: 15 }}>{f.health?.der ?? '—'}</div>
+                            </div>
+                          </>
+                        )
+                      })()}
                     </div>
 
                     {/* ── Dividen ── */}
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Pembagian Keuntungan (Dividen)</div>
                     <div className="ticker-card-grid-nobottom">
-                      <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Persentase Hasil Dividen (Yield) <FundamentalTooltip metricKey="div_yield" value={f.dividend?.yield_pct} label="Persentase Hasil Dividen (Yield)" /></div>
-                        <div className="stat-value" style={{ fontSize: 15 }}>{f.dividend?.yield_pct != null ? `${(f.dividend.yield_pct * 100).toFixed(2)}%` : '—'}</div>
-                      </div>
-                      <div className="stat-card" style={{ padding: 12 }}>
-                        <div className="stat-label" style={{ fontSize: 10 }}>Porsi Laba untuk Dividen (Payout Ratio)</div>
-                        <div className="stat-value" style={{ fontSize: 15 }}>{f.dividend?.payout_ratio != null ? `${(f.dividend.payout_ratio * 100).toFixed(1)}%` : '—'}</div>
-                      </div>
+                      {(() => {
+                        const fmtPct = (v: number | null | undefined, decimals = 2) => {
+                          if (v == null || typeof v !== 'number' || isNaN(v)) return '—'
+                          const pct = Math.abs(v) <= 1.0 ? v * 100 : v
+                          return `${pct.toFixed(decimals)}%`
+                        }
+                        return (
+                          <>
+                            <div className="stat-card" style={{ padding: 12 }}>
+                              <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>Persentase Hasil Dividen (Yield) <FundamentalTooltip metricKey="div_yield" value={f.dividend?.yield_pct} label="Persentase Hasil Dividen (Yield)" /></div>
+                              <div className="stat-value" style={{ fontSize: 15 }}>{fmtPct(f.dividend?.yield_pct)}</div>
+                            </div>
+                            <div className="stat-card" style={{ padding: 12 }}>
+                              <div className="stat-label" style={{ fontSize: 10 }}>Porsi Laba untuk Dividen (Payout Ratio)</div>
+                              <div className="stat-value" style={{ fontSize: 15 }}>{fmtPct(f.dividend?.payout_ratio, 1)}</div>
+                            </div>
+                          </>
+                        )
+                      })()}
                     </div>
                   </CollapsibleCard>
                   </FundamentalTooltipProvider>
@@ -1102,9 +1142,9 @@ export default function StockDetailPage() {
                     { key: 'macd', label: 'Selisih Tren (MACD Histogram)',val: fmtF(macdHist),raw: macdHist },
                     { key: 'ma20', label: 'Harga Rata-rata 20 Hari (MA-20)',         val: `Rp ${fmt(ma20)}`, raw: ma20Dist },
                     { key: 'ma50', label: 'Harga Rata-rata 50 Hari (MA-50)',         val: `Rp ${fmt(ma50)}`, raw: ma50Dist },
-                    { key: 'bb',   label: 'Batas Atas Rentang Harga (Bollinger Upper)',      val: `Rp ${fmt(bbUp)}`, raw: bbPos },
-                    { key: 'bb',   label: 'Batas Tengah Rentang Harga (Bollinger Mid)', val: `Rp ${fmt(bbMid)}`,raw: bbPos },
-                    { key: 'bb',   label: 'Batas Bawah Rentang Harga (Bollinger Lower)',      val: `Rp ${fmt(bbLow)}`,raw: bbPos },
+                    { key: 'bb_upper', label: 'Batas Atas Rentang Harga (Bollinger Upper)',      val: `Rp ${fmt(bbUp)}`, raw: bbPos },
+                    { key: 'bb_mid',   label: 'Batas Tengah Rentang Harga (Bollinger Mid)', val: `Rp ${fmt(bbMid)}`, raw: ma20Dist },
+                    { key: 'bb_lower', label: 'Batas Bawah Rentang Harga (Bollinger Lower)',      val: `Rp ${fmt(bbLow)}`, raw: bbPos },
                   ]
 
                   return (

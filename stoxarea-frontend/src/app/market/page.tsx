@@ -33,6 +33,7 @@ interface StockRow {
   der?: number
   pbv?: number
   per?: number
+  sortino?: number
 }
 
 interface SectorRow {
@@ -82,19 +83,29 @@ function MarketExplorerContent() {
   useEffect(() => {
     const fetchData = async () => {
       // Restore cached market stocks & sectors for instant 0ms load
+      const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       let hasCache = false
       try {
-        const cachedMarket = localStorage.getItem('stox_cache_market')
-        if (cachedMarket) {
-          const parsed = JSON.parse(cachedMarket)
-          if (parsed.stocks && parsed.stocks.length > 0) {
-            setStocks(parsed.stocks)
-            hasCache = true
+        if (isLocalhost) {
+          localStorage.removeItem('stox_cache_market')
+        } else {
+          const cachedMarket = localStorage.getItem('stox_cache_market')
+          if (cachedMarket) {
+            const parsed = JSON.parse(cachedMarket)
+            if (parsed.stocks && parsed.stocks.length > 0) {
+              const isOldCache = parsed.stocks.every((s: any) => s.sortino === 1.5)
+              if (!isOldCache) {
+                setStocks(parsed.stocks)
+                hasCache = true
+              } else {
+                localStorage.removeItem('stox_cache_market')
+              }
+            }
+            if (parsed.sectors && parsed.sectors.length > 0 && hasCache) {
+              setSectors(parsed.sectors)
+            }
+            if (hasCache) setLoading(false)
           }
-          if (parsed.sectors && parsed.sectors.length > 0) {
-            setSectors(parsed.sectors)
-          }
-          if (hasCache) setLoading(false)
         }
       } catch (e) {}
 
@@ -458,11 +469,6 @@ function MarketExplorerContent() {
                 </div>
               ) : (
                 <>
-                  {/* Desktop Table View */}
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 12, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span>ℹ️</span>
-                    <span>* Harga diambil dari snapshot harian pipeline AI (bukan real-time). Klik nama saham untuk melihat harga live terkini.</span>
-                  </div>
                   <div className="market-table-desktop" style={{ overflowX: 'auto', marginTop: 8 }}>
                     <table className="clean-table">
                       <thead>
@@ -476,7 +482,7 @@ function MarketExplorerContent() {
                             AI Score (%) {sortConfig.key === 'ai_score_percent' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : '↕'}
                           </th>
                           <th onClick={() => requestSort('current_price')} style={{ cursor: 'pointer' }}>
-                            Harga* {sortConfig.key === 'current_price' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : '↕'}
+                            Harga {sortConfig.key === 'current_price' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : '↕'}
                           </th>
                           <th style={{ width: 120 }}>Trend (7D)</th>
                           <th style={{ textAlign: 'right' }}>Aksi</th>
@@ -638,12 +644,21 @@ function MarketExplorerContent() {
                             </Link>
                           </div>
 
-                          {/* 2. AI Score */}
-                          <div style={{ textAlign: 'center', flexShrink: 0 }}>
-                            <div style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 700 }}>AI</div>
+                          {/* 2. AI Score & Sortino */}
+                          <div style={{ textAlign: 'center', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <div style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 700 }}>AI Score</div>
                             <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--blue)' }}>
                               {s.ai_score_percent || '—'}
                             </div>
+                            {(() => {
+                              const val = s.sortino ?? 1.5
+                              const color = val >= 2.0 ? '#10b981' : val >= 1.0 ? '#f59e0b' : '#ef4444'
+                              return (
+                                <span style={{ fontSize: 9, fontWeight: 800, color, marginTop: 2 }} title={`Sortino Ratio: ${val.toFixed(2)}`}>
+                                  Sortino {val.toFixed(1)}
+                                </span>
+                              )
+                            })()}
                           </div>
 
                           {/* 3. Mini Sparkline Chart */}

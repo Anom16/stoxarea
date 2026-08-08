@@ -2,33 +2,33 @@
 LAPORAN EVALUASI MODEL XGBOOST BARU — STOXAREA
 ============================================================
 
-Dataset    : 69,122 sampel
-Class 0    : 64,172 (92.8%)
-Class 1    : 4,950 (7.2%)
+Dataset    : 69,467 sampel
+Class 0    : 64,455 (92.8%)
+Class 1    : 5,012 (7.2%)
 
 METRIK EVALUASI (THRESHOLD OPTIMAL):
-  Optimal Threshold : 0.085
-  Accuracy          : 77.60%
-  Precision         : 13.45%
-  Recall            : 39.15%
-  F1-Score          : 20.02%
-  AUC-ROC           : 0.6613
+  Optimal Threshold : 0.09
+  Accuracy          : 80.30%
+  Precision         : 14.38%
+  Recall            : 34.92%
+  F1-Score          : 20.37%
+  AUC-ROC           : 0.6619
 
 CLASSIFICATION REPORT:
                           precision    recall  f1-score   support
 
-               Biasa (0)       0.94      0.81      0.87     64172
-Tembus ATR Threshold (1)       0.13      0.39      0.20      4950
+               Biasa (0)       0.94      0.84      0.89     64455
+Tembus ATR Threshold (1)       0.14      0.35      0.20      5012
 
-                accuracy                           0.78     69122
-               macro avg       0.54      0.60      0.54     69122
-            weighted avg       0.89      0.78      0.82     69122
+                accuracy                           0.80     69467
+               macro avg       0.54      0.59      0.55     69467
+            weighted avg       0.89      0.80      0.84     69467
 
 
 WALK-FORWARD VALIDATION:
  fold  train_size  test_size  accuracy  precision  recall     f1    auc
-    1       11522      11520    0.0661     0.0658     1.0 0.1235 0.5463
-    2       23042      11520    0.0679     0.0674     1.0 0.1263 0.5584
-    3       34562      11520    0.0709     0.0704     1.0 0.1315 0.5866
-    4       46082      11520    0.0734     0.0734     1.0 0.1367 0.5534
-    5       57602      11520    0.0619     0.0615     1.0 0.1158 0.6073
+    1       11582      11577    0.0669     0.0667     1.0 0.1251 0.5439
+    2       23159      11577    0.0664     0.0664     1.0 0.1246 0.5571
+    3       34736      11577    0.0710     0.0705     1.0 0.1318 0.5956
+    4       46313      11577    0.0752     0.0752     1.0 0.1399 0.5633
+    5       57890      11577    0.0637     0.0629     1.0 0.1184 0.6049

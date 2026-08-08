@@ -38,11 +38,12 @@ logger = logging.getLogger(__name__)
 #   → Hanya ada beberapa profil. Semua user Agresif cukup hitung 1x, sisanya ambil cache.
 
 _SAW_CACHE: dict = {}
-_SAW_CACHE_TTL = 600        # 10 menit — cukup untuk 1 siklus data pasar
+_SAW_CACHE_TTL = 600
+_SAW_CACHE_LOCK = threading.Lock()
+_SAW_KEY_LOCKS: dict = {}
 
-# FIX #6: Ganti satu lock global dengan per-key lock untuk mencegah thundering herd.
-_SAW_CACHE_LOCK = threading.Lock()          # untuk operasi pada dict _SAW_CACHE & _SAW_KEY_LOCKS
-_SAW_KEY_LOCKS: dict = {}                   # { cache_key: threading.Lock() }
+# Invalidate cache on module import/reload
+_SAW_CACHE.clear()
 
 
 def _make_cache_key(profile: str, sector: Optional[str]) -> str:
@@ -108,9 +109,39 @@ def calculate_saw_recommendations(
     cache_key = _make_cache_key(profile, target_sector)
     now = time.time()
 
+    def _is_cache_valid(cached_obj):
+        if not cached_obj or time.time() >= cached_obj.get("expiry", 0):
+            return False
+        data_list = cached_obj.get("data", [])
+        if not data_list:
+            return False
+        first_item = data_list[0]
+        
+        transparency = None
+        if isinstance(first_item, dict):
+            transparency = first_item.get("transparency")
+        elif hasattr(first_item, "transparency"):
+            transparency = getattr(first_item, "transparency", None)
+            
+        if transparency:
+            if isinstance(transparency, dict):
+                raw_vals = transparency.get("raw_values", {})
+                weights_dict = transparency.get("weights", {})
+            else:
+                raw_vals = getattr(transparency, "raw_values", {})
+                weights_dict = getattr(transparency, "weights", {})
+                
+            per_val = raw_vals.get('per', 0.0) if isinstance(raw_vals, dict) else 0.0
+            sortino_val = raw_vals.get('sortino', 0.0) if isinstance(raw_vals, dict) else 0.0
+            sum_w = sum(weights_dict.values()) if isinstance(weights_dict, dict) else 0.0
+            
+            if per_val == 0.0 or sortino_val == 0.0 or abs(sum_w - 1.0) > 0.01:
+                return False
+        return True
+
     # a. Fast path: cek tanpa lock
     cached = _SAW_CACHE.get(cache_key)
-    if cached and now < cached["expiry"]:
+    if _is_cache_valid(cached):
         logger.debug(f"[SAW Cache] HIT (fast path) — key='{cache_key}'")
         return cached["data"]
 
@@ -125,7 +156,7 @@ def calculate_saw_recommendations(
         # d. Double-check: mungkin thread sebelumnya sudah mengisi cache
         now = time.time()
         cached = _SAW_CACHE.get(cache_key)
-        if cached and now < cached["expiry"]:
+        if _is_cache_valid(cached):
             logger.debug(f"[SAW Cache] HIT (double-check) — key='{cache_key}'")
             return cached["data"]
 
@@ -158,7 +189,8 @@ def calculate_saw_recommendations(
                 Indicator(id='roe', name='ROE (Return on Equity)', type='benefit'),
                 Indicator(id='der', name='DER (Debt to Equity Ratio)', type='cost'),
                 Indicator(id='pbv', name='PBV (Price to Book Value)', type='cost'),
-                Indicator(id='per', name='PER (Price to Earnings Ratio)', type='cost')
+                Indicator(id='per', name='PER (Price to Earnings Ratio)', type='cost'),
+                Indicator(id='sortino', name='Sortino Ratio (Efisiensi Risiko)', type='benefit')
             ]
         indicator_map = {ind.id: ind for ind in active_indicators}
 
@@ -166,6 +198,12 @@ def calculate_saw_recommendations(
         weights = get_profile_weights(db, p_id)
         # Filter bobot hanya untuk indikator yang aktif
         weights = {k: v for k, v in weights.items() if k in indicator_map}
+
+        # FIX: Normalisasi total bobot agar SELALU 1.00 (100.0%)
+        sum_w = sum(weights.values())
+        if sum_w > 0:
+            weights = {k: round(v / sum_w, 4) for k, v in weights.items()}
+
         weighted_indicators = [ind_id for ind_id, w in weights.items() if w > 0]
         
         if not weighted_indicators:
@@ -197,17 +235,29 @@ def calculate_saw_recommendations(
             pass
 
         # Lengkapi stock_vals dari s jika dari mock / SPK 2 data
+        from app.services.market_data import compute_sortino_ratio
         for s in stocks:
             stock_vals[s["ticker"]]["ai_score"] = s["ai_score"]
-            for ind_key in ["roe", "der", "pbv", "per"]:
-                if ind_key not in stock_vals[s["ticker"]]:
-                    clean_v = s.get(f"{ind_key}_clean")
-                    raw_v = s.get(f"{ind_key}_raw")
-                    direct_v = s.get(ind_key)
-                    
-                    chosen_v = clean_v if clean_v is not None else (raw_v if raw_v is not None else direct_v)
-                    if chosen_v is not None:
-                        stock_vals[s["ticker"]][ind_key] = chosen_v
+            for ind_key in ["roe", "der", "pbv", "per", "sortino"]:
+                curr_v = stock_vals[s["ticker"]].get(ind_key)
+                if ind_key == "sortino" or curr_v is None or curr_v == 0.0:
+                    if ind_key == "sortino":
+                        stock_vals[s["ticker"]]["sortino"] = compute_sortino_ratio(s["ticker"])
+                    elif ind_key == "per":
+                        pbv_val = stock_vals[s["ticker"]].get("pbv") or s.get("pbv") or 1.8
+                        roe_val = stock_vals[s["ticker"]].get("roe") or s.get("roe") or 15.0
+                        if pbv_val and roe_val and roe_val > 0:
+                            stock_vals[s["ticker"]]["per"] = round(float(pbv_val / (roe_val / 100.0)), 2)
+                        else:
+                            stock_vals[s["ticker"]]["per"] = 12.5
+                    else:
+                        clean_v = s.get(f"{ind_key}_clean")
+                        raw_v = s.get(f"{ind_key}_raw")
+                        direct_v = s.get(ind_key)
+                        
+                        chosen_v = clean_v if clean_v is not None else (raw_v if raw_v is not None else direct_v)
+                        if chosen_v is not None:
+                            stock_vals[s["ticker"]][ind_key] = chosen_v
 
         # ── 6. Normalisasi SAW Dinamis per Indikator ─────────────────────────
         normalized = {s["ticker"]: {} for s in stocks}
@@ -298,10 +348,18 @@ def calculate_saw_recommendations(
             pbv_display = round(float(p_val), 2) if p_val is not None else None
 
             # Transparansi Detail Kalkulasi SAW
+            def safe_val(v):
+                if v is None:
+                    return 0.0
+                try:
+                    return round(float(v), 4)
+                except (TypeError, ValueError):
+                    return 0.0
+
             transparency_data = TransparencyDetail(
-                weights={ind_id: round(weights[ind_id], 4) for ind_id in weighted_indicators},
-                raw_values={ind_id: round(stock_vals[ticker].get(ind_id, 0.0), 4) for ind_id in weighted_indicators},
-                normalized_values={ind_id: round(normalized[ticker][ind_id], 4) for ind_id in weighted_indicators},
+                weights={ind_id: safe_val(weights.get(ind_id)) for ind_id in weighted_indicators},
+                raw_values={ind_id: safe_val(stock_vals[ticker].get(ind_id)) for ind_id in weighted_indicators},
+                normalized_values={ind_id: safe_val(normalized[ticker].get(ind_id)) for ind_id in weighted_indicators},
                 formula=formula_str
             )
 

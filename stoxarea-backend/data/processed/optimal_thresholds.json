@@ -1,466 +1,466 @@
 {
-  "global_optimal_threshold": 0.085,
-  "global_bearish_threshold": 0.0595,
+  "global_optimal_threshold": 0.09,
+  "global_bearish_threshold": 0.063,
   "ticker_thresholds": {
     "AALI": {
-      "bullish": 0.0976,
-      "bearish": 0.0698
+      "bullish": 0.1009,
+      "bearish": 0.072
     },
     "ABMM": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ACES": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ADHI": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ADMR": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ADRO": {
-      "bullish": 0.0858,
-      "bearish": 0.0652
+      "bullish": 0.0874,
+      "bearish": 0.0641
     },
     "AGRO": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "AKRA": {
-      "bullish": 0.0826,
-      "bearish": 0.0642
+      "bullish": 0.0844,
+      "bearish": 0.063
     },
     "AMMN": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "AMRT": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ANTM": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ARTO": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ASII": {
-      "bullish": 0.0933,
-      "bearish": 0.0698
+      "bullish": 0.0957,
+      "bearish": 0.0718
     },
     "ASRI": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ASSA": {
-      "bullish": 0.08,
-      "bearish": 0.0581
+      "bullish": 0.0808,
+      "bearish": 0.0566
     },
     "AUTO": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "AVIA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "BBCA": {
-      "bullish": 0.1036,
-      "bearish": 0.0764
+      "bullish": 0.1076,
+      "bearish": 0.0777
     },
     "BBNI": {
-      "bullish": 0.0971,
-      "bearish": 0.0707
-    },
-    "BBRI": {
-      "bullish": 0.1021,
+      "bullish": 0.099,
       "bearish": 0.0726
     },
+    "BBRI": {
+      "bullish": 0.1065,
+      "bearish": 0.0745
+    },
     "BBTN": {
-      "bullish": 0.0895,
-      "bearish": 0.0671
+      "bullish": 0.0917,
+      "bearish": 0.0667
     },
     "BBYB": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "BDMN": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "BEST": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "BIRD": {
-      "bullish": 0.0876,
-      "bearish": 0.0634
+      "bullish": 0.0898,
+      "bearish": 0.0629
     },
     "BJBR": {
-      "bullish": 0.1017,
-      "bearish": 0.0753
+      "bullish": 0.1043,
+      "bearish": 0.0758
     },
     "BJTM": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "BMRI": {
-      "bullish": 0.0986,
-      "bearish": 0.072
+      "bullish": 0.1011,
+      "bearish": 0.0737
     },
     "BNGA": {
-      "bullish": 0.1021,
-      "bearish": 0.0752
+      "bullish": 0.1065,
+      "bearish": 0.077
     },
     "BREN": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "BRIS": {
-      "bullish": 0.0853,
-      "bearish": 0.064
+      "bullish": 0.0863,
+      "bearish": 0.063
     },
     "BRPT": {
-      "bullish": 0.0863,
-      "bearish": 0.0572
+      "bullish": 0.0862,
+      "bearish": 0.0563
     },
     "BSDE": {
-      "bullish": 0.0883,
-      "bearish": 0.0653
+      "bullish": 0.0902,
+      "bearish": 0.065
     },
     "BUKA": {
-      "bullish": 0.0785,
-      "bearish": 0.0582
+      "bullish": 0.0787,
+      "bearish": 0.0569
     },
     "BULL": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "BVIC": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "BWPT": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "CLEO": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "CPIN": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "CTRA": {
-      "bullish": 0.0818,
-      "bearish": 0.0633
-    },
-    "CUAN": {
-      "bullish": 0.085,
-      "bearish": 0.0595
-    },
-    "DILD": {
-      "bullish": 0.085,
-      "bearish": 0.0595
-    },
-    "DOID": {
-      "bullish": 0.085,
-      "bearish": 0.0595
-    },
-    "DRMA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
-    },
-    "DSNG": {
-      "bullish": 0.085,
-      "bearish": 0.0595
-    },
-    "ELSA": {
-      "bullish": 0.0897,
-      "bearish": 0.0651
-    },
-    "EMTK": {
-      "bullish": 0.0814,
-      "bearish": 0.0568
-    },
-    "ERAA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
-    },
-    "EXCL": {
-      "bullish": 0.0862,
-      "bearish": 0.0649
-    },
-    "FILM": {
-      "bullish": 0.085,
-      "bearish": 0.0595
-    },
-    "GIAA": {
-      "bullish": 0.1011,
-      "bearish": 0.0621
-    },
-    "GJTL": {
-      "bullish": 0.085,
-      "bearish": 0.0595
-    },
-    "HAIS": {
-      "bullish": 0.085,
-      "bearish": 0.0595
-    },
-    "HEAL": {
-      "bullish": 0.0852,
-      "bearish": 0.0635
-    },
-    "HRUM": {
-      "bullish": 0.081,
-      "bearish": 0.0601
-    },
-    "ICBP": {
-      "bullish": 0.0987,
-      "bearish": 0.0695
-    },
-    "INDF": {
-      "bullish": 0.1002,
-      "bearish": 0.0759
-    },
-    "INDY": {
-      "bullish": 0.0809,
-      "bearish": 0.0584
-    },
-    "INKP": {
-      "bullish": 0.0823,
-      "bearish": 0.0637
-    },
-    "INTP": {
-      "bullish": 0.0876,
-      "bearish": 0.0658
-    },
-    "ISAT": {
-      "bullish": 0.0811,
+      "bullish": 0.0828,
       "bearish": 0.0624
     },
+    "CUAN": {
+      "bullish": 0.09,
+      "bearish": 0.063
+    },
+    "DILD": {
+      "bullish": 0.09,
+      "bearish": 0.063
+    },
+    "DOID": {
+      "bullish": 0.09,
+      "bearish": 0.063
+    },
+    "DRMA": {
+      "bullish": 0.09,
+      "bearish": 0.063
+    },
+    "DSNG": {
+      "bullish": 0.09,
+      "bearish": 0.063
+    },
+    "ELSA": {
+      "bullish": 0.0913,
+      "bearish": 0.0641
+    },
+    "EMTK": {
+      "bullish": 0.0826,
+      "bearish": 0.0567
+    },
+    "ERAA": {
+      "bullish": 0.09,
+      "bearish": 0.063
+    },
+    "EXCL": {
+      "bullish": 0.0877,
+      "bearish": 0.0636
+    },
+    "FILM": {
+      "bullish": 0.09,
+      "bearish": 0.063
+    },
+    "GIAA": {
+      "bullish": 0.1042,
+      "bearish": 0.0604
+    },
+    "GJTL": {
+      "bullish": 0.09,
+      "bearish": 0.063
+    },
+    "HAIS": {
+      "bullish": 0.09,
+      "bearish": 0.063
+    },
+    "HEAL": {
+      "bullish": 0.0866,
+      "bearish": 0.063
+    },
+    "HRUM": {
+      "bullish": 0.0816,
+      "bearish": 0.0592
+    },
+    "ICBP": {
+      "bullish": 0.1021,
+      "bearish": 0.0716
+    },
+    "INDF": {
+      "bullish": 0.1036,
+      "bearish": 0.0767
+    },
+    "INDY": {
+      "bullish": 0.0828,
+      "bearish": 0.0573
+    },
+    "INKP": {
+      "bullish": 0.0836,
+      "bearish": 0.063
+    },
+    "INTP": {
+      "bullish": 0.0896,
+      "bearish": 0.0652
+    },
+    "ISAT": {
+      "bullish": 0.0829,
+      "bearish": 0.0603
+    },
     "ITMG": {
-      "bullish": 0.1003,
-      "bearish": 0.072
+      "bullish": 0.104,
+      "bearish": 0.0739
     },
     "JPFA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "JSMR": {
-      "bullish": 0.0875,
-      "bearish": 0.0658
+      "bullish": 0.0901,
+      "bearish": 0.066
     },
     "KIJA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "KKGI": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "KLBF": {
-      "bullish": 0.0865,
-      "bearish": 0.0672
+      "bullish": 0.0876,
+      "bearish": 0.0662
     },
     "LPPF": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "LSIP": {
-      "bullish": 0.089,
-      "bearish": 0.0673
+      "bullish": 0.0917,
+      "bearish": 0.0668
     },
     "MAIN": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "MAPI": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "MBMA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "MBSS": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "MDKA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "MEDC": {
-      "bullish": 0.0811,
-      "bearish": 0.0615
+      "bullish": 0.0826,
+      "bearish": 0.0596
     },
     "MIKA": {
-      "bullish": 0.0797,
-      "bearish": 0.0649
+      "bullish": 0.0807,
+      "bearish": 0.063
     },
     "MNCN": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "MTDL": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "MYOR": {
-      "bullish": 0.0823,
-      "bearish": 0.0649
+      "bullish": 0.0838,
+      "bearish": 0.064
     },
     "NCKL": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "NZIA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "PANI": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "PGAS": {
-      "bullish": 0.0927,
-      "bearish": 0.068
+      "bullish": 0.0944,
+      "bearish": 0.0702
     },
     "PNBN": {
-      "bullish": 0.0846,
-      "bearish": 0.0622
+      "bullish": 0.0863,
+      "bearish": 0.0603
     },
     "PTBA": {
-      "bullish": 0.0962,
-      "bearish": 0.0697
+      "bullish": 0.0995,
+      "bearish": 0.0708
     },
     "PTPP": {
-      "bullish": 0.0802,
-      "bearish": 0.0588
+      "bullish": 0.08,
+      "bearish": 0.0573
     },
     "PTSN": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "PWON": {
-      "bullish": 0.0844,
-      "bearish": 0.0657
+      "bullish": 0.0861,
+      "bearish": 0.0658
     },
     "RAAM": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "RMKE": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ROTI": {
-      "bullish": 0.0952,
-      "bearish": 0.0648
+      "bullish": 0.0983,
+      "bearish": 0.0645
     },
     "SCMA": {
-      "bullish": 0.0785,
-      "bearish": 0.0572
+      "bullish": 0.0784,
+      "bearish": 0.056
     },
     "SIDO": {
-      "bullish": 0.0911,
+      "bullish": 0.0935,
       "bearish": 0.0677
     },
     "SIMP": {
-      "bullish": 0.0986,
-      "bearish": 0.068
+      "bullish": 0.1011,
+      "bearish": 0.0707
     },
     "SMDR": {
-      "bullish": 0.0835,
-      "bearish": 0.0581
+      "bullish": 0.0847,
+      "bearish": 0.0571
     },
     "SMGR": {
-      "bullish": 0.0855,
+      "bullish": 0.0872,
       "bearish": 0.0657
     },
     "SMRA": {
-      "bullish": 0.0786,
-      "bearish": 0.0628
+      "bullish": 0.0798,
+      "bearish": 0.0604
     },
     "SMSM": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "SSIA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "STAA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "TAPG": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "TBLA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "TINS": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "TKIM": {
-      "bullish": 0.0856,
-      "bearish": 0.0651
+      "bullish": 0.0866,
+      "bearish": 0.0636
     },
     "TLKM": {
-      "bullish": 0.0983,
-      "bearish": 0.0698
+      "bullish": 0.0986,
+      "bearish": 0.0719
     },
     "TMAS": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "TOWR": {
-      "bullish": 0.082,
-      "bearish": 0.0654
+      "bullish": 0.0832,
+      "bearish": 0.0647
     },
     "TPIA": {
-      "bullish": 0.0916,
-      "bearish": 0.0652
+      "bullish": 0.0939,
+      "bearish": 0.0642
     },
     "TPMA": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "ULTJ": {
-      "bullish": 0.0966,
-      "bearish": 0.0669
+      "bullish": 0.0989,
+      "bearish": 0.0667
     },
     "UNTR": {
-      "bullish": 0.0991,
-      "bearish": 0.0698
+      "bullish": 0.1024,
+      "bearish": 0.0718
     },
     "UNVR": {
-      "bullish": 0.0903,
-      "bearish": 0.0669
+      "bullish": 0.0923,
+      "bearish": 0.0667
     },
     "WINS": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "WMUU": {
-      "bullish": 0.085,
-      "bearish": 0.0595
+      "bullish": 0.09,
+      "bearish": 0.063
     },
     "WOOD": {
-      "bullish": 0.0793,
-      "bearish": 0.0541
+      "bullish": 0.0799,
+      "bearish": 0.053
     }
   }
 }

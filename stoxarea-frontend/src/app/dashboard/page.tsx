@@ -127,21 +127,42 @@ export default function DashboardPage() {
     if (savedLayout) setDashLayout(savedLayout)
 
     // Restore cached data for Instant 0ms Load
+    const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+
     let hasCache = false
     try {
-      const cachedDash = localStorage.getItem('stox_cache_dash')
-      if (cachedDash) {
-        const parsed = JSON.parse(cachedDash)
-        if (parsed.recs) setRecs(parsed.recs)
-        if (parsed.sectors) setSectors(parsed.sectors)
-        if (parsed.ihsgData) setIhsgData(parsed.ihsgData)
-        if (parsed.username) setUsername(parsed.username)
-        if (parsed.profile) setProfile(parsed.profile)
-        if (parsed.virtualBalance) setVirtualBalance(parsed.virtualBalance)
-        if (parsed.momentumStocks) setMomentumStocks(parsed.momentumStocks)
-        hasCache = true
-        setLoading(false)
-        setIhsgLoading(false)
+      if (isLocalhost) {
+        localStorage.removeItem('stox_cache_dash')
+        localStorage.removeItem('stox_cache_market')
+      } else {
+        const cachedDash = localStorage.getItem('stox_cache_dash')
+        if (cachedDash) {
+          const parsed = JSON.parse(cachedDash)
+          if (Array.isArray(parsed.recs) && parsed.recs.length > 0) {
+            const isInvalidCache = parsed.recs.some((r: any) => {
+              const weights = r.transparency?.weights
+              if (!weights) return true
+              const sumW = Object.values(weights).reduce((a: any, b: any) => Number(a) + Number(b), 0)
+              return Math.abs(Number(sumW) - 1.0) > 0.02
+            })
+            if (!isInvalidCache) {
+              setRecs(parsed.recs)
+              hasCache = true
+              setLoading(false)
+            } else {
+              localStorage.removeItem('stox_cache_dash')
+            }
+          }
+          if (hasCache) {
+            if (parsed.sectors) setSectors(parsed.sectors)
+            if (parsed.ihsgData) setIhsgData(parsed.ihsgData)
+            if (parsed.username) setUsername(parsed.username)
+            if (parsed.profile) setProfile(parsed.profile)
+            if (parsed.virtualBalance) setVirtualBalance(parsed.virtualBalance)
+            if (parsed.momentumStocks) setMomentumStocks(parsed.momentumStocks)
+            setIhsgLoading(false)
+          }
+        }
       }
     } catch (e) {}
 
@@ -1151,8 +1172,10 @@ export default function DashboardPage() {
                   else if (indId === 'roe') { displayName = "📈 ROE" }
                   else if (indId === 'der') { displayName = "📉 DER"; typeLabel = "COST"; typeColor = "#f44336" }
                   else if (indId === 'pbv') { displayName = "📊 PBV"; typeLabel = "COST"; typeColor = "#f44336" }
+                  else if (indId === 'per') { displayName = "🏷️ PER"; typeLabel = "COST"; typeColor = "#f44336" }
+                  else if (indId === 'sortino') { displayName = "🛡️ Sortino Ratio"; typeLabel = "BENEFIT"; typeColor = "#4CAF50" }
                   else {
-                    const isCost = indId.toLowerCase().includes('der') || indId.toLowerCase().includes('pbv') || indId.toLowerCase().includes('cost') || indId.toLowerCase().includes('ratio') || indId.toLowerCase().includes('debt')
+                    const isCost = indId.toLowerCase().includes('der') || indId.toLowerCase().includes('pbv') || indId.toLowerCase().includes('per')
                     typeLabel = isCost ? "COST" : "BENEFIT"
                     typeColor = isCost ? "#f44336" : "#4CAF50"
                     displayName = indId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
@@ -1162,7 +1185,8 @@ export default function DashboardPage() {
                   let rawStr = rawVal.toFixed(2)
                   if (indId === 'ai_score') rawStr = (rawVal * 100).toFixed(1) + '%'
                   else if (indId === 'roe') rawStr = rawVal.toFixed(1) + '%'
-                  else if (indId === 'der' || indId === 'pbv') rawStr = rawVal.toFixed(2) + 'x'
+                  else if (indId === 'der' || indId === 'pbv' || indId === 'per') rawStr = rawVal.toFixed(2) + 'x'
+                  else if (indId === 'sortino') rawStr = rawVal.toFixed(2)
 
                   return (
                     <tr key={indId} style={{ borderBottom: '1px solid #222' }}>
@@ -1182,7 +1206,7 @@ export default function DashboardPage() {
             </div>
 
             <div style={{ marginTop: 20, fontSize: 10, color: '#888', lineHeight: 1.4 }}>
-              💡 <b>Catatan:</b> Untuk kriteria <b>Benefit</b> (ROE & AI Score), nilai dinormalisasi dengan membagi nilai emiten dengan nilai maksimal di pasar. Untuk kriteria <b>Cost</b> (DER & PBV), nilai dinormalisasi dengan membagi nilai minimal di pasar dengan nilai emiten.
+              💡 <b>Catatan:</b> Untuk kriteria <b>Benefit</b> (ROE, AI Score, &amp; Sortino Ratio), nilai dinormalisasi dengan membagi nilai emiten dengan nilai maksimal di pasar. Untuk kriteria <b>Cost</b> (DER, PBV, &amp; PER), nilai dinormalisasi dengan membagi nilai minimal di pasar dengan nilai emiten.
             </div>
 
             <button 

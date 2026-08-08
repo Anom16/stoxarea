@@ -98,9 +98,9 @@ def get_profile_weights(db: Session, profile_id: str) -> dict:
     p_id = profile_id.lower().strip() if profile_id else "moderat"
     
     defaults = {
-        "konservatif": {"ai_score": 0.10, "roe": 0.35, "der": 0.30, "pbv": 0.10, "per": 0.15},
-        "moderat":     {"ai_score": 0.30, "roe": 0.25, "der": 0.15, "pbv": 0.15, "per": 0.15},
-        "agresif":     {"ai_score": 0.50, "roe": 0.10, "der": 0.10, "pbv": 0.15, "per": 0.15},
+        "konservatif": {"ai_score": 0.10, "roe": 0.15, "der": 0.15, "pbv": 0.15, "per": 0.15, "sortino": 0.30},
+        "moderat":     {"ai_score": 0.25, "roe": 0.20, "der": 0.15, "pbv": 0.10, "per": 0.10, "sortino": 0.20},
+        "agresif":     {"ai_score": 0.45, "roe": 0.20, "der": 0.10, "pbv": 0.075, "per": 0.075, "sortino": 0.10},
     }
 
     try:
@@ -109,7 +109,10 @@ def get_profile_weights(db: Session, profile_id: str) -> dict:
         ).all()
         
         if weights and hasattr(weights[0], "indicator_id") and isinstance(weights[0].indicator_id, str):
-            return {w.indicator_id: float(w.weight) for w in weights}
+            res = {w.indicator_id: float(w.weight) for w in weights}
+            total_sum = sum(res.values())
+            if total_sum > 0:
+                return {k: round(v / total_sum, 4) for k, v in res.items()}
     except Exception:
         pass
         

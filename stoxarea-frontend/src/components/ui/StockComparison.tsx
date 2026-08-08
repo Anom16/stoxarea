@@ -157,6 +157,7 @@ export default function StockComparison({
       der: getLowest('der', 0.8),
       pbv: getLowest('pbv', 1.8),
       per: getLowest('per', 12.5),
+      sortino: getHighest('sortino', 1.5),
     }
   }, [selectedStocks])
 
@@ -811,6 +812,44 @@ export default function StockComparison({
                       }}
                     >
                       {val.toFixed(1)}x
+                    </td>
+                  )
+                })}
+              </tr>
+
+              {/* Sortino Ratio (Efisiensi Risiko) */}
+              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                <td
+                  style={{
+                    position: 'sticky',
+                    left: 0,
+                    zIndex: 10,
+                    background: '#ffffff',
+                    padding: '12px 10px',
+                    color: '#64748b',
+                    fontWeight: 600,
+                    boxShadow: '3px 0 8px -2px rgba(0,0,0,0.06)',
+                    borderBottom: '1px solid #f1f5f9',
+                  }}
+                >
+                  Sortino Ratio (Efisiensi Risiko)
+                </td>
+                {selectedStocks.map((s, idx) => {
+                  const val = (s as any).sortino ?? 1.5
+                  const isBest = s.ticker === (rowWinners as any).sortino && selectedStocks.length > 1
+                  const color = val >= 2.0 ? '#10b981' : val >= 1.0 ? '#f59e0b' : '#ef4444'
+                  return (
+                    <td
+                      key={idx}
+                      style={{
+                        padding: '12px 10px',
+                        fontWeight: isBest ? 800 : 700,
+                        fontSize: 13,
+                        color: isBest ? '#10b981' : color,
+                        borderBottom: '1px solid #f1f5f9',
+                      }}
+                    >
+                      {val.toFixed(2)} {val >= 2.0 ? '🟢' : val >= 1.0 ? '🟡' : '🔴'}
                     </td>
                   )
                 })}

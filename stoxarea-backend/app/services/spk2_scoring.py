@@ -9,6 +9,7 @@ from intelligence_store.capping_bounds import bounds_store
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.models.stock import Stock
+from app.services.market_data import compute_sortino_ratio
 
 logger = logging.getLogger(__name__)
 
@@ -186,6 +187,7 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
             "has_ai_score":     True,
             "current_price":    base_price,
             "price":            base_price,
+            "sortino":          compute_sortino_ratio(s.ticker),
             "sparkline":        sparkline,
             "sentiment":        "Bullish" if ai_score >= bullish_threshold else ("Netral" if ai_score >= bearish_threshold else "Bearish")
         })
