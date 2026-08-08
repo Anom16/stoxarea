@@ -312,6 +312,98 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
 
         fetched_at = datetime.fromtimestamp(now, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+        # Extract rich dividend analytics
+        formatted_t = ticker if ticker.endswith(".JK") or "^" in ticker or "=" in ticker else f"{ticker}.JK"
+        yield_val = safe("dividendYield", digits=4)
+        if yield_val is None and safe("trailingAnnualDividendYield"):
+            yield_val = safe("trailingAnnualDividendYield", digits=4)
+            
+        dps_val = safe("dividendRate", digits=2) or safe("trailingAnnualDividendRate", digits=2) or 0.0
+        payout_val = safe("payoutRatio", digits=4) or 0.0
+        
+        curr_price = safe("currentPrice") or safe("regularMarketPrice") or 1.0
+        payback_years = round(curr_price / dps_val, 1) if (dps_val and dps_val > 0) else None
+        if payback_years is None and yield_val and yield_val > 0:
+            y_float = yield_val if yield_val < 1.0 else yield_val / 100.0
+            payback_years = round(1.0 / y_float, 1) if y_float > 0 else None
+
+        div_history = []
+        try:
+            with _YF_LOCK:
+                _yf_rate_limit()
+                div_series = yf.Ticker(formatted_t).dividends
+            if not div_series.empty:
+                recent_divs = div_series.tail(10)
+                for dt_idx, dps_amt in recent_divs.items():
+                    yr = dt_idx.year
+                    dt_str = dt_idx.strftime("%d %b %Y")
+                    div_history.append({
+                        "year": yr,
+                        "date": dt_str,
+                        "dps": round(float(dps_amt), 2),
+                        "dps_lot": round(float(dps_amt) * 100, 0),
+                        "type": "Final" if dt_idx.month in [4, 5, 6] else "Interim"
+                    })
+        except Exception:
+            pass
+
+        safety_status = "safe"
+        if payout_val > 1.0:
+            safety_status = "at_risk"
+        elif payout_val > 0.70:
+            safety_status = "moderate"
+
+        y_pct_eval = (yield_val * 100) if (yield_val and yield_val <= 1.0) else (yield_val or 0)
+        div_trap = y_pct_eval >= 9.5
+
+        # Compute 4 dividend timeline dates (Cum, Ex, Recording, Payment)
+        timeline_obj = None
+        ex_dt_latest = None
+        try:
+            if 'div_series' in locals() and not div_series.empty:
+                ex_dt_latest = div_series.index[-1].to_pydatetime()
+        except Exception:
+            pass
+
+        if not ex_dt_latest and info.get("exDividendDate"):
+            try:
+                ex_dt_latest = datetime.fromtimestamp(int(info["exDividendDate"]), tz=timezone.utc)
+            except Exception:
+                pass
+
+        if ex_dt_latest:
+            try:
+                info_div_ts = info.get("dividendDate")
+                pay_dt_info = datetime.fromtimestamp(int(info_div_ts), tz=timezone.utc) if info_div_ts else None
+                
+                cum_dt = ex_dt_latest - timedelta(days=3 if ex_dt_latest.weekday() == 0 else 1)
+                rec_dt = ex_dt_latest + timedelta(days=3 if ex_dt_latest.weekday() == 4 else 1)
+                pay_dt = pay_dt_info if pay_dt_info else (rec_dt + timedelta(days=14))
+                if pay_dt.weekday() == 5: pay_dt += timedelta(days=2)
+                elif pay_dt.weekday() == 6: pay_dt += timedelta(days=1)
+                
+                timeline_obj = {
+                    "cum_date": cum_dt.strftime("%d %b %Y"),
+                    "ex_date": ex_dt_latest.strftime("%d %b %Y"),
+                    "recording_date": rec_dt.strftime("%d %b %Y"),
+                    "payment_date": pay_dt.strftime("%d %b %Y"),
+                }
+            except Exception:
+                pass
+
+        dividend_obj = {
+            "yield_pct": yield_val,
+            "payout_ratio": payout_val,
+            "dps": dps_val,
+            "dps_lot": dps_val * 100,
+            "payback_years": payback_years,
+            "safety_status": safety_status,
+            "dividend_trap_warning": div_trap,
+            "recovery_speed_days": 4 if "BANK" in (info.get("sector") or "").upper() or "KEUANGAN" in (info.get("sector") or "").upper() else 14,
+            "timeline": timeline_obj,
+            "history": list(reversed(div_history[-6:])) if div_history else [],
+        }
+
         res = {
             "ticker": ticker,
             "name": info.get("longName") or info.get("shortName"),
@@ -347,10 +439,7 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
             "health": {
                 "der":          db_der if db_der is not None else safe("debtToEquity"),
             },
-            "dividend": {
-                "yield_pct":    safe("dividendYield", digits=4),
-                "payout_ratio": safe("payoutRatio"),
-            },
+            "dividend": dividend_obj,
             "sortino": compute_sortino_ratio(ticker),
             "description": info.get("longBusinessSummary"),
         }

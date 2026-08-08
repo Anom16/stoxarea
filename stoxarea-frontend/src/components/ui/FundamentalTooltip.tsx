@@ -355,6 +355,30 @@ export const METRIC_INFO: Record<string, MetricInfo> = {
       return { text: `Payout Ratio ${pct.toFixed(1)}% — Konservatif. Sebagian besar laba ditahan untuk ekspansi bisnis.`, color: '#f59e0b' }
     },
   },
+  dps: {
+    fullName: 'Dividend Per Share (DPS) — Nominal Dividen',
+    description: 'Nilai nominal uang tunai yang dibagikan perusahaan untuk setiap 1 lembar saham yang Anda miliki.',
+    howToRead: [
+      { range: 'DPS x 100', label: 'Uang Masuk RDN per 1 Lot Saham', color: '#10b981' },
+    ],
+    spkRole: 'Penentu Nilai Bagi Hasil — Nominal rupiah murni yang ditransfer ke rekening RDN investor.',
+    getInterpretation: (v) => {
+      if (v == null || typeof v !== 'number' || isNaN(v)) return null
+      return { text: `DPS Rp ${v.toLocaleString('id-ID')} / lembar (Rp ${(v * 100).toLocaleString('id-ID')} per 1 Lot). Nominal tunai bagi hasil yang diterima.`, color: '#3b82f6' }
+    },
+  },
+  div_status: {
+    fullName: 'Status Pembayaran Dividen — Konsistensi Bensin',
+    description: 'Track record konsistensi perusahaan dalam membagikan dividen tunai kepada pemegang saham dalam beberapa tahun terakhir.',
+    howToRead: [
+      { range: 'Aristocrat', label: 'Rutin Membagi Dividen 3+ Tahun', color: '#10b981' },
+      { range: 'Rutin',      label: 'Membagi Dividen Berturut-turut',  color: '#3b82f6' },
+    ],
+    spkRole: 'Indikator Kepercayaan — Perusahaan dengan konsistensi pembagian dividen mendapat poin rekam jejak lebih tinggi.',
+    getInterpretation: (v) => {
+      return { text: 'Perusahaan memiliki rekam jejak konsisten dalam mengapresiasi pemegang saham melalui dividen tunai.', color: '#10b981' }
+    },
+  },
 
   // ── Indikator Teknikal (Kalimat Informatif & Sederhana) ─────────────────────
   rsi: {

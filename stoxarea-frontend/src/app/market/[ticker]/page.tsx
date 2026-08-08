@@ -12,6 +12,7 @@ import DisclaimerFooter from '@/components/ui/DisclaimerFooter'
 import { useToast } from '@/hooks/useToast'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import TransactionModal from '@/components/ui/Modal'
+import DividendTabContent from '@/components/dividend/DividendTabContent'
 
 // --- Skeleton Component ---
 const Skeleton = ({ height = 20, width = '100%', mb = 12 }) => (
@@ -636,16 +637,8 @@ export default function StockDetailPage() {
               <div className="text-secondary fs-13">
                 Volume: {f.price?.volume != null ? (() => {
                   const vol = f.price.volume
-                  const lots = vol / 100
-                  let lotStr = `${Math.floor(lots).toLocaleString('id-ID')} Lot`
-                  if (lots >= 1_000_000_000) {
-                    lotStr = `${(lots / 1_000_000_000).toFixed(2).replace('.', ',')} Miliar Lot`
-                  } else if (lots >= 1_000_000) {
-                    lotStr = `${(lots / 1_000_000).toFixed(2).replace('.', ',')} Juta Lot`
-                  } else if (lots >= 10_000) {
-                    lotStr = `${(lots / 1_000).toFixed(1).replace('.', ',')} Ribu Lot`
-                  }
-                  return `${vol.toLocaleString('id-ID')} (${lotStr})`
+                  const lots = Math.floor(vol / 100)
+                  return `${lots.toLocaleString('id-ID')} Lot (${vol.toLocaleString('id-ID')} Lembar)`
                 })() : '—'}
               </div>
             </div>
@@ -976,10 +969,60 @@ export default function StockDetailPage() {
                       })()}
                     </div>
                   </CollapsibleCard>
+
+                  {/* Technical Indicators Grid — HANYA TAMPIL DI TAB RADAR AI */}
+                  <CollapsibleCard id="tech-indicators" title="⚡ Technical Indicators" collapsed={collapsed} onToggle={toggleCard}>
+                    {(() => {
+                      const ind = data.technical?.indicators
+                      const rsi   = ind?.rsi?.slice(-1)[0]
+                      const macd  = ind?.macd?.slice(-1)[0]
+                      const macdSig = ind?.macd_signal?.slice(-1)[0]
+                      const macdHist = ind?.macd_hist?.slice(-1)[0]
+                      const ma20  = ind?.ma_20?.slice(-1)[0]
+                      const ma50  = ind?.ma_50?.slice(-1)[0]
+                      const bbUp  = ind?.bb_upper?.slice(-1)[0]
+                      const bbMid = ind?.bb_mid?.slice(-1)[0]
+                      const bbLow = ind?.bb_lower?.slice(-1)[0]
+
+                      const fmt = (v: any) => v != null ? Number(v).toLocaleString('id-ID', { maximumFractionDigits: 2 }) : '—'
+                      const fmtF = (v: any, d = 4) => v != null ? Number(v).toFixed(d) : '—'
+
+                      const ma20Dist = (ma20 && currentPrice) ? ((currentPrice - ma20) / ma20) * 100 : null
+                      const ma50Dist = (ma50 && currentPrice) ? ((currentPrice - ma50) / ma50) * 100 : null
+                      const bbPos = (bbUp && bbLow && bbUp > bbLow && currentPrice) ? (currentPrice - bbLow) / (bbUp - bbLow) : null
+
+                      const techItems = [
+                        { key: 'rsi',  label: 'Kekuatan Tren Jenuh Beli/Jual (RSI)',      val: fmt(rsi),      raw: rsi },
+                        { key: 'macd', label: 'Tren Pergerakan Harga (MACD)',          val: fmtF(macd),    raw: macd },
+                        { key: 'macd', label: 'Sinyal Pemicu Tren (MACD Signal)',   val: fmtF(macdSig), raw: macdSig },
+                        { key: 'macd', label: 'Selisih Tren (MACD Histogram)',val: fmtF(macdHist),raw: macdHist },
+                        { key: 'ma20', label: 'Harga Rata-rata 20 Hari (MA-20)',         val: `Rp ${fmt(ma20)}`, raw: ma20Dist },
+                        { key: 'ma50', label: 'Harga Rata-rata 50 Hari (MA-50)',         val: `Rp ${fmt(ma50)}`, raw: ma50Dist },
+                        { key: 'bb_upper', label: 'Batas Atas Rentang Harga (Bollinger Upper)',      val: `Rp ${fmt(bbUp)}`, raw: bbPos },
+                        { key: 'bb_mid',   label: 'Batas Tengah Rentang Harga (Bollinger Mid)', val: `Rp ${fmt(bbMid)}`, raw: ma20Dist },
+                        { key: 'bb_lower', label: 'Batas Bawah Rentang Harga (Bollinger Lower)',      val: `Rp ${fmt(bbLow)}`, raw: bbPos },
+                      ]
+
+                      return (
+                        <div className="ticker-card-grid-3col">
+                          {techItems.map((item, i) => (
+                            <div key={i} className="stat-card" style={{ padding: 12 }}>
+                              <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>
+                                {item.label}
+                                <FundamentalTooltip metricKey={item.key} value={item.raw ?? null} label={item.label} />
+                              </div>
+                              <div className="stat-value" style={{ fontSize: 15, color: 'var(--text-primary)' }}>{item.val}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )
+                    })()}
+                  </CollapsibleCard>
                   </FundamentalTooltipProvider>
                 </>
               )}
 
+              {/* TAB 2: FINANCIALS */}
               {activeTab === 'financials' && (
                 <>
                   {loadingHist ? (
@@ -1050,119 +1093,18 @@ export default function StockDetailPage() {
                 </>
               )}
 
+              {/* TAB 3: DIVIDENDS */}
               {activeTab === 'dividends' && (
-                <div className="card">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                    <h3 className="section-title" style={{ fontSize: 16, margin: 0 }}>Riwayat Pembagian Dividen</h3>
-                    {historyData?.last_updated && (() => {
-                      const lu = formatLastUpdated(historyData.last_updated)
-                      return <LastUpdatedBadge label={lu.label} sub={lu.sub} />
-                    })()}
-                  </div>
-                  {loadingHist ? (
-                    <>
-                      <Skeleton height={200} mb={24} />
-                      <Skeleton height={40} mb={8} />
-                      <Skeleton height={40} mb={8} />
-                      <Skeleton height={40} />
-                    </>
-                  ) : historyData ? (
-                    <>
-                      {(historyData.dividend_history || []).length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '32px 16px', color: '#888' }}>
-                          <div style={{ fontSize: 32, marginBottom: 8 }}>💤</div>
-                          <div style={{ fontWeight: 600, marginBottom: 4 }}>Tidak Ada Riwayat Dividen</div>
-                          <div style={{ fontSize: 12 }}>Perusahaan ini tidak membagikan dividen atau data belum tersedia di Yahoo Finance.</div>
-                        </div>
-                      ) : (
-                        <>
-                          <div style={{ height: 300, width: '100%', marginBottom: 24 }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                              <BarChart data={historyData.dividend_history}>
-                                <XAxis dataKey="date" stroke="#94a3b8" fontSize={10} />
-                                <YAxis stroke="#94a3b8" fontSize={12} />
-                                <Tooltip contentStyle={{ background: '#1e293b', border: 'none', borderRadius: 8 }} />
-                                <Bar dataKey="amount" name="Dividend (IDR)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
-                          <table className="ranking-table">
-                            <thead>
-                              <tr>
-                                <th>Tanggal (Ex-Date)</th>
-                                <th style={{ textAlign: 'right' }}>Jumlah per Lembar</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {[...(historyData.dividend_history || [])].reverse().map((d: any, i: number) => (
-                                <tr key={i}>
-                                  <td>{d.date}</td>
-                                  <td style={{ textAlign: 'right' }} className="text-accent fw-700">Rp {d.amount.toLocaleString()}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    <div className="flex-center" style={{ height: 200 }}>
-                      <p className="text-red">Data dividen tidak tersedia.</p>
-                    </div>
-                  )}
-                </div>
+                <FundamentalTooltipProvider>
+                  <DividendTabContent 
+                    ticker={tickerStr} 
+                    currentPrice={currentPrice} 
+                    dividend={f.dividend} 
+                    historyData={historyData} 
+                    ownedLots={dbHoldingShares > 0 ? Math.floor(dbHoldingShares / 100) : 0}
+                  />
+                </FundamentalTooltipProvider>
               )}
-
-              {/* Technical Indicators Grid */}
-              <FundamentalTooltipProvider>
-              <CollapsibleCard id="tech-indicators" title="⚡ Technical Indicators" collapsed={collapsed} onToggle={toggleCard}>
-                {(() => {
-                  const ind = data.technical?.indicators
-                  const rsi   = ind?.rsi?.slice(-1)[0]
-                  const macd  = ind?.macd?.slice(-1)[0]
-                  const macdSig = ind?.macd_signal?.slice(-1)[0]
-                  const macdHist = ind?.macd_hist?.slice(-1)[0]
-                  const ma20  = ind?.ma_20?.slice(-1)[0]
-                  const ma50  = ind?.ma_50?.slice(-1)[0]
-                  const bbUp  = ind?.bb_upper?.slice(-1)[0]
-                  const bbMid = ind?.bb_mid?.slice(-1)[0]
-                  const bbLow = ind?.bb_lower?.slice(-1)[0]
-
-                  const fmt = (v: any) => v != null ? Number(v).toLocaleString('id-ID', { maximumFractionDigits: 2 }) : '—'
-                  const fmtF = (v: any, d = 4) => v != null ? Number(v).toFixed(d) : '—'
-
-                  const ma20Dist = (ma20 && currentPrice) ? ((currentPrice - ma20) / ma20) * 100 : null
-                  const ma50Dist = (ma50 && currentPrice) ? ((currentPrice - ma50) / ma50) * 100 : null
-                  const bbPos = (bbUp && bbLow && bbUp > bbLow && currentPrice) ? (currentPrice - bbLow) / (bbUp - bbLow) : null
-
-                  const techItems = [
-                    { key: 'rsi',  label: 'Kekuatan Tren Jenuh Beli/Jual (RSI)',      val: fmt(rsi),      raw: rsi },
-                    { key: 'macd', label: 'Tren Pergerakan Harga (MACD)',          val: fmtF(macd),    raw: macd },
-                    { key: 'macd', label: 'Sinyal Pemicu Tren (MACD Signal)',   val: fmtF(macdSig), raw: macdSig },
-                    { key: 'macd', label: 'Selisih Tren (MACD Histogram)',val: fmtF(macdHist),raw: macdHist },
-                    { key: 'ma20', label: 'Harga Rata-rata 20 Hari (MA-20)',         val: `Rp ${fmt(ma20)}`, raw: ma20Dist },
-                    { key: 'ma50', label: 'Harga Rata-rata 50 Hari (MA-50)',         val: `Rp ${fmt(ma50)}`, raw: ma50Dist },
-                    { key: 'bb_upper', label: 'Batas Atas Rentang Harga (Bollinger Upper)',      val: `Rp ${fmt(bbUp)}`, raw: bbPos },
-                    { key: 'bb_mid',   label: 'Batas Tengah Rentang Harga (Bollinger Mid)', val: `Rp ${fmt(bbMid)}`, raw: ma20Dist },
-                    { key: 'bb_lower', label: 'Batas Bawah Rentang Harga (Bollinger Lower)',      val: `Rp ${fmt(bbLow)}`, raw: bbPos },
-                  ]
-
-                  return (
-                    <div className="ticker-card-grid-3col">
-                      {techItems.map((item, i) => (
-                        <div key={i} className="stat-card" style={{ padding: 12 }}>
-                          <div className="stat-label" style={{ fontSize: 10, display: 'flex', justifyContent: 'space-between' }}>
-                            {item.label}
-                            <FundamentalTooltip metricKey={item.key} value={item.raw ?? null} label={item.label} />
-                          </div>
-                          <div className="stat-value" style={{ fontSize: 15, color: 'var(--text-primary)' }}>{item.val}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )
-                })()}
-              </CollapsibleCard>
-              </FundamentalTooltipProvider>
 
 
             </div>
