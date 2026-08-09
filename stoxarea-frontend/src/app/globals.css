@@ -1074,27 +1074,32 @@ body.dark-mode .skeleton {
 /* ════════════════════════════════════════════════════════════════════════ */
 .ticker-split-layout {
   display: grid;
-  grid-template-columns: 1fr 360px;
+  grid-template-columns: minmax(0, 1fr) 360px;
   gap: 20px;
   align-items: start;
 }
 
+.ticker-split-layout > div {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .ticker-card-grid-3col-mini {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
 @media (max-width: 960px) {
   .ticker-split-layout {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 16px !important;
   }
 }
 
 @media (max-width: 640px) {
   .ticker-card-grid-3col-mini {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px !important;
   }
 
@@ -1135,13 +1140,13 @@ body.dark-mode .skeleton {
 /* ════════════════════════════════════════════════════════════════════════ */
 .ticker-card-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
 .ticker-card-grid-3col {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -1163,13 +1168,13 @@ body.dark-mode .skeleton {
 
 .dividend-snowball-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
 @media (max-width: 768px) {
   .ticker-card-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px !important;
   }
 
@@ -1185,9 +1190,23 @@ body.dark-mode .skeleton {
 }
 
 @media (max-width: 640px) {
+  .card {
+    padding: 12px 14px !important;
+  }
+
+  .stat-card {
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+  }
+
+  .ticker-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
   .dividend-timeline-grid {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px !important;
   }
 
