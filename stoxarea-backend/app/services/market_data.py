@@ -404,6 +404,15 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
             "history": list(reversed(div_history[-6:])) if div_history else [],
         }
 
+        # Sanity check for USD reporting BEI stocks (like ADMR, ADRO, ITMG, MEDC)
+        raw_per = db_per if db_per is not None else (safe("trailingPE") or safe("forwardPE"))
+        if raw_per and raw_per > 1000:
+            raw_per = round(raw_per / 16000.0, 2)
+
+        raw_pbv = db_pbv if db_pbv is not None else safe("priceToBook")
+        if raw_pbv and raw_pbv > 100:
+            raw_pbv = round(raw_pbv / 16000.0, 2)
+
         res = {
             "ticker": ticker,
             "name": info.get("longName") or info.get("shortName"),
@@ -428,8 +437,8 @@ def get_fundamental_data(ticker: str, db=None) -> dict:
                 "beta":            safe("beta"),
             },
             "valuation": {
-                "per":  db_per if db_per is not None else (safe("trailingPE") or safe("forwardPE")),
-                "pbv":  db_pbv if db_pbv is not None else safe("priceToBook"),
+                "per":  raw_per,
+                "pbv":  raw_pbv,
             },
             "profitability": {
                 "roe":          db_roe if db_roe is not None else safe("returnOnEquity"),
