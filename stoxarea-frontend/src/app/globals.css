@@ -1130,4 +1130,74 @@ body.dark-mode .skeleton {
   }
 }
 
+/* ════════════════════════════════════════════════════════════════════════ */
+/* DIVIDEND TAB MOBILE RESPONSIVE OPTIMIZATIONS                             */
+/* ════════════════════════════════════════════════════════════════════════ */
+.ticker-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.ticker-card-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.dividend-timeline-grid {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.dividend-timeline-arrow {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 800;
+  flex-shrink: 0;
+  padding: 0 2px;
+}
+
+.dividend-snowball-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .ticker-card-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .ticker-card-grid-3col {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .dividend-snowball-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .dividend-timeline-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .dividend-timeline-arrow {
+    display: none !important;
+  }
+
+  .dividend-chart-container {
+    height: 170px !important;
+  }
+}
+
 

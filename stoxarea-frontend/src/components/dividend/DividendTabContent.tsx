@@ -306,8 +306,8 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
         <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>
           🗓️ Siklus Timeline 4 Tanggal Dividen Periode Terbaru
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%', overflowX: 'auto' }}>
-          <div className="stat-card" style={{ padding: 10, flex: 1, minWidth: 110 }}>
+        <div className="dividend-timeline-grid">
+          <div className="stat-card" style={{ padding: 10, flex: 1, minWidth: 100 }}>
             <div style={{ fontSize: 10, color: 'var(--text-primary)', fontWeight: 800 }}>1. CUM DATE</div>
             <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', marginTop: 3, marginBottom: 2 }}>
               {timelineDates.cum_date}
@@ -315,9 +315,9 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
             <div style={{ fontSize: 10, color: 'var(--text-secondary)' }}>Batas Akhir Hak</div>
           </div>
 
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', fontWeight: 800, flexShrink: 0, padding: '0 2px' }}>➔</div>
+          <div className="dividend-timeline-arrow">➔</div>
 
-          <div className="stat-card" style={{ padding: 10, flex: 1, minWidth: 110 }}>
+          <div className="stat-card" style={{ padding: 10, flex: 1, minWidth: 100 }}>
             <div style={{ fontSize: 10, color: 'var(--text-primary)', fontWeight: 800 }}>2. EX DATE</div>
             <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', marginTop: 3, marginBottom: 2 }}>
               {timelineDates.ex_date}
@@ -325,9 +325,9 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
             <div style={{ fontSize: 10, color: 'var(--text-secondary)' }}>Tanpa Hak Dividen</div>
           </div>
 
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', fontWeight: 800, flexShrink: 0, padding: '0 2px' }}>➔</div>
+          <div className="dividend-timeline-arrow">➔</div>
 
-          <div className="stat-card" style={{ padding: 10, flex: 1, minWidth: 110 }}>
+          <div className="stat-card" style={{ padding: 10, flex: 1, minWidth: 100 }}>
             <div style={{ fontSize: 10, color: 'var(--text-primary)', fontWeight: 800 }}>3. RECORDING</div>
             <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', marginTop: 3, marginBottom: 2 }}>
               {timelineDates.recording_date}
@@ -335,9 +335,9 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
             <div style={{ fontSize: 10, color: 'var(--text-secondary)' }}>Pencatatan KSEI</div>
           </div>
 
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', fontWeight: 800, flexShrink: 0, padding: '0 2px' }}>➔</div>
+          <div className="dividend-timeline-arrow">➔</div>
 
-          <div className="stat-card" style={{ padding: 10, flex: 1, minWidth: 110 }}>
+          <div className="stat-card" style={{ padding: 10, flex: 1, minWidth: 100 }}>
             <div style={{ fontSize: 10, color: 'var(--text-primary)', fontWeight: 800 }}>4. PAYMENT DATE</div>
             <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', marginTop: 3, marginBottom: 2 }}>
               {timelineDates.payment_date}
@@ -361,7 +361,7 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
           </div>
         ) : (
           <>
-            <div style={{ height: 220, width: '100%', marginBottom: 16 }}>
+            <div className="dividend-chart-container" style={{ height: 220, width: '100%', marginBottom: 16 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
                   <XAxis dataKey="year" stroke="#94a3b8" fontSize={11} />
@@ -376,8 +376,8 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
             </div>
 
             {/* Tabel Histori Dividen */}
-            <div style={{ overflowX: 'auto' }}>
-              <table className="clean-table" style={{ width: '100%', fontSize: 11 }}>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <table className="clean-table" style={{ width: '100%', fontSize: 11, minWidth: 420 }}>
                 <thead>
                   <tr>
                     <th>Tahun</th>
@@ -482,7 +482,7 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 8 }}>
+          <div className="dividend-snowball-grid">
             <div className="stat-card" style={{ padding: 10 }}>
               <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 700 }}>Dividen Awal / Tahun:</div>
               <div style={{ fontSize: 14, fontWeight: 800, color: '#10b981', marginTop: 2 }}>
