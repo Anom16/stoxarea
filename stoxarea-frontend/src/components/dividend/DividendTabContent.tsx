@@ -187,8 +187,8 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
       ) : null}
 
       {/* ── 2. 4 Kartu Metrik Utama Dividen ── */}
-      <div>
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+      <div className="card">
+        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>
           Indikator Utama Dividen
         </div>
         <div className="ticker-card-grid">
@@ -243,8 +243,8 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
       </div>
 
       {/* ── 3. Insight Analisis Investor Dividen (Clean & Compact) ── */}
-      <div>
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+      <div className="card">
+        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>
           Insight Analisis Investor Dividen
         </div>
         <div className="ticker-card-grid-3col">
@@ -418,11 +418,9 @@ export default function DividendTabContent({ ticker, currentPrice, dividend, his
 
       {/* ── 6. Kalkulator Simulasi Snowball ── */}
       {dps > 0 && (
-        <div style={{
+        <div className="card" style={{
           background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(16,185,129,0.08) 100%)',
           border: '1px solid rgba(59,130,246,0.2)',
-          borderRadius: 12,
-          padding: 16,
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap', gap: 8 }}>
             <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 6 }}>
