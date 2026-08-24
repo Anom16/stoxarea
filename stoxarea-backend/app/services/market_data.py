@@ -44,7 +44,11 @@ def get_technical_data(ticker: str, period: str = "3mo", interval: str = "1d") -
     Mengambil data candlestick + indikator teknikal (RSI, MACD, BB, MA) dari yfinance.
     Digunakan untuk Interactive Technical Charts di Frontend.
     """
-    cache_key = f"{ticker}_{period}_{interval}"
+    clean_ticker = ticker.strip().replace("$", "")
+    if not clean_ticker.startswith("^") and not clean_ticker.endswith(".JK"):
+        clean_ticker = f"{clean_ticker}.JK"
+
+    cache_key = f"{clean_ticker}_{period}_{interval}"
     now = time.time()
     
     if cache_key in _TECHNICAL_CACHE:
@@ -61,9 +65,9 @@ def get_technical_data(ticker: str, period: str = "3mo", interval: str = "1d") -
 
         with _YF_LOCK:
             _yf_rate_limit()
-            df = yf.download(ticker, period=fetch_period, interval=interval, progress=False, auto_adjust=True)
+            df = yf.download(clean_ticker, period=fetch_period, interval=interval, progress=False, auto_adjust=True)
         if df.empty:
-            return {"error": f"Data tidak tersedia untuk {ticker}"}
+            return {"error": f"Data tidak tersedia untuk {clean_ticker}"}
 
         df = df.copy()
         df.columns = [c[0] if isinstance(c, tuple) else c for c in df.columns]

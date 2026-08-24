@@ -88,107 +88,118 @@ def load_ticker_list(filepath: str = "data/tickers/tickers_filtered.json") -> li
 
 
 # ── Ambil data OHLCV historis ──────────────────────────────────────────────────
-def fetch_ohlcv(ticker: str, years: int = HISTORICAL_YEARS) -> pd.DataFrame | None:
+def fetch_ohlcv(ticker: str, years: int = HISTORICAL_YEARS, max_retries: int = 3) -> pd.DataFrame | None:
     """
-    Ambil data OHLCV historis dari Yahoo Finance.
+    Ambil data OHLCV historis dari Yahoo Finance dengan Retry Mechanism.
 
     Return kolom: Date, Open, High, Low, Close, Volume
     Return None jika gagal atau data kosong.
     """
+    clean_ticker = ticker.strip().replace("$", "")
+    if not clean_ticker.endswith(".JK"):
+        clean_ticker = f"{clean_ticker}.JK"
+
     end_date   = datetime.today()
     start_date = end_date - timedelta(days=years * 365)
 
-    try:
-        df = yf.download(
-            ticker,
-            start=start_date.strftime("%Y-%m-%d"),
-            end=end_date.strftime("%Y-%m-%d"),
-            progress=False,
-            auto_adjust=True   # harga sudah disesuaikan split/dividen
-        )
+    for attempt in range(1, max_retries + 1):
+        try:
+            df = yf.download(
+                clean_ticker,
+                start=start_date.strftime("%Y-%m-%d"),
+                end=end_date.strftime("%Y-%m-%d"),
+                progress=False,
+                auto_adjust=True   # harga sudah disesuaikan split/dividen
+            )
 
-        if df.empty:
-            logger.warning(f"[{ticker}] Data OHLCV kosong")
-            return None
+            if df.empty:
+                if attempt < max_retries:
+                    time.sleep(1.0 * attempt)
+                    continue
+                logger.warning(f"[{clean_ticker}] Data OHLCV kosong setelah {max_retries} percobaan")
+                return None
 
-        # Reset index agar Date jadi kolom biasa
-        df = df.reset_index()
-        df.columns = df.columns.droplevel(1) if isinstance(df.columns, pd.MultiIndex) else df.columns
-        df["ticker"] = ticker
+            # Reset index agar Date jadi kolom biasa
+            df = df.reset_index()
+            df.columns = [c[0] if isinstance(c, tuple) else c for c in df.columns]
+            if "Date" not in df.columns:
+                for alt_col in ["index", "Datetime", "date", "Timestamp"]:
+                    if alt_col in df.columns:
+                        df = df.rename(columns={alt_col: "Date"})
+                        break
+            df["ticker"] = clean_ticker
 
-        # Pastikan kolom yang dibutuhkan ada
-        required_cols = ["Date", "Open", "High", "Low", "Close", "Volume"]
-        missing = [c for c in required_cols if c not in df.columns]
-        if missing:
-            logger.warning(f"[{ticker}] Kolom hilang: {missing}")
-            return None
+            # Pastikan kolom yang dibutuhkan ada
+            required_cols = ["Date", "Open", "High", "Low", "Close", "Volume"]
+            missing = [c for c in required_cols if c not in df.columns]
+            if missing:
+                logger.warning(f"[{clean_ticker}] Kolom hilang: {missing}")
+                return None
 
-        logger.info(f"[{ticker}] OHLCV berhasil: {len(df)} baris")
-        return df[required_cols + ["ticker"]]
+            logger.info(f"[{clean_ticker}] OHLCV berhasil: {len(df)} baris")
+            return df[required_cols + ["ticker"]]
 
-    except Exception as e:
-        logger.error(f"[{ticker}] Gagal ambil OHLCV: {e}")
-        return None
+        except Exception as e:
+            logger.error(f"[{clean_ticker}] Percobaan {attempt}/{max_retries} gagal ambil OHLCV: {e}")
+            if attempt < max_retries:
+                time.sleep(1.5 * attempt)
+
+    return None
 
 
 # ── Ambil data fundamental ─────────────────────────────────────────────────────
-def fetch_fundamental(ticker: str) -> dict | None:
+def fetch_fundamental(ticker: str, max_retries: int = 3) -> dict | None:
     """
-    Ambil metrik fundamental dari Yahoo Finance:
-      - ROE  : Return on Equity (benefit, makin tinggi makin baik)
-      - DER  : Debt to Equity Ratio (cost, makin rendah makin baik)
-      - PER  : Price to Earnings Ratio (cost, makin rendah makin baik)
+    Ambil metrik fundamental dari Yahoo Finance dengan Retry Mechanism:
+      - ROE  : Return on Equity
+      - DER  : Debt to Equity Ratio
+      - PBV  : Price to Book Value
 
     Return dict atau None jika semua data kosong.
     """
-    try:
-        stock = yf.Ticker(ticker)
-        info  = stock.info
+    clean_ticker = ticker.strip().replace("$", "")
+    if not clean_ticker.endswith(".JK"):
+        clean_ticker = f"{clean_ticker}.JK"
 
-        roe = info.get("returnOnEquity", None)   # yfinance: desimal (0.18 = 18%) ATAU sudah persen
-        der = info.get("debtToEquity",   None)   # rasio kelipatan
-        pbv = info.get("priceToBook",    None)   # rasio kelipatan
+    for attempt in range(1, max_retries + 1):
+        try:
+            stock = yf.Ticker(clean_ticker)
+            info  = stock.info or {}
 
-        # FIX #7: Konversi ROE ke persentase dengan deteksi format otomatis.
-        #
-        # BUG LAMA: selalu kali 100, padahal yfinance kadang sudah mengembalikan
-        # nilai dalam persen untuk saham BEI tertentu (misal: 18.5 bukan 0.185).
-        # Akibatnya ROE bisa tercatat 1850% padahal aslinya 18.5%.
-        #
-        # FIX: Jika nilai absolut ROE < 5, asumsikan format desimal → kali 100.
-        # Jika nilai absolut ROE >= 5, asumsikan sudah dalam persen → pakai langsung.
-        # Threshold 5 dipilih karena ROE desimal yang valid (misal 0.185) selalu < 1,
-        # sedangkan ROE persen yang valid (misal 18.5%) selalu > 5.
-        # Edge case ROE 1%-4% (desimal 0.01-0.04) tetap aman karena < 5 → dikali 100
-        # menghasilkan 1%-4% yang benar.
-        if roe is not None:
-            if abs(roe) < 5.0:
-                # Format desimal dari yfinance (0.185 → 18.5%)
-                roe = roe * 100
-            # else: sudah dalam format persen, pakai langsung
+            roe = info.get("returnOnEquity", None)   # yfinance: desimal (0.18 = 18%) ATAU sudah persen
+            der = info.get("debtToEquity",   None)   # rasio kelipatan
+            pbv = info.get("priceToBook",    None)   # rasio kelipatan
 
-        result = {
-            "ticker" : ticker,
-            "roe"    : roe,
-            "der"    : der,
-            "pbv"    : pbv,
-        }
+            if roe is not None:
+                if abs(roe) < 5.0:
+                    roe = roe * 100
 
-        # Catat mana yang kosong (untuk monitoring kualitas data)
-        missing = [k for k, v in result.items() if v is None and k != "ticker"]
-        if missing:
-            logger.warning(f"[{ticker}] Fundamental kosong: {missing}")
+            result = {
+                "ticker" : clean_ticker,
+                "roe"    : roe,
+                "der"    : der,
+                "pbv"    : pbv,
+            }
 
-        # Jika semua fundamental kosong, return None
-        if all(v is None for k, v in result.items() if k != "ticker"):
-            return None
+            missing = [k for k, v in result.items() if v is None and k != "ticker"]
+            if missing:
+                logger.warning(f"[{clean_ticker}] Fundamental kosong: {missing}")
 
-        logger.info(f"[{ticker}] Fundamental berhasil: ROE={roe}, DER={der}, PBV={pbv}")
-        return result
+            if all(v is None for k, v in result.items() if k != "ticker"):
+                if attempt < max_retries:
+                    time.sleep(1.0 * attempt)
+                    continue
+                return None
 
-    except Exception as e:
-        logger.error(f"[{ticker}] Gagal ambil fundamental: {e}")
-        return None
+            logger.info(f"[{clean_ticker}] Fundamental berhasil: ROE={roe}, DER={der}, PBV={pbv}")
+            return result
+
+        except Exception as e:
+            logger.error(f"[{clean_ticker}] Percobaan {attempt}/{max_retries} gagal ambil fundamental: {e}")
+            if attempt < max_retries:
+                time.sleep(1.5 * attempt)
+
+    return None
 
 
 # ── Imputasi fundamental dengan median sektoral ────────────────────────────────
@@ -338,7 +349,7 @@ def run():
 
             # Flatten MultiIndex jika ada
             if isinstance(df.columns, pd.MultiIndex):
-                df.columns = df.columns.droplevel(1)
+                df.columns = [c[0] if isinstance(c, tuple) else c for c in df.columns]
 
             closes = df["Close"].dropna().tolist()
             if len(closes) >= 2:

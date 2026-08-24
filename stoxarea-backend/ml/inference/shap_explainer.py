@@ -137,12 +137,17 @@ def run():
                     "description": format_insight(feat_name, val)
                 })
         
-        results[ticker] = {
+        score_data = {
             "ai_score": round(raw_p, 4),
             "ai_score_percent": f"{raw_p * 100:.1f}%",
             "insights": insights,
             "last_updated": str(pd.Timestamp.now())
         }
+
+        clean_t = str(ticker).replace(".JK", "").strip().upper()
+        results[ticker] = score_data
+        results[clean_t] = score_data
+        results[f"{clean_t}.JK"] = score_data
     
     # Simpan ke JSON
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)

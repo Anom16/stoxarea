@@ -250,14 +250,14 @@ def on_startup():
     import os
     run_scheduler_flag = os.getenv("RUN_SCHEDULER", "true").lower() == "true"
     if run_scheduler_flag:
-        logger.info("Memulai Background Scheduler untuk ML Pipeline (Berjalan tiap hari kerja jam 17:00)...")
+        logger.info("Memulai Background Scheduler untuk ML Pipeline...")
         scheduler = BackgroundScheduler()
-        # Harian: Senin-Jumat jam 17:00 — ingest + inference (cepat)
-        scheduler.add_job(run_daily_pipeline, 'cron', day_of_week='mon-fri', hour=17, minute=0)
-        # Mingguan: Jumat jam 18:00 — full retrain XGBoost (lebih lama)
-        scheduler.add_job(run_weekly_retrain, 'cron', day_of_week='fri', hour=18, minute=0)
+        # Harian: Senin-Kamis jam 17:00 WIB — ingest + inference cepat
+        scheduler.add_job(run_daily_pipeline, 'cron', day_of_week='mon-thu', hour=17, minute=0)
+        # Mingguan: Jumat jam 17:30 WIB — full retrain XGBoost + inference + hot-reload
+        scheduler.add_job(run_weekly_retrain, 'cron', day_of_week='fri', hour=17, minute=30)
         scheduler.start()
-        logger.info("Scheduler aktif: Harian (Sen-Jum 17:00) + Mingguan Retrain (Jum 18:00)")
+        logger.info("Scheduler aktif: Harian (Sen-Kam 17:00 WIB) + Retrain Mingguan (Jum 17:30 WIB)")
     else:
         logger.info("Background Scheduler dinonaktifkan (RUN_SCHEDULER=false) — berguna untuk multi-worker node.")
 

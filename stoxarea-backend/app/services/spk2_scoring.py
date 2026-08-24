@@ -88,6 +88,19 @@ def _get_optimal_thresholds() -> dict:
 _OHLCV_PRICES = _get_ohlcv_prices()
 
 
+def _lookup_ai_score(all_scores: dict, ticker: str) -> dict:
+    clean_t = ticker.replace(".JK", "").strip().upper()
+    formats = [clean_t, f"{clean_t}.JK", ticker, ticker.upper()]
+    for fmt in formats:
+        if fmt in all_scores:
+            return all_scores[fmt]
+    clean_lower = clean_t.lower()
+    for k, v in all_scores.items():
+        if k.replace(".JK", "").strip().lower() == clean_lower:
+            return v
+    return {}
+
+
 def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optional[str] = None) -> List[dict]:
     """
     Menampilkan saham-saham yang LOLOS 3 KRITERIA LIKUIDITAS (115 Qualified Stocks).
@@ -127,13 +140,12 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
                 grouped[clean] = s
 
     # Gunakan harga dari OHLCV lokal (sumber yang sama dengan halaman detail)
-    # Harga ini diambil dari close terbaru di CSV OHLCV
     ohlcv_prices = _OHLCV_PRICES
 
     stocks_list = []
     for clean_ticker, s in grouped.items():
         ticker = s.ticker
-        data = all_scores.get(clean_ticker) or all_scores.get(f"{clean_ticker}.JK") or all_scores.get(ticker) or {}
+        data = _lookup_ai_score(all_scores, clean_ticker)
         
         ai_score   = data.get("ai_score", 0.0716)
         ai_pct     = data.get("ai_score_percent", "7.2%")
@@ -200,14 +212,9 @@ def get_top_momentum_stocks(db: Session, limit: int = 1000, target_sector: Optio
 def get_ai_score_by_ticker(ticker: str) -> dict:
     """Mengambil skor AI untuk satu ticker spesifik."""
     all_scores = ai_store.get_all_scores()
-    ticker = ticker.upper()
-    clean_t = ticker.replace(".JK", "").strip()
-    
-    formats = [clean_t, clean_t + ".JK", ticker]
-    for f in formats:
-        if f in all_scores:
-            return all_scores[f]
-            
+    found = _lookup_ai_score(all_scores, ticker)
+    if found:
+        return found
     return {"ai_score": 0.0716, "ai_score_percent": "7.2%", "insights": []}
 
 def get_qualified_stocks_for_saw(
@@ -235,7 +242,7 @@ def get_qualified_stocks_for_saw(
 
     for s in stocks:
         clean_t = s.ticker.replace(".JK", "").strip().upper()
-        ai_data = all_scores.get(clean_t) or all_scores.get(f"{clean_t}.JK") or all_scores.get(s.ticker) or {}
+        ai_data = _lookup_ai_score(all_scores, clean_t)
         
         ai_score = ai_data.get("ai_score", 0.0716)
         insights = ai_data.get("insights", [])
